@@ -12,33 +12,6 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `ultraplan` | Ask detailed planning questions, recommend answers, and produce a precise implementation plan before work starts. |
 | `motion` | Design, audit, specify, or implement product UI motion with accessibility and performance in mind. |
 
-## 📁 Structure
-
-```text
-skills/
-  <skill-name>/
-    SKILL.md
-    agents/
-      openai.yaml
-    references/
-    scripts/
-    assets/
-```
-
-Only `SKILL.md` is required. The other folders appear when they are useful for that skill.
-
-## 🚀 Using A Skill
-
-Copy a skill folder from `skills/` into the skill directory used by your agent harness, or point your agent at the folder directly if your harness supports that.
-
-For example:
-
-```text
-skills/loop
-skills/ultraplan
-skills/motion
-```
-
 ## ⚡ Install With skills.sh
 
 The [skills.sh](https://www.skills.sh/) CLI can install skills from GitHub repos, URLs, or local paths.
@@ -49,20 +22,20 @@ From this checkout:
 npx skills add .
 ```
 
-After this repo is published, replace `OWNER/REPO` with the GitHub repo name:
+Install skills directly from the GitHub repo:
 
 ```bash
 # List available skills without installing
-npx skills add OWNER/REPO --list
+npx skills add DobroslavRadosavljevic/skills --list
 
 # Install one skill
-npx skills add OWNER/REPO --skill loop
+npx skills add DobroslavRadosavljevic/skills --skill loop
 
 # Install multiple skills
-npx skills add OWNER/REPO --skill loop --skill ultraplan
+npx skills add DobroslavRadosavljevic/skills --skill loop --skill ultraplan
 
 # Install all skills from the repo
-npx skills add OWNER/REPO --skill '*'
+npx skills add DobroslavRadosavljevic/skills --skill '*'
 ```
 
 Useful options:
@@ -76,7 +49,7 @@ Useful options:
 Example:
 
 ```bash
-npx skills add OWNER/REPO --skill motion -a codex -g
+npx skills add DobroslavRadosavljevic/skills --skill motion -a codex -g
 ```
 
 ## 🧭 Skill Conventions
