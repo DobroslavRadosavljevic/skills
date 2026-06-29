@@ -1,0 +1,4 @@
+interface:
+  display_name: "Loop"
+  short_description: "Iterate implementation, review, and fixes"
+  default_prompt: "Use $loop to implement this task, review it, fix any issues, and repeat until clean."

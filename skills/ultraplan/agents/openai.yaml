@@ -1,0 +1,4 @@
+interface:
+  display_name: "Ultraplan"
+  short_description: "Ask exhaustive planning questions"
+  default_prompt: "Use $ultraplan to interrogate this idea deeply and produce a precise implementation plan."

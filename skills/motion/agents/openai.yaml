@@ -1,0 +1,4 @@
+interface:
+  display_name: "Motion"
+  short_description: "Design accessible product UI motion"
+  default_prompt: "Use $motion to design or audit product UI animation with accessibility and performance in mind."
