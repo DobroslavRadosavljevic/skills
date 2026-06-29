@@ -1,0 +1,4 @@
+interface:
+  display_name: "Brainstorm"
+  short_description: "Read-only exploration and discussion"
+  default_prompt: "Use $brainstorm to explore this topic read-only before making any codebase changes."
