@@ -10,6 +10,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | --- | --- |
 | `brainstorm` | Explore ideas, plans, research, and codebase questions in a read-only session. |
 | `loop` | Implement, review, fix, and repeat until no actionable review issues remain. |
+| `subagents` | Split harder work into safe disjoint lanes and coordinate subagent results. |
 | `ultraplan` | Ask detailed planning questions, recommend answers, and produce a precise implementation plan before work starts. |
 | `motion` | Design, audit, specify, or implement product UI motion with accessibility and performance in mind. |
 

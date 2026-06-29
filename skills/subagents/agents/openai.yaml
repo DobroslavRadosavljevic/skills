@@ -1,0 +1,4 @@
+interface:
+  display_name: "Subagents"
+  short_description: "Coordinate disjoint work with subagents"
+  default_prompt: "Use $subagents to split this task into safe disjoint work and coordinate the result."
