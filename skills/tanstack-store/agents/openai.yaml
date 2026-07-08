@@ -1,0 +1,4 @@
+interface:
+  display_name: "TanStack Store"
+  short_description: "Build TanStack Store state systems"
+  default_prompt: "Use $tanstack-store to build, review, migrate, or debug this TanStack Store implementation with current documentation."
