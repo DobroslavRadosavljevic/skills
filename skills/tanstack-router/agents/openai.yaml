@@ -1,0 +1,4 @@
+interface:
+  display_name: "TanStack Router"
+  short_description: "Build TanStack Router apps from current docs"
+  default_prompt: "Use $tanstack-router to build, review, migrate, or debug this TanStack Router app with current documentation."

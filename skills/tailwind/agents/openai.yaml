@@ -1,0 +1,4 @@
+interface:
+  display_name: "Tailwind CSS"
+  short_description: "Build Tailwind UI from current docs"
+  default_prompt: "Use $tailwind to build, review, or migrate this UI with current Tailwind CSS docs."

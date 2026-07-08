@@ -1,0 +1,4 @@
+interface:
+  display_name: "React"
+  short_description: "Build React apps from current docs"
+  default_prompt: "Use $react to build or review this React component using current React docs and best practices."

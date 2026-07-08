@@ -1,0 +1,4 @@
+interface:
+  display_name: "TanStack Hotkeys"
+  short_description: "Build TanStack Hotkeys shortcuts"
+  default_prompt: "Use $tanstack-hotkeys to build, review, migrate, or debug this TanStack Hotkeys implementation with current documentation."

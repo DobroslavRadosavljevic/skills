@@ -1,0 +1,4 @@
+interface:
+  display_name: "Base UI"
+  short_description: "Build accessible Base UI React primitives"
+  default_prompt: "Use $base-ui to build an accessible, styled React component with Base UI primitives."

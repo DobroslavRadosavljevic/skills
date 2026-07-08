@@ -1,0 +1,4 @@
+interface:
+  display_name: "TanStack Table"
+  short_description: "Build TanStack Table v9 beta tables"
+  default_prompt: "Use $tanstack-table to build, review, migrate, or debug this TanStack Table v9 beta implementation with current documentation."

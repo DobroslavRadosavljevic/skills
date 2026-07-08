@@ -1,0 +1,4 @@
+interface:
+  display_name: "TanStack Query"
+  short_description: "Build TanStack Query v5 server-state code"
+  default_prompt: "Use $tanstack-query to build, review, migrate, or debug this TanStack Query v5 implementation with current documentation."
