@@ -1,0 +1,4 @@
+interface:
+  display_name: "Zod"
+  short_description: "Build Zod v4 validation code"
+  default_prompt: "Use $zod to build, review, migrate, or debug this Zod validation implementation with current documentation."

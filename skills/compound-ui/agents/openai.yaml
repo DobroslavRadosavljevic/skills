@@ -1,0 +1,4 @@
+interface:
+  display_name: "Compound UI"
+  short_description: "Create shadcn-style compound React components"
+  default_prompt: "Use $compound-ui to build or review this React component as a composable shadcn-style compound component."

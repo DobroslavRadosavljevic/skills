@@ -1,0 +1,4 @@
+interface:
+  display_name: "Effect"
+  short_description: "Build Effect v4 beta code"
+  default_prompt: "Use $effect to build, review, migrate, or debug this Effect v4 beta implementation with current documentation."
