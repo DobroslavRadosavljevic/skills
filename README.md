@@ -10,6 +10,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | --- | --- |
 | `brainstorm` | Explore ideas, plans, research, and codebase questions in a read-only session. |
 | `elysia` | Build, review, debug, test, and deploy Elysia applications with current docs. |
+| `legend-state` | Build, review, migrate, and debug Legend-State v3 observable, React, persistence, and sync systems. |
 | `loop` | Implement, review, fix, and repeat until no actionable review issues remain. |
 | `research` | Investigate external sources and codebase evidence before recommending next steps. |
 | `subagents` | Split harder work into safe disjoint lanes and coordinate subagent results. |

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Legend-State"
+  short_description: "Build Legend-State v3 beta state systems"
+  default_prompt: "Use $legend-state to build, review, migrate, or debug this Legend-State v3 implementation with current documentation."
