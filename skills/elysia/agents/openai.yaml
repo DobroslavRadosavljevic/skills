@@ -1,0 +1,4 @@
+interface:
+  display_name: "Elysia"
+  short_description: "Build production-ready Elysia applications"
+  default_prompt: "Use $elysia to build, review, debug, test, or deploy this Elysia application with current documentation."
