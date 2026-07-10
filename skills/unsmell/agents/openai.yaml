@@ -1,0 +1,4 @@
+interface:
+  display_name: "Unsmell"
+  short_description: "Remove code smells and structural debt"
+  default_prompt: "Use $unsmell to remove maintainability issues from this codebase while preserving behavior."
