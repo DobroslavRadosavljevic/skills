@@ -1,6 +1,6 @@
 ---
 name: research
-description: Evidence-first research workflow for external web/source research and internal codebase investigation. Use when the user invokes $research, asks to research, investigate, audit what exists, compare options, understand current implementation, gather evidence, inspect docs, look up current facts, or answer repo-grounded questions before implementation. Prefer optional subagents for broad, separable research lanes such as external sources, codebase evidence, docs, risks, and competitor or alternative analysis.
+description: Evidence-first research workflow for external web/source research and internal codebase investigation. Use when the user invokes $research, asks to research, investigate, audit what exists, compare options, understand current implementation, gather evidence, inspect docs, look up current facts, or answer repo-grounded questions before implementation. Prefer optional parallel agents for broad, separable research lanes such as external sources, codebase evidence, docs, risks, and competitor or alternative analysis.
 ---
 
 # Research
@@ -64,9 +64,9 @@ Use `rg` or equivalent fast search first when the harness provides shell access.
 6. Prefer direct quotes only when exact wording matters; otherwise paraphrase and cite.
 7. Note conflicts between sources and explain which source is stronger.
 
-## Optional Subagents
+## Optional Parallel Agents
 
-Use subagents when they make the research more complete or faster and the harness supports them. Keep the orchestrator responsible for final judgment.
+Use parallel agents when they make the research more complete or faster and the harness supports them. Keep the orchestrator responsible for final judgment.
 
 Good research lanes:
 
@@ -79,13 +79,13 @@ Good research lanes:
 
 Dispatch guidance:
 
-- Give each subagent a bounded, read-only lane with exact files, systems, or source types to inspect.
+- Give each agent a bounded, read-only lane with exact files, systems, or source types to inspect.
 - Ask for evidence, citations, uncertainty, and concise recommendations.
-- Avoid giving subagents the intended answer unless validation requires it.
+- Avoid giving agents the intended answer unless validation requires it.
 - Prevent overlapping writes by keeping research lanes read-only.
 - Integrate centrally, re-check surprising claims, and resolve contradictions before answering.
 
-If subagents are unavailable or the task is narrow, proceed as a single agent and say so only when it affects the result.
+If parallel agents are unavailable or the task is narrow, proceed as a single agent and say so only when it affects the result.
 
 ## Evidence Ledger
 

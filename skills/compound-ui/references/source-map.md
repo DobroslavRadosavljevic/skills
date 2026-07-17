@@ -28,7 +28,7 @@ Snapshot captured on 2026-07-08 for creating React compound UI components in a s
   - Simple named parts such as `Card`, `CardHeader`, `CardTitle`, `CardDescription`, `CardContent`, and `CardFooter`.
 - `apps/v4/registry/new-york-v4/ui/dialog.tsx`
   - Radix primitive wrapping, named exported parts, overlay/content composition, title/description parts, close control, and `data-slot`.
-- `skills/shadcn/rules/composition.md`
+- Official shadcn composition guidance (ui.shadcn.com / registry examples)
   - Concrete composition rules: group items under groups, full Card structure, dialogs/sheets/drawers need titles, TabsTrigger belongs in TabsList, Avatar needs fallback, use existing primitives instead of raw markup.
 
 ## Recheck Triggers

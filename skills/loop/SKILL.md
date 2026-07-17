@@ -37,8 +37,8 @@ Run the requested task as an iterative implementation pipeline. Implement the ch
 Choose the smallest review method that gives credible coverage:
 
 - Use a self-review pass for narrow, low-risk, single-area changes.
-- Use one or more subagents when available and useful for broad changes, security-sensitive work, cross-cutting behavior, unfamiliar code, or when the user asks for subagents.
-- Split subagent reviews by concern when that improves signal, such as correctness, tests, UX, performance, security, or docs.
+- Use one or more parallel reviewer agents when available and useful for broad changes, security-sensitive work, cross-cutting behavior, unfamiliar code, or when the user asks for independent review.
+- Split reviewer agents by concern when that improves signal, such as correctness, tests, UX, performance, security, or docs.
 - Give reviewers the task, changed files or diff, and verification output. Do not give them the desired answer or ask them to rubber-stamp the work.
 
 ## Review Standard

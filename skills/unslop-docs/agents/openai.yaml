@@ -1,0 +1,4 @@
+interface:
+  display_name: "Unslop Docs"
+  short_description: "Ban AI docs slop and rewrite verifiable plain docs"
+  default_prompt: "Use $unslop-docs to audit and rewrite README/docs so they are plain, accurate, and free of AI generator chrome."

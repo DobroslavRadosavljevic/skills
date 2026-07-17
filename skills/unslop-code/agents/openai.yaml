@@ -1,0 +1,4 @@
+interface:
+  display_name: "Unslop Code"
+  short_description: "Ban AI code fingerprints and match problem scale"
+  default_prompt: "Use $unslop-code to strip AI-looking code defaults (over-abstraction, narrating comments, silent fallbacks, type escapes) and rework to the real problem scale."

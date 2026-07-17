@@ -1,0 +1,4 @@
+interface:
+  display_name: "Unslop Copywriting"
+  short_description: "Ban AI-slop UI copy and rewrite it in plain human language"
+  default_prompt: "Use $unslop-copywriting to audit and rewrite public UI copy so it reads as plain language for humans, with no leaked internals or AI marketing slop."
