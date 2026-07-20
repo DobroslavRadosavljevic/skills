@@ -1,0 +1,4 @@
+interface:
+  display_name: "Simplify Layout"
+  short_description: "Shorten file/folder names and group related code"
+  default_prompt: "Use $simplify-layout to propose shorter file and folder names and better grouping for the targeted tree."

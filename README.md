@@ -13,6 +13,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `legend-state` | Build, review, migrate, and debug Legend-State v3 observable, React, persistence, and sync systems. |
 | `loop` | Implement, review, fix, and repeat until no actionable review issues remain. |
 | `research` | Investigate external sources and codebase evidence before recommending next steps. |
+| `simplify-layout` | Shorten file and folder names and group related modules so paths stay scannable. |
 | `subagents` | Split harder work into safe disjoint lanes and coordinate subagent results. |
 | `ultraplan` | Ask detailed planning questions, recommend answers, and produce a precise implementation plan before work starts. |
 | `motion` | Design, audit, specify, or implement product UI motion with accessibility and performance in mind. |
