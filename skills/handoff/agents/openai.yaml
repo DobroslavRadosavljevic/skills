@@ -1,0 +1,4 @@
+interface:
+  display_name: "Handoff"
+  short_description: "Package or resume agent-to-agent context"
+  default_prompt: "Use $handoff to package the current work into handoff context another agent can resume from."
