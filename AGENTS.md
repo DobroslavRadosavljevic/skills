@@ -6,6 +6,12 @@ This repo stores harness-neutral agent skills under `skills/<skill-name>/`.
 
 Only create or modify a skill when the user explicitly asks for that skill or approves the change.
 
+Current skills (27):
+
+`base-ui`, `brainstorm`, `compound-ui`, `effect`, `elysia`, `handoff`, `legend-state`, `loop`, `motion`, `react`, `research`, `simplify-layout`, `subagents`, `tailwind`, `tanstack-form`, `tanstack-hotkeys`, `tanstack-query`, `tanstack-router`, `tanstack-start`, `tanstack-store`, `tanstack-table`, `ultraplan`, `unslop-code`, `unslop-copywriting`, `unslop-docs`, `unsmell`, `zod`
+
+See `README.md` for short purpose blurbs and install instructions.
+
 ## Research
 
 - Prefer Exa MCP for web search and research when available.
@@ -37,7 +43,13 @@ Only create or modify a skill when the user explicitly asks for that skill or ap
 
 ## Validation
 
-- Run `quick_validate.py <path-to-skill>` after creating or changing a skill.
+After creating or changing a skill:
+
+- Confirm `name` matches the folder name and frontmatter contains only `name` and `description`.
+- Confirm `description` covers both what the skill does and when to use it.
+- Confirm linked `references/`, `scripts/`, and `assets/` paths exist and are one level deep from `SKILL.md`.
 - Search for leftover template markers such as `TODO`, `[TODO]`, `Structuring This Skill`, and stale reference links.
+- If a local `quick_validate.py` exists, run `quick_validate.py <path-to-skill>`; otherwise use the checks above.
 - Preserve unrelated user changes.
 - If prerequisites are missing, report them instead of installing tools without approval.
+- Keep `README.md` and this file aligned with the skills present under `skills/`.

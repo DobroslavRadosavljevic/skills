@@ -1,4 +1,0 @@
-interface:
-  display_name: "Unslop Design"
-  short_description: "Ban AI-slop UI and rework frontends to look intentional"
-  default_prompt: "Use $unslop-design to audit and rework this frontend so it no longer uses AI-looking design patterns."
