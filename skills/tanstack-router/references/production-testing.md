@@ -22,7 +22,7 @@ Netlify `netlify.toml`:
 
 [build]
   publish = "dist"
-  command = "npm run build"
+  command = "bun run build"
 ```
 
 Cloudflare Pages `_redirects`:

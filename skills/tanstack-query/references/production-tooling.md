@@ -7,7 +7,7 @@ Use persistence when cache state should survive reloads or app restarts.
 Packages:
 
 ```sh
-npm i @tanstack/react-query-persist-client @tanstack/query-async-storage-persister
+bun add @tanstack/react-query-persist-client @tanstack/query-async-storage-persister
 ```
 
 The older `@tanstack/query-sync-storage-persister` docs mark the sync persister as deprecated and recommend the async storage persister instead.
@@ -67,7 +67,7 @@ broadcastQueryClient({
 Package:
 
 ```sh
-npm i @tanstack/query-broadcast-client-experimental
+bun add @tanstack/query-broadcast-client-experimental
 ```
 
 It is experimental. Lock to a patch version before relying on it in production.
@@ -77,7 +77,7 @@ It is experimental. Lock to a patch version before relying on it in production.
 Package:
 
 ```sh
-npm i @tanstack/react-query-devtools
+bun add @tanstack/react-query-devtools
 ```
 
 Floating mode:
@@ -112,7 +112,7 @@ Use the `styleNonce` option when Content Security Policy requires a nonce for in
 Package:
 
 ```sh
-npm i -D @tanstack/eslint-plugin-query
+bun add -d @tanstack/eslint-plugin-query
 ```
 
 Flat config:

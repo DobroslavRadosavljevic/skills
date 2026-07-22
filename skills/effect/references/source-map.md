@@ -22,11 +22,11 @@ Treat `effect@beta` as separate from npm `latest`: as of this snapshot, stable n
 ## Refresh Procedure
 
 1. Resolve current docs with documentation tooling before answering latest-version questions.
-2. Check npm metadata:
+2. Check package registry metadata:
 
    ```sh
-   npm view effect version dist-tags repository.url homepage description --json
-   npm view @effect/vitest version dist-tags --json
+   bun info effect
+   bun info @effect/vitest
    ```
 
 3. Check the local project's installed versions before applying v4 guidance.

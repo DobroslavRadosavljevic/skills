@@ -10,6 +10,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | --- | --- |
 | `base-ui` | Build, review, migrate, or debug React UIs with Base UI primitives. |
 | `brainstorm` | Explore ideas, plans, research, and codebase questions in a read-only session. |
+| `bullmq` | Build, review, debug, operate, or migrate BullMQ Redis job queues. |
 | `compound-ui` | Build or refactor React UI into shadcn-style compound components. |
 | `effect` | Build, review, debug, migrate, or plan Effect v4 TypeScript code. |
 | `elysia` | Build, review, debug, test, and deploy Elysia applications with current docs. |
@@ -17,6 +18,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `legend-state` | Build, review, migrate, and debug Legend-State v3 observable, React, persistence, and sync systems. |
 | `loop` | Implement, review, fix, and repeat until no actionable review issues remain. |
 | `motion` | Design, audit, specify, or implement product UI motion with accessibility and performance in mind. |
+| `playwright` | Build, review, debug, configure, or plan Playwright E2E tests and browser automation. |
 | `react` | Build, review, debug, migrate, or plan React apps with current React docs. |
 | `research` | Investigate external sources and codebase evidence before recommending next steps. |
 | `simplify-layout` | Shorten file and folder names and group related modules so paths stay scannable. |
@@ -43,23 +45,23 @@ The [skills.sh](https://www.skills.sh/) CLI can install skills from GitHub repos
 From this checkout:
 
 ```bash
-npx skills add .
+bunx skills add .
 ```
 
 Install skills directly from the GitHub repo:
 
 ```bash
 # List available skills without installing
-npx skills add DobroslavRadosavljevic/skills --list
+bunx skills add DobroslavRadosavljevic/skills --list
 
 # Install one skill
-npx skills add DobroslavRadosavljevic/skills --skill loop
+bunx skills add DobroslavRadosavljevic/skills --skill loop
 
 # Install multiple skills
-npx skills add DobroslavRadosavljevic/skills --skill loop --skill ultraplan
+bunx skills add DobroslavRadosavljevic/skills --skill loop --skill ultraplan
 
 # Install all skills from the repo
-npx skills add DobroslavRadosavljevic/skills --skill '*'
+bunx skills add DobroslavRadosavljevic/skills --skill '*'
 ```
 
 Useful options:
@@ -73,7 +75,7 @@ Useful options:
 Example:
 
 ```bash
-npx skills add DobroslavRadosavljevic/skills --skill motion -a codex -g
+bunx skills add DobroslavRadosavljevic/skills --skill motion -a codex -g
 ```
 
 ## Skill Conventions
@@ -83,6 +85,7 @@ npx skills add DobroslavRadosavljevic/skills --skill motion -a codex -g
 - `description` explains both what the skill does and when it should trigger.
 - Long or detailed guidance goes in `references/` and is linked from `SKILL.md`.
 - Scripts and assets are included only when the skill actually uses them.
+- Prefer `bun` / `bunx` in command examples over `npm` / `npx`.
 - Individual skill folders do not have their own README files.
 
 ## License

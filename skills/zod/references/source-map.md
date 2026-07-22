@@ -18,10 +18,10 @@ Treat canary and prerelease dist-tags as unavailable unless the project explicit
 ## Refresh Procedure
 
 1. Resolve the current docs with documentation tooling before answering "latest" questions.
-2. Check npm metadata:
+2. Check package registry metadata:
 
    ```sh
-   npm view zod version dist-tags repository.url homepage description --json
+   bun info zod
    ```
 
 3. Prefer official docs pages and official repo source. If docs and package metadata disagree, report the mismatch.

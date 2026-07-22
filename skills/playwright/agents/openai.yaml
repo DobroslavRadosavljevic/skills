@@ -1,0 +1,4 @@
+interface:
+  display_name: "Playwright"
+  short_description: "Build Playwright E2E and automation"
+  default_prompt: "Use $playwright to build, review, debug, configure, or plan this Playwright test or browser automation work with current documentation."

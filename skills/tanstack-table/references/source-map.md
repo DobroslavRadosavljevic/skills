@@ -10,7 +10,7 @@ Use the beta dist-tag for v9:
 - `@tanstack/table-core@beta`: `9.0.0-beta.36`
 - `@tanstack/react-table` dist-tags: `latest` is `8.21.3`, `alpha` is `9.0.0-alpha.54`, `beta` is `9.0.0-beta.36`
 
-Important: `npm install @tanstack/react-table` installs stable v8. v9 beta APIs such as `useTable`, `tableFeatures`, `createTableHook`, feature slots, and external atoms require the `@beta` tag.
+Important: `bun add @tanstack/react-table` installs stable v8. v9 beta APIs such as `useTable`, `tableFeatures`, `createTableHook`, feature slots, and external atoms require the `@beta` tag.
 
 ## Research Notes
 

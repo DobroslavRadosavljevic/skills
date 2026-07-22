@@ -5,13 +5,13 @@
 React Query v5:
 
 ```sh
-npm i @tanstack/react-query
+bun add @tanstack/react-query
 ```
 
 React Query supports React 18 or newer and modern browsers. The docs recommend installing the ESLint plugin too:
 
 ```sh
-npm i -D @tanstack/eslint-plugin-query
+bun add -d @tanstack/eslint-plugin-query
 ```
 
 ## Provider Setup
@@ -209,7 +209,7 @@ declare module '@tanstack/react-query' {
 Install:
 
 ```sh
-npm i @tanstack/react-query-devtools
+bun add @tanstack/react-query-devtools
 ```
 
 Use high in the app tree:

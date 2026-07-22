@@ -5,21 +5,21 @@
 React projects install the React adapter:
 
 ```sh
-npm i @tanstack/react-form
+bun add @tanstack/react-form
 ```
 
 Meta-framework adapters exist for server validation and form-state merging:
 
 ```sh
-npm i @tanstack/react-form-start
-npm i @tanstack/react-form-nextjs
-npm i @tanstack/react-form-remix
+bun add @tanstack/react-form-start
+bun add @tanstack/react-form-nextjs
+bun add @tanstack/react-form-remix
 ```
 
 Devtools are separate:
 
 ```sh
-npm i @tanstack/react-devtools @tanstack/react-form-devtools
+bun add @tanstack/react-devtools @tanstack/react-form-devtools
 ```
 
 ## Core Model

@@ -7,7 +7,7 @@ Use this reference for package versions, imports, core Effect APIs, config, and 
 - To try Effect v4 beta, install the beta dist-tag:
 
   ```sh
-  npm install effect@beta
+  bun add effect@beta
   ```
 
 - Keep all Effect ecosystem packages on matching beta versions. If `effect` is `4.0.0-beta.94`, packages such as `@effect/vitest` and platform/provider packages should also use `4.0.0-beta.94` when available.

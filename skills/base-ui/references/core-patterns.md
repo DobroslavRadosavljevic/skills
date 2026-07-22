@@ -18,9 +18,6 @@
 Install the single tree-shakable package:
 
 ```bash
-npm i @base-ui/react
-pnpm add @base-ui/react
-yarn add @base-ui/react
 bun add @base-ui/react
 ```
 

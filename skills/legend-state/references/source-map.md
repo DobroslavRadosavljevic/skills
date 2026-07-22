@@ -5,7 +5,7 @@
 This skill targets Legend-State v3. Re-check the channel before every version-sensitive task:
 
 ```sh
-npm view @legendapp/state version dist-tags --json
+bun info @legendapp/state
 ```
 
 Research snapshot on 2026-07-10:

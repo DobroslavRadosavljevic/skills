@@ -15,13 +15,13 @@
 React:
 
 ```sh
-npm install @tanstack/react-store
+bun add @tanstack/react-store
 ```
 
 Core-only usage:
 
 ```sh
-npm install @tanstack/store
+bun add @tanstack/store
 ```
 
 Framework adapter packages re-export core APIs, so a React app usually imports `createStore` from `@tanstack/react-store` and does not need a separate direct dependency on `@tanstack/store`.

@@ -7,7 +7,7 @@ Use this reference for installation, file-based routing, code-based routing, rou
 Use TanStack CLI for a new router-only project:
 
 ```bash
-npx @tanstack/cli@latest create --router-only
+bunx @tanstack/cli@latest create --router-only
 ```
 
 The CLI asks for file-based or code-based routing, TypeScript, Tailwind, toolchain setup, and Git initialization.
@@ -28,8 +28,8 @@ For file-based route generation, install `@tanstack/router-plugin` as a developm
 Add devtools when useful:
 
 ```bash
-npm i @tanstack/react-router @tanstack/react-router-devtools
-npm i -D @tanstack/router-plugin
+bun add @tanstack/react-router @tanstack/react-router-devtools
+bun add -d @tanstack/router-plugin
 ```
 
 ## Vite Plugin

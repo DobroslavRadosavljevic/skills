@@ -16,19 +16,19 @@
 React apps:
 
 ```sh
-npm i @tanstack/react-hotkeys
+bun add @tanstack/react-hotkeys
 ```
 
 React devtools:
 
 ```sh
-npm i @tanstack/react-devtools @tanstack/react-hotkeys-devtools
+bun add @tanstack/react-devtools @tanstack/react-hotkeys-devtools
 ```
 
 The React package re-exports the core `@tanstack/hotkeys` APIs. Install the core package directly only for vanilla JavaScript or non-adapter usage:
 
 ```sh
-npm i @tanstack/hotkeys
+bun add @tanstack/hotkeys
 ```
 
 ## Provider Defaults

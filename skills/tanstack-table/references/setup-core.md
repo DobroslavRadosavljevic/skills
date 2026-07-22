@@ -5,7 +5,7 @@
 React v9 beta:
 
 ```sh
-npm install @tanstack/react-table@beta
+bun add @tanstack/react-table@beta
 ```
 
 React adapter requirements:

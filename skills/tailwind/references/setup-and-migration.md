@@ -30,7 +30,7 @@ Do not add multiple integration paths unless the project genuinely has multiple 
 Install:
 
 ```sh
-npm install tailwindcss @tailwindcss/vite
+bun add tailwindcss @tailwindcss/vite
 ```
 
 Configure:
@@ -57,7 +57,7 @@ Use Vite integration for frameworks like React Router, SvelteKit, Laravel, Nuxt,
 Install:
 
 ```sh
-npm install tailwindcss @tailwindcss/postcss postcss
+bun add tailwindcss @tailwindcss/postcss postcss
 ```
 
 Configure:
@@ -85,7 +85,7 @@ PostCSS imports and vendor prefixing are handled for Tailwind v4, so many projec
 Install:
 
 ```sh
-npm install tailwindcss @tailwindcss/cli
+bun add tailwindcss @tailwindcss/cli
 ```
 
 Create an input CSS file:
@@ -97,7 +97,7 @@ Create an input CSS file:
 Run:
 
 ```sh
-npx @tailwindcss/cli -i ./src/input.css -o ./src/output.css --watch
+bunx @tailwindcss/cli -i ./src/input.css -o ./src/output.css --watch
 ```
 
 In v4, the CLI package is `@tailwindcss/cli`, not the `tailwindcss` package.
@@ -107,7 +107,7 @@ In v4, the CLI package is `@tailwindcss/cli`, not the `tailwindcss` package.
 Install:
 
 ```sh
-npm install tailwindcss @tailwindcss/webpack
+bun add tailwindcss @tailwindcss/webpack
 ```
 
 Example webpack loader chain:
@@ -144,7 +144,7 @@ Preferred path:
 2. Run the upgrade tool in a new branch or otherwise isolated diff:
 
 ```sh
-npx @tailwindcss/upgrade
+bunx @tailwindcss/upgrade
 ```
 
 3. Use Node.js 20 or newer for the upgrade tool.

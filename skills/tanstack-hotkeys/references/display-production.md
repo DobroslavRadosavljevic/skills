@@ -82,7 +82,7 @@ const registerable = normalizeRegisterableHotkey(
 Install React devtools integration:
 
 ```sh
-npm i @tanstack/react-devtools @tanstack/react-hotkeys-devtools
+bun add @tanstack/react-devtools @tanstack/react-hotkeys-devtools
 ```
 
 Setup:

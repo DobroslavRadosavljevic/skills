@@ -79,7 +79,7 @@ Virtualization is not a TanStack Table feature and does not need a `tableFeature
 Install:
 
 ```sh
-npm install @tanstack/react-virtual
+bun add @tanstack/react-virtual
 ```
 
 Basic row virtualization pattern:
@@ -145,7 +145,7 @@ The beta docs describe this as replacing the older "memoize the body while resiz
 Install beta table devtools explicitly:
 
 ```sh
-npm install @tanstack/react-devtools @tanstack/react-table-devtools@beta
+bun add @tanstack/react-devtools @tanstack/react-table-devtools@beta
 ```
 
 React setup:

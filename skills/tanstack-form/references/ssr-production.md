@@ -192,7 +192,7 @@ Check import paths carefully. Remix examples import the route `Form` from `@tans
 Install:
 
 ```sh
-npm i @tanstack/react-devtools @tanstack/react-form-devtools
+bun add @tanstack/react-devtools @tanstack/react-form-devtools
 ```
 
 Root setup:

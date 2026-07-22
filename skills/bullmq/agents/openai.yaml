@@ -1,0 +1,4 @@
+interface:
+  display_name: "BullMQ"
+  short_description: "Build and operate BullMQ Redis job queues"
+  default_prompt: "Use $bullmq to build, review, debug, test, or operate this BullMQ Node.js/TypeScript queue implementation with current documentation."

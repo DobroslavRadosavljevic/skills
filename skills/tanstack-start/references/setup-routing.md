@@ -10,7 +10,7 @@ Preferred current starting points:
 - TanStack CLI for local scaffolding:
 
 ```bash
-npx @tanstack/cli@latest create
+bunx @tanstack/cli@latest create
 ```
 
 The CLI prompts for package manager and optional add-ons such as Tailwind CSS and ESLint.
@@ -28,10 +28,10 @@ Official examples are useful when matching existing patterns:
 Clone examples with `gitpick` when the user wants a working reference:
 
 ```bash
-npx gitpick TanStack/router/tree/main/examples/react/start-basic start-basic
+bunx gitpick TanStack/router/tree/main/examples/react/start-basic start-basic
 cd start-basic
-npm install
-npm run dev
+bun install
+bun run dev
 ```
 
 Do not install dependencies without approval when repo policy requires package-safety review.
@@ -41,8 +41,8 @@ Do not install dependencies without approval when repo policy requires package-s
 Current build-from-scratch docs install:
 
 ```bash
-npm i @tanstack/react-start @tanstack/react-router
-npm i react react-dom
+bun add @tanstack/react-start @tanstack/react-router
+bun add react react-dom
 ```
 
 Choose one build tool:
