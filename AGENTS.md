@@ -6,9 +6,9 @@ This repo stores harness-neutral agent skills under `skills/<skill-name>/`.
 
 Only create or modify a skill when the user explicitly asks for that skill or approves the change.
 
-Current skills (30):
+Current skills (31):
 
-`base-ui`, `brainstorm`, `bullmq`, `compound-ui`, `effect`, `elysia`, `handoff`, `legend-state`, `loop`, `motion`, `playwright`, `react`, `research`, `ship-product`, `simplify-layout`, `subagents`, `tailwind`, `tanstack-form`, `tanstack-hotkeys`, `tanstack-query`, `tanstack-router`, `tanstack-start`, `tanstack-store`, `tanstack-table`, `ultraplan`, `unslop-code`, `unslop-copywriting`, `unslop-docs`, `unsmell`, `zod`
+`base-ui`, `brainstorm`, `bullmq`, `compound-ui`, `effect`, `elysia`, `handoff`, `intlayer`, `legend-state`, `loop`, `motion`, `playwright`, `react`, `research`, `ship-product`, `simplify-layout`, `subagents`, `tailwind`, `tanstack-form`, `tanstack-hotkeys`, `tanstack-query`, `tanstack-router`, `tanstack-start`, `tanstack-store`, `tanstack-table`, `ultraplan`, `unslop-code`, `unslop-copywriting`, `unslop-docs`, `unsmell`, `zod`
 
 See `README.md` for short purpose blurbs and install instructions.
 

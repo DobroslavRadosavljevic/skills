@@ -15,6 +15,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `effect` | Build, review, debug, migrate, or plan Effect v4 TypeScript code. |
 | `elysia` | Build, review, debug, test, and deploy Elysia applications with current docs. |
 | `handoff` | Produce or consume agent-to-agent handoff context so another session can resume work. |
+| `intlayer` | Build, review, configure, or debug Intlayer v9 i18n in TanStack Start React apps. |
 | `legend-state` | Build, review, migrate, and debug Legend-State v3 observable, React, persistence, and sync systems. |
 | `loop` | Implement, review, fix, and repeat until no actionable review issues remain. |
 | `motion` | Design, audit, specify, or implement product UI motion with accessibility and performance in mind. |

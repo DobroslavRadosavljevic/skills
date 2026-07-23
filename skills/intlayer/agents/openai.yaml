@@ -1,0 +1,4 @@
+interface:
+  display_name: "Intlayer"
+  short_description: "Build Intlayer v9 i18n for TanStack Start"
+  default_prompt: "Use $intlayer to build, review, configure, migrate, or debug this Intlayer + TanStack Start internationalization work with current documentation."
