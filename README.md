@@ -21,6 +21,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `playwright` | Build, review, debug, configure, or plan Playwright E2E tests and browser automation. |
 | `react` | Build, review, debug, migrate, or plan React apps with current React docs. |
 | `research` | Investigate external sources and codebase evidence before recommending next steps. |
+| `ship-product` | Build a paid fullstack TanStack Start product from scratch with need-based stack and an env testing gate. |
 | `simplify-layout` | Shorten file and folder names and group related modules so paths stay scannable. |
 | `subagents` | Split harder work into safe disjoint lanes and coordinate subagent results. |
 | `tailwind` | Build, review, debug, configure, or migrate Tailwind CSS projects. |
