@@ -40,12 +40,15 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `tanstack-store` | Build, review, debug, migrate, or plan TanStack Store state management. |
 | `tanstack-table` | Build, review, debug, migrate, or plan TanStack Table React tables. |
 | `testcontainers` | Build, review, debug, configure, or plan Testcontainers integration tests with real Docker dependencies. |
+| `tsdown` | Rolldown library bundler: config, dts, exports, deps, watch/unbundle, and tsup migration. |
 | `turborepo` | Full Turborepo usage guide plus tasks, caching, filters, prune/Docker CI, and monorepo integrations. |
 | `ultraplan` | Ask detailed planning questions, recommend answers, and produce a precise implementation plan before work starts. |
 | `unslop-code` | Strip AI-looking code fingerprints and rework implementation to match problem scale. |
 | `unslop-copywriting` | Rewrite public UI copy into plain language and remove robotic or leaked-internal text. |
 | `unslop-docs` | Rewrite README/docs into plain, verifiable guidance and remove generated-docs slop. |
 | `unsmell` | Find and fix maintainability problems across a codebase or scoped area. |
+| `vite` | Vite 8 tooling: config, Rolldown/Oxc builds, plugins, SSR, and v7→v8 migration. |
+| `vitest` | Vitest 4 testing: config, mocks, coverage, browser mode, projects, and Jest/v3 migration. |
 | `zod` | Build, review, debug, migrate, or plan Zod v4 validation and schema code. |
 
 ## Install With skills.sh

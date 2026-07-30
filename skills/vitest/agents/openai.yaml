@@ -1,0 +1,4 @@
+interface:
+  display_name: "Vitest"
+  short_description: "Vitest 4 testing, mocks, coverage, browser"
+  default_prompt: "Use $vitest for this Vitest test, config, mock, coverage, or browser-mode work with current Vitest documentation and the full usage guide."

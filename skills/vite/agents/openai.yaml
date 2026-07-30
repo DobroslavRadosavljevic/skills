@@ -1,0 +1,4 @@
+interface:
+  display_name: "Vite"
+  short_description: "Vite 8 build tool, config, and plugins"
+  default_prompt: "Use $vite for this Vite config, plugin, build, or SSR work with current Vite documentation and the full usage guide."

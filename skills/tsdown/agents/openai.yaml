@@ -1,0 +1,4 @@
+interface:
+  display_name: "tsdown"
+  short_description: "Rolldown library bundler for TS/JS packages"
+  default_prompt: "Use $tsdown for this library build, dts, exports, or tsup-migration work with current tsdown documentation and the full usage guide."
