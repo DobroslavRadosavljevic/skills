@@ -1,0 +1,4 @@
+interface:
+  display_name: "Testcontainers"
+  short_description: "Build Testcontainers integration tests"
+  default_prompt: "Use $testcontainers to build, review, debug, configure, or plan this Testcontainers integration-test work with current documentation."

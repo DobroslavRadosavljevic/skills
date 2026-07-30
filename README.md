@@ -33,6 +33,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `tanstack-start` | Build, review, debug, configure, migrate, or plan TanStack Start apps. |
 | `tanstack-store` | Build, review, debug, migrate, or plan TanStack Store state management. |
 | `tanstack-table` | Build, review, debug, migrate, or plan TanStack Table React tables. |
+| `testcontainers` | Build, review, debug, configure, or plan Testcontainers integration tests with real Docker dependencies. |
 | `ultraplan` | Ask detailed planning questions, recommend answers, and produce a precise implementation plan before work starts. |
 | `unslop-code` | Strip AI-looking code fingerprints and rework implementation to match problem scale. |
 | `unslop-copywriting` | Rewrite public UI copy into plain language and remove robotic or leaked-internal text. |
