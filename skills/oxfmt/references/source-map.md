@@ -54,6 +54,6 @@ Maturity trail: alpha (2025-12) → beta (2026-02, 100% Prettier JS/TS conforman
 - Playground: https://playground.oxc.rs/
 - npm: https://www.npmjs.com/package/oxfmt
 - GitHub: https://github.com/oxc-project/oxc
-- Migrate skill: https://skills.sh/oxc-project/oxc/migrate-oxfmt
+- Migrate from Prettier: https://oxc.rs/docs/guide/usage/formatter/migrate-from-prettier.html
 - Vite+ fmt: https://viteplus.dev/guide/fmt
 - Schema: `node_modules/oxfmt/configuration_schema.json`

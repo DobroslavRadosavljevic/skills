@@ -22,6 +22,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `motion` | Design, audit, specify, or implement product UI motion with accessibility and performance in mind. |
 | `oxfmt` | Full Oxfmt usage guide plus setup, Prettier migration, and CI formatting. |
 | `oxlint` | Full Oxlint usage guide plus setup, rules/plugins, type-aware lint, and ESLint migration. |
+| `plain-language` | Always-on clear explanations and readable naming; technical depth only when needed. |
 | `playwright` | Build, review, debug, configure, or plan Playwright E2E tests and browser automation. |
 | `react` | Build, review, debug, migrate, or plan React apps with current React docs. |
 | `research` | Investigate external sources and codebase evidence before recommending next steps. |
@@ -94,6 +95,7 @@ bunx skills add DobroslavRadosavljevic/skills --skill motion -a codex -g
 - Scripts and assets are included only when the skill actually uses them.
 - Prefer `bun` / `bunx` in command examples over `npm` / `npx`.
 - Individual skill folders do not have their own README files.
+- Skills stay isolated: no mentions of or dependencies on other skills inside a skill folder.
 
 ## License
 

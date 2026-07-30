@@ -52,7 +52,7 @@ Keep ORM + Kit (+ Seed) on the **same `rc` channel**. Historical dist-tags like 
 
 3. Prefer https://orm.drizzle.team/docs/upgrade-v1 and dialect pages under `/docs/`. If docs and the installed RC disagree, report the mismatch.
 4. Re-check Gel / DuckDB availability in the installed package exports before recommending those drivers.
-5. For Effect work, also follow the `effect` skill’s v4 beta source map.
+5. For Effect work, confirm `effect@beta` and matching `@effect/sql-*` peers against current Effect docs.
 
 ## Official Pages
 

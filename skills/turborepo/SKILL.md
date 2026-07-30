@@ -37,7 +37,7 @@ Use this skill when work touches Turborepo task orchestration, caching, monorepo
 - Prefer `--cache=local:…,remote:…` over deprecated `--no-cache` / `--remote-only`.
 - Install dependencies **where used** (not root-hoisted) for better cache/prune fidelity.
 - Prefer transit nodes (`topo` / `transit`) for parallel typecheck over TypeScript Project References with Turbo.
-- Companion lint/format tools (Oxlint/Oxfmt) often fit as root tasks `//#lint` / `//#format`.
+- Lint/format tools (for example Oxlint and Oxfmt) often fit as root tasks `//#lint` / `//#format`.
 
 ## Verification
 

@@ -6,9 +6,9 @@ This repo stores harness-neutral agent skills under `skills/<skill-name>/`.
 
 Only create or modify a skill when the user explicitly asks for that skill or approves the change.
 
-Current skills (36):
+Current skills (37):
 
-`base-ui`, `brainstorm`, `bullmq`, `compound-ui`, `drizzle-orm`, `effect`, `elysia`, `handoff`, `intlayer`, `legend-state`, `loop`, `motion`, `oxfmt`, `oxlint`, `playwright`, `react`, `research`, `ship-product`, `simplify-layout`, `subagents`, `tailwind`, `tanstack-form`, `tanstack-hotkeys`, `tanstack-query`, `tanstack-router`, `tanstack-start`, `tanstack-store`, `tanstack-table`, `testcontainers`, `turborepo`, `ultraplan`, `unslop-code`, `unslop-copywriting`, `unslop-docs`, `unsmell`, `zod`
+`base-ui`, `brainstorm`, `bullmq`, `compound-ui`, `drizzle-orm`, `effect`, `elysia`, `handoff`, `intlayer`, `legend-state`, `loop`, `motion`, `oxfmt`, `oxlint`, `plain-language`, `playwright`, `react`, `research`, `ship-product`, `simplify-layout`, `subagents`, `tailwind`, `tanstack-form`, `tanstack-hotkeys`, `tanstack-query`, `tanstack-router`, `tanstack-start`, `tanstack-store`, `tanstack-table`, `testcontainers`, `turborepo`, `ultraplan`, `unslop-code`, `unslop-copywriting`, `unslop-docs`, `unsmell`, `zod`
 
 See `README.md` for short purpose blurbs and install instructions.
 
@@ -34,6 +34,7 @@ See `README.md` for short purpose blurbs and install instructions.
 - Keep product-specific UI metadata in `agents/openai.yaml` when useful.
 - Do not add README, installation guides, changelogs, or other auxiliary docs inside individual skill folders.
 - Prefer `bun` / `bunx` over `npm` / `npx` (and over `yarn` / `pnpm`) in skill command examples. Keep narrative references to the npm registry or dist-tags when those describe package metadata, not CLI usage.
+- Keep skills isolated: do not mention, link to, or depend on other skills from inside a skill folder. Tools and libraries may be named; other skills may not.
 
 ## Harness Neutrality
 

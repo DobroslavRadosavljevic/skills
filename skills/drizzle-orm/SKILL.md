@@ -39,7 +39,6 @@ Do **not** treat npm `latest` (`0.45.x`) as current for new work. Pin the `rc` c
 - Validators live **in-tree**: `drizzle-orm/zod`, `…/valibot`, `…/typebox`, `…/arktype`, `…/effect-schema`. Avoid standalone `drizzle-zod@0.x` with RC.
 - Effect on RC: use **`drizzle-orm/effect-*` + Effect v4 beta** (`effect@beta`, matching `@effect/sql-*`). Do **not** pair RC with `@effect/sql-drizzle` (Effect v3 / drizzle `<0.50` only).
 - Prefer `$inferSelect` / `$inferInsert` (aliases: `InferSelectModel` / `InferInsertModel`).
-- Companion Effect architecture details: use the `effect` skill alongside this one.
 
 ## Verification
 

@@ -22,7 +22,7 @@ app, SaaS, or TanStack Start project.
 
 - **Need-based installs** — thin backbone first; add packages only when the product map requires them. See [references/stack.md](references/stack.md).
 - **Env gate** — implement features, UI, and integrations in code first. Do **not** run live provider calls, browser E2E against paid/AI/email flows, or claim the app works until a user-provided `.env` exists and validates. Details: [references/env-gate.md](references/env-gate.md).
-- **Self-contained** — this skill embeds its own stack, naming, and workflow rules. Do not depend on other agent skills.
+- **Self-contained** — this skill embeds its own stack, naming, and workflow rules. Do not reach outside this folder for other guidance.
 - **No competitor source** — do not copy ShipFast, Supastarter, or unrelated product repos.
 - **Prefer `bun` / `bunx`** in all command examples.
 

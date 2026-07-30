@@ -315,8 +315,6 @@ Lint ≠ format. Recommended scripts:
 
 Order tip: format first (or on save), then lint — reduces noise from style-looking issues that are really formatting.
 
-See the `oxfmt` skill for formatter depth.
-
 ---
 
 ## 8. Coming from ESLint

@@ -34,7 +34,7 @@ Use this skill when work touches Playwright Test, browser automation, E2E tests,
 - Local debug path: UI Mode → Trace Viewer for CI failures → `--debug` / Inspector for step-through.
 - CI defaults: `forbidOnly`, retries, `trace: 'on-first-retry'`, `screenshot: 'only-on-failure'`, install with `--with-deps` or a version-matched Docker image, scale with shards not only workers.
 - Treat experimental CT (React/Vue) as optional and separate from E2E. Svelte CT package was removed.
-- For coding agents writing tests in-repo, prefer Playwright CLI + skills when available; use Playwright MCP for live exploratory browser loops. Do not confuse harness browser tools with `@playwright/mcp`.
+- For coding agents writing tests in-repo, prefer Playwright CLI when available; use Playwright MCP for live exploratory browser loops. Do not confuse harness browser tools with `@playwright/mcp`.
 
 ## Verification
 

@@ -327,8 +327,6 @@ Use `--disable-nested-config` when a single root config should apply everywhere 
 
 Remove `eslint-plugin-prettier`. Keep `eslint-config-prettier` only while ESLint remains.
 
-See the `oxlint` skill for linter depth.
-
 ---
 
 ## 10. Migrating from Prettier (full path)
@@ -349,7 +347,7 @@ Then:
 7. Uninstall `prettier` and plugins when clean.
 8. Update CI from `prettier --check` → `oxfmt --check`.
 
-Official migrate skill: `bunx skills add https://github.com/oxc-project/oxc --skill migrate-oxfmt`.
+Official migrate path: `bunx oxfmt --migrate=prettier` (see https://oxc.rs/docs/guide/usage/formatter/migrate-from-prettier.html).
 
 Details: [prettier-migration-ci.md](prettier-migration-ci.md).
 
@@ -382,4 +380,4 @@ When asked to “add Oxfmt” or “format the repo”:
 5. Run `oxfmt`, then `oxfmt --check`.
 6. Wire scripts, lint-staged, CI `--check`, editor default formatter.
 7. Do not leave Prettier and Oxfmt both formatting the same files.
-8. For lint rules / correctness, use the `oxlint` skill — not Oxfmt.
+8. For lint rules / correctness, use a dedicated linter (for example Oxlint or ESLint) — not Oxfmt.

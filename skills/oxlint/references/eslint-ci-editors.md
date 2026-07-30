@@ -35,7 +35,6 @@ Paths:
 
 1. **Replace** — `@oxlint/migrate` → edit `.oxlintrc.json` → drop ESLint when coverage is enough.
 2. **Incremental** — `oxlint && eslint` + `eslint-plugin-oxlint`.
-3. **Agent skill** (official) — `bunx skills add https://github.com/oxc-project/oxc --skill migrate-oxlint`.
 
 ```sh
 bunx @oxlint/migrate

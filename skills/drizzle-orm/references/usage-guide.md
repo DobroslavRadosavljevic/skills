@@ -148,7 +148,7 @@ Add `defineRelations`; pass `{ relations }`; use `db.query` for nested reads.
 
 ### Phase E — Effect (optional)
 
-Move to `drizzle-orm/effect-postgres` (or dialect) with `effect@beta` + `@effect/sql-*`. See [effect-integration.md](effect-integration.md) and the `effect` skill.
+Move to `drizzle-orm/effect-postgres` (or dialect) with `effect@beta` + `@effect/sql-*`. See [effect-integration.md](effect-integration.md).
 
 ---
 
@@ -219,5 +219,5 @@ Then rewrite RQBv1 → v2, remove `drizzle({ casing })`, move validators in-tree
 2. Match dialect + driver entrypoint to the runtime (Node/Bun/edge).
 3. Prefer generate+migrate for anything beyond a throwaway DB.
 4. Never invent RQBv1 APIs.
-5. For Effect apps, use native `effect-*` drivers + the `effect` skill — not `@effect/sql-drizzle` on RC.
+5. For Effect apps, use native `effect-*` drivers — not `@effect/sql-drizzle` on RC.
 6. Do not seed or `push --force` against production without explicit user intent.

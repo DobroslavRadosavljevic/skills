@@ -35,7 +35,7 @@ Use this skill when work touches Oxlint or Oxc linting: install/config, day-to-d
 - Keep `oxlint` and `eslint-plugin-oxlint` on the same minor. Put oxlint flat configs **last** in ESLint so they disable overlapping rules.
 - JS plugins (`jsPlugins`) are **alpha** and outside normal semver — avoid unless required.
 - Vue/Svelte/Astro: Oxlint covers **script blocks only**, not templates.
-- Companion formatter is **Oxfmt** (separate skill). Do not treat Oxlint as a formatter.
+- Do not treat Oxlint as a formatter. Formatting belongs in a separate formatter tool (for example Oxfmt or Prettier).
 
 ## Verification
 

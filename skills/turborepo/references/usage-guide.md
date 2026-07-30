@@ -203,7 +203,7 @@ Identify shared script names (`build`, `lint`, `test`, `dev`). Add matching `tas
 
 `transit` / `topo` lets typecheck run in parallel while still respecting package edges — prefer over `dependsOn: ["^check-types"]` when that serializes too hard.
 
-### Root Oxlint / Oxfmt (see those skills)
+### Root Oxlint / Oxfmt
 
 ```json
 {
@@ -296,4 +296,4 @@ When asked to “add Turborepo” or “fix the monorepo pipeline”:
 4. Validate with `--dry=json` / `--graph`, then a real `build`.
 5. Wire root scripts + CI remote cache + optional `--affected`.
 6. Do not recurse turbo inside packages; do not invent Project References “because monorepo”.
-7. For lint/format details, use `oxlint` / `oxfmt` skills; for app frameworks, keep their skills in play.
+7. For lint/format/framework details, follow the project’s existing tools and their official docs.

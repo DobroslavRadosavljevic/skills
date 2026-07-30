@@ -1,0 +1,4 @@
+interface:
+  display_name: "Plain Language"
+  short_description: "Clear explanations and readable names"
+  default_prompt: "Use $plain-language for every explanation and name in this work. Prefer human-readable words; use deep technical terms only when necessary, and define them briefly."

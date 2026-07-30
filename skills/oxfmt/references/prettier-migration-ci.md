@@ -8,7 +8,7 @@ bunx oxfmt --migrate=prettier
 bunx oxfmt
 ```
 
-Official agent skill: `bunx skills add https://github.com/oxc-project/oxc --skill migrate-oxfmt`.
+Official migrate docs: https://oxc.rs/docs/guide/usage/formatter/migrate-from-prettier.html
 
 | Prettier | Oxfmt |
 | --- | --- |

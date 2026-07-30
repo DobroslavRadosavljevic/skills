@@ -59,7 +59,7 @@ Workspace protocol:
 | **Playwright** | Shared helpers via workspace; e2e often depends on `build`; cache deliberately |
 | **Storybook** | Persistent, uncached |
 | **ESLint** | Shared `@repo/eslint-config`; per-pkg or root |
-| **Oxlint / Oxfmt** | Root `//#lint` / `//#format` or per-package; see those skills. Type-aware oxlint may need prior builds |
+| **Oxlint / Oxfmt** | Root `//#lint` / `//#format` or per-package. Type-aware oxlint may need prior builds |
 
 ```sh
 bun add -D oxlint oxfmt

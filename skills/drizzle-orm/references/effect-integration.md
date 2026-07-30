@@ -2,7 +2,7 @@
 
 Two different stacks exist. **Only the native RC drivers belong with `drizzle-orm@rc`.**
 
-Also use the `effect` skill for Effect v4 architecture (services, layers, Schema v4).
+For Effect services, layers, and Schema v4 patterns beyond the Drizzle drivers, use current Effect v4 docs for the installed `effect@beta` version.
 
 ## Recommended: native `drizzle-orm/effect-*` (Effect v4)
 

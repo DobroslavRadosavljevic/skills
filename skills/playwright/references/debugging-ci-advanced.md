@@ -69,7 +69,7 @@ Use CT only when the project already adopted it or the task is explicitly compon
 
 | Tool | Best for |
 | --- | --- |
-| Playwright CLI + skills (`@playwright/cli` / playwright-cli) | Coding agents writing/debugging tests in-repo (more token-efficient) |
+| Playwright CLI (`@playwright/cli` / playwright-cli) | Coding agents writing/debugging tests in-repo (more token-efficient) |
 | `@playwright/mcp` | Exploratory / long-running agent loops with persistent browser + a11y-tree snapshots |
 
 Do not confuse the current harness's generic browser tools with `@playwright/mcp`. Treat `browser_run_code_unsafe`-style capabilities as trusted-client only when present.

@@ -33,7 +33,7 @@ Use this skill when work touches Oxfmt or Oxc formatting: install/config, day-to
 - Built-in sorting (`sortImports`, `sortTailwindcss`, `sortPackageJson`, `jsdoc`) replaces Prettier plugins — Prettier plugins are **unsupported**.
 - `sortPackageJson` defaults **on** — expect `package.json` diffs; disable if unwanted.
 - Do not run Oxfmt alongside Prettier or Biome as formatters in the same pipeline.
-- Companion linter is **Oxlint** (separate skill). Drop `eslint-plugin-prettier`; keep `eslint-config-prettier` only if ESLint remains.
+- Oxfmt formats; it does not replace a linter. Drop `eslint-plugin-prettier`; keep `eslint-config-prettier` only if ESLint remains.
 - Astro and formats that need Prettier plugins may be blockers until Oxfmt supports them.
 
 ## Verification
