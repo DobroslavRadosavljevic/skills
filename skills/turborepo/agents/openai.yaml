@@ -1,0 +1,4 @@
+interface:
+  display_name: "Turborepo"
+  short_description: "Configure and run Turborepo monorepos"
+  default_prompt: "Use $turborepo to build, review, debug, configure, or plan this Turborepo monorepo work with current documentation and the full usage guide."

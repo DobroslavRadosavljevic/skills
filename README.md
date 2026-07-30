@@ -12,6 +12,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `brainstorm` | Explore ideas, plans, research, and codebase questions in a read-only session. |
 | `bullmq` | Build, review, debug, operate, or migrate BullMQ Redis job queues. |
 | `compound-ui` | Build or refactor React UI into shadcn-style compound components. |
+| `drizzle-orm` | Drizzle ORM 1.0 RC (not 0.x): schema, RQBv2, kit, seed, validators, and Effect drivers. |
 | `effect` | Build, review, debug, migrate, or plan Effect v4 TypeScript code. |
 | `elysia` | Build, review, debug, test, and deploy Elysia applications with current docs. |
 | `handoff` | Produce or consume agent-to-agent handoff context so another session can resume work. |
@@ -36,6 +37,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `tanstack-store` | Build, review, debug, migrate, or plan TanStack Store state management. |
 | `tanstack-table` | Build, review, debug, migrate, or plan TanStack Table React tables. |
 | `testcontainers` | Build, review, debug, configure, or plan Testcontainers integration tests with real Docker dependencies. |
+| `turborepo` | Full Turborepo usage guide plus tasks, caching, filters, prune/Docker CI, and monorepo integrations. |
 | `ultraplan` | Ask detailed planning questions, recommend answers, and produce a precise implementation plan before work starts. |
 | `unslop-code` | Strip AI-looking code fingerprints and rework implementation to match problem scale. |
 | `unslop-copywriting` | Rewrite public UI copy into plain language and remove robotic or leaked-internal text. |

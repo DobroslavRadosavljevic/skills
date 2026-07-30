@@ -1,0 +1,4 @@
+interface:
+  display_name: "Drizzle ORM"
+  short_description: "Drizzle 1.0 RC, kit, seed, Effect"
+  default_prompt: "Use $drizzle-orm for this Drizzle 1.0 RC work (orm, kit, seed, validators, or Effect drivers) with current docs — not the old 0.x latest line."
