@@ -14,12 +14,13 @@ Use this skill when work touches Effect v4 beta usage, service/layer architectur
    - Imports: root `effect`, direct modules like `effect/Effect`, `effect/Schema`, `effect/unstable/*`, platform packages, or old v3 packages.
    - Runtime boundary: CLI, HTTP handler, worker, server, browser, test, library, or framework-managed entrypoint.
    - Dependency shape: services, layers, config providers, platform layers, managed runtimes, and scope ownership.
-2. Refresh current docs whenever the task asks for latest behavior or the local beta version is different. Start from [source-map.md](references/source-map.md).
-3. For install/version, core Effect usage, generator style, typed errors, async interop, config, and runtime boundaries, use [setup-core.md](references/setup-core.md).
-4. For services, `Context.Service`, references, layers, memoization, scopes, and `ManagedRuntime`, use [services-layers-runtime.md](references/services-layers-runtime.md).
-5. For Schema v4 shapes, validation, classes, tagged errors, transformations, codecs, serialization, and JSON Schema generation, use [schema-v4.md](references/schema-v4.md).
-6. For v3 to v4 migration, unstable modules, HTTP/platform packages, and `@effect/vitest`, use [migration-platform-testing.md](references/migration-platform-testing.md).
-7. Implement in the existing project style:
+2. Clone `Effect-TS/effect-smol` into `.temp/effect-smol` (if missing) and always browse that checkout when referencing Effect v4 code — APIs, migration guides, package READMEs, and tests. Do not rely on memory or stale docs alone. Details: [source-map.md](references/source-map.md).
+3. Refresh current docs whenever the task asks for latest behavior or the local beta version is different. Start from [source-map.md](references/source-map.md).
+4. For install/version, core Effect usage, generator style, typed errors, async interop, config, and runtime boundaries, use [setup-core.md](references/setup-core.md).
+5. For services, `Context.Service`, references, layers, memoization, scopes, and `ManagedRuntime`, use [services-layers-runtime.md](references/services-layers-runtime.md).
+6. For Schema v4 shapes, validation, classes, tagged errors, transformations, codecs, serialization, and JSON Schema generation, use [schema-v4.md](references/schema-v4.md).
+7. For v3 to v4 migration, unstable modules, HTTP/platform packages, and `@effect/vitest`, use [migration-platform-testing.md](references/migration-platform-testing.md).
+8. Implement in the existing project style:
    - Match the installed beta version and local import style.
    - Prefer explicit service and layer composition over hidden globals.
    - Keep framework/process edges thin; push business logic into Effects, services, and layers.

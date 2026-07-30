@@ -21,17 +21,25 @@ Treat `effect@beta` as separate from npm `latest`: as of this snapshot, stable n
 
 ## Refresh Procedure
 
-1. Resolve current docs with documentation tooling before answering latest-version questions.
-2. Check package registry metadata:
+1. Ensure a local `effect-smol` checkout exists under `.temp/` (create `.temp` if needed). Clone once; reuse on later runs:
+
+   ```sh
+   mkdir -p .temp
+   test -d .temp/effect-smol/.git || git clone --depth 1 https://github.com/Effect-TS/effect-smol.git .temp/effect-smol
+   ```
+
+   When referencing Effect v4 code, always browse `.temp/effect-smol` (sources, `MIGRATION.md`, `migration/*`, package READMEs, and tests). Pull or re-clone if the checkout is stale relative to the installed beta.
+2. Resolve current docs with documentation tooling before answering latest-version questions.
+3. Check package registry metadata:
 
    ```sh
    bun info effect
    bun info @effect/vitest
    ```
 
-3. Check the local project's installed versions before applying v4 guidance.
-4. For v4 beta specifics, prefer the official `Effect-TS/effect-smol` repository and installed package declarations over older v3 docs.
-5. If docs, repository source, and local types disagree, prefer local installed declarations for implementation and report the drift.
+4. Check the local project's installed versions before applying v4 guidance.
+5. For v4 beta specifics, prefer the local `.temp/effect-smol` checkout and installed package declarations over older v3 docs.
+6. If docs, repository source, and local types disagree, prefer local installed declarations for implementation and report the drift.
 
 ## Official Source Files Used
 
