@@ -19,6 +19,8 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `legend-state` | Build, review, migrate, and debug Legend-State v3 observable, React, persistence, and sync systems. |
 | `loop` | Implement, review, fix, and repeat until no actionable review issues remain. |
 | `motion` | Design, audit, specify, or implement product UI motion with accessibility and performance in mind. |
+| `oxfmt` | Full Oxfmt usage guide plus setup, Prettier migration, and CI formatting. |
+| `oxlint` | Full Oxlint usage guide plus setup, rules/plugins, type-aware lint, and ESLint migration. |
 | `playwright` | Build, review, debug, configure, or plan Playwright E2E tests and browser automation. |
 | `react` | Build, review, debug, migrate, or plan React apps with current React docs. |
 | `research` | Investigate external sources and codebase evidence before recommending next steps. |

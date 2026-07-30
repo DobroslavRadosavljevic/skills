@@ -1,0 +1,4 @@
+interface:
+  display_name: "Oxlint"
+  short_description: "Configure and run Oxlint"
+  default_prompt: "Use $oxlint to build, review, debug, configure, or migrate this Oxlint linting work with current Oxc documentation."

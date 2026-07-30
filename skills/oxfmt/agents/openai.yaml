@@ -1,0 +1,4 @@
+interface:
+  display_name: "Oxfmt"
+  short_description: "Configure and run Oxfmt"
+  default_prompt: "Use $oxfmt to build, review, debug, configure, or migrate this Oxfmt formatting work with current Oxc documentation."
