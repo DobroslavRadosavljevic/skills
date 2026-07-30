@@ -1,0 +1,4 @@
+interface:
+  display_name: "Permix"
+  short_description: "Type-safe permissions for JS/TS"
+  default_prompt: "Use $permix for this permissions work with current Permix documentation and the full usage guide."

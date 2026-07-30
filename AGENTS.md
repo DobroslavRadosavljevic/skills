@@ -6,9 +6,9 @@ This repo stores harness-neutral agent skills under `skills/<skill-name>/`.
 
 Only create or modify a skill when the user explicitly asks for that skill or approves the change.
 
-Current skills (37):
+Current skills (39):
 
-`base-ui`, `brainstorm`, `bullmq`, `compound-ui`, `drizzle-orm`, `effect`, `elysia`, `handoff`, `intlayer`, `legend-state`, `loop`, `motion`, `oxfmt`, `oxlint`, `plain-language`, `playwright`, `react`, `research`, `ship-product`, `simplify-layout`, `subagents`, `tailwind`, `tanstack-form`, `tanstack-hotkeys`, `tanstack-query`, `tanstack-router`, `tanstack-start`, `tanstack-store`, `tanstack-table`, `testcontainers`, `turborepo`, `ultraplan`, `unslop-code`, `unslop-copywriting`, `unslop-docs`, `unsmell`, `zod`
+`base-ui`, `brainstorm`, `bullmq`, `bun`, `compound-ui`, `drizzle-orm`, `effect`, `elysia`, `handoff`, `intlayer`, `legend-state`, `loop`, `motion`, `oxfmt`, `oxlint`, `permix`, `plain-language`, `playwright`, `react`, `research`, `ship-product`, `simplify-layout`, `subagents`, `tailwind`, `tanstack-form`, `tanstack-hotkeys`, `tanstack-query`, `tanstack-router`, `tanstack-start`, `tanstack-store`, `tanstack-table`, `testcontainers`, `turborepo`, `ultraplan`, `unslop-code`, `unslop-copywriting`, `unslop-docs`, `unsmell`, `zod`
 
 See `README.md` for short purpose blurbs and install instructions.
 

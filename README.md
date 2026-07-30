@@ -11,6 +11,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `base-ui` | Build, review, migrate, or debug React UIs with Base UI primitives. |
 | `brainstorm` | Explore ideas, plans, research, and codebase questions in a read-only session. |
 | `bullmq` | Build, review, debug, operate, or migrate BullMQ Redis job queues. |
+| `bun` | Bun runtime, package manager, test runner, bundler, bunfig, and Node compat. |
 | `compound-ui` | Build or refactor React UI into shadcn-style compound components. |
 | `drizzle-orm` | Drizzle ORM 1.0 RC (not 0.x): schema, RQBv2, kit, seed, validators, and Effect drivers. |
 | `effect` | Build, review, debug, migrate, or plan Effect v4 TypeScript code. |
@@ -22,6 +23,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `motion` | Design, audit, specify, or implement product UI motion with accessibility and performance in mind. |
 | `oxfmt` | Full Oxfmt usage guide plus setup, Prettier migration, and CI formatting. |
 | `oxlint` | Full Oxlint usage guide plus setup, rules/plugins, type-aware lint, and ESLint migration. |
+| `permix` | Type-safe Permix permissions: setup/check, SSR, React/Next, and server middleware. |
 | `plain-language` | Always-on clear explanations and readable naming; technical depth only when needed. |
 | `playwright` | Build, review, debug, configure, or plan Playwright E2E tests and browser automation. |
 | `react` | Build, review, debug, migrate, or plan React apps with current React docs. |

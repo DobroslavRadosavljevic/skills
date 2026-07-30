@@ -1,0 +1,4 @@
+interface:
+  display_name: "Bun"
+  short_description: "Bun runtime, PM, test, and build"
+  default_prompt: "Use $bun for this Bun runtime, package manager, test, or bundler work with current Bun documentation and the full usage guide."
