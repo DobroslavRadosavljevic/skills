@@ -33,6 +33,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `research` | Investigate external sources and codebase evidence before recommending next steps. |
 | `ship-product` | Build a paid fullstack TanStack Start product from scratch with need-based stack and an env testing gate. |
 | `simplify-layout` | Shorten file and folder names and group related modules so paths stay scannable. |
+| `storybook` | Build, review, debug, configure, migrate, or plan Storybook 10 UI workshops. |
 | `subagents` | Split harder work into safe disjoint lanes and coordinate subagent results. |
 | `tailwind` | Build, review, debug, configure, or migrate Tailwind CSS projects. |
 | `tanstack-charts` | Build, review, debug, migrate, or plan TanStack Charts visualizations. |
