@@ -1,0 +1,4 @@
+interface:
+  display_name: "Better Auth"
+  short_description: "TypeScript auth with better-auth and official plugins"
+  default_prompt: "Use $better-auth for this Better Auth setup, plugin, adapter, session, or security work with current docs and the official ecosystem packages."

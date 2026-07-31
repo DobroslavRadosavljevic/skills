@@ -9,6 +9,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | Skill | Purpose |
 | --- | --- |
 | `base-ui` | Build, review, migrate, or debug React UIs with Base UI primitives. |
+| `better-auth` | TypeScript auth with better-auth, official plugins, adapters, and security. |
 | `brainstorm` | Explore ideas, plans, research, and codebase questions in a read-only session. |
 | `bullmq` | Build, review, debug, operate, or migrate BullMQ Redis job queues. |
 | `bun` | Bun runtime, package manager, test runner, bundler, bunfig, and Node compat. |
