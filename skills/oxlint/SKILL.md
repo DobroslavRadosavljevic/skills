@@ -1,6 +1,6 @@
 ---
 name: oxlint
-description: "Build, review, debug, configure, migrate, teach, or plan Oxlint JavaScript/TypeScript linting with current Oxc docs and a full usage guide. Use for oxlint how-to, .oxlintrc.json, oxlint.config.ts, categories correctness suspicious pedantic style, plugins react import typescript unicorn vitest jest jsx-a11y nextjs, type-aware linting, oxlint-tsgolint, eslint-plugin-oxlint, @oxlint/migrate, ignorePatterns, oxlint-disable comments, --fix, CI formats, progressive adoption, and ESLint-to-Oxlint migration."
+description: "Build, review, debug, configure, migrate, teach, or plan Oxlint JavaScript/TypeScript linting with current Oxc docs and a full usage guide. Use for oxlint how-to, oxlint.config.ts, defineConfig, .oxlintrc.json, categories correctness suspicious pedantic style, plugins react import typescript unicorn vitest jest jsx-a11y nextjs, type-aware linting, oxlint-tsgolint, eslint-plugin-oxlint, @oxlint/migrate, ignorePatterns, oxlint-disable comments, --fix, CI formats, progressive adoption, and ESLint-to-Oxlint migration."
 ---
 
 # Oxlint
@@ -11,7 +11,7 @@ Use this skill when work touches Oxlint or Oxc linting: install/config, day-to-d
 
 1. Inspect the local Oxlint surface before changing code:
    - Package versions for `oxlint`, optional `oxlint-tsgolint`, `eslint-plugin-oxlint`, `@oxlint/migrate`.
-   - Config: `.oxlintrc.json(c)` or `oxlint.config.ts` / `.mts` (one type per directory).
+   - Config: prefer `oxlint.config.ts` / `.mts` with `defineConfig`; also accept `.oxlintrc.json(c)` (one type per directory).
    - Remaining ESLint setup, ignore files, scripts (`lint` / `lint:fix`), and editor Oxc settings.
    - Whether type-aware linting or JS plugins are in play.
 2. For setup, how-to, progressive adoption, diagnostics loops, baselines, or troubleshooting, follow the full guide first: [usage-guide.md](references/usage-guide.md).
@@ -27,8 +27,8 @@ Use this skill when work touches Oxlint or Oxc linting: install/config, day-to-d
 
 - Default Oxlint enables only the **`correctness`** category. Turn on other categories and plugins deliberately.
 - Setting `plugins: [...]` **replaces** the default plugin set. Re-list `eslint`, `typescript`, `unicorn`, and `oxc` when you still want them.
-- Prefer `.oxlintrc.json` with `$schema` for most projects; use `oxlint.config.ts` + `defineConfig` when you need programmatic shares or non-relative extends.
-- Nested configs do **not** auto-merge with parents — use `extends`. `-c/--config` disables nested lookup.
+- Prefer **`oxlint.config.ts`** + `defineConfig` for new configs (typed, shareable via imports). Keep or use `.oxlintrc.json` only when the project already has it, or when using a standalone binary without a Node runtime.
+- Nested configs do **not** auto-merge with parents — use `extends` (TS: imported objects; JSON: relative paths). `-c/--config` disables nested lookup.
 - Prefer `ignorePatterns` in config over scattered ignore files for editor/CI consistency.
 - Prefer `oxlint-disable*` comments long-term; `eslint-disable*` still works while migrating (`respectEslintDisableDirectives` default true).
 - Type-aware linting needs `oxlint-tsgolint` + `--type-aware` / `options.typeAware`. Those options are **root-only**. Do not pass `--tsconfig` together with type-aware.

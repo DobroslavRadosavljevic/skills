@@ -33,24 +33,24 @@ Oxfmt is still **0.x (beta)** — pin via the lockfile.
 }
 ```
 
-### Step 3 — Init config
+### Step 3 — Config file
 
-```sh
-bunx oxfmt --init
+Prefer a TypeScript config with `defineConfig` (do not rely on CLI flags — there are none for semi/quotes/width):
+
+```ts
+// oxfmt.config.ts
+import { defineConfig } from "oxfmt";
+
+export default defineConfig({
+  printWidth: 80,
+  singleQuote: true,
+  semi: true,
+  trailingComma: "all",
+  ignorePatterns: ["dist/**", "coverage/**", "build/**"],
+});
 ```
 
-Creates `.oxfmtrc.json`. Set style explicitly (do not rely on CLI flags — there are none for semi/quotes/width):
-
-```json
-{
-  "$schema": "./node_modules/oxfmt/configuration_schema.json",
-  "printWidth": 80,
-  "singleQuote": true,
-  "semi": true,
-  "trailingComma": "all",
-  "ignorePatterns": ["dist/**", "coverage/**", "build/**"]
-}
-```
+`--init` still scaffolds `.oxfmtrc.json` — for new projects write `oxfmt.config.ts` instead (one config type per directory).
 
 **Footgun:** Oxfmt default `printWidth` is **100**. Prettier’s default is **80**. Pick one deliberately.
 
@@ -95,10 +95,10 @@ Never use write mode as the only CI gate without review — `--check` is the mer
 | Check only (CI) | `bunx oxfmt --check` |
 | List dirty files | `bunx oxfmt --list-different` |
 | Stdin format | `echo 'const  x=1' \| bunx oxfmt --stdin-filepath file.ts` |
-| Init config | `bunx oxfmt --init` |
+| Init config | Prefer write `oxfmt.config.ts`; `bunx oxfmt --init` still writes JSON |
 | Migrate Prettier | `bunx oxfmt --migrate=prettier` |
 | Migrate Biome | `bunx oxfmt --migrate=biome` |
-| Explicit config | `bunx oxfmt -c .oxfmtrc.json` |
+| Explicit config | `bunx oxfmt -c oxfmt.config.ts` |
 
 ### Mental model
 
@@ -112,55 +112,46 @@ Always quote globs in zsh/bash so the shell does not expand them prematurely.
 
 ## 3. Choosing style options
 
-Start from team Prettier settings if migrating; otherwise pick a small explicit set:
-
-```json
-{
-  "$schema": "./node_modules/oxfmt/configuration_schema.json",
-  "printWidth": 80,
-  "tabWidth": 2,
-  "useTabs": false,
-  "semi": true,
-  "singleQuote": true,
-  "jsxSingleQuote": false,
-  "trailingComma": "all",
-  "arrowParens": "always",
-  "endOfLine": "lf",
-  "insertFinalNewline": true
-}
-```
-
-### Overrides per glob
-
-```json
-{
-  "printWidth": 80,
-  "overrides": [
-    {
-      "files": ["*.md", "*.mdx"],
-      "options": { "printWidth": 100, "proseWrap": "always" }
-    },
-    {
-      "files": ["*.json"],
-      "options": { "printWidth": 120 }
-    }
-  ]
-}
-```
-
-### TypeScript config (programmatic)
+Start from team Prettier settings if migrating; otherwise pick a small explicit set in `oxfmt.config.ts`:
 
 ```ts
 import { defineConfig } from "oxfmt";
 
 export default defineConfig({
   printWidth: 80,
+  tabWidth: 2,
+  useTabs: false,
+  semi: true,
   singleQuote: true,
-  ignorePatterns: ["dist/**", "coverage/**"],
+  jsxSingleQuote: false,
+  trailingComma: "all",
+  arrowParens: "always",
+  endOfLine: "lf",
+  insertFinalNewline: true,
 });
 ```
 
-One config **type** per directory — do not mix `.oxfmtrc.json` and `oxfmt.config.ts` in the same folder.
+### Overrides per glob
+
+```ts
+import { defineConfig } from "oxfmt";
+
+export default defineConfig({
+  printWidth: 80,
+  overrides: [
+    {
+      files: ["*.md", "*.mdx"],
+      options: { printWidth: 100, proseWrap: "always" },
+    },
+    {
+      files: ["*.json"],
+      options: { printWidth: 120 },
+    },
+  ],
+});
+```
+
+One config **type** per directory — do not mix `.oxfmtrc.json` and `oxfmt.config.ts` in the same folder. JSON remains valid for existing repos / `--init` output.
 
 ---
 
@@ -168,13 +159,15 @@ One config **type** per directory — do not mix `.oxfmtrc.json` and `oxfmt.conf
 
 These replace common Prettier plugins. Enable only what you want:
 
-```json
-{
-  "sortImports": true,
-  "sortTailwindcss": true,
-  "sortPackageJson": true,
-  "jsdoc": false
-}
+```ts
+import { defineConfig } from "oxfmt";
+
+export default defineConfig({
+  sortImports: true,
+  sortTailwindcss: true,
+  sortPackageJson: true,
+  jsdoc: false,
+});
 ```
 
 | Option | Default | Notes |
@@ -193,15 +186,17 @@ Adoption tip: enable sorting in a **dedicated PR** after the base format migrati
 
 ### Config ignores (preferred)
 
-```json
-{
-  "ignorePatterns": [
+```ts
+import { defineConfig } from "oxfmt";
+
+export default defineConfig({
+  ignorePatterns: [
     "dist/**",
     "coverage/**",
     "**/*.min.js",
-    "fixtures/raw/**"
-  ]
-}
+    "fixtures/raw/**",
+  ],
+});
 ```
 
 ### Still supported
@@ -278,29 +273,32 @@ bunx oxfmt --stdin-filepath path/to/file.tsx < file.tsx
 **Option A — nested configs**
 
 ```
-apps/web/.oxfmtrc.json
-packages/ui/.oxfmtrc.json
+oxfmt.config.ts                 # repo default
+apps/web/oxfmt.config.ts
+packages/ui/oxfmt.config.ts
 ```
 
 Nearest config wins.
 
 **Option B — one root + overrides**
 
-```json
-{
-  "printWidth": 80,
-  "overrides": [
+```ts
+import { defineConfig } from "oxfmt";
+
+export default defineConfig({
+  printWidth: 80,
+  overrides: [
     {
-      "files": ["apps/docs/**"],
-      "options": { "printWidth": 100 }
-    }
-  ]
-}
+      files: ["apps/docs/**"],
+      options: { printWidth: 100 },
+    },
+  ],
+});
 ```
 
 **Option C — Vite+**
 
-Put `fmt: { ... }` in `vite.config.ts`; avoid a second `.oxfmtrc.json` unless you know both are wired correctly.
+Put `fmt: { ... }` in `vite.config.ts`; avoid a second `oxfmt.config.ts` / `.oxfmtrc.json` unless you know both are wired correctly.
 
 Use `--disable-nested-config` when a single root config should apply everywhere for speed/consistency.
 
@@ -338,7 +336,7 @@ bunx oxfmt --migrate=prettier
 
 Then:
 
-1. Open `.oxfmtrc.json` — set `printWidth: 80` if you want Prettier-like wrapping.
+1. Open the migrated config (often `.oxfmtrc.json`) — prefer converting to `oxfmt.config.ts` + `defineConfig`; set `printWidth: 80` if you want Prettier-like wrapping.
 2. Decide sorting extras (`sortPackageJson` is already on).
 3. `bunx oxfmt` once; commit as “format with oxfmt”.
 4. Add blame-ignore if the repo uses `.git-blame-ignore-revs`.
@@ -374,7 +372,7 @@ Details: [prettier-migration-ci.md](prettier-migration-ci.md).
 When asked to “add Oxfmt” or “format the repo”:
 
 1. Detect Prettier / Biome / Oxfmt / Vite+ `fmt`.
-2. Install `oxfmt`; init or `--migrate`.
+2. Install `oxfmt`; write `oxfmt.config.ts` (or `--migrate`, then convert JSON → TS if desired).
 3. Lock `printWidth` and quote/semi to team intent.
 4. Call out `sortPackageJson` default before first write.
 5. Run `oxfmt`, then `oxfmt --check`.

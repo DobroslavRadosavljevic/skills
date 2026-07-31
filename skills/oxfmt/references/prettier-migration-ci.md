@@ -14,7 +14,7 @@ Official migrate docs: https://oxc.rs/docs/guide/usage/formatter/migrate-from-pr
 | --- | --- |
 | `prettier --write .` | `oxfmt` |
 | `prettier --check .` | `oxfmt --check` |
-| `.prettierrc*` | `.oxfmtrc.json(c)` / `oxfmt.config.ts` via `--migrate prettier` |
+| `.prettierrc*` | Prefer `oxfmt.config.ts`; `--migrate prettier` may write `.oxfmtrc.json(c)` — convert to TS if desired |
 | `.prettierignore` | Still works; prefer `ignorePatterns` |
 | Plugins | **Unsupported** — use built-in sorting / extras |
 | `package.json#prettier` | **Unsupported** |
@@ -85,7 +85,7 @@ Docs: https://oxc.rs/docs/guide/usage/formatter/ci.html
 
 ## Migration checklist
 
-1. Install `oxfmt`; run `--migrate prettier` (or biome).
+1. Install `oxfmt`; run `--migrate prettier` (or biome). Prefer converting the result to `oxfmt.config.ts` + `defineConfig`.
 2. Set `printWidth` intentionally (80 vs 100).
 3. Decide sorting extras (`sortImports`, Tailwind, `sortPackageJson`).
 4. Point editors at Oxc formatter; remove Prettier format-on-save.

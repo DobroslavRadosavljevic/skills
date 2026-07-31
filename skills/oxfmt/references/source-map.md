@@ -4,12 +4,13 @@ This reference captures the Oxfmt docs and package snapshot used to create the s
 
 ## Snapshot
 
-- Captured: 2026-07-30
+- Captured: 2026-07-31
 - Official site: https://oxc.rs/
 - Formatter docs: https://oxc.rs/docs/guide/usage/formatter.html
 - npm `oxfmt`: **0.61.0** (dist-tag `latest`; still **0.x / beta** toward 1.0)
 - Node engines: `^20.19.0 || >=22.12.0`
 - Bin: `oxfmt`
+- Preferred config: **`oxfmt.config.ts`** + `defineConfig` (JSON `.oxfmtrc.json(c)` still supported; `--init` / `--migrate` often write JSON)
 - Context7 IDs: `/websites/oxc_rs`, `/oxc-project/oxc`, `/oxc-project/website`, `/websites/viteplus_dev_guide` (Vite+ wraps Oxfmt)
 
 Maturity trail: alpha (2025-12) → beta (2026-02, 100% Prettier JS/TS conformance tests). Plugins unsupported until later; some languages still Prettier-backed.

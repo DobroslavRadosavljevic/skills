@@ -20,6 +20,7 @@ import tseslint from "typescript-eslint";
 export default [
   ...tseslint.configs.recommended,
   ...oxlint.configs["flat/recommended"],
+  // or: ...oxlint.buildFromOxlintConfigFile("./oxlint.config.ts"),
   // or: ...oxlint.buildFromOxlintConfigFile("./.oxlintrc.json"),
 ];
 ```
@@ -33,7 +34,7 @@ Keep `oxlint` and `eslint-plugin-oxlint` on the **same minor**.
 
 Paths:
 
-1. **Replace** — `@oxlint/migrate` → edit `.oxlintrc.json` → drop ESLint when coverage is enough.
+1. **Replace** — `@oxlint/migrate` → edit `oxlint.config.ts` (or `.oxlintrc.json`) → drop ESLint when coverage is enough.
 2. **Incremental** — `oxlint && eslint` + `eslint-plugin-oxlint`.
 
 ```sh

@@ -1,6 +1,6 @@
 ---
 name: oxfmt
-description: "Build, review, debug, configure, migrate, teach, or plan Oxfmt JavaScript/TypeScript formatting with current Oxc docs and a full usage guide. Use for oxfmt how-to, .oxfmtrc.json, oxfmt.config.ts, Prettier migration, --check/--write, printWidth, sortImports, sortTailwindcss, sortPackageJson, ignorePatterns, oxfmt-ignore, language support, Biome migration, Vite+ fmt, editors, CI format gates, and day-to-day format workflows."
+description: "Build, review, debug, configure, migrate, teach, or plan Oxfmt JavaScript/TypeScript formatting with current Oxc docs and a full usage guide. Use for oxfmt how-to, oxfmt.config.ts, defineConfig, .oxfmtrc.json, Prettier migration, --check/--write, printWidth, sortImports, sortTailwindcss, sortPackageJson, ignorePatterns, oxfmt-ignore, language support, Biome migration, Vite+ fmt, editors, CI format gates, and day-to-day format workflows."
 ---
 
 # Oxfmt
@@ -11,7 +11,7 @@ Use this skill when work touches Oxfmt or Oxc formatting: install/config, day-to
 
 1. Inspect the local Oxfmt surface before changing code:
    - Package version for `oxfmt` (still **0.x / beta** until 1.0).
-   - Config: `.oxfmtrc.json(c)` or `oxfmt.config.ts` / `.mts` (one type per directory); Vite+ may use `fmt` in `vite.config.ts` instead.
+   - Config: prefer `oxfmt.config.ts` / `.mts` with `defineConfig`; also accept `.oxfmtrc.json(c)` (one type per directory); Vite+ may use `fmt` in `vite.config.ts` instead.
    - Remaining Prettier/Biome setup, `.prettierignore`, scripts (`fmt` / `fmt:check`), editor default formatter.
 2. For setup, how-to, style choices, sorting, monorepos, pairing with Oxlint, or troubleshooting, follow the full guide first: [usage-guide.md](references/usage-guide.md).
 3. Refresh current official docs when versions differ from the snapshot or the work touches language support, sorting, or migration. Start from [source-map.md](references/source-map.md).
@@ -28,7 +28,7 @@ Use this skill when work touches Oxfmt or Oxc formatting: install/config, day-to
 - Default mode is **write**. CI gate is `oxfmt --check` (exit 1 on drift).
 - **No Prettier-style CLI style flags** (`--no-semi`, etc.) — style lives in the config file only.
 - Default `printWidth` is **100**, not Prettier's 80. Set `printWidth: 80` when migrating to minimize diffs.
-- Prefer `.oxfmtrc.json` with `$schema`; use `oxfmt.config.ts` + `defineConfig` for programmatic config.
+- Prefer **`oxfmt.config.ts`** + `defineConfig` for new configs. Keep or use `.oxfmtrc.json` only when the project already has it. `--init` / `--migrate` may still write JSON — convert to TS when adding a new config.
 - Prefer `ignorePatterns` for new projects; `.prettierignore` still works during migration.
 - Built-in sorting (`sortImports`, `sortTailwindcss`, `sortPackageJson`, `jsdoc`) replaces Prettier plugins — Prettier plugins are **unsupported**.
 - `sortPackageJson` defaults **on** — expect `package.json` diffs; disable if unwanted.

@@ -4,7 +4,7 @@ This reference captures the Oxlint docs and package snapshot used to create the 
 
 ## Snapshot
 
-- Captured: 2026-07-30
+- Captured: 2026-07-31
 - Official site: https://oxc.rs/
 - Linter docs: https://oxc.rs/docs/guide/usage/linter.html
 - npm `oxlint`: **1.76.0**
@@ -12,6 +12,7 @@ This reference captures the Oxlint docs and package snapshot used to create the 
 - npm `oxlint-tsgolint`: **7.0.2001** (tracks TypeScript 7.x / typescript-go)
 - npm `@oxlint/migrate`: **1.76.0**
 - Node engines (oxlint): `^20.19.0 || >=22.12.0`
+- Preferred config: **`oxlint.config.ts`** + `defineConfig` (JSON `.oxlintrc.json(c)` still supported; `--init` still scaffolds JSON)
 - Context7 IDs: `/websites/oxc_rs`, `/websites/oxc_rs_guide_usage`, `/oxc-project/oxc`, `/oxc-project/website`, `/oxc-project/eslint-plugin-oxlint`, `/oxc-project/tsgolint`
 
 Treat JS plugins as alpha (outside semver). Type-aware is feature-stable but may still see rule/behavior churn outside full semver guarantees. `typeCheck` remains experimental.

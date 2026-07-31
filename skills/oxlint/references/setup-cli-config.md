@@ -25,7 +25,7 @@ One-off: `bunx oxlint`.
 ```sh
 bunx oxlint
 bunx oxlint src/
-bunx oxlint -c .oxlintrc.json
+bunx oxlint -c oxlint.config.ts
 bunx oxlint --fix
 bunx oxlint --fix-suggestions
 bunx oxlint -D correctness -D suspicious -A no-debugger
@@ -57,59 +57,70 @@ bunx oxlint -f github
 
 ## Config discovery
 
-Nearest of: `.oxlintrc.json`, `.oxlintrc.jsonc`, `oxlint.config.ts`, `oxlint.config.mts`.
+Nearest of: `oxlint.config.ts`, `oxlint.config.mts`, `.oxlintrc.json`, `.oxlintrc.jsonc`.
 
-- **One config type per directory** — JSON and TS cannot coexist.
-- `-c/--config` disables nested lookup.
-- JSON shape is ESLint-v8-like; comments allowed.
-- Schema: `./node_modules/oxlint/configuration_schema.json`.
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "categories": {
-    "correctness": "error",
-    "suspicious": "warn"
-  },
-  "plugins": ["eslint", "typescript", "unicorn", "oxc", "import", "react"],
-  "ignorePatterns": ["dist/**", "coverage/**"],
-  "env": { "browser": true },
-  "globals": { "MY_GLOBAL": "readonly" },
-  "settings": { "react": { "version": "detect" } },
-  "options": { "typeAware": false, "maxWarnings": 0 },
-  "rules": {
-    "eqeqeq": "warn",
-    "import/no-cycle": ["error", { "maxDepth": 3 }]
-  },
-  "overrides": [
-    {
-      "files": ["**/*.{test,spec}.{ts,tsx}"],
-      "plugins": ["vitest"],
-      "env": { "vitest": true },
-      "rules": { "no-console": "off" }
-    }
-  ],
-  "extends": ["./configs/base.json"]
-}
-```
+- **One config type per directory** — JSON and TS cannot coexist; nor can `.ts` and `.mts`.
+- `-c/--config` disables nested lookup. With `--config`, any `.js`/`.mjs`/`.cjs`/`.ts`/`.mts`/`.cts` path is accepted.
+- Prefer **`oxlint.config.ts`** + `defineConfig` for new projects.
+- `--init` still scaffolds `.oxlintrc.json` — replace with a TS config when starting fresh, or keep JSON if that is what the repo already uses.
+- JSON shape is ESLint-v8-like; comments allowed. Schema: `./node_modules/oxlint/configuration_schema.json`.
+- TS configs need the Node-based `oxlint` package and a runtime that can execute TypeScript (Node v22.18+ / v24+, or Bun). Standalone binary → use `.oxlintrc.json`.
 
 ```ts
 import { defineConfig } from "oxlint";
 
 export default defineConfig({
-  categories: { correctness: "error", suspicious: "warn" },
+  categories: {
+    correctness: "error",
+    suspicious: "warn",
+  },
   plugins: ["eslint", "typescript", "unicorn", "oxc", "import", "react"],
-  options: { typeAware: true },
-  rules: { "typescript/no-floating-promises": "error" },
+  ignorePatterns: ["dist/**", "coverage/**"],
+  env: { browser: true },
+  globals: { MY_GLOBAL: "readonly" },
+  settings: { react: { version: "detect" } },
+  options: { typeAware: false, maxWarnings: 0 },
+  rules: {
+    eqeqeq: "warn",
+    "import/no-cycle": ["error", { maxDepth: 3 }],
+  },
+  overrides: [
+    {
+      files: ["**/*.{test,spec}.{ts,tsx}"],
+      plugins: ["vitest"],
+      env: { vitest: true },
+      rules: { "no-console": "off" },
+    },
+  ],
 });
 ```
 
-TS configs need the Node-based `oxlint` package (not a standalone binary-only install). Prefer `defineConfig`. Shared package extends → prefer TS config (JSON `extends` is relative paths only).
+Shared package / programmatic extends (TS only — import objects, not file-path strings):
+
+```ts
+import shared from "@example-org/oxlint-config";
+import { defineConfig } from "oxlint";
+
+export default defineConfig({
+  extends: [shared],
+  rules: { "no-console": "warn" },
+});
+```
+
+JSON fallback (existing repos / standalone binary):
+
+```json
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "categories": { "correctness": "error" },
+  "extends": ["./configs/base.json"]
+}
+```
 
 ## Nested configs (monorepos)
 
 - Nearest config to the file wins; **not** auto-merged with parent.
-- Share baseline via `extends` (JSON paths or TS imported objects).
+- Share baseline via `extends` (TS imported objects or JSON relative paths).
 - Root-only options: `typeAware`, `typeCheck`, `reportUnusedDisableDirectives`, `respectEslintDisableDirectives`.
 - `plugins` in extends are a **union**. Omitting `plugins` on a child can reintroduce defaults — use `"plugins": []` when inheriting an exact list.
 

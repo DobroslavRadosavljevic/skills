@@ -83,15 +83,17 @@ bunx oxlint --type-aware
 bunx oxlint --type-aware --type-check
 ```
 
-```json
-{
-  "options": { "typeAware": true },
-  "plugins": ["eslint", "typescript", "unicorn", "oxc"],
-  "rules": {
+```ts
+import { defineConfig } from "oxlint";
+
+export default defineConfig({
+  options: { typeAware: true },
+  plugins: ["eslint", "typescript", "unicorn", "oxc"],
+  rules: {
     "typescript/no-floating-promises": "error",
-    "typescript/no-misused-promises": "error"
-  }
-}
+    "typescript/no-misused-promises": "error",
+  },
+});
 ```
 
 ### Type-aware rules of thumb

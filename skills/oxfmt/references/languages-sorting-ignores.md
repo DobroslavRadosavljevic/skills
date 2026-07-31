@@ -40,13 +40,15 @@ Compatibility matrix: https://oxc.rs/compatibility.html
 
 Docs: https://oxc.rs/docs/guide/usage/formatter/sorting.html
 
-```json
-{
-  "sortImports": true,
-  "sortTailwindcss": true,
-  "sortPackageJson": true,
-  "jsdoc": true
-}
+```ts
+import { defineConfig } from "oxfmt";
+
+export default defineConfig({
+  sortImports: true,
+  sortTailwindcss: true,
+  sortPackageJson: true,
+  jsdoc: true,
+});
 ```
 
 - These replace common Prettier plugins — do not install the Prettier plugins alongside Oxfmt.
@@ -82,4 +84,4 @@ TOML: no ignore comments.
 
 ## Nested configs
 
-Per-package `.oxfmtrc.json` / `oxfmt.config.ts`, or one root config with `overrides` globs. Use `--disable-nested-config` when a single root config is enough and nested search is wasteful.
+Prefer per-package `oxfmt.config.ts` (or `.oxfmtrc.json` if already present), or one root config with `overrides` globs. Use `--disable-nested-config` when a single root config is enough and nested search is wasteful.

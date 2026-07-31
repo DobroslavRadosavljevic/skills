@@ -33,23 +33,23 @@ bun add -D oxlint-tsgolint@latest
 }
 ```
 
-### Step 3 — Init config
+### Step 3 — Config file
 
-```sh
-bunx oxlint --init
-```
+Prefer a TypeScript config with `defineConfig`:
 
-Creates `.oxlintrc.json`. Add the schema and a deliberate baseline:
+```ts
+// oxlint.config.ts
+import { defineConfig } from "oxlint";
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "categories": {
-    "correctness": "error"
+export default defineConfig({
+  categories: {
+    correctness: "error",
   },
-  "ignorePatterns": ["dist/**", "build/**", "coverage/**", ".output/**"]
-}
+  ignorePatterns: ["dist/**", "build/**", "coverage/**", ".output/**"],
+});
 ```
+
+`--init` still scaffolds `.oxlintrc.json` — fine for existing JSON workflows; for new projects write `oxlint.config.ts` instead (one config type per directory).
 
 Defaults already enable `correctness` only — keep that until the first clean run succeeds.
 
@@ -136,61 +136,68 @@ Ship CI with `correctness` errors. Fix or suppress intentionally.
 
 **React + TypeScript app:**
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["eslint", "typescript", "unicorn", "oxc", "react", "import", "jsx-a11y"],
-  "categories": {
-    "correctness": "error",
-    "suspicious": "warn"
+```ts
+import { defineConfig } from "oxlint";
+
+export default defineConfig({
+  plugins: ["eslint", "typescript", "unicorn", "oxc", "react", "import", "jsx-a11y"],
+  categories: {
+    correctness: "error",
+    suspicious: "warn",
   },
-  "settings": {
-    "react": { "version": "detect" }
+  settings: {
+    react: { version: "detect" },
   },
-  "ignorePatterns": ["dist/**", "coverage/**"]
-}
+  ignorePatterns: ["dist/**", "coverage/**"],
+});
 ```
 
 **Next.js:** add `"nextjs"` to `plugins` and set `settings.next.rootDir` in monorepos.
 
 **Vitest tests:**
 
-```json
-{
-  "overrides": [
+```ts
+import { defineConfig } from "oxlint";
+
+export default defineConfig({
+  overrides: [
     {
-      "files": ["**/*.{test,spec}.{ts,tsx}", "**/tests/**"],
-      "plugins": ["vitest"],
-      "env": { "vitest": true },
-      "rules": {
-        "no-console": "off"
-      }
-    }
-  ]
-}
+      files: ["**/*.{test,spec}.{ts,tsx}", "**/tests/**"],
+      plugins: ["vitest"],
+      env: { vitest: true },
+      rules: {
+        "no-console": "off",
+      },
+    },
+  ],
+});
 ```
 
 **Node library:**
 
-```json
-{
-  "plugins": ["eslint", "typescript", "unicorn", "oxc", "node", "import", "promise"],
-  "env": { "node": true }
-}
+```ts
+import { defineConfig } from "oxlint";
+
+export default defineConfig({
+  plugins: ["eslint", "typescript", "unicorn", "oxc", "node", "import", "promise"],
+  env: { node: true },
+});
 ```
 
 ### Phase C — Extra categories
 
 Enable one at a time: `suspicious` → `perf` → `pedantic` / `style` / `restriction`. Prefer `warn` first, promote to `error` after cleanup.
 
-```json
-{
-  "categories": {
-    "correctness": "error",
-    "suspicious": "warn",
-    "perf": "warn"
-  }
-}
+```ts
+import { defineConfig } from "oxlint";
+
+export default defineConfig({
+  categories: {
+    correctness: "error",
+    suspicious: "warn",
+    perf: "warn",
+  },
+});
 ```
 
 ### Phase D — Type-aware (optional)
@@ -199,15 +206,17 @@ Enable one at a time: `suspicious` → `perf` → `pedantic` / `style` / `restri
 bun add -D oxlint-tsgolint@latest
 ```
 
-```json
-{
-  "options": { "typeAware": true },
-  "plugins": ["eslint", "typescript", "unicorn", "oxc"],
-  "rules": {
+```ts
+import { defineConfig } from "oxlint";
+
+export default defineConfig({
+  options: { typeAware: true },
+  plugins: ["eslint", "typescript", "unicorn", "oxc"],
+  rules: {
     "typescript/no-floating-promises": "error",
-    "typescript/no-misused-promises": "error"
-  }
-}
+    "typescript/no-misused-promises": "error",
+  },
+});
 ```
 
 ```sh
@@ -261,15 +270,17 @@ bunx oxlint src/
 # exclude generated via config
 ```
 
-```json
-{
-  "ignorePatterns": [
+```ts
+import { defineConfig } from "oxlint";
+
+export default defineConfig({
+  ignorePatterns: [
     "dist/**",
     "coverage/**",
     "fixtures/**",
-    "!fixtures/keep/**"
-  ]
-}
+    "!fixtures/keep/**",
+  ],
+});
 ```
 
 (`!` negation works with gitignore-style patterns — use carefully.)
@@ -282,14 +293,14 @@ Also respected: `.gitignore`, and `.eslintignore` during migration. Prefer conso
 
 ```
 repo/
-  .oxlintrc.json          # root: shared categories/options.typeAware
-  packages/ui/.oxlintrc.json   # extends root or shared base
-  apps/web/.oxlintrc.json
+  oxlint.config.ts              # root: shared categories/options.typeAware
+  packages/ui/oxlint.config.ts  # extends root or shared base (import objects)
+  apps/web/oxlint.config.ts
 ```
 
 Patterns that work:
 
-1. **Root + nested** — each package owns plugins/overrides; `extends` a shared JSON/TS base.
+1. **Root + nested** — each package owns plugins/overrides; `extends` a shared TS base (imported objects) or JSON paths.
 2. **Single root config + overrides** — one file with `files` globs per app.
 3. **Type-aware CI job** — build graph → `oxlint --type-aware` from root.
 
@@ -335,7 +346,7 @@ Put `...oxlint.configs["flat/recommended"]` **last** in `eslint.config.js` so ov
 
 ```sh
 bunx @oxlint/migrate
-# edit .oxlintrc.json, run oxlint, then remove ESLint when ready
+# convert/port to oxlint.config.ts, run oxlint, then remove ESLint when ready
 ```
 
 Keep ESLint only for template lint (Vue/Svelte/Astro) or exotic plugins.
@@ -348,43 +359,45 @@ Details: [eslint-ci-editors.md](eslint-ci-editors.md).
 
 ### Minimal library
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "categories": { "correctness": "error" },
-  "ignorePatterns": ["dist/**", "coverage/**"]
-}
+```ts
+import { defineConfig } from "oxlint";
+
+export default defineConfig({
+  categories: { correctness: "error" },
+  ignorePatterns: ["dist/**", "coverage/**"],
+});
 ```
 
 ### App (React + TS + Vitest)
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": [
+```ts
+import { defineConfig } from "oxlint";
+
+export default defineConfig({
+  plugins: [
     "eslint",
     "typescript",
     "unicorn",
     "oxc",
     "react",
     "import",
-    "jsx-a11y"
+    "jsx-a11y",
   ],
-  "categories": {
-    "correctness": "error",
-    "suspicious": "warn"
+  categories: {
+    correctness: "error",
+    suspicious: "warn",
   },
-  "options": { "typeAware": true },
-  "settings": { "react": { "version": "detect" } },
-  "ignorePatterns": ["dist/**", "coverage/**"],
-  "overrides": [
+  options: { typeAware: true },
+  settings: { react: { version: "detect" } },
+  ignorePatterns: ["dist/**", "coverage/**"],
+  overrides: [
     {
-      "files": ["**/*.{test,spec}.{ts,tsx}"],
-      "plugins": ["vitest"],
-      "env": { "vitest": true }
-    }
-  ]
-}
+      files: ["**/*.{test,spec}.{ts,tsx}"],
+      plugins: ["vitest"],
+      env: { vitest: true },
+    },
+  ],
+});
 ```
 
 (Requires `oxlint-tsgolint` when `typeAware` is true.)
@@ -411,7 +424,7 @@ Details: [eslint-ci-editors.md](eslint-ci-editors.md).
 When asked to “add Oxlint” or “fix lint”:
 
 1. Detect existing ESLint / Biome / Oxlint.
-2. Install matching versions; init or migrate config.
+2. Install matching versions; write `oxlint.config.ts` (or migrate; keep JSON only if already present).
 3. Start with correctness (+ stack plugins if already expected).
 4. Run `oxlint --fix` then `oxlint`; leave a clean or explicitly suppressed result.
 5. Wire `package.json` scripts + CI + editor recommendation.

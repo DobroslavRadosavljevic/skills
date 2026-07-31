@@ -32,8 +32,8 @@ oxfmt [-c=PATH] [PATH]...
 | `--write` | Format in place (**default**) |
 | `--check` | Check + stats; CI gate |
 | `--list-different` | Print paths that would change |
-| `--init` | Write `.oxfmtrc.json` |
-| `--migrate=prettier` / `--migrate=biome` | Config migration |
+| `--init` | Write `.oxfmtrc.json` (JSON scaffold — prefer converting to `oxfmt.config.ts`) |
+| `--migrate=prettier` / `--migrate=biome` | Config migration (often JSON — convert to TS if desired) |
 | `--lsp` | LSP server for editors |
 | `--stdin-filepath=PATH` | Parser from filename for stdin |
 | `-c` / `--config` | Explicit config (disables nested lookup) |
@@ -59,23 +59,14 @@ echo 'const   x   =   1' | bunx oxfmt --stdin-filepath test.ts
 
 ## Config discovery
 
-Nearest of: `.oxfmtrc.json`, `.oxfmtrc.jsonc`, `oxfmt.config.ts`, `oxfmt.config.mts`.
+Nearest of: `oxfmt.config.ts`, `oxfmt.config.mts`, `.oxfmtrc.json`, `.oxfmtrc.jsonc`.
 
 - **One config type per directory**.
 - `-c` or `--disable-nested-config` changes nested resolution.
-- Schema: `./node_modules/oxfmt/configuration_schema.json`.
-
-```sh
-bunx oxfmt --init
-```
-
-```json
-{
-  "$schema": "./node_modules/oxfmt/configuration_schema.json",
-  "printWidth": 80,
-  "ignorePatterns": ["dist/**", "coverage/**"]
-}
-```
+- Prefer **`oxfmt.config.ts`** + `defineConfig` for new projects (`defineConfig` is optional but gives types/autocomplete).
+- `--init` still writes `.oxfmtrc.json` — for greenfield, write `oxfmt.config.ts` instead (or convert after init).
+- JSON schema (when using JSON): `./node_modules/oxfmt/configuration_schema.json`.
+- `-c` accepts `.json`, `.jsonc`, `.ts`, `.mts`, `.cts`, `.js`, `.mjs`, `.cjs`.
 
 ```ts
 import { defineConfig } from "oxfmt";
@@ -83,7 +74,31 @@ import { defineConfig } from "oxfmt";
 export default defineConfig({
   printWidth: 80,
   singleQuote: true,
+  ignorePatterns: ["dist/**", "coverage/**"],
 });
+```
+
+Share/compose with normal TS imports (no dedicated `extends` key — spread or merge objects):
+
+```ts
+import { defineConfig } from "oxfmt";
+import base from "@example/oxfmt-config";
+
+export default defineConfig({
+  ...base,
+  printWidth: 80,
+  overrides: [...(base.overrides ?? [])],
+});
+```
+
+JSON fallback (existing repos / `--init` output):
+
+```json
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "printWidth": 80,
+  "ignorePatterns": ["dist/**", "coverage/**"]
+}
 ```
 
 Node API also exports `format`, `defineConfig`, and `FormatOptions`.
@@ -132,4 +147,4 @@ Node API also exports `format`, `defineConfig`, and `FormatOptions`.
 
 ## Vite+
 
-Prefer `fmt: { ... }` inside `vite.config.ts` instead of a separate `.oxfmtrc.json`. Point the editor at that file when needed (`oxc.fmt.configPath`).
+Prefer `fmt: { ... }` inside `vite.config.ts` instead of a separate `oxfmt.config.ts` / `.oxfmtrc.json`. Point the editor at that file when needed (`oxc.fmt.configPath`).
