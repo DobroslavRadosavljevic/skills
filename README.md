@@ -35,6 +35,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `simplify-layout` | Shorten file and folder names and group related modules so paths stay scannable. |
 | `subagents` | Split harder work into safe disjoint lanes and coordinate subagent results. |
 | `tailwind` | Build, review, debug, configure, or migrate Tailwind CSS projects. |
+| `tanstack-charts` | Build, review, debug, migrate, or plan TanStack Charts visualizations. |
 | `tanstack-form` | Build, review, debug, migrate, or plan TanStack Form React forms. |
 | `tanstack-hotkeys` | Build, review, debug, migrate, or plan TanStack Hotkeys shortcut systems. |
 | `tanstack-query` | Build, review, debug, migrate, or plan TanStack Query server-state code. |
