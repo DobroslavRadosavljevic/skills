@@ -4,17 +4,17 @@ This reference captures the Effect v4 beta docs and repository snapshot used to 
 
 ## Snapshot
 
-- Captured: 2026-07-08
-- `effect` npm `latest`: `3.21.4`
-- `effect` npm `beta`: `4.0.0-beta.94`
-- `@effect/vitest` npm `latest`: `0.29.0`
-- `@effect/vitest` npm `beta`: `4.0.0-beta.94`
-- Effect v4 beta repository: https://github.com/Effect-TS/effect-smol
-- Repository commit inspected: `bdca35449d5dfce5b4433da75ec0a88d0a9b2b27`
-- Latest inspected commit time: 2026-07-08T13:04:23Z
+- Captured: 2026-07-31 (testing section refreshed)
+- Prior core snapshot: 2026-07-08
+- `effect` npm `latest`: still Effect v3 line (check registry)
+- `effect` npm `beta`: `4.0.0-beta.102` (verify with `bun info effect`)
+- `@effect/vitest` for Effect **v4**: install `@effect/vitest@beta` → `4.0.0-beta.102` (align with `effect@beta`)
+- `@effect/vitest` npm `latest` is still `0.30.0` (Effect **v3**) — do not use with `effect@beta`
+- Effect v4 beta repository: https://github.com/Effect-TS/effect-smol (migration/history) and published packages from https://github.com/Effect-TS/effect
 - Official Effect docs: https://effect.website
 - Effect v4 beta announcement: https://effect.website/blog/releases/effect/40-beta/
 - API reference: https://effect-ts.github.io/effect/
+- `@effect/vitest` package: https://github.com/Effect-TS/effect/tree/main/packages/vitest
 - Context7 docs checked: `/effect-ts/effect`, `/effect-ts/website`
 
 Treat `effect@beta` as separate from npm `latest`: as of this snapshot, stable npm `latest` is still Effect v3 while v4 is on the `beta` dist-tag.
@@ -61,7 +61,8 @@ Treat `effect@beta` as separate from npm `latest`: as of this snapshot, stable n
 - `Effect-TS/effect-smol`: `packages/effect/src/Config.ts`
 - `Effect-TS/effect-smol`: `packages/effect/src/ConfigProvider.ts`
 - `Effect-TS/effect-smol`: `packages/effect/src/ManagedRuntime.ts`
-- `Effect-TS/effect-smol`: `packages/vitest/README.md`
+- `Effect-TS/effect` / `effect-smol`: `packages/vitest/README.md`, `packages/vitest/src/**` (v4 `@effect/vitest`)
+- In-skill deep testing guide: [vitest-testing.md](vitest-testing.md)
 - `Effect-TS/effect-smol`: selected `packages/*/test` examples for services, layers, HTTP, and tests.
 
 ## Current v4 Themes

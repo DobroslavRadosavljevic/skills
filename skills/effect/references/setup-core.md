@@ -4,14 +4,15 @@ Use this reference for package versions, imports, core Effect APIs, config, and 
 
 ## Package Setup
 
-- To try Effect v4 beta, install the beta dist-tag:
+- To try Effect v4 beta, install the beta dist-tag (and matching ecosystem packages):
 
   ```sh
   bun add effect@beta
+  bun add -d @effect/vitest@beta vitest
   ```
 
-- Keep all Effect ecosystem packages on matching beta versions. If `effect` is `4.0.0-beta.94`, packages such as `@effect/vitest` and platform/provider packages should also use `4.0.0-beta.94` when available.
-- Stable npm `latest` may still be Effect v3. Always check `dist-tags` before assuming the installed package is v4.
+- Keep all Effect ecosystem packages on matching beta versions. If `effect` is `4.0.0-beta.102`, install `@effect/vitest@4.0.0-beta.102` (or `@effect/vitest@beta` when it points at the same build).
+- Stable npm `latest` for several packages (including `@effect/vitest`) is still Effect **v3**. Always use `@beta` / explicit `4.0.0-beta.x` for v4.
 - Effect core requires TypeScript 5.4 or newer and strict type checking.
 - Use project package manager conventions and existing lockfile policy. Do not install packages without approval if the task is only research or skill creation.
 

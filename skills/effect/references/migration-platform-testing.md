@@ -157,41 +157,29 @@ Common HTTP patterns from v4 examples:
 
 ## Testing With `@effect/vitest`
 
-Install and align `@effect/vitest@beta` for v4 beta projects.
+For Effect v4, install **v4** `@effect/vitest@beta` (→ `4.0.0-beta.x`). Never bare/`latest` (`0.30.x` is Effect v3).
 
-Use:
+Deep runners, TestClock, shared `layer()` vs isolation, flaky/live, utils, and good/bad patterns: [vitest-testing.md](vitest-testing.md).
 
-```ts
-import { assert, describe, expect, it, layer } from "@effect/vitest";
-import { Effect } from "effect";
-```
-
-Core helpers:
-
-- `it.effect` runs an Effect test with `TestContext`.
-- `it.live` runs with live services.
-- `it.scoped` runs scoped Effects.
-- `it.scopedLive` combines live and scoped.
-- `it.flakyTest` supports flaky test workflows.
-- `layer(Layer)(...)` and `it.layer(...)` provide layers to nested Effect tests.
-- `it.effect.each`, `.skip`, `.only`, `.skipIf`, `.runIf`, and `.fails` exist for common Vitest patterns.
-
-Example:
+Quick shape:
 
 ```ts
+import { expect, it } from "@effect/vitest"
+import { Effect } from "effect"
+import { TestClock } from "effect/testing"
+
 it.effect("loads service", () =>
   Effect.gen(function*() {
-    const service = yield* MyService;
-    const value = yield* service.load;
-    expect(value).toEqual("ok");
-  }));
+    const service = yield* MyService
+    expect(yield* service.load).toEqual("ok")
+  }))
 ```
 
-For success/failure assertions, use `Effect.exit` and compare `Exit` values.
+v4 notes that fix older docs:
 
-For time, `it.effect` provides test services such as `TestClock`; use `it.live` for real time.
-
-For isolation, provide fresh or local layers intentionally. The v4 test package includes layer isolation patterns that build fresh state for each `it.layer` block.
+- `it.effect` / `it.live` are already **scoped** — do not use `it.scoped` / `it.scopedLive` for Effect Scope.
+- Test env is `TestClock` + `TestConsole` from **`effect/testing`**.
+- `layer()` **shares** services across tests; isolate mutable deps with per-test `Effect.provide`.
 
 ## Migration Verification
 
@@ -200,7 +188,7 @@ Run checks that expose both type and runtime mistakes:
 - Typecheck after import and API renames.
 - Search for old service declarations and old package imports.
 - Search for old `catchAll`, `fork`, `FiberRef`, `Either`, `Runtime<R>`, and `Scope.extend` patterns.
-- Test service layers with `@effect/vitest`.
+- Test service layers with `@effect/vitest@beta` (`it.effect` / shared `layer` / per-test provide). See [vitest-testing.md](vitest-testing.md).
 - Test edge runners and managed runtime disposal.
 - Test Schema decode/encode separately from business logic.
 - For unstable HTTP/RPC/SQL modules, run a small integration smoke against the concrete platform layer.

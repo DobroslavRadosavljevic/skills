@@ -19,8 +19,9 @@ Use this skill when work touches Effect v4 beta usage, service/layer architectur
 4. For install/version, core Effect usage, generator style, typed errors, async interop, config, and runtime boundaries, use [setup-core.md](references/setup-core.md).
 5. For services, `Context.Service`, references, layers, memoization, scopes, and `ManagedRuntime`, use [services-layers-runtime.md](references/services-layers-runtime.md).
 6. For Schema v4 shapes, validation, classes, tagged errors, transformations, codecs, serialization, and JSON Schema generation, use [schema-v4.md](references/schema-v4.md).
-7. For v3 to v4 migration, unstable modules, HTTP/platform packages, and `@effect/vitest`, use [migration-platform-testing.md](references/migration-platform-testing.md).
-8. Implement in the existing project style:
+7. For `@effect/vitest` (runners, TestClock, layers, flaky/live, good/bad patterns), use [vitest-testing.md](references/vitest-testing.md).
+8. For v3 to v4 migration, unstable modules, and HTTP/platform packages, use [migration-platform-testing.md](references/migration-platform-testing.md).
+9. Implement in the existing project style:
    - Match the installed beta version and local import style.
    - Prefer explicit service and layer composition over hidden globals.
    - Keep framework/process edges thin; push business logic into Effects, services, and layers.
@@ -38,13 +39,14 @@ Use this skill when work touches Effect v4 beta usage, service/layer architectur
 - Inside `Effect.gen`, `yield*` works with Yieldable values. Outside generators, convert non-Effect Yieldables explicitly or use module functions such as `Ref.get`, `Deferred.await`, and `Fiber.join`.
 - Prefer typed failures and tagged error classes over throwing. Use defects only for unrecoverable programmer errors.
 - Keep Schema v4 encode/decode direction visible at boundaries; do not assume decoded `Type` and encoded input are the same.
+- For tests: install **v4** `@effect/vitest@beta` (→ `4.0.0-beta.x`; never bare/`latest` → `0.30.x` v3). Prefer `it.effect` (already scoped + TestClock/TestConsole). Import `TestClock` from `effect/testing`. Do not use `it.scoped` / `it.scopedLive` for Effect Scope. Treat `layer()` as shared across tests unless you `Effect.provide` per test.
 
 ## Verification
 
 Prefer the repo's existing checks. For meaningful Effect v4 work, include the relevant subset:
 
 - Typecheck for `Effect<A, E, R>` requirements, service availability, layer composition, Schema encoded/type sides, and beta API names.
-- Focused tests with `@effect/vitest` for service behavior, layer isolation, test clocks, scoped resources, and typed failures.
+- Focused tests with `@effect/vitest@beta` (`it.effect`, TestClock, scoped resources, typed Exit/Result failures). Use per-test `Effect.provide` when isolation matters; treat shared `layer()` as suite-scoped.
 - Runtime smoke at JS/framework edges where Effects are run or managed runtimes are disposed.
 - Schema decode/encode tests for valid input, invalid input, defaults, excess properties, transformations, classes, tagged errors, and generated JSON Schema.
 - Migration scans for v3-only APIs, old package imports, old catch/fork names, old runtime patterns, `FiberRef`, `Either`, and removed Schema APIs.
