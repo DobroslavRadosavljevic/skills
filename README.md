@@ -12,6 +12,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `brainstorm` | Explore ideas, plans, research, and codebase questions in a read-only session. |
 | `bullmq` | Build, review, debug, operate, or migrate BullMQ Redis job queues. |
 | `bun` | Bun runtime, package manager, test runner, bundler, bunfig, and Node compat. |
+| `clickhouse` | ClickHouse OLAP from TypeScript: @clickhouse/client, MergeTree, ingest, and Cloud. |
 | `compound-ui` | Build or refactor React UI into shadcn-style compound components. |
 | `drizzle-orm` | Drizzle ORM 1.0 RC (not 0.x): schema, RQBv2, kit, seed, validators, and Effect drivers. |
 | `effect` | Build, review, debug, migrate, or plan Effect v4 TypeScript code. |

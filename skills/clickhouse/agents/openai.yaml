@@ -1,0 +1,4 @@
+interface:
+  display_name: "ClickHouse"
+  short_description: "ClickHouse OLAP from TypeScript (@clickhouse/client)"
+  default_prompt: "Use $clickhouse for this ClickHouse schema, ingest, query, or @clickhouse/client work with current docs and the full usage guide (TypeScript only)."
