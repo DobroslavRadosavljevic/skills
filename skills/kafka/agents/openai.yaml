@@ -1,0 +1,4 @@
+interface:
+  display_name: "Kafka"
+  short_description: "Apache Kafka from TypeScript via @platformatic/kafka"
+  default_prompt: "Use $kafka for this Apache Kafka produce/consume/admin or topic-design work. Prefer @platformatic/kafka with current docs and the usage guide."
