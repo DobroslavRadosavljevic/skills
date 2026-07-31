@@ -36,6 +36,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `storybook` | Build, review, debug, configure, migrate, or plan Storybook 10 UI workshops. |
 | `subagents` | Split harder work into safe disjoint lanes and coordinate subagent results. |
 | `tailwind` | Build, review, debug, configure, or migrate Tailwind CSS projects. |
+| `tailwind-variants` | Build, review, debug, migrate, or plan Tailwind Variants class recipes. |
 | `tanstack-charts` | Build, review, debug, migrate, or plan TanStack Charts visualizations. |
 | `tanstack-form` | Build, review, debug, migrate, or plan TanStack Form React forms. |
 | `tanstack-hotkeys` | Build, review, debug, migrate, or plan TanStack Hotkeys shortcut systems. |

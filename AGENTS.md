@@ -6,9 +6,9 @@ This repo stores harness-neutral agent skills under `skills/<skill-name>/`.
 
 Only create or modify a skill when the user explicitly asks for that skill or approves the change.
 
-Current skills (47):
+Current skills (48):
 
-`base-ui`, `better-auth`, `brainstorm`, `bullmq`, `bun`, `clickhouse`, `compound-ui`, `drizzle-orm`, `effect`, `elysia`, `handoff`, `intlayer`, `kafka`, `legend-state`, `loop`, `motion`, `oxfmt`, `oxlint`, `permix`, `plain-language`, `playwright`, `react`, `research`, `ship-product`, `simplify-layout`, `storybook`, `subagents`, `tailwind`, `tanstack-charts`, `tanstack-form`, `tanstack-hotkeys`, `tanstack-query`, `tanstack-router`, `tanstack-start`, `tanstack-store`, `tanstack-table`, `testcontainers`, `tsdown`, `turborepo`, `ultraplan`, `unslop-code`, `unslop-copywriting`, `unslop-docs`, `unsmell`, `vite`, `vitest`, `zod`
+`base-ui`, `better-auth`, `brainstorm`, `bullmq`, `bun`, `clickhouse`, `compound-ui`, `drizzle-orm`, `effect`, `elysia`, `handoff`, `intlayer`, `kafka`, `legend-state`, `loop`, `motion`, `oxfmt`, `oxlint`, `permix`, `plain-language`, `playwright`, `react`, `research`, `ship-product`, `simplify-layout`, `storybook`, `subagents`, `tailwind`, `tailwind-variants`, `tanstack-charts`, `tanstack-form`, `tanstack-hotkeys`, `tanstack-query`, `tanstack-router`, `tanstack-start`, `tanstack-store`, `tanstack-table`, `testcontainers`, `tsdown`, `turborepo`, `ultraplan`, `unslop-code`, `unslop-copywriting`, `unslop-docs`, `unsmell`, `vite`, `vitest`, `zod`
 
 See `README.md` for short purpose blurbs and install instructions.
 

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Tailwind Variants"
+  short_description: "Build Tailwind Variants recipes"
+  default_prompt: "Use $tailwind-variants to build, review, migrate, or debug this Tailwind Variants styling setup with current documentation."
