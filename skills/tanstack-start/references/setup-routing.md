@@ -213,6 +213,7 @@ Routes live under `src/routes` and use TanStack Router's file-route conventions:
 - `src/routes/users.$id.posts.tsx` and nested directories can both express nested paths.
 - `src/routes/my-script[.]js.ts` maps to `/my-script.js`.
 - Pathless layout routes and break-out routes follow Router conventions.
+- Colocate route-owned UI/hooks/helpers in hyphen-prefixed folders (`-components`, `-hooks`, `-lib`, …). See [route-colocation.md](route-colocation.md).
 
 Define routes with `createFileRoute`:
 

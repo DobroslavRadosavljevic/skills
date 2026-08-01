@@ -14,6 +14,8 @@ This reference records the current docs and package evidence used to create the 
 - Start vs Next.js: https://tanstack.com/start/latest/docs/framework/react/start-vs-nextjs
 - Migrate from Next.js: https://tanstack.com/start/latest/docs/framework/react/migrate-from-next-js
 - Routing: https://tanstack.com/start/latest/docs/framework/react/guide/routing
+- Router routing concepts (colocation / `-` ignore prefix): https://tanstack.com/router/latest/docs/framework/react/routing/routing-concepts
+- Router file-based routing API (`routeFileIgnorePrefix`): https://tanstack.com/router/latest/docs/framework/react/api/file-based-routing
 - Execution model: https://tanstack.com/start/latest/docs/framework/react/guide/execution-model
 - Code execution patterns: https://tanstack.com/start/latest/docs/framework/react/guide/code-execution-patterns
 - Import protection: https://tanstack.com/start/latest/docs/framework/react/guide/import-protection

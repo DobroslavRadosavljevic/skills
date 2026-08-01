@@ -20,6 +20,8 @@ Official public docs:
 - Router CLI setup: https://tanstack.com/router/latest/docs/framework/react/installation/with-router-cli
 - File-based routing: https://tanstack.com/router/latest/docs/framework/react/routing/file-based-routing
 - File naming conventions: https://tanstack.com/router/latest/docs/framework/react/routing/file-naming-conventions
+- Routing concepts (pathless layouts, `-` colocation): https://tanstack.com/router/latest/docs/framework/react/routing/routing-concepts
+- File-based routing API (`routeFileIgnorePrefix`): https://tanstack.com/router/latest/docs/framework/react/api/file-based-routing
 - Route trees: https://tanstack.com/router/latest/docs/framework/react/routing/route-trees
 - Code-based routing: https://tanstack.com/router/latest/docs/framework/react/routing/code-based-routing
 - Virtual file routes: https://tanstack.com/router/latest/docs/framework/react/routing/virtual-file-routes

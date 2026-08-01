@@ -179,6 +179,34 @@ routes/
   script[.]js.tsx
 ```
 
+## Colocating Non-Route Code
+
+`routeFileIgnorePrefix` defaults to `-`. Any file or folder under `routes/` whose
+name starts with `-` is excluded from the route tree. Use that to keep
+route-owned modules beside the owning route without creating URLs:
+
+```text
+routes/posts/
+  route.tsx
+  index.tsx
+  $postId.tsx
+  -components/
+    PostCard.tsx
+  -hooks/
+    use-post-filters.ts
+  -lib/
+    columns.ts
+```
+
+Rules:
+
+- Prefer role folders: `-components`, `-hooks`, `-lib`, `-context`, `-types`, `-server`.
+- Single ignored files work too (`-posts-table.tsx`).
+- Never add unprefixed helpers under `routes/` — they become routes.
+- Prefer every page route as `segment/index.tsx` (not a flat `segment.tsx` leaf) so colocated `-` folders have a clear owner. Layouts stay as `route.tsx`.
+- `_pathless` = layout wrapper; `-ignored` = colocation; `(group)` = folder-only organization.
+- In colocated modules that need loader/search/params, use `getRouteApi('/…')` instead of importing `Route`.
+
 ## Route Trees
 
 TanStack Router uses a nested route tree to match URLs and render nested components. File-based and code-based routes support the same core features, but file-based routing requires less manual type linkage.

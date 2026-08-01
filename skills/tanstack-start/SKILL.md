@@ -1,6 +1,6 @@
 ---
 name: tanstack-start
-description: "Build, review, debug, configure, migrate, or plan TanStack Start React applications with current docs. Use for TanStack Start, @tanstack/react-start, file-based routing, TanStack Router integration, Vite/Rsbuild setup, SSR, streaming, server functions, server routes, middleware, loaders, TanStack Query integration, environment variables, sessions/auth, deployment, hosting, and Next.js migrations."
+description: "Build, review, debug, configure, migrate, or plan TanStack Start React applications with current docs. Use for TanStack Start, @tanstack/react-start, file-based routing, route colocation (-components/-hooks/-lib beside routes), feature modules (src/modules reusable code), pathless layouts, TanStack Router integration, Vite/Rsbuild setup, SSR, streaming, server functions, server routes, middleware, loaders, TanStack Query integration, environment variables, sessions/auth, deployment, hosting, and Next.js migrations."
 ---
 
 # TanStack Start
@@ -16,12 +16,14 @@ Use this skill when the work touches TanStack Start or `@tanstack/react-start`.
    - Route files under `src/routes`, especially loaders, `server.handlers`, middleware, and auth boundaries.
 2. Refresh current docs when the task depends on latest behavior, deployment adapters, security defaults, RC/experimental APIs, or a version mismatch. Start from [source-map.md](references/source-map.md).
 3. For new apps or routing/setup work, use [setup-routing.md](references/setup-routing.md).
-4. For data loading, server functions, server routes, middleware, env boundaries, auth, and execution-model issues, use [server-data.md](references/server-data.md).
-5. For deployment, production modes, prerendering, ISR, SPA mode, selective SSR, custom server entrypoints, and verification, use [deployment-production.md](references/deployment-production.md).
+4. When adding, moving, or reviewing page/layout UI, hooks, or helpers under `src/routes`, follow [route-colocation.md](references/route-colocation.md). Prefer folder + `index.tsx` for every page; keep route-only UI in `-components` / `-hooks` / `-lib`; put reusable feature code in `src/modules/<feature>/`.
+5. For data loading, server functions, server routes, middleware, env boundaries, auth, and execution-model issues, use [server-data.md](references/server-data.md).
+6. For deployment, production modes, prerendering, ISR, SPA mode, selective SSR, custom server entrypoints, and verification, use [deployment-production.md](references/deployment-production.md).
 
 ## Implementation Judgment
 
 - Treat TanStack Start as a full-stack React framework powered by TanStack Router. Keep Router conventions central: typed file routes, route loaders, route context, search params, and route invalidation.
+- Prefer folder + `index.tsx` for every page route (avoid flat page leaves when colocation is needed). Colocate route-only modules with hyphen-prefixed folders (`-components`, `-hooks`, `-lib`, …). Put reusable feature code in `src/modules/<feature>/` (reuse test). Never add unprefixed non-route files under `src/routes` — they become URLs. Details: [route-colocation.md](references/route-colocation.md).
 - TanStack Start docs currently describe it as a Release Candidate: feature-complete with an API considered stable, but not bug-free. React Server Components remain experimental. Verify the latest docs before depending on unstable or newly changed behavior.
 - Use server functions for same-origin app RPC. Use server routes for public or external HTTP endpoints, webhooks, form posts, and API-style `Response` handling.
 - Do not rely on route guards as the data security boundary. Authorize every server function and server route that touches private data.
