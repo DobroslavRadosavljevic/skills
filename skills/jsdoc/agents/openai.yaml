@@ -1,0 +1,4 @@
+interface:
+  display_name: "JSDoc"
+  short_description: "Purposeful JSDoc for complex TypeScript"
+  default_prompt: "Use $jsdoc to add or fix JSDoc only on complex or non-obvious TypeScript — document invariants, side effects, and edge cases; do not restate types or narrate simple code."
