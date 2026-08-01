@@ -1,0 +1,4 @@
+interface:
+  display_name: "D3"
+  short_description: "Build D3.js data visualizations"
+  default_prompt: "Use $d3 to build, review, migrate, or debug this D3 visualization with current d3@7 docs (modular installs, scales/shapes, selection join, React declarative math vs refs+effects)."

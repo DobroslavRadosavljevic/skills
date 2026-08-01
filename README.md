@@ -15,6 +15,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `bun` | Bun runtime, package manager, test runner, bundler, bunfig, and Node compat. |
 | `clickhouse` | ClickHouse OLAP from TypeScript: @clickhouse/client, MergeTree, ingest, and Cloud. |
 | `compound-ui` | Build or refactor React UI into shadcn-style compound components. |
+| `d3` | D3.js visualizations: scales, shapes, selections, layouts, geo, and React interop. |
 | `drizzle-orm` | Drizzle ORM 1.0 RC (not 0.x): schema, RQBv2, kit, seed, validators, and Effect drivers. |
 | `effect` | Build, review, debug, migrate, or plan Effect v4 TypeScript code. |
 | `elysia` | Build, review, debug, test, and deploy Elysia applications with current docs. |
@@ -54,6 +55,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `unslop-copywriting` | Rewrite public UI copy into plain language and remove robotic or leaked-internal text. |
 | `unslop-docs` | Rewrite README/docs into plain, verifiable guidance and remove generated-docs slop. |
 | `unsmell` | Find and fix maintainability problems across a codebase or scoped area. |
+| `visx` | Airbnb visx React+D3 visualization primitives, XYChart, and v3→v4 migration. |
 | `vite` | Vite 8 tooling: config, Rolldown/Oxc builds, plugins, SSR, and v7→v8 migration. |
 | `vitest` | Vitest 4 testing: config, mocks, coverage, browser mode, projects, and Jest/v3 migration. |
 | `zod` | Build, review, debug, migrate, or plan Zod v4 validation and schema code. |

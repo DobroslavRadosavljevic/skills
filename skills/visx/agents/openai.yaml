@@ -1,0 +1,4 @@
+interface:
+  display_name: "visx"
+  short_description: "Build Airbnb visx React+D3 visualizations"
+  default_prompt: "Use $visx to build, review, migrate, or debug this visx implementation with current 4.0.0 docs (package-root imports, ScaleConfig XYChart, ParentSize, primitives vs XYChart, v3→v4 checklist)."
