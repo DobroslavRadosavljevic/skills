@@ -27,7 +27,7 @@ Use for motion purpose, decision workflow, human-centered principles, duration t
   - Delay and stagger
 
 
-This skill helps an agent design, critique, specify, and implement motion for digital products. Treat motion as a product behavior, not decoration. Every animation must improve comprehension, feedback, perceived responsiveness, orientation, hierarchy, or brand expression without harming speed, comfort, accessibility, or task completion.
+This skill helps an agent design, critique, specify, and implement motion for digital products — including with **Motion for React** (`motion` / `motion/react`). Treat motion as a product behavior, not decoration. Every animation must improve comprehension, feedback, perceived responsiveness, orientation, hierarchy, or brand expression without harming speed, comfort, accessibility, or task completion. Prefer CSS or platform primitives when enough; use Motion when enter/exit, layout, gestures, or scroll-linked motion justify it. Library implementations target **React / React-based frameworks only**.
 
 ## Core rule
 
@@ -110,7 +110,8 @@ Prefer the simplest implementation that satisfies the motion contract:
 - Web Animations API when JavaScript must play, cancel, reverse, sequence, or respond to runtime data.
 - View Transitions API for DOM-state or page/view transitions when browser support and progressive enhancement are acceptable.
 - Platform-native animation APIs in native apps.
-- Framer Motion, GSAP, React Spring, Reanimated, Lottie, Rive, Canvas, SVG, or WebGL only when already used or clearly justified.
+- Motion for React (`motion` / `motion/react`) when already used or when enter/exit, layout, gestures, or scroll-linked motion need it — see [source-map.md](source-map.md). Do not add Vue or vanilla-only Motion.
+- GSAP, React Spring, Reanimated, Lottie, Rive, Canvas, SVG, or WebGL only when already used or clearly justified.
 
 ### 5. Audit before finalizing
 

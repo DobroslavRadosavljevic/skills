@@ -34,18 +34,18 @@ When the user asks for motion design recommendations, provide:
 Motion intent: why motion is needed
 Interaction map: which components/states move
 Motion specs: trigger, properties, duration, easing, origin, stagger, reduced-motion variant
-Implementation notes: CSS/JS/library/platform approach
-Accessibility notes: reduced motion, focus, semantics, pause/stop
-Performance notes: compositor-only, layout/paint risks, testing plan
+Implementation notes: CSS / WAAPI / View Transitions / Motion (`motion/react` entry, LazyMotion vs full)
+Accessibility notes: reduced motion (`MotionConfig` / CSS), focus, semantics, pause/stop
+Performance notes: compositor-only, layout/paint risks, MotionValues vs state, testing plan
 What to avoid: likely anti-patterns for this product
 ```
 
 When the user asks for code, include:
 
 - Tokens.
-- Component implementation.
-- Reduced-motion handling.
-- Cleanup/cancellation if JavaScript is involved.
+- Component implementation (`motion/react` imports when using Motion).
+- Reduced-motion handling (`MotionConfig reducedMotion="user"` and/or CSS).
+- Cleanup/cancellation if JavaScript is involved (`animate` controls, presence, unmount).
 - Comments only where they clarify non-obvious choices.
 
 When the user asks for critique/audit, return issues in priority order:

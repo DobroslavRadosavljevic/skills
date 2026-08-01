@@ -1,6 +1,49 @@
 # Motion Component Recipes
 
-Use for concrete animation recipes for common UI components and product states.
+Use for concrete animation recipes for common UI components and product states. Specs below are product-level; implement with CSS when enough, or Motion when the project uses it / needs presence, layout, or gestures.
+
+## Motion library snippets
+
+```tsx
+import { AnimatePresence, LayoutGroup, Reorder, motion } from "motion/react"
+
+// Button
+<motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} transition={{ duration: 0.1 }} />
+
+// Modal
+<AnimatePresence>
+  {open && (
+    <motion.div
+      key="modal"
+      role="dialog"
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 8 }}
+      transition={{ duration: 0.18 }}
+    />
+  )}
+</AnimatePresence>
+
+// Shared tab underline
+<motion.div layoutId="tab-underline" className="underline" />
+
+// List add/remove/reorder
+<LayoutGroup>
+  <AnimatePresence mode="popLayout">
+    {items.map((item) => (
+      <motion.li key={item.id} layout initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} />
+    ))}
+  </AnimatePresence>
+</LayoutGroup>
+
+<Reorder.Group axis="y" values={items} onReorder={setItems}>
+  {items.map((item) => (
+    <Reorder.Item key={item.id} value={item}>{item.label}</Reorder.Item>
+  ))}
+</Reorder.Group>
+```
+
+Always pair with `MotionConfig reducedMotion="user"` and the reduced-motion notes in each recipe.
 
 ## Contents
 
@@ -37,7 +80,7 @@ easing: ease-out for press-in; ease-out or standard for release
 reduced motion: color/shadow change only, no scale if scale feels uncomfortable
 ```
 
-Pattern:
+Pattern (CSS):
 
 ```css
 .button {
@@ -56,7 +99,7 @@ Pattern:
 }
 ```
 
-Do not make the button bounce after activation. Do not delay actual action until the animation finishes.
+Motion: `whileHover` / `whileTap` with short transitions; do not delay the click handler until animation ends. Do not bounce after activation.
 
 ### Toggle / switch
 

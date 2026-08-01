@@ -1,6 +1,6 @@
 # Web Motion Implementation
 
-Use for CSS transitions, CSS keyframes, reduced-motion CSS, WAAPI, FLIP, View Transitions, and scroll-driven animation.
+Use for CSS transitions, CSS keyframes, reduced-motion CSS, WAAPI, FLIP, View Transitions, and scroll-driven animation — when the Motion library is unnecessary or as a complement. For Motion APIs, see [setup-react-core.md](setup-react-core.md), [values-scroll-layout.md](values-scroll-layout.md), and [packages-react.md](packages-react.md).
 
 ## Contents
 

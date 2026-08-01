@@ -1,15 +1,17 @@
 ---
 name: motion
-description: Motion design guidance for designing, auditing, specifying, prototyping, or implementing product UI animation. Use for websites, apps, SaaS products, UI components, microinteractions, page transitions, loading states, data visualizations, design systems, accessibility/reduced-motion review, performance-safe animation, and product-feel polish. Do not use for non-interactive video or film motion unless adapting it to interactive product UI.
+description: "Build, review, debug, migrate, or plan UI animation with Motion for React (motion/react) and product motion design. Use for React/Next/Vite apps: motion.div, AnimatePresence, variants, gestures, drag, layout/layoutId, LazyMotion, useScroll, useAnimate, MotionValues, reducedMotion, framer-motion→motion migration, CSS/WAAPI/View Transitions alternatives, microinteractions, page transitions, accessibility, and performance-safe animation. Do not use for Vue, vanilla-only Motion, React Native, or non-interactive film/video unless adapting it to product UI."
 ---
 
 # Motion
 
-## Overview
+Use this skill for **[Motion for React](https://motion.dev/docs/react)** (`motion` / formerly Framer Motion) and for **product motion design** (purpose, tokens, a11y, performance). Prefer current [motion.dev React docs](https://motion.dev/docs/react) over memory — pin narrative to **`motion@12.x`**.
 
-Design motion as product behavior, not decoration. Use animation only when it improves comprehension, feedback, perceived responsiveness, orientation, hierarchy, or brand expression without harming speed, comfort, accessibility, or task completion.
+**Scope:** React and React-based frameworks only (Next.js, Vite+React, Remix, etc.). Do not implement Motion for Vue, vanilla-only pages, or React Native.
 
-## Core Rule
+Motion is not required for every hover. Keep general design gates; implement with Motion when the project already uses it or needs enter/exit, layout, gestures, or scroll-linked motion beyond CSS.
+
+## Core Rule (always)
 
 Before proposing or coding animation, answer:
 
@@ -21,43 +23,39 @@ Before proposing or coding animation, answer:
 6. What is the reduced-motion equivalent?
 7. Will this animate on the compositor, or does it trigger layout or paint?
 
-If an animation cannot pass this test, remove it or replace it with a simpler state change.
+If it fails, remove it or simplify. Then choose the smallest tool: CSS → `motion/react-mini` / LazyMotion → full `motion/react`.
 
 ## Workflow
 
-1. Classify the interaction: feedback, reveal, overlay, navigation, list/data change, loading, expressive moment, or ambient motion.
-2. Define the motion contract: trigger, purpose, start state, end state, duration, easing, interruption behavior, reduced-motion equivalent, accessibility risk, and performance risk.
-3. Prefer existing platform, product, or design-system motion tokens. If none exist, propose a small named token set before adding one-off values.
-4. Choose the smallest reliable implementation: CSS for simple transitions, platform-native APIs for native apps, WAAPI for runtime control, View Transitions for progressive page/view transitions, or a motion library only when already used or clearly justified.
-5. Verify purpose, timing, easing, reduced motion, focus behavior, keyboard behavior, screen-reader semantics, performance, interruptibility, and repeated-use comfort.
+1. Confirm React surface: `motion/react` or `motion/react-client` (Next App Router). Prefer `bun add motion`. Do not generate `framer-motion`, `motion-v`, or vanilla CDN Motion for new code.
+2. Refresh versions, entry points, and doc URLs from [source-map.md](references/source-map.md).
+3. Apply product motion judgment from [foundations.md](references/foundations.md) (purpose, tokens, duration/easing).
+4. For declarative APIs (`motion.*`, variants, transitions, gestures, `AnimatePresence`, SVG), use [setup-react-core.md](references/setup-react-core.md).
+5. For MotionValues, `useAnimate`, scroll, layout/`layoutId`, Reorder, and related hooks, use [values-scroll-layout.md](references/values-scroll-layout.md).
+6. For Next/RSC, Mini, LazyMotion sizing, migration, and Motion+, use [packages-react.md](references/packages-react.md).
+7. For LazyMotion recipes, `MotionConfig`, reduced motion, performance, testing, and AI traps, use [production-a11y.md](references/production-a11y.md).
+8. For CSS / WAAPI / FLIP / View Transitions / scroll-driven CSS (when not using Motion), use [web-implementation.md](references/web-implementation.md).
+9. For UI pattern recipes, use [component-recipes.md](references/component-recipes.md).
+10. For audits, handoff, and QA, use [deliverables-qa.md](references/deliverables-qa.md). Also load [accessibility.md](references/accessibility.md) and [performance.md](references/performance.md) when those are the focus.
 
-## Reference Routing
+## Implementation Judgment
 
-Load only the focused reference needed for the task:
+- **Canonical import:** `import { motion, AnimatePresence } from "motion/react"`. Next App Router: `import * as motion from "motion/react-client"` or `"use client"`.
+- Root **`<MotionConfig reducedMotion="user">`** — library default is `"never"` (OS preference ignored until you opt in).
+- Prefer **transform / opacity**; use `layout` / `layoutId` for size/position morphs (not `animate` width/height).
+- **`AnimatePresence` outside** the conditional; stable **`key`s**; `mode="wait"` is single-child only.
+- Prefer **`delayChildren: stagger(...)`** over legacy `staggerChildren` for new code.
+- Custom components: **`motion.create(Component)`** once (never inside render); forward refs.
+- High-frequency scroll/drag: **MotionValues** + `style`, not `useState` every frame.
+- Bundle: **`LazyMotion` + `m` from `motion/react-m`**; `domAnimation` vs `domMax` (layout/drag).
+- Mini (`motion/react-mini`) cannot use independent transforms like `x` / `y` — use full `useAnimate` or CSS `transform`.
+- Motion+ / `motion-plus` is **paid** — do not assume it in OSS projects.
 
-- [references/foundations.md](references/foundations.md): motion purpose, decision workflow, human-centered principles, duration tokens, easing tokens, delay, and stagger.
-- [references/web-implementation.md](references/web-implementation.md): CSS transitions, CSS keyframes, reduced-motion CSS, WAAPI, FLIP, View Transitions, and scroll-driven animation.
-- [references/frameworks-platforms.md](references/frameworks-platforms.md): React motion libraries, native app guidance, React Native, Lottie, Rive, SVG, Canvas, WebGL, and video.
-- [references/component-recipes.md](references/component-recipes.md): common UI component recipes and product-state animation patterns.
-- [references/performance.md](references/performance.md): compositor-only rules, layout-thrash prevention, `will-change`, responsiveness, and testing under real conditions.
-- [references/accessibility.md](references/accessibility.md): reduced motion, non-motion alternatives, pause/stop/hide controls, seizure/discomfort triggers, and focus order.
-- [references/deliverables-qa.md](references/deliverables-qa.md): anti-patterns, audit/specification/code-review deliverables, implementation handoff format, and QA checklists.
+## Verification
 
-When implementing with a specific library, framework, SDK, CLI, or platform API, use a current documentation source if available before relying on memory for syntax or version-sensitive behavior.
-
-## Motion Defaults
-
-- Keep interaction feedback fast and interruptible.
-- Prefer transform and opacity for performance.
-- Avoid animating layout properties unless the product value justifies the cost and the implementation is measured.
-- Prefer fades, highlights, or instant changes when there is no meaningful spatial model.
-- Avoid motion that blocks task completion, repeats constantly, flashes, causes vestibular discomfort, steals focus, or becomes annoying after repeated use.
-- Make reduced motion mandatory. Reduced motion may remove, shorten, fade, substitute a color or state change, or make motion user-controlled.
-
-## Deliverables
-
-For audits, return findings with severity, rationale, and specific fixes.
-
-For specifications, include the trigger, purpose, state changes, timing, easing, reduced-motion behavior, interruption behavior, accessibility notes, and performance notes.
-
-For implementation, keep changes scoped, use existing design-system patterns, and include verification for reduced motion and performance-sensitive behavior when the environment supports it.
+- Imports from `motion/react` (or `motion/react-client` / `react-m` / `react-mini`), not `framer-motion` / `motion-v`.
+- Reduced-motion path exercised (`MotionConfig` and/or `useReducedMotion`).
+- Exit animations: presence wrapping + keys; interrupt/`transition` sensible for task speed.
+- Layout: non-static parent for `popLayout`; `layoutScroll` / `layoutRoot` when needed.
+- Tests: `transition={{ duration: 0 }}` or `false`; await `frame.postRender` before style asserts when needed.
+- Bundle check if adding full `motion` vs LazyMotion/mini.

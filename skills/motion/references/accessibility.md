@@ -2,6 +2,16 @@
 
 Use for reduced motion, non-motion alternatives, pause/stop/hide controls, seizure/discomfort triggers, and focus order.
 
+## Motion library (npm)
+
+When implementing with the Motion package:
+
+- Root: `<MotionConfig reducedMotion="user">` — library default is `"never"`.
+- `"user"` disables transform + layout animations; opacity/color-like props can remain.
+- Bespoke swaps: `useReducedMotion()` → fade instead of slide, disable parallax/autoplay.
+- `whileTap` / `onTap` set `tabIndex={0}` — keep keyboard focus sensible; don’t rely on motion alone for status.
+- Details: [production-a11y.md](production-a11y.md) · https://motion.dev/docs/react-accessibility
+
 ## Accessibility rules
 
 ### Reduced motion is mandatory
