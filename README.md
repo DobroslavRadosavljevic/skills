@@ -36,6 +36,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `playwright` | Build, review, debug, configure, or plan Playwright E2E tests and browser automation. |
 | `react` | Build, review, debug, migrate, or plan React apps with current React docs. |
 | `react-boundaries` | Enforce leaf-owned state/queries, no prop-drill hubs; TanStack-aware composition. |
+| `react-email` | Build, render, and send HTML emails with React Email (v6 components, CLI, editor). |
 | `research` | Investigate external sources and codebase evidence before recommending next steps. |
 | `simplify-layout` | Shorten file and folder names and group related modules so paths stay scannable. |
 | `storybook` | Build, review, debug, configure, migrate, or plan Storybook 10 UI workshops. |

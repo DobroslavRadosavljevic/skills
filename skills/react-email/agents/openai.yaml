@@ -1,0 +1,4 @@
+interface:
+  display_name: "React Email"
+  short_description: "Build HTML emails with React Email"
+  default_prompt: "Use $react-email to build, review, render, or send this email template with current React Email docs."
