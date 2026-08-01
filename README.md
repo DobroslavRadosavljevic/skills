@@ -33,8 +33,8 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `plain-language` | Always-on clear explanations and readable naming; technical depth only when needed. |
 | `playwright` | Build, review, debug, configure, or plan Playwright E2E tests and browser automation. |
 | `react` | Build, review, debug, migrate, or plan React apps with current React docs. |
+| `react-boundaries` | Enforce leaf-owned state/queries, no prop-drill hubs; TanStack-aware composition. |
 | `research` | Investigate external sources and codebase evidence before recommending next steps. |
-| `ship-product` | Build a paid fullstack TanStack Start product from scratch with need-based stack and an env testing gate. |
 | `simplify-layout` | Shorten file and folder names and group related modules so paths stay scannable. |
 | `storybook` | Build, review, debug, configure, migrate, or plan Storybook 10 UI workshops. |
 | `subagents` | Split harder work into safe disjoint lanes and coordinate subagent results. |
@@ -52,9 +52,6 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `tsdown` | Rolldown library bundler: config, dts, exports, deps, watch/unbundle, and tsup migration. |
 | `turborepo` | Full Turborepo usage guide plus tasks, caching, filters, prune/Docker CI, and monorepo integrations. |
 | `ultraplan` | Ask detailed planning questions, recommend answers, and produce a precise implementation plan before work starts. |
-| `unslop-code` | Strip AI-looking code fingerprints and rework implementation to match problem scale. |
-| `unslop-copywriting` | Rewrite public UI copy into plain language and remove robotic or leaked-internal text. |
-| `unslop-docs` | Rewrite README/docs into plain, verifiable guidance and remove generated-docs slop. |
 | `unsmell` | Find and fix maintainability problems across a codebase or scoped area. |
 | `visx` | Airbnb visx React+D3 visualization primitives, XYChart, and v3→v4 migration. |
 | `vite` | Vite 8 tooling: config, Rolldown/Oxc builds, plugins, SSR, and v7→v8 migration. |

@@ -1,0 +1,4 @@
+interface:
+  display_name: "React Boundaries"
+  short_description: "Leaf-owned state, queries, and composition"
+  default_prompt: "Use $react-boundaries to place state, queries, and mutations at the lowest correct React boundary—avoid prop drilling and parent data hubs; prefer composition and TanStack leaf subscriptions with justified route prefetch only."
