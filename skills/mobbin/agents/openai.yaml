@@ -1,0 +1,4 @@
+interface:
+  display_name: "Mobbin"
+  short_description: "Design inspo via Mobbin MCP"
+  default_prompt: "Use $mobbin with Mobbin MCP to research real shipped-app references before proposing or building UI. Search properly, cite links, and do not invent layouts from memory."

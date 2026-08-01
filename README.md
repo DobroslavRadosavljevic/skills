@@ -27,6 +27,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `legend-state` | Build, review, migrate, and debug Legend-State v3 observable, React, persistence, and sync systems. |
 | `loop` | Implement, review, fix, and repeat until no actionable review issues remain. |
 | `mantine-hooks` | Build, review, debug, migrate, or plan React code with `@mantine/hooks` only. |
+| `mobbin` | Enforce Mobbin MCP for real shipped-app UI/UX inspiration before designing. |
 | `motion` | Motion for React (`motion/react`) plus product UI motion design, a11y, and performance. |
 | `oxfmt` | Full Oxfmt usage guide plus setup, Prettier migration, and CI formatting. |
 | `oxlint` | Full Oxlint usage guide plus setup, rules/plugins, type-aware lint, and ESLint migration. |
