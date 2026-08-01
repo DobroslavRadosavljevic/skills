@@ -18,6 +18,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `drizzle-orm` | Drizzle ORM 1.0 RC (not 0.x): schema, RQBv2, kit, seed, validators, and Effect drivers. |
 | `effect` | Build, review, debug, migrate, or plan Effect v4 TypeScript code. |
 | `elysia` | Build, review, debug, test, and deploy Elysia applications with current docs. |
+| `evlog` | Build, review, debug, configure, or migrate evlog wide-event TypeScript logging. |
 | `handoff` | Produce or consume agent-to-agent handoff context so another session can resume work. |
 | `intlayer` | Build, review, configure, or debug Intlayer v9 i18n in TanStack Start React apps. |
 | `kafka` | Apache Kafka from TypeScript: prefer @platformatic/kafka, topics, and delivery semantics. |
