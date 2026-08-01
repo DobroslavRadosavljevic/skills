@@ -1,0 +1,4 @@
+interface:
+  display_name: "Mantine Hooks"
+  short_description: "Build with @mantine/hooks"
+  default_prompt: "Use $mantine-hooks to build, review, migrate, or debug this @mantine/hooks usage with current documentation. Stay scoped to @mantine/hooks only."
