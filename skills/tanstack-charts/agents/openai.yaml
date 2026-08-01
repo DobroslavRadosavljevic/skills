@@ -1,4 +1,4 @@
 interface:
   display_name: "TanStack Charts"
   short_description: "Build TanStack Charts visualizations"
-  default_prompt: "Use $tanstack-charts to build, review, migrate, or debug this TanStack Charts implementation with current documentation."
+  default_prompt: "Use $tanstack-charts to build, review, migrate, or debug this TanStack Charts implementation with current documentation (0.3.x APIs: tooltip extensions, composable axes, stack/group layouts, transforms)."
