@@ -1,0 +1,4 @@
+interface:
+  display_name: "Kill Legacy"
+  short_description: "Remove legacy, deprecated, and fallback code paths"
+  default_prompt: "Use $kill-legacy to find and remove legacy, deprecated, and fallback code so only the current canonical path remains."

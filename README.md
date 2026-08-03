@@ -27,6 +27,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `intlayer` | Build, review, configure, or debug Intlayer v9 i18n in TanStack Start React apps. |
 | `jsdoc` | Purposeful JSDoc for complex or non-obvious TypeScript; no type-echo or narration. |
 | `kafka` | Apache Kafka from TypeScript: prefer @platformatic/kafka, topics, and delivery semantics. |
+| `kill-legacy` | Remove legacy, deprecated, compatibility-shim, and fallback code paths. |
 | `legend-state` | Build, review, migrate, and debug Legend-State v3 observable, React, persistence, and sync systems. |
 | `loop` | Implement, review, fix, and repeat until no actionable review issues remain. |
 | `mantine-hooks` | Build, review, debug, migrate, or plan React code with `@mantine/hooks` only. |
