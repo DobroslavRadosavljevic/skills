@@ -16,6 +16,8 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `clickhouse` | ClickHouse OLAP from TypeScript: @clickhouse/client, MergeTree, ingest, and Cloud. |
 | `compound-ui` | Build or refactor React UI into shadcn-style compound components. |
 | `d3` | D3.js visualizations: scales, shapes, selections, layouts, geo, and React interop. |
+| `date-fns` | date-fns v4 date/time math with `@date-fns/tz` and `@date-fns/utc`. |
+| `decimal-js` | decimal.js v10 arbitrary-precision math, money patterns, and rounding. |
 | `drizzle-orm` | Drizzle ORM 1.0 RC (not 0.x): schema, RQBv2, kit, seed, validators, and Effect drivers. |
 | `effect` | Build, review, debug, migrate, or plan Effect v4 TypeScript code. |
 | `elysia` | Build, review, debug, test, and deploy Elysia applications with current docs. |

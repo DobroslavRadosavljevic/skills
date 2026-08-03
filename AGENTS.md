@@ -6,9 +6,9 @@ This repo stores harness-neutral agent skills under `skills/<skill-name>/`.
 
 Only create or modify a skill when the user explicitly asks for that skill or approves the change.
 
-Current skills (52):
+Current skills (54):
 
-`base-ui`, `better-auth`, `brainstorm`, `bullmq`, `bun`, `clickhouse`, `compound-ui`, `d3`, `drizzle-orm`, `effect`, `elysia`, `evlog`, `handoff`, `intlayer`, `jsdoc`, `kafka`, `legend-state`, `loop`, `mantine-hooks`, `mobbin`, `motion`, `oxfmt`, `oxlint`, `permix`, `plain-language`, `playwright`, `react`, `react-boundaries`, `react-email`, `research`, `simplify-layout`, `storybook`, `subagents`, `tailwind`, `tailwind-variants`, `tanstack-charts`, `tanstack-form`, `tanstack-hotkeys`, `tanstack-query`, `tanstack-router`, `tanstack-start`, `tanstack-store`, `tanstack-table`, `testcontainers`, `tsdown`, `turborepo`, `ultraplan`, `unsmell`, `visx`, `vite`, `vitest`, `zod`
+`base-ui`, `better-auth`, `brainstorm`, `bullmq`, `bun`, `clickhouse`, `compound-ui`, `d3`, `date-fns`, `decimal-js`, `drizzle-orm`, `effect`, `elysia`, `evlog`, `handoff`, `intlayer`, `jsdoc`, `kafka`, `legend-state`, `loop`, `mantine-hooks`, `mobbin`, `motion`, `oxfmt`, `oxlint`, `permix`, `plain-language`, `playwright`, `react`, `react-boundaries`, `react-email`, `research`, `simplify-layout`, `storybook`, `subagents`, `tailwind`, `tailwind-variants`, `tanstack-charts`, `tanstack-form`, `tanstack-hotkeys`, `tanstack-query`, `tanstack-router`, `tanstack-start`, `tanstack-store`, `tanstack-table`, `testcontainers`, `tsdown`, `turborepo`, `ultraplan`, `unsmell`, `visx`, `vite`, `vitest`, `zod`
 
 See `README.md` for short purpose blurbs and install instructions.
 

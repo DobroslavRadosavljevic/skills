@@ -1,0 +1,4 @@
+interface:
+  display_name: "date-fns"
+  short_description: "Build date-fns v4 + TZ/UTC code"
+  default_prompt: "Use $date-fns to build, review, migrate, or debug this date-fns date/time implementation with @date-fns/tz and @date-fns/utc and current documentation."

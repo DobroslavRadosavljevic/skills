@@ -1,0 +1,4 @@
+interface:
+  display_name: "decimal.js"
+  short_description: "Build decimal.js v10 precision math"
+  default_prompt: "Use $decimal-js to build, review, migrate, or debug this decimal.js arbitrary-precision implementation with current documentation."
