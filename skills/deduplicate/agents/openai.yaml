@@ -1,0 +1,4 @@
+interface:
+  display_name: "Deduplicate"
+  short_description: "Collapse duplicated code into one source of truth"
+  default_prompt: "Use $deduplicate to find duplicated knowledge, place a single source of truth, and rewire every consumer to use it."

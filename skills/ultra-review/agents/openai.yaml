@@ -1,0 +1,4 @@
+interface:
+  display_name: "Ultra Review"
+  short_description: "Exhaustive code review of git changes or a target"
+  default_prompt: "Use $ultra-review for an exhaustive review of my current git changes. Load every relevant available skill and research docs where the stack requires it."

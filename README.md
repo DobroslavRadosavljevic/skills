@@ -18,6 +18,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `d3` | D3.js visualizations: scales, shapes, selections, layouts, geo, and React interop. |
 | `date-fns` | date-fns v4 date/time math with `@date-fns/tz` and `@date-fns/utc`. |
 | `decimal-js` | decimal.js v10 arbitrary-precision math, money patterns, and rounding. |
+| `deduplicate` | Collapse duplicated knowledge into one source of truth and rewire consumers. |
 | `drizzle-orm` | Drizzle ORM 1.0 RC (not 0.x): schema, RQBv2, kit, seed, validators, and Effect drivers. |
 | `effect` | Build, review, debug, migrate, or plan Effect v4 TypeScript code. |
 | `elysia` | Build, review, debug, test, and deploy Elysia applications with current docs. |
@@ -57,6 +58,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `tsdown` | Rolldown library bundler: config, dts, exports, deps, watch/unbundle, and tsup migration. |
 | `turborepo` | Full Turborepo usage guide plus tasks, caching, filters, prune/Docker CI, and monorepo integrations. |
 | `ultraplan` | Ask detailed planning questions, recommend answers, and produce a precise implementation plan before work starts. |
+| `ultra-review` | Exhaustive code review of git changes (default) or a pointed target, with skill loading and research. |
 | `unsmell` | Find and fix maintainability problems across a codebase or scoped area. |
 | `visx` | Airbnb visx React+D3 visualization primitives, XYChart, and v3→v4 migration. |
 | `vite` | Vite 8 tooling: config, Rolldown/Oxc builds, plugins, SSR, and v7→v8 migration. |
