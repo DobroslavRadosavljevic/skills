@@ -24,6 +24,8 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `elysia` | Build, review, debug, test, and deploy Elysia applications with current docs. |
 | `evlog` | Build, review, debug, configure, or migrate evlog wide-event TypeScript logging. |
 | `handoff` | Produce or consume agent-to-agent handoff context so another session can resume work. |
+| `heyapi` | Hey API (`@hey-api/openapi-ts`): OpenAPI → TypeScript SDKs, validators, Query plugins. |
+| `impit` | Apify Impit: browser-impersonating HTTP (TLS/HTTP fingerprints) for Node, Python, Rust. |
 | `intlayer` | Build, review, configure, or debug Intlayer v9 i18n in TanStack Start React apps. |
 | `jsdoc` | Purposeful JSDoc for complex or non-obvious TypeScript; no type-echo or narration. |
 | `kafka` | Apache Kafka from TypeScript: prefer @platformatic/kafka, topics, and delivery semantics. |

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Impit"
+  short_description: "Browser-impersonating HTTP client"
+  default_prompt: "Use $impit to build, configure, review, or debug this Apify Impit HTTP client setup with current documentation."

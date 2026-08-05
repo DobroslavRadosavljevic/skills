@@ -1,0 +1,4 @@
+interface:
+  display_name: "Hey API"
+  short_description: "OpenAPI to TypeScript codegen"
+  default_prompt: "Use $heyapi to build, configure, review, migrate, or debug this @hey-api/openapi-ts client generation setup with current documentation."
