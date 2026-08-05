@@ -1,0 +1,4 @@
+interface:
+  display_name: "Takumi"
+  short_description: "JSX to images without a browser"
+  default_prompt: "Use $takumi to build, review, migrate, or debug this Takumi OG/image rendering implementation with current documentation."

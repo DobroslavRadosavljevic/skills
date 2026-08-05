@@ -1,0 +1,4 @@
+interface:
+  display_name: "schema-dts"
+  short_description: "Type-safe Schema.org JSON-LD"
+  default_prompt: "Use $schema-dts to build, review, migrate, or debug this Schema.org JSON-LD structured data with current schema-dts documentation."

@@ -45,11 +45,13 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `react-boundaries` | Enforce leaf-owned state/queries, no prop-drill hubs; TanStack-aware composition. |
 | `react-email` | Build, render, and send HTML emails with React Email (v6 components, CLI, editor). |
 | `research` | Investigate external sources and codebase evidence before recommending next steps. |
+| `schema-dts` | Type-safe Schema.org JSON-LD with Google schema-dts (WithContext, Graph, gen). |
 | `simplify-layout` | Shorten file and folder names and group related modules so paths stay scannable. |
 | `storybook` | Build, review, debug, configure, migrate, or plan Storybook 10 UI workshops. |
 | `subagents` | Split harder work into safe disjoint lanes and coordinate subagent results. |
 | `tailwind` | Build, review, debug, configure, or migrate Tailwind CSS projects. |
 | `tailwind-variants` | Build, review, debug, migrate, or plan Tailwind Variants class recipes. |
+| `takumi` | JSX/HTML to OG images & animations with takumi-js (no headless browser). |
 | `tanstack-charts` | Build, review, debug, migrate, or plan TanStack Charts visualizations. |
 | `tanstack-form` | Build, review, debug, migrate, or plan TanStack Form React forms. |
 | `tanstack-hotkeys` | Build, review, debug, migrate, or plan TanStack Hotkeys shortcut systems. |
