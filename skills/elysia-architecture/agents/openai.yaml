@@ -1,0 +1,4 @@
+interface:
+  display_name: "Elysia Architecture"
+  short_description: "Portable Elysia module layout and ownership"
+  default_prompt: "Use $elysia-architecture to scaffold, review, or reorganize this Elysia app's feature modules, routes, schemas, and ownership boundaries."

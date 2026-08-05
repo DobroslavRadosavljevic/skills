@@ -1,0 +1,4 @@
+interface:
+  display_name: "Vitest Architecture"
+  short_description: "Portable Vitest layout and project split"
+  default_prompt: "Use $vitest-architecture to scaffold, review, or reorganize this package's Vitest projects, tests/ layout, and unit vs integration boundaries."

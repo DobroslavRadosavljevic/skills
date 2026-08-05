@@ -22,6 +22,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `drizzle-orm` | Drizzle ORM 1.0 RC (not 0.x): schema, RQBv2, kit, seed, validators, and Effect drivers. |
 | `effect` | Build, review, debug, migrate, or plan Effect v4 TypeScript code. |
 | `elysia` | Build, review, debug, test, and deploy Elysia applications with current docs. |
+| `elysia-architecture` | Portable Elysia house style: feature modules, routes, schemas, and ownership. |
 | `evlog` | Build, review, debug, configure, or migrate evlog wide-event TypeScript logging. |
 | `handoff` | Produce or consume agent-to-agent handoff context so another session can resume work. |
 | `heyapi` | Hey API (`@hey-api/openapi-ts`): OpenAPI → TypeScript SDKs, validators, Query plugins. |
@@ -55,17 +56,20 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `tanstack-query` | Build, review, debug, migrate, or plan TanStack Query server-state code. |
 | `tanstack-router` | Build, review, debug, configure, migrate, or plan TanStack Router apps. |
 | `tanstack-start` | Build, review, debug, configure, migrate, or plan TanStack Start apps. |
+| `tanstack-start-architecture` | Portable Start house style: file routes, page folders, modules, and boundaries. |
 | `tanstack-store` | Build, review, debug, migrate, or plan TanStack Store state management. |
 | `tanstack-table` | Build, review, debug, migrate, or plan TanStack Table React tables. |
 | `testcontainers` | Build, review, debug, configure, or plan Testcontainers integration tests with real Docker dependencies. |
 | `tsdown` | Rolldown library bundler: config, dts, exports, deps, watch/unbundle, and tsup migration. |
 | `turborepo` | Full Turborepo usage guide plus tasks, caching, filters, prune/Docker CI, and monorepo integrations. |
+| `turborepo-architecture` | Portable monorepo house style: apps/packages layout, turbo rules, and boundaries. |
 | `ultraplan` | Ask detailed planning questions, recommend answers, and produce a precise implementation plan before work starts. |
 | `ultra-review` | Exhaustive code review of git changes (default) or a pointed target, with skill loading and research. |
 | `unsmell` | Find and fix maintainability problems across a codebase or scoped area. |
 | `visx` | Airbnb visx React+D3 visualization primitives, XYChart, and v3→v4 migration. |
 | `vite` | Vite 8 tooling: config, Rolldown/Oxc builds, plugins, SSR, and v7→v8 migration. |
 | `vitest` | Vitest 4 testing: config, mocks, coverage, browser mode, projects, and Jest/v3 migration. |
+| `vitest-architecture` | Portable Vitest house style: unit/integration projects, tests/ layout, and scripts. |
 | `zod` | Build, review, debug, migrate, or plan Zod v4 validation and schema code. |
 
 ## Install With skills.sh
@@ -75,23 +79,23 @@ The [skills.sh](https://www.skills.sh/) CLI can install skills from GitHub repos
 From this checkout:
 
 ```bash
-bunx skills add .
+npx skills add .
 ```
 
 Install skills directly from the GitHub repo:
 
 ```bash
 # List available skills without installing
-bunx skills add DobroslavRadosavljevic/skills --list
+npx skills add DobroslavRadosavljevic/skills --list
 
 # Install one skill
-bunx skills add DobroslavRadosavljevic/skills --skill loop
+npx skills add DobroslavRadosavljevic/skills --skill loop
 
 # Install multiple skills
-bunx skills add DobroslavRadosavljevic/skills --skill loop --skill ultraplan
+npx skills add DobroslavRadosavljevic/skills --skill loop --skill ultraplan
 
 # Install all skills from the repo
-bunx skills add DobroslavRadosavljevic/skills --skill '*'
+npx skills add DobroslavRadosavljevic/skills --skill '*'
 ```
 
 Useful options:
@@ -105,7 +109,7 @@ Useful options:
 Example:
 
 ```bash
-bunx skills add DobroslavRadosavljevic/skills --skill motion -a codex -g
+npx skills add DobroslavRadosavljevic/skills --skill motion -a codex -g
 ```
 
 ## Skill Conventions

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Turborepo Architecture"
+  short_description: "Portable monorepo layout and turbo rules"
+  default_prompt: "Use $turborepo-architecture to scaffold, review, or reorganize this Turborepo workspace layout, package boundaries, and turbo task/cache rules."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "TanStack Start Architecture"
+  short_description: "Portable Start app layout and boundaries"
+  default_prompt: "Use $tanstack-start-architecture to scaffold, review, or reorganize this TanStack Start app's routes, pages, modules, and import boundaries."
