@@ -1,0 +1,4 @@
+interface:
+  display_name: "Setup ICP.md"
+  short_description: "One-time ideal customer profile"
+  default_prompt: "Use $setup-icp-md once to derive the best ideal customer profile for this project, write root ICP.md, and link it from AGENTS.md only if that file already exists."

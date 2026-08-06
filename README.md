@@ -47,6 +47,10 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `react-email` | Build, render, and send HTML emails with React Email (v6 components, CLI, editor). |
 | `research` | Investigate external sources and codebase evidence before recommending next steps. |
 | `schema-dts` | Type-safe Schema.org JSON-LD with Google schema-dts (WithContext, Graph, gen). |
+| `setup-competitors-md` | One-time COMPETITORS.md landscape: rivals, substitutes, and differentiation. |
+| `setup-copywriting-md` | One-time COPYWRITING.md from project copy and competitor messaging patterns. |
+| `setup-icp-md` | One-time ICP.md ideal customer profile for the current project. |
+| `setup-project-md` | One-time PROJECT.md product and codebase overview from code plus user context. |
 | `simplify-layout` | Shorten file and folder names and group related modules so paths stay scannable. |
 | `storybook` | Build, review, debug, configure, migrate, or plan Storybook 10 UI workshops. |
 | `subagents` | Split harder work into safe disjoint lanes and coordinate subagent results. |

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Setup PROJECT.md"
+  short_description: "One-time product and codebase overview"
+  default_prompt: "Use $setup-project-md once to map this codebase, gather product context from me, write root PROJECT.md, and link it from AGENTS.md only if that file already exists."

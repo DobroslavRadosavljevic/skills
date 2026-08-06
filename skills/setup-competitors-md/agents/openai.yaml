@@ -1,0 +1,4 @@
+interface:
+  display_name: "Setup COMPETITORS.md"
+  short_description: "One-time competitive landscape doc"
+  default_prompt: "Use $setup-competitors-md once to research rivals and substitutes for this project, write root COMPETITORS.md, and link it from AGENTS.md only if that file already exists."

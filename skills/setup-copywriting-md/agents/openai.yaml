@@ -1,0 +1,4 @@
+interface:
+  display_name: "Setup COPYWRITING.md"
+  short_description: "One-time copy voice and pattern guide"
+  default_prompt: "Use $setup-copywriting-md once to analyze this project's copy and competitors, then write root COPYWRITING.md and link it from AGENTS.md only if that file already exists."
