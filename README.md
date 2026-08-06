@@ -25,6 +25,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `elysia` | Build, review, debug, test, and deploy Elysia applications with current docs. |
 | `elysia-architecture` | Portable Elysia house style: feature modules, routes, schemas, and ownership. |
 | `evlog` | Build, review, debug, configure, or migrate evlog wide-event TypeScript logging. |
+| `feedsmith` | Feedsmith v3+ RSS/Atom/RDF/JSON Feed/OPML parse and generate for TypeScript. |
 | `handoff` | Produce or consume agent-to-agent handoff context so another session can resume work. |
 | `heyapi` | Hey API (`@hey-api/openapi-ts`): OpenAPI → TypeScript SDKs, validators, Query plugins. |
 | `impit` | Apify Impit: browser-impersonating HTTP (TLS/HTTP fingerprints) for Node, Python, Rust. |

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Feedsmith"
+  short_description: "Feedsmith v3+ RSS/Atom/JSON Feed/OPML parse and generate"
+  default_prompt: "Use $feedsmith for this Feedsmith v3 feed parse, generate, namespace, OPML, or v2→v3 migration work with current docs."

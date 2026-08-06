@@ -6,9 +6,9 @@ This repo stores harness-neutral agent skills under `skills/<skill-name>/`.
 
 Only create or modify a skill when the user explicitly asks for that skill or approves the change.
 
-Current skills (71):
+Current skills (72):
 
-`agents-md`, `base-ui`, `better-auth`, `brainstorm`, `bullmq`, `bun`, `clickhouse`, `compound-ui`, `d3`, `date-fns`, `decimal-js`, `deduplicate`, `drizzle-orm`, `effect`, `elysia`, `elysia-architecture`, `evlog`, `handoff`, `heyapi`, `impit`, `intlayer`, `jsdoc`, `kafka`, `kill-legacy`, `legend-state`, `loop`, `mantine-hooks`, `mobbin`, `motion`, `oxfmt`, `oxlint`, `permix`, `plain-language`, `playwright`, `react`, `react-boundaries`, `react-email`, `research`, `schema-dts`, `sentry`, `setup-competitors-md`, `setup-copywriting-md`, `setup-icp-md`, `setup-project-md`, `simplify-layout`, `storybook`, `subagents`, `tailwind`, `tailwind-variants`, `takumi`, `tanstack-charts`, `tanstack-form`, `tanstack-hotkeys`, `tanstack-query`, `tanstack-router`, `tanstack-start`, `tanstack-start-architecture`, `tanstack-store`, `tanstack-table`, `testcontainers`, `tsdown`, `turborepo`, `turborepo-architecture`, `ultraplan`, `ultra-review`, `unsmell`, `visx`, `vite`, `vitest`, `vitest-architecture`, `zod`
+`agents-md`, `base-ui`, `better-auth`, `brainstorm`, `bullmq`, `bun`, `clickhouse`, `compound-ui`, `d3`, `date-fns`, `decimal-js`, `deduplicate`, `drizzle-orm`, `effect`, `elysia`, `elysia-architecture`, `evlog`, `feedsmith`, `handoff`, `heyapi`, `impit`, `intlayer`, `jsdoc`, `kafka`, `kill-legacy`, `legend-state`, `loop`, `mantine-hooks`, `mobbin`, `motion`, `oxfmt`, `oxlint`, `permix`, `plain-language`, `playwright`, `react`, `react-boundaries`, `react-email`, `research`, `schema-dts`, `sentry`, `setup-competitors-md`, `setup-copywriting-md`, `setup-icp-md`, `setup-project-md`, `simplify-layout`, `storybook`, `subagents`, `tailwind`, `tailwind-variants`, `takumi`, `tanstack-charts`, `tanstack-form`, `tanstack-hotkeys`, `tanstack-query`, `tanstack-router`, `tanstack-start`, `tanstack-start-architecture`, `tanstack-store`, `tanstack-table`, `testcontainers`, `tsdown`, `turborepo`, `turborepo-architecture`, `ultraplan`, `ultra-review`, `unsmell`, `visx`, `vite`, `vitest`, `vitest-architecture`, `zod`
 
 See `README.md` for short purpose blurbs and install instructions.
 
