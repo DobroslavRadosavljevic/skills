@@ -47,18 +47,125 @@ Pick **one** formatter — do not leave Biome format + Oxfmt both active.
 
 ## Editors
 
-Local `oxfmt` required. LSP: `oxfmt --lsp`.
+Local `oxfmt` (and `oxlint` if using fix-on-save) required. LSP: `oxfmt --lsp` / `oxlint --lsp`.
 
-- VS Code / Cursor: `oxc.oxc-vscode`; set `editor.defaultFormatter` to `oxc.oxc-vscode`
+- VS Code / Cursor: `oxc.oxc-vscode`
 - Also: Zed, JetBrains, Neovim (conform / lspconfig / coc-oxc)
+
+Docs: https://oxc.rs/docs/guide/usage/formatter/editors.html · https://oxc.rs/docs/guide/usage/linter/editors.html
+
+### Team files
+
+`.vscode/extensions.json`:
 
 ```json
 {
-  "recommendations": ["oxc.oxc-vscode"],
-  "editor.defaultFormatter": "oxc.oxc-vscode",
-  "editor.formatOnSave": true
+  "recommendations": ["oxc.oxc-vscode"]
 }
 ```
+
+`.vscode/settings.json` — format, sort imports (via Oxfmt), remove unused (via Oxlint):
+
+```json
+{
+  "editor.defaultFormatter": "oxc.oxc-vscode",
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.oxc": "always",
+    "source.organizeImports": "never",
+    "source.removeUnusedImports": "never"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[css]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "oxc.enable.oxfmt": true,
+  "oxc.enable.oxlint": true
+}
+```
+
+| Goal | Who does it | How |
+| --- | --- | --- |
+| Format + wrap + quotes | **Oxfmt** | `editor.formatOnSave` + default formatter `oxc.oxc-vscode` |
+| Sort imports | **Oxfmt** | `sortImports` in `oxfmt.config.ts` (runs on format) |
+| Sort Tailwind classes | **Oxfmt** | `sortTailwindcss` in config (runs on format) |
+| Remove unused imports / vars | **Oxlint** | `source.fixAll.oxc` + `no-unused-vars` fix options |
+| Organize imports (TS built-in) | **Off** | Keep `source.organizeImports` / `source.removeUnusedImports` **never** — they fight Oxfmt/Oxlint |
+
+### Oxfmt config side (required for sort-on-save)
+
+```ts
+// oxfmt.config.ts
+import { defineConfig } from "oxfmt";
+
+export default defineConfig({
+  sortImports: true,
+  sortTailwindcss: {
+    stylesheet: "./src/index.css", // v4; or `config` for v3
+    functions: ["clsx", "cn", "cva", "tv"],
+  },
+});
+```
+
+### Oxlint config side (required for remove-unused-on-save)
+
+`no-unused-vars` is on by default. For save-time **import** cleanup, enable import auto-fixes (experimental):
+
+```ts
+// oxlint.config.ts
+import { defineConfig } from "oxlint";
+
+export default defineConfig({
+  rules: {
+    "no-unused-vars": [
+      "error",
+      {
+        argsIgnorePattern: "^_",
+        varsIgnorePattern: "^_",
+        fix: {
+          imports: "safe-fix", // remove unused imports via source.fixAll.oxc
+          variables: "suggestion", // keep vars as suggestions unless you want aggressive delete
+        },
+      },
+    ],
+  },
+});
+```
+
+Optional editor knobs:
+
+| Setting | When |
+| --- | --- |
+| `oxc.fmt.configPath` | Non-root / Vite+ `fmt` config; monorepo path to `oxfmt.config.ts` |
+| `oxc.fmt.disableNestedConfig` | Force a single fmt config |
+| `oxc.configPath` / `oxc.disableNestedConfig` | Same for Oxlint |
+| `oxc.fixKind` | Widen/narrow which fixes `source.fixAll.oxc` applies (`safe_fix` default family) |
+| `oxc.typeAware` | Type-aware lint in the editor (needs `oxlint-tsgolint`) |
+| `tailwindCSS.classAttributes` / `tailwindCSS.classFunctions` | IntelliSense only — mirror Oxfmt `sortTailwindcss.attributes` / `functions`; Oxfmt does not read these |
+
+### Anti-patterns
+
+- Do not leave Prettier / Biome as default formatter for the same languages.
+- Do not enable ESLint `source.fixAll.eslint` for format/import-sort if Oxc already owns those jobs.
+- Do not expect `source.organizeImports` to apply Oxfmt’s `sortImports` groups — format-on-save is the path.
+- After installing `oxfmt` / `oxlint` while the editor is open: reload the window so the extension picks up local binaries.
 
 ## CI and hooks
 
@@ -87,10 +194,10 @@ Docs: https://oxc.rs/docs/guide/usage/formatter/ci.html
 
 1. Install `oxfmt`; run `--migrate prettier` (or biome). Prefer converting the result to `oxfmt.config.ts` + `defineConfig`.
 2. Set `printWidth` intentionally (80 vs 100).
-3. Decide sorting extras (`sortImports`, Tailwind, `sortPackageJson`).
-4. Point editors at Oxc formatter; remove Prettier format-on-save.
+3. Decide sorting extras (`sortImports`, Tailwind `stylesheet`/`config`/`functions`, `sortPackageJson`).
+4. Point editors at Oxc formatter; add the full `.vscode/settings.json` recipe (format-on-save + `source.fixAll.oxc`; disable TS organize/remove-unused imports).
 5. Swap scripts to `oxfmt` / `oxfmt --check`.
-6. Remove Prettier deps/plugins when clean.
+6. Remove Prettier deps/plugins (including `prettier-plugin-tailwindcss`) when clean.
 7. Commit mass reformat separately; add blame-ignore if the repo uses it.
 
 ## When to stay on Prettier

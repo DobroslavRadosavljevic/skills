@@ -134,10 +134,12 @@ Node API also exports `format`, `defineConfig`, and `FormatOptions`.
 | Option | Default | Inspired by |
 | --- | --- | --- |
 | `sortImports` | off | perfectionist `sort-imports` |
-| `sortTailwindcss` | off | `prettier-plugin-tailwindcss` |
+| `sortTailwindcss` | off | `prettier-plugin-tailwindcss` — object: `stylesheet` (v4) / `config` (v3), `functions`, `attributes`, `preserveWhitespace`, `preserveDuplicates` |
 | `sortPackageJson` | **on** | prettier-plugin-packagejson (not identical) |
 | `jsdoc` | off | `prettier-plugin-jsdoc` |
 | `svelte` | off | Needs local `svelte` package |
+
+Tailwind setup details: [languages-sorting-ignores.md](languages-sorting-ignores.md#tailwind-css-class-sorting-sorttailwindcss). Editor wiring: [prettier-migration-ci.md](prettier-migration-ci.md#editors).
 
 ## Precedence
 

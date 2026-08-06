@@ -5,8 +5,8 @@ End-to-end guide for installing, configuring, running, and adopting Oxfmt day to
 Companion docs in this skill:
 
 - [setup-cli-config.md](setup-cli-config.md) — CLI flags, options table, editorconfig
-- [languages-sorting-ignores.md](languages-sorting-ignores.md) — languages, sorting, ignores
-- [prettier-migration-ci.md](prettier-migration-ci.md) — Prettier/Biome migrate, CI, editors
+- [languages-sorting-ignores.md](languages-sorting-ignores.md) — languages, sorting (Tailwind), ignores
+- [prettier-migration-ci.md](prettier-migration-ci.md) — Prettier/Biome migrate, CI, `.vscode` settings
 
 Official quickstart: https://oxc.rs/docs/guide/usage/formatter/quickstart.html
 
@@ -63,13 +63,16 @@ bun run fmt:check    # verify; exit 1 if drift
 
 ### Step 5 — Editor
 
-Install `oxc.oxc-vscode` and set it as default formatter:
+Install `oxc.oxc-vscode`. Prefer the full `.vscode/settings.json` recipe (format-on-save, Oxfmt import/Tailwind sort, Oxlint unused cleanup) in [prettier-migration-ci.md](prettier-migration-ci.md#editors). Minimum:
 
 ```json
 {
-  "recommendations": ["oxc.oxc-vscode"],
   "editor.defaultFormatter": "oxc.oxc-vscode",
-  "editor.formatOnSave": true
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.oxc": "always",
+    "source.organizeImports": "never"
+  }
 }
 ```
 
@@ -164,7 +167,10 @@ import { defineConfig } from "oxfmt";
 
 export default defineConfig({
   sortImports: true,
-  sortTailwindcss: true,
+  sortTailwindcss: {
+    stylesheet: "./src/index.css", // Tailwind v4 CSS entry; use `config` for v3
+    functions: ["clsx", "cn", "cva", "tv"],
+  },
   sortPackageJson: true,
   jsdoc: false,
 });
@@ -172,11 +178,13 @@ export default defineConfig({
 
 | Option | Default | Notes |
 | --- | --- | --- |
-| `sortImports` | off | Import order / perfectionist-style |
-| `sortTailwindcss` | off | Class sorting like prettier-plugin-tailwindcss |
+| `sortImports` | off | Import order / perfectionist-style — runs on **format**, not TS organize-imports |
+| `sortTailwindcss` | off | Class sorting like prettier-plugin-tailwindcss — set `stylesheet` (v4) or `config` (v3), plus `functions` / `attributes` |
 | `sortPackageJson` | **on** | First run often rewrites `package.json` — disable if undesired |
 | `jsdoc` | off | JSDoc formatting |
 | `svelte` | off | Requires local `svelte` package |
+
+Tailwind detail (v3 vs v4 paths, helpers, monorepo pitfalls): [languages-sorting-ignores.md](languages-sorting-ignores.md#tailwind-css-class-sorting-sorttailwindcss).
 
 Adoption tip: enable sorting in a **dedicated PR** after the base format migration so diffs stay reviewable.
 
@@ -359,7 +367,11 @@ Details: [prettier-migration-ci.md](prettier-migration-ci.md).
 | `package.json` reshuffled | `sortPackageJson` default on | Set `false` or accept in format PR |
 | CLI flags like `--single-quote` fail | Not supported | Put options in config |
 | Check exit 2 | No files matched | Fix globs/ignores or `--no-error-on-unmatched-pattern` |
-| Editor ≠ CLI | Wrong formatter / config path | Set `oxc.oxc-vscode`; open correct root |
+| Editor ≠ CLI | Wrong formatter / config path | Set `oxc.oxc-vscode`; open correct root; check `oxc.fmt.configPath` |
+| Tailwind sorts differently in editor vs CLI | Wrong/missing `stylesheet`/`config`, or nested config mismatch | Point `sortTailwindcss.stylesheet` (v4) or `config` (v3) at the real entry; align monorepo configs |
+| Classes in `cn()`/`clsx()` not sorted | Name missing from `functions` | Add exact names to `sortTailwindcss.functions` |
+| Imports reshuffled twice on save | TS `organizeImports` + Oxfmt | Set `source.organizeImports` to `never`; use Oxfmt `sortImports` only |
+| Unused imports not removed on save | No Oxlint fix-on-save / import fix mode | `source.fixAll.oxc` + `no-unused-vars` `fix.imports: "safe-fix"` |
 | Astro/plugin files untouched or wrong | Plugins unsupported | Stay on Prettier for those paths or wait for support |
 | Nested ignore surprise | `ignorePatterns` scoped to config | Prefer root patterns or keep `.prettierignore` during migrate |
 | Svelte not formatting | Option off / no `svelte` pkg | `"svelte": true` + install `svelte` |
@@ -376,6 +388,7 @@ When asked to “add Oxfmt” or “format the repo”:
 3. Lock `printWidth` and quote/semi to team intent.
 4. Call out `sortPackageJson` default before first write.
 5. Run `oxfmt`, then `oxfmt --check`.
-6. Wire scripts, lint-staged, CI `--check`, editor default formatter.
+6. Wire scripts, lint-staged, CI `--check`, and the full `.vscode` recipe (Oxfmt format + `sortImports` / Tailwind; Oxlint `source.fixAll.oxc` for unused).
 7. Do not leave Prettier and Oxfmt both formatting the same files.
-8. For lint rules / correctness, use a dedicated linter (for example Oxlint or ESLint) — not Oxfmt.
+8. For lint rules / correctness / unused removal, use a dedicated linter (for example Oxlint or ESLint) — not Oxfmt.
+9. For Tailwind apps: set `sortTailwindcss.stylesheet` (v4) or `config` (v3) and list class helpers in `functions`.

@@ -55,6 +55,54 @@ export default defineConfig({
 - `sortPackageJson` is **on by default** — large `package.json` diffs on first run; set `false` if the team wants hand-ordered keys.
 - Tune each option’s nested settings via the config file reference when defaults are wrong.
 
+### Tailwind CSS class sorting (`sortTailwindcss`)
+
+Same algorithm as `prettier-plugin-tailwindcss`. **Off by default.** Pass `true` or an options object to enable. Do **not** install `prettier-plugin-tailwindcss` — it is bundled in Oxfmt.
+
+Languages: JS/JSX/TS/TSX, HTML, Vue, Angular, Handlebars, CSS/SCSS/Less, Svelte.
+
+```ts
+import { defineConfig } from "oxfmt";
+
+export default defineConfig({
+  // Minimal: enable with defaults
+  // sortTailwindcss: true,
+
+  // Recommended for real Tailwind apps
+  sortTailwindcss: {
+    // Tailwind v4 — path to the CSS entry that imports Tailwind / @theme
+    stylesheet: "./src/index.css",
+    // Tailwind v3 — use `config` instead (auto-finds tailwind.config.* if omitted)
+    // config: "./tailwind.config.ts",
+    functions: ["clsx", "cn", "cva", "tv", "tw"],
+    attributes: ["classList"], // extras beyond class / className
+    preserveWhitespace: false,
+    preserveDuplicates: false,
+  },
+});
+```
+
+| Option | Default | Role |
+| --- | --- | --- |
+| `stylesheet` | Installed Tailwind `theme.css` | **v4** CSS entry (paths relative to the Oxfmt config file) |
+| `config` | Auto-find `tailwind.config.js` | **v3** config path (relative to Oxfmt config) |
+| `functions` | `[]` | Exact function names whose string args get sorted (`clsx`, `cn`, …) |
+| `attributes` | `[]` | Extra attrs beyond always-sorted `class` / `className` |
+| `preserveWhitespace` | `false` | Keep whitespace around classes |
+| `preserveDuplicates` | `false` | Keep duplicate class tokens |
+
+Rules of thumb:
+
+1. **v4** → set `stylesheet` to the app CSS that has `@import "tailwindcss"` / `@theme`. Relying on the default `theme.css` often sorts against the wrong theme and fights CLI vs editor.
+2. **v3** → set `config` (or keep auto-discovery) — do not also set a v4 `stylesheet` unless you know you need both.
+3. List every class helper in `functions` (`cn`, `clsx`, `cva`, `tv`, …). Exact names only — **regex not supported**.
+4. Put custom props (`:class`, `classList`, design-system props) in `attributes`. Exact match only.
+5. Paths resolve **relative to the Oxfmt config file**, not the formatted file. In monorepos, put Tailwind options on the package config that owns the CSS, or use a root path that reaches that stylesheet.
+6. Oxfmt does **not** read `.vscode/settings.json` `tailwindCSS.classAttributes` / `tailwindCSS.classFunctions`. Keep those IntelliSense lists in sync with `attributes` / `functions` by hand (or import settings from a TS config if desired).
+7. Migrating from Prettier: drop the plugin; map `tailwindConfig` → `config`, `tailwindStylesheet` → `stylesheet`, `tailwindFunctions` → `functions`, `tailwindAttributes` → `attributes`, `tailwindPreserveWhitespace` / `tailwindPreserveDuplicates` → the unprefixed names.
+
+Enable Tailwind sorting in a **dedicated PR** after the base format migration so class-order diffs stay reviewable.
+
 ## Ignore files
 
 | Mechanism | Scope | Notes |

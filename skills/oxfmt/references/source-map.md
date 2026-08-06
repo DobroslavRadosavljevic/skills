@@ -4,10 +4,10 @@ This reference captures the Oxfmt docs and package snapshot used to create the s
 
 ## Snapshot
 
-- Captured: 2026-07-31
+- Captured: 2026-08-06
 - Official site: https://oxc.rs/
 - Formatter docs: https://oxc.rs/docs/guide/usage/formatter.html
-- npm `oxfmt`: **0.61.0** (dist-tag `latest`; still **0.x / beta** toward 1.0)
+- npm `oxfmt`: **0.62.0** (dist-tag `latest`; still **0.x / beta** toward 1.0)
 - Node engines: `^20.19.0 || >=22.12.0`
 - Bin: `oxfmt`
 - Preferred config: **`oxfmt.config.ts`** + `defineConfig` (JSON `.oxfmtrc.json(c)` still supported; `--init` / `--migrate` often write JSON)
