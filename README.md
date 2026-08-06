@@ -47,6 +47,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `react-email` | Build, render, and send HTML emails with React Email (v6 components, CLI, editor). |
 | `research` | Investigate external sources and codebase evidence before recommending next steps. |
 | `schema-dts` | Type-safe Schema.org JSON-LD with Google schema-dts (WithContext, Graph, gen). |
+| `sentry` | Sentry JS/TS SDKs: errors, tracing, replay, logs, source maps, and framework packages. |
 | `setup-competitors-md` | One-time COMPETITORS.md landscape: rivals, substitutes, and differentiation. |
 | `setup-copywriting-md` | One-time COPYWRITING.md from project copy and competitor messaging patterns. |
 | `setup-icp-md` | One-time ICP.md ideal customer profile for the current project. |

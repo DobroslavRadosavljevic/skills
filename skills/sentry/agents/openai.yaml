@@ -1,0 +1,4 @@
+interface:
+  display_name: "Sentry"
+  short_description: "TypeScript/JavaScript Sentry SDKs, integrations, and observability"
+  default_prompt: "Use $sentry for this Sentry setup, SDK, integration, tracing, replay, source maps, or observability work with current docs and official @sentry packages."
