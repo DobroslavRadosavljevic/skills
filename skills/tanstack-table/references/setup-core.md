@@ -2,17 +2,17 @@
 
 ## Install
 
-React v9 beta:
+React v9:
 
 ```sh
-bun add @tanstack/react-table@beta
+bun add @tanstack/react-table
 ```
 
 React adapter requirements:
 
-- React 18 or newer.
-- `@beta` dist-tag required while v9 is in beta.
-- For framework-agnostic core work, use `@tanstack/table-core@beta`.
+- React 18 or newer (`peerDependencies.react` is `>=18`).
+- Default `latest` install is stable v9. Do not add `@beta` unless intentionally staying on the beta line.
+- For framework-agnostic core work, use `@tanstack/table-core`.
 
 TanStack Table is headless. It supplies row models, state, APIs, and render helpers, not a styled table component. You own markup, styling, keyboard behavior, accessibility, loading states, empty states, and responsive layout.
 
@@ -91,6 +91,7 @@ Notes:
 - `key` is optional for normal rendering but required for devtools registration.
 - Use `row.getVisibleCells()` instead of `row.getAllCells()` when column visibility is enabled.
 - Header group APIs are already visibility-aware.
+- For a v8-like kitchen sink without picking features, pass `features: stockFeatures`. Prefer explicit `tableFeatures()` for production trees.
 
 ## Feature Registration
 
@@ -100,7 +101,7 @@ Features are opt-in. Register the feature object to get related table, row, colu
 import {
   createSortedRowModel,
   rowSortingFeature,
-  sortFns,
+  sortFn_alphanumeric,
   tableFeatures,
   useTable,
 } from '@tanstack/react-table'
@@ -108,7 +109,9 @@ import {
 const features = tableFeatures({
   rowSortingFeature,
   sortedRowModel: createSortedRowModel(),
-  sortFns,
+  sortFns: {
+    alphanumeric: sortFn_alphanumeric,
+  },
 })
 
 const table = useTable({
@@ -188,14 +191,14 @@ Accessor functions need a unique `id` or a string header. Accessed values are us
 
 ## Function Registries
 
-Feature function registries make string references type-safe:
+Prefer individually imported built-ins so unused functions stay out of the bundle:
 
 ```tsx
 const features = tableFeatures({
   rowSortingFeature,
   sortedRowModel: createSortedRowModel(),
   sortFns: {
-    ...sortFns,
+    alphanumeric: sortFn_alphanumeric,
     byLastSeen,
   },
 })
@@ -210,9 +213,11 @@ const columns = columnHelper.columns([
 
 Equivalent registries:
 
-- Sorting: `sortFns`
-- Filtering: `filterFns`
-- Grouping and aggregation: `aggregationFns`
+- Sorting: `sortFns` with `sortFn_*` imports
+- Filtering: `filterFns` with `filterFn_*` imports
+- Aggregation: `aggregationFns` with `aggregationFn_*` imports (requires `rowAggregationFeature`)
+
+The full `filterFns`, `sortFns`, and `aggregationFns` objects remain available but are deprecated for bundle size. String names, including default `'auto'`, only resolve functions you have registered.
 
 ## Dynamic Columns
 

@@ -30,7 +30,7 @@ Use this skill when work touches TanStack Store, especially `@tanstack/react-sto
 - Use action factories when a store owns domain operations; keep UI components from hand-rolling repeated update logic.
 - Avoid module-scope user/session stores in SSR unless the state is truly global and public. Create request- or component-scoped stores for per-user data.
 - Use `subscribe` for side effects like persistence or logging, and always keep the `unsubscribe` cleanup.
-- Check current docs before relying on adapter details. Store is v0, and adapter APIs are still evolving.
+- Check current docs before relying on adapter details. Store remains alpha/v0, and adapter APIs are still evolving.
 
 ## Verification
 

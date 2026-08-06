@@ -45,7 +45,7 @@ export const Route = createFileRoute('/posts')({
 
 Loader arguments include:
 
-- `abortController`.
+- `abortController`: controller for a shareable loader invocation (preload and navigation can share in-flight work). The signal cancels after the invocation is outdated and no consumer still needs it.
 - `cause`: `enter`, `preload`, or `stay`.
 - `context`.
 - `deps` from `loaderDeps`.
@@ -70,11 +70,11 @@ Router includes a built-in SWR cache for loader data.
 Key points:
 
 - Loader cache keys include the parsed pathname plus `loaderDeps`.
-- `staleTime` defaults to `0`, so data is immediately stale and can reload in the background.
-- Preloaded data is fresh for 30 seconds by default.
-- `gcTime` defaults to 30 minutes.
-- `staleReloadMode` defaults to `background`.
-- `router.invalidate()` marks cached route data stale and forces active routes to reload.
+- `staleTime` defaults to `0`, so reusable successful data is immediately stale and revalidates in the background on re-entry by default.
+- Preloaded loader data is fresh for 30 seconds by default (`preloadStaleTime`); preload and the first navigation can reuse that data or in-flight loader work during the window.
+- `gcTime` and `preloadGcTime` default to **5 minutes** (`300_000`). Configure them independently.
+- `staleReloadMode` defaults to `background` (use `blocking` to wait for stale reloads). Set via the loader object form or `defaultStaleReloadMode`.
+- `router.invalidate()` invalidates matching committed, cached, and in-flight loader generations, retires matching active preload lanes, and reloads active routes. Pass `sync: true` when a blocking reload is required.
 
 Use `staleTime` for static or expensive data:
 

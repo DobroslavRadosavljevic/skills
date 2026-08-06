@@ -26,6 +26,7 @@
 - Pathless `_dashboard` / `_app` layouts for authenticated shells.
 - Form validation schemas for UI may live under `modules/<feature>/schema` even when API types come from elsewhere.
 - Match existing import alias style (`@/…`) when the app already has one.
+- Prefer current Start docs for `getRouter`, `createStart`, and server entry APIs — this skill only owns folder/ownership rules.
 
 ## Anti-patterns → fix
 

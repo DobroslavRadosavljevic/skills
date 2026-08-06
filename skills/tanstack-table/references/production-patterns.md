@@ -62,7 +62,7 @@ Keep operations consistent:
 
 ## Client-Side Scale
 
-TanStack Table can handle thousands of rows client-side, and the beta docs cite examples tested at much higher counts. Do not assume server-side processing is required for a few thousand rows. Check:
+TanStack Table can handle thousands of rows client-side, and the docs cite examples tested at much higher counts. Do not assume server-side processing is required for a few thousand rows. Check:
 
 - Query cost and total payload size.
 - Number of columns and cell renderer cost.
@@ -122,6 +122,7 @@ Common pitfalls:
 - Using dynamic measurement for fixed-height rows.
 - Expecting TanStack Table to ship virtualization APIs.
 - Mixing client virtualization with server-side sorting/filtering inconsistently.
+- With `cellSpanningFeature`, a row-span anchor scrolled out of the virtual window needs `table.getCellSpanIndex()` to clamp the visible span.
 
 Use the experimental React virtualization examples only after profiling shows React render work during scroll is the bottleneck. Keep imperative DOM updates scoped to scroll-position styles, not table data or business state.
 
@@ -138,14 +139,14 @@ If immediate resizing is needed:
 - Let cells read widths from CSS variables.
 - Use `table.Subscribe` only for small reactive islands such as active resize handles.
 
-The beta docs describe this as replacing the older "memoize the body while resizing" strategy.
+The docs describe this as replacing the older "memoize the body while resizing" strategy.
 
 ## Devtools
 
-Install beta table devtools explicitly:
+Install table devtools without a beta tag:
 
 ```sh
-bun add @tanstack/react-devtools @tanstack/react-table-devtools@beta
+bun add @tanstack/react-devtools @tanstack/react-table-devtools
 ```
 
 React setup:
@@ -180,7 +181,7 @@ function Root() {
 }
 ```
 
-Devtools require a unique table `key`. In production builds, framework adapters default to no-op implementations unless using production entrypoints.
+Devtools require a unique table `key`. In production builds, framework adapters default to no-op implementations unless using production entrypoints such as `@tanstack/react-table-devtools/production`.
 
 ## Worker Row Models
 
@@ -244,9 +245,9 @@ Useful tests by risk:
 
 - Typecheck feature and column definitions after migrations.
 - Unit tests for custom sort, filter, aggregation, and accessor functions.
-- Interaction tests for sorting, filtering, pagination, selection, expansion, grouping, pinning, resizing, and visibility.
+- Interaction tests for sorting, filtering, pagination, selection, cell selection, expansion, grouping, pinning, resizing, spanning, and visibility.
 - Server-query tests proving query keys include owned state slices and `manual*` flags match backend behavior.
 - Browser tests for sticky headers, pinned columns, virtualized rows/columns, resize handles, focus, and keyboard controls.
 - Production build/profiling for large tables, virtualized views, and `columnResizeMode: 'onChange'`.
 
-For beta upgrades, include a focused smoke of the highest-value table because feature names, slots, and experimental APIs may shift before v9 stable.
+For major upgrades, include a focused smoke of the highest-value table because feature names, pinning terminology, aggregation registration, and experimental APIs may differ from earlier v9 betas.

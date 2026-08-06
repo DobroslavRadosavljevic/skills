@@ -24,7 +24,7 @@ function ShortcutBadge({ hotkey }: { hotkey: string }) {
 
 Behavior:
 
-- macOS uses symbols by default and spaces between modifiers and keys.
+- macOS uses symbols by default with spaces between tokens (for example `⌘ ⇧ S`).
 - Windows/Linux use text labels joined with `+`.
 - `Mod` displays as Command on macOS and Ctrl on Windows/Linux.
 
@@ -34,17 +34,21 @@ Options:
 formatForDisplay('Mod+Shift+S', {
   platform: 'mac',
   useSymbols: false,
+  // optional: override the default platform separator
+  // separatorToken: '+',
 })
 ```
 
-Use `formatWithLabels` when UI should show text labels on every platform:
+Prefer `formatForDisplay(..., { useSymbols: false })` for text labels. `formatWithLabels` still works but is deprecated in favor of that option:
 
 ```tsx
-import { formatWithLabels } from '@tanstack/react-hotkeys'
+import { formatForDisplay, formatWithLabels } from '@tanstack/react-hotkeys'
 
-formatWithLabels('Mod+S', { platform: 'mac' })
-formatWithLabels('Mod+S', { platform: 'windows' })
+formatForDisplay('Mod+S', { platform: 'mac', useSymbols: false })
+formatWithLabels('Mod+S', { platform: 'windows' }) // deprecated alias
 ```
+
+For sequence badges, `formatHotkeySequence(['G', 'G'])` returns a space-separated string such as `G G`.
 
 Prefer `<kbd>` for visible keyboard shortcuts.
 
@@ -55,6 +59,7 @@ Use core helpers when accepting user-authored strings or migrating existing shor
 ```tsx
 import {
   normalizeHotkey,
+  normalizeHotkeyFromParsed,
   normalizeRegisterableHotkey,
   parseHotkey,
   validateHotkey,
@@ -67,13 +72,14 @@ if (!validation.valid) {
 
 const parsed = parseHotkey('Mod+K', 'mac')
 const normalized = normalizeHotkey('Ctrl+Shift+s', 'windows')
+const fromParsed = normalizeHotkeyFromParsed(parsed, 'mac')
 const registerable = normalizeRegisterableHotkey(
   { key: 'S', mod: true, shift: true },
   'mac',
 )
 ```
 
-`normalizeHotkey` and `normalizeRegisterableHotkey` produce canonical strings. When possible, store canonical `Hotkey` values and derive display labels at render time.
+`normalizeHotkey`, `normalizeHotkeyFromParsed`, and `normalizeRegisterableHotkey` produce canonical strings (often Mod-first when the platform allows `Mod`). When possible, store canonical `Hotkey` values and derive display labels at render time. To show one parsed binding under several platforms, normalize with the parse platform, then call `formatForDisplay` with each display `platform`.
 
 `validateHotkey` returns errors and warnings; warnings can include platform caveats such as Alt plus letter combinations on macOS.
 

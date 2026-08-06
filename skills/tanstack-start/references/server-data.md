@@ -110,7 +110,7 @@ createCsrfMiddleware({
 })
 ```
 
-Only disable CSRF warnings when another verified layer enforces same-origin protection.
+Only disable CSRF origin checks when another verified layer enforces same-origin protection. Current docs allow opting in with `createCsrfMiddleware({ filter: (ctx) => ctx.handlerType === 'serverFn', allowRequestsWithoutOriginCheck: true })` when a deployment strips `Sec-Fetch-Site` / `Origin` / `Referer` and another layer already guarantees same-origin server function requests.
 
 ## Server Routes
 

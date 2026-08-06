@@ -2,7 +2,7 @@
 
 ## Pre-Alpha Caution
 
-`@tanstack/charts@0.3.1` is pre-alpha. Prefer verifying signatures against current docs/reference before shipping public APIs or large migrations. Keep charts behind clear version pins and parity tests. API moved quickly from `0.0.2` → `0.1.0` → `0.2.0` → `0.3.x`—do not copy `0.0.x` snippets (`tooltip: true`, flat axis labels, `groupScale`, `/portable`) into new code.
+`@tanstack/charts@0.6.5` is pre-alpha. Official docs state it is not ready for production use. Prefer verifying signatures against current docs/reference before shipping public APIs or large migrations. Keep charts behind clear version pins and parity tests. API moved quickly from `0.0.2` → `0.6.x`—do not copy `0.0.x` snippets (`tooltip: true`, flat axis labels, `groupScale`, `/portable`) into new code.
 
 ## Breaking Migration Notes (Within TanStack Charts)
 
@@ -27,6 +27,15 @@
 - Use `whenFocused` for focus decoration instead of renderer-specific hacks.
 - Prefer `layout: group()` over obsolete `groupScale` snippets if they appear in search/Context7.
 
+### From `0.3.x` → `0.4.x`–`0.6.x`
+
+- Grouped tooltip row order defaults to visual mark position; set `sort: 'color-domain'` (or another policy) when previous color-domain order was required.
+- Optional experimental React Native host: `@tanstack/react-native-charts` with `/universal` definitions.
+- Optional `motion()` renderer + definition-local motion (`0.6.0`); do not expect `animate` to drive `motion()` hosts.
+- `focus: false` omits generated focus geometry (`0.6.5`); `focusRing: false` replaces the built-in ring when authored focus marks own it (`0.6.3`).
+- Configured D3 scale instances are accepted on union-valued axes (`0.6.4`).
+- Core declares `d3-scale` as a runtime dependency (`0.6.5`); apps still declare modules they import.
+
 ## AI Authoring Sequence
 
 Follow this order when generating or reviewing chart code:
@@ -34,13 +43,13 @@ Follow this order when generating or reviewing chart code:
 1. State the analytical question in one sentence.
 2. Identify field semantic types (quantitative, temporal, ordinal, identifier).
 3. Choose the smallest mark composition (and stack/group/transform ownership).
-4. Choose explicit scales for positional and color channels; nest guide options under `axis`.
+4. Choose explicit scales for positional and color channels (prefer compact scales for common paths); nest guide options under `axis`.
 5. Decide which preparation belongs in TanStack transforms, D3, SQL, or server.
 6. Add `ariaLabel` and the `tooltip` extension (plus focus mode if multi-series).
 7. Verify a static scene before animation or rich interaction.
-8. Extend only at documented boundaries (`createMark`, focus strategy, spatial index, custom renderer).
+8. Extend only at documented boundaries (`createMark`, focus strategy, spatial index, `motion()`, custom renderer).
 
-Generated code must include exact imports/subpaths, datum interfaces, scale construction, complete definition, adapter/host usage, meaningful `ariaLabel`, tooltip extension imports when interactive, and stable identity. Do not invent undeclared variables, casts, private source imports, or archived `react-charts` APIs.
+Generated code must include exact imports/subpaths, datum interfaces, scale construction, complete definition, adapter/host usage, meaningful `ariaLabel`, tooltip extension imports when interactive, and stable identity. Do not invent undeclared variables, casts, private source imports, unreleased marks from `main`, or archived `react-charts` APIs.
 
 Request template:
 
@@ -86,21 +95,23 @@ Always `destroy()` hosts in tests and assert no leaked observers/tooltips/listen
 
 Prefer bounded encodings over indexing every raw point when many rows share pixels (aggregates, bins, hexbin, density, sampling). Prefer TanStack `bin*` / `groupBy` or D3 prep, then marks. Add a `ChartSpatialIndexFactory` only when many independently focusable points remain necessary. Keep transforms visible in ordinary functions and memoize through app reactivity.
 
-## Canvas And Custom Surfaces
+## Canvas, Motion, And Custom Surfaces
 
 ```tsx
 import { Chart as CanvasChart } from '@tanstack/react-charts/canvas'
+import { Chart as RendererChart } from '@tanstack/react-charts/core'
+import { motion } from '@tanstack/charts/motion'
 ```
 
-Use Canvas when paint volume or path density needs it. Expect no server pixel paint—only the accessible shell. For application-owned surfaces, use `@tanstack/react-charts/core` with an explicit `renderer`.
+Use Canvas when paint volume or path density needs it. Expect no server pixel paint—only the accessible shell. For application-owned surfaces or `motion()`, use `@tanstack/react-charts/core` with an explicit `renderer`.
 
 Gradients: declare on the definition and use resource-aware SVG (`renderChartSvgWithResources` / `renderSvg`) when needed; Canvas consumes declared gradients without the SVG resource serializer.
 
 ## Custom Marks And Interaction Ownership
 
-Use `createMark` only when geometry cannot be composed from built-ins. Custom marks must materialize scale channels, emit stable keyed nodes, and optionally typed interaction points.
+Use `createMark` only when geometry cannot be composed from built-ins. Custom marks must materialize scale channels, emit stable keyed nodes, and optionally typed interaction points. Interaction metadata lives on the resolved scene primitive so custom marks share painted geometry with built-ins for focus (`0.5.1+`).
 
-Brush, zoom, scrubbers, and playback are application-owned. Invert pixels through a copied chart scale from `host.getScene()` / render context, then rebuild the definition with a configured domain. Disable native nearest-point focus with `focusDisabled` when it conflicts with the gesture.
+Brush, zoom, scrubbers, and playback are application-owned. Invert pixels through a copied chart scale from `host.getScene()` / render context, then rebuild the definition with a configured domain. Disable native nearest-point focus with `focusDisabled` (or `focus: false` when no focus geometry is needed) when it conflicts with the gesture.
 
 ## Export
 
@@ -118,7 +129,7 @@ Reliable order:
 4. Tooltip and keyboard focus (`tooltip` / `portal` extensions)
 5. Selection and controlled viewport
 6. Memoized live definitions
-7. Animation
+7. Animation (`animate` or opt-in `motion()`)
 8. Bundle/performance gates
 9. Remove old renderer after parity suite passes
 
@@ -129,7 +140,7 @@ Preserve proven transforms initially. Keep a temporary renderer switch only as a
 Old API centered on `options.data` series wrappers, `primaryAxis` / `secondaryAxes`, and element types on axes. New API:
 
 - Mark-local data arrays
-- Explicit D3 (or compact) scales on `x` / `y`
+- Explicit compact or D3 scales on `x` / `y`
 - Geometry chosen by mark functions (`lineY`, `barY`, …)
 - Implicit stacking or `layout: stack()` / prepared intervals—not `stacked: true` axis flags
 
@@ -139,13 +150,13 @@ Reject any solution that reintroduces the archived option object shape into `@ta
 
 - Import only needed marks, transforms, and D3 modules.
 - Prefer root imports for ordinary apps; use subpaths for hard isolation.
-- Keep polar/geo/Canvas/export/tooltip-portal off the critical path until required.
+- Keep polar/geo/Canvas/export/motion/tooltip-portal off the critical path until required.
 - Prefer granular `@tanstack/charts/transform/*` when only one transform family is needed.
-- Official comparison (workspace `c422a2c`, baseline `2026-07-31`): TanStack Charts cold-page gzip ~26.58–32.08 KiB vs Chart.js ~44.7–58.2, Plot ~83–92, Recharts/ECharts ~153–173—re-measure for the app's actual charts.
+- Official comparison (workspace `2688b43`, baseline `2026-08-05`): TanStack Charts cold-page gzip ~31.44–36.82 KiB vs Chart.js ~44.7–58.2, Plot ~83–92, Recharts/ECharts ~153–173—re-measure for the app's actual charts.
 
 ## Production Checklist
 
-- Correct packages (`@tanstack/*-charts` on a coherent version line), not archived `react-charts`
+- Correct packages (`@tanstack/*-charts` on a coherent `0.6.x` line), not archived `react-charts`
 - No stale `0.0.x` APIs (`tooltip: true`, flat axis labels, `groupScale`, `/portable`)
 - Question, encodings, scales, and transform/layout ownership are explicit
 - Definition memoization matches captured values

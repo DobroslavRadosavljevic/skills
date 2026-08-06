@@ -10,7 +10,7 @@ Packages:
 bun add @tanstack/react-query-persist-client @tanstack/query-async-storage-persister
 ```
 
-The older `@tanstack/query-sync-storage-persister` docs mark the sync persister as deprecated and recommend the async storage persister instead.
+`@tanstack/query-sync-storage-persister` is deprecated and will be removed in the next major version. Prefer `@tanstack/query-async-storage-persister`; sync storages like `window.localStorage` still satisfy its `AsyncStorage` interface.
 
 Use `PersistQueryClientProvider` instead of calling `persistQueryClient` outside React lifecycle:
 

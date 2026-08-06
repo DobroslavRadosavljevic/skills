@@ -1,20 +1,20 @@
 # Setup And Core API
 
-Snapshot: `@tanstack/charts@0.3.1` (pre-alpha). Pin and re-check when versions move.
+Snapshot: `@tanstack/charts@0.6.5` (pre-alpha). Pin and re-check when versions move.
 
 ## Installation
 
-Install the core in every app that authors definitions, then one adapter:
+Install the core and compact scales in every app that authors definitions, then one adapter:
 
 ```sh
-bun add @tanstack/charts @tanstack/react-charts
+bun add @tanstack/charts @tanstack/charts-scales @tanstack/react-charts
 ```
 
-Also declare every `d3-*` module the chart source imports, plus matching `@types`:
+Also declare every `d3-*` module the chart **application source** imports, plus matching `@types`:
 
 ```sh
-bun add d3-array d3-scale
-bun add -D @types/d3-array @types/d3-scale
+bun add d3-scale
+bun add -D @types/d3-scale
 ```
 
 Add modules only when imported:
@@ -26,11 +26,11 @@ bun add -D @types/d3-shape
 
 Do not install the umbrella `d3` package just because one capability is needed. Do not install unscoped `react-charts` for this library.
 
-The core declares `d3-array`, `d3-shape`, and `d3-geo` for its own numeric-bin/stack transforms, polar/curve, and geo features. Those are normal dependencies (tree-shaken when unused), not an application import contract—still declare any `d3-*` the **app source** imports.
+The core declares `d3-array`, `d3-shape`, `d3-geo`, and (as of `0.6.5`) `d3-scale` for its own features. Those are normal dependencies (tree-shaken when unused), not an application import contract—still declare any `d3-*` the **app source** imports so strict package managers resolve them.
 
-### Compact scales (optional)
+### Compact scales
 
-For common numeric/categorical mappings only:
+For common numeric/categorical mappings (preferred starting path):
 
 ```sh
 bun add @tanstack/charts-scales
@@ -47,11 +47,12 @@ There is **no** `@tanstack/charts-scales` root export. Use exact `/linear`, `/ba
 
 ### Adapters And Peers
 
-Same version line as core (`0.3.1`):
+Same version line as core (`0.6.5`):
 
 | Adapter | Framework peers |
 | --- | --- |
 | `@tanstack/react-charts` | `react` / `react-dom` `^19.0.0` |
+| `@tanstack/react-native-charts` | React `^19.2.3`, React Native `^0.86.0`, `react-native-svg` `>=15.15.4 <16` (experimental) |
 | `@tanstack/preact-charts` | `preact` `>=10` |
 | `@tanstack/vue-charts` | `vue` `>=3.5` |
 | `@tanstack/solid-charts` | `solid-js` `>=1.8` |
@@ -61,22 +62,23 @@ Same version line as core (`0.3.1`):
 | `@tanstack/alpine-charts` | `alpinejs` `>=3.15` |
 | `@tanstack/octane-charts` | `octane` `^0.1.13` |
 
-Adapters do not replace the core. Definitions and marks still come from `@tanstack/charts`.
+Adapters do not replace the core. Definitions and marks still come from `@tanstack/charts` (or `/universal` for React Native shared definitions).
 
 ## Ownership Boundary
 
 | Owner | Responsibility |
 | --- | --- |
 | Application | Data fetch/clean, D3 or TanStack transforms, scale choice/domains, brush/zoom/scrubber state |
-| D3 modules / `@tanstack/charts-scales` | Scales, bins, stacks, curves, geo, spatial algorithms (as imported) |
-| `@tanstack/charts` | Marks, channels, transforms helpers, responsive ranges, guides, keyed scene, SVG/Canvas, focus/tooltip host |
+| `@tanstack/charts-scales` / D3 modules | Scales, bins, stacks, curves, geo, spatial algorithms (as imported) |
+| `@tanstack/charts` | Marks, channels, transforms helpers, responsive ranges, guides, keyed scene, SVG/Canvas/motion, focus/tooltip host |
 | Adapter | Framework lifecycle, SSR shell, unmount cleanup |
 
 ## Minimal Definition
 
 ```ts
-import { scaleBand, scaleLinear } from 'd3-scale'
 import { barY, defineChart } from '@tanstack/charts'
+import { scaleBand } from '@tanstack/charts-scales/band'
+import { scaleLinear } from '@tanstack/charts-scales/linear'
 import { tooltip } from '@tanstack/charts/tooltip'
 
 interface LetterFrequency {
@@ -125,7 +127,7 @@ Return a configured factory when options are needed before inference:
 x: { scale: () => scaleBand<string>().padding(0.18) }
 ```
 
-Pass a **configured instance** when the domain is application-owned:
+Pass a **configured instance** when the domain is application-owned (including union-valued axes as of `0.6.4`):
 
 ```ts
 y: { scale: scaleLinear().domain([0, 1]) }
@@ -134,7 +136,7 @@ x: { scale: scaleUtc().domain([windowStart, windowEnd]) }
 
 Never assign pixel ranges to positional scales used by the chart. TanStack Charts copies the scale and assigns the responsive range per scene.
 
-### Axis Options (`0.3.x`)
+### Axis Options (`0.3.x`+)
 
 Flat `0.0.x` guide fields (`label`, `ticks`, `tickRotate`, `labelOffset` on the axis object) were replaced by composable options:
 
@@ -194,8 +196,8 @@ Return `null` from a positional accessor to create intentional gaps in lines/are
 - `fill` / `stroke` are final paint overrides and do **not** feed the scale/legend.
 
 ```ts
-import { scaleOrdinal } from 'd3-scale'
 import { colorLegend, defineChart, lineY } from '@tanstack/charts'
+import { scaleOrdinal } from '@tanstack/charts-scales/ordinal'
 
 const color = scaleOrdinal(
   ['North', 'South', 'West'],
@@ -227,7 +229,7 @@ const definition = defineChart({
 })
 ```
 
-Responsive builder when tick density or composition depends on surface size:
+Responsive builder when tick density or composition depends on surface size. Outer options (tooltip, animate, motion, …) are retained with the builder:
 
 ```ts
 import { tooltip } from '@tanstack/charts/tooltip'
@@ -270,7 +272,7 @@ defineChart({
     portal,
     anchor: 'group-center',
     placement: ['top', 'right', 'left', 'bottom'],
-    sort: 'color-domain',
+    sort: 'color-domain', // default grouped order is visual mark position
   },
 })
 ```
@@ -283,12 +285,15 @@ defineChart({
 | `portal: true` | `portal` (inside tooltip options) |
 | `portal: false` | omit |
 
+From `0.4.0`, grouped tooltip rows default to rendered mark position (top-to-bottom for x groups, left-to-right for y groups). Explicit policies: `visual`, `color-domain`, `focus`, or a typed comparator.
+
 ## Vanilla Host
 
 ```ts
 import { defineChart, lineY, mountChart } from '@tanstack/charts'
+import { scaleLinear } from '@tanstack/charts-scales/linear'
 import { tooltip } from '@tanstack/charts/tooltip'
-import { scaleLinear, scaleUtc } from 'd3-scale'
+import { scaleUtc } from 'd3-scale'
 
 const definition = defineChart({
   marks: [lineY(rows, { x: 'Date', y: 'Close', stroke: '#2563eb' })],
@@ -318,7 +323,7 @@ host.update({
 host.destroy()
 ```
 
-`mountChart` is also available from `@tanstack/charts/dom`. Canvas: `mountCanvasChart` from `@tanstack/charts/canvas`.
+`mountChart` is also available from `@tanstack/charts/dom`. Canvas: `mountCanvasChart` from `@tanstack/charts/canvas`. Optional motion SVG: `mountChartRenderer` from `@tanstack/charts/renderer` with `motion()` from `@tanstack/charts/motion`.
 
 ## Import Boundaries
 
@@ -338,12 +343,14 @@ import { d3Curve } from '@tanstack/charts/d3/shape'
 import { tooltip } from '@tanstack/charts/tooltip'
 import { portal } from '@tanstack/charts/tooltip/portal'
 import { mountCanvasChart } from '@tanstack/charts/canvas'
+import { motion } from '@tanstack/charts/motion'
+import { createChartSpring } from '@tanstack/charts/spring'
 import { polar, radialArc } from '@tanstack/charts/polar'
 import { geoShape } from '@tanstack/charts/geo'
 import { focusDisabled } from '@tanstack/charts/focus/disabled'
 ```
 
-Environment-safe authoring (no browser host reachable):
+Environment-safe authoring (no browser host reachable)—required for React Native shared definitions:
 
 ```ts
 import { createChartRuntime, defineChart, lineY } from '@tanstack/charts/universal'
@@ -361,13 +368,13 @@ import { Chart as RendererChart } from '@tanstack/react-charts/core'
 import { Chart as TooltipChart } from '@tanstack/react-charts/tooltip'
 ```
 
-Default `Chart` is SVG-based and does not pull Canvas into its module graph. Use `/tooltip` when passing `renderTooltipBody`.
+Default `Chart` is SVG-based and does not pull Canvas into its module graph. Use `/tooltip` when passing `renderTooltipBody`. Use `/core` when supplying `renderer: motion()` or another custom renderer.
 
 ## Verify Installation
 
 ```ts
-import { scaleLinear } from 'd3-scale'
 import { createChartScene, defineChart, lineY } from '@tanstack/charts'
+import { scaleLinear } from '@tanstack/charts-scales/linear'
 
 const chart = defineChart({
   marks: [lineY([2, 5, 3])],

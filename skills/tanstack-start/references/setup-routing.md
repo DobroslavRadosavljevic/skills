@@ -18,12 +18,15 @@ The CLI prompts for package manager and optional add-ons such as Tailwind CSS an
 Official examples are useful when matching existing patterns:
 
 - `start-basic`
+- `start-basic-rsbuild`
 - `start-basic-auth`
+- `start-counter`
 - `start-basic-react-query`
 - `start-clerk-basic`
 - `start-supabase-basic`
 - `start-workos`
 - `start-material-ui`
+- `start-basic-cloudflare` (Cloudflare Workers hosting reference)
 
 Clone examples with `gitpick` when the user wants a working reference:
 
@@ -89,7 +92,7 @@ Important caveat: keep `verbatimModuleSyntax` disabled unless the current docs a
 
 ## Vite Config
 
-Start's Vite plugin should come before React's Vite plugin:
+Start's Vite plugin should come before React's Vite plugin. Current build-from-scratch docs enable Vite's built-in tsconfig path resolution:
 
 ```ts
 import { defineConfig } from 'vite'
@@ -100,14 +103,18 @@ export default defineConfig({
   server: {
     port: 3000,
   },
+  resolve: {
+    tsconfigPaths: true,
+  },
   plugins: [
     tanstackStart(),
+    // React's Vite plugin must come after Start's Vite plugin
     viteReact(),
   ],
 })
 ```
 
-If the repo uses TypeScript path aliases, preserve the local `resolve` or tsconfig-paths setup rather than replacing it.
+If the repo uses a different path-alias setup, preserve it rather than forcing `tsconfigPaths`. Start peers `vite >=7`; npm `latest` Vite may be newer — follow the repo's Vite major unless migrating intentionally. `@vitejs/plugin-react-swc` is an allowed alternative to `@vitejs/plugin-react`.
 
 ## Rsbuild Config
 
@@ -119,10 +126,10 @@ import { pluginReact } from '@rsbuild/plugin-react'
 import { tanstackStart } from '@tanstack/react-start/plugin/rsbuild'
 
 export default defineConfig({
-  plugins: [
-    pluginReact(),
-    tanstackStart(),
-  ],
+  server: {
+    port: 3000,
+  },
+  plugins: [pluginReact(), tanstackStart()],
 })
 ```
 
@@ -148,33 +155,36 @@ tsconfig.json
 
 ## Router Setup
 
-`src/router.tsx` should create a Router from the generated route tree:
+Current docs require exporting `getRouter` from `src/router.tsx`. Create a Router from the generated route tree:
 
 ```tsx
 import { createRouter } from '@tanstack/react-router'
 import { routeTree } from './routeTree.gen'
 
-export function createAppRouter() {
-  return createRouter({
+export function getRouter() {
+  const router = createRouter({
     routeTree,
     scrollRestoration: true,
   })
+
+  return router
 }
 
 declare module '@tanstack/react-router' {
   interface Register {
-    router: ReturnType<typeof createAppRouter>
+    router: ReturnType<typeof getRouter>
   }
 }
 ```
 
-Add router context here when loaders need shared services such as a Query client, auth/session state, or feature flags.
+Add router context here when loaders need shared services such as a Query client, auth/session state, or feature flags. Keep the `getRouter` export name unless the repo already uses a documented Start entry convention.
 
 ## Root Route
 
-The root route owns the document shell. Use `HeadContent`, `Scripts`, and `Outlet`:
+The root route owns the document shell. Current build-from-scratch docs split the route component from the HTML document wrapper and set default `head` meta:
 
 ```tsx
+import type { ReactNode } from 'react'
 import {
   HeadContent,
   Outlet,
@@ -183,17 +193,35 @@ import {
 } from '@tanstack/react-router'
 
 export const Route = createRootRoute({
-  component: RootDocument,
+  head: () => ({
+    meta: [
+      { charSet: 'utf-8' },
+      {
+        name: 'viewport',
+        content: 'width=device-width, initial-scale=1',
+      },
+      { title: 'TanStack Start Starter' },
+    ],
+  }),
+  component: RootComponent,
 })
 
-function RootDocument() {
+function RootComponent() {
+  return (
+    <RootDocument>
+      <Outlet />
+    </RootDocument>
+  )
+}
+
+function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
   return (
     <html>
       <head>
         <HeadContent />
       </head>
       <body>
-        <Outlet />
+        {children}
         <Scripts />
       </body>
     </html>

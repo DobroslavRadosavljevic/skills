@@ -46,7 +46,7 @@ const serverValidate = createServerValidate({
 })
 
 export const handleForm = createServerFn({ method: 'POST' })
-  .inputValidator((data: unknown) => {
+  .validator((data: unknown) => {
     if (!(data instanceof FormData)) {
       throw new Error('Invalid form data')
     }
@@ -67,12 +67,15 @@ export const handleForm = createServerFn({ method: 'POST' })
   })
 ```
 
+Load server-returned form state with the Start `getFormData` helper (often wrapped in a GET server function) before merging on the client.
+
 Client outline:
 
 ```tsx
 import {
   mergeForm,
   useForm,
+  useSelector,
   useTransform,
 } from '@tanstack/react-form-start'
 
@@ -80,6 +83,8 @@ const form = useForm({
   ...formOpts,
   transform: useTransform((baseForm) => mergeForm(baseForm, state), [state]),
 })
+
+const formErrors = useSelector(form.store, (formState) => formState.errors)
 ```
 
 ## Next.js App Router
@@ -138,6 +143,7 @@ import {
   initialFormState,
   mergeForm,
   useForm,
+  useSelector,
   useTransform,
 } from '@tanstack/react-form-nextjs'
 
@@ -147,6 +153,8 @@ const form = useForm({
   ...formOpts,
   transform: useTransform((baseForm) => mergeForm(baseForm, state), [state]),
 })
+
+const formErrors = useSelector(form.store, (formState) => formState.errors)
 ```
 
 Use `<form action={action as never} onSubmit={() => form.handleSubmit()}>` only when it matches the local framework pattern and tests confirm both client and server validation paths.
@@ -171,6 +179,7 @@ import {
   Form,
   mergeForm,
   useForm,
+  useSelector,
   useTransform,
 } from '@tanstack/react-form'
 
@@ -183,6 +192,8 @@ const form = useForm({
     [actionData],
   ),
 })
+
+const formErrors = useSelector(form.store, (formState) => formState.errors)
 ```
 
 Check import paths carefully. Remix examples import the route `Form` from `@tanstack/react-form` while server validation helpers come from `@tanstack/react-form-remix`.
@@ -204,7 +215,7 @@ import { formDevtoolsPlugin } from '@tanstack/react-form-devtools'
 <TanStackDevtools plugins={[formDevtoolsPlugin()]} />
 ```
 
-Use devtools while debugging stale-looking state. If UI does not update, confirm the component subscribes with `form.Subscribe` or `useStore`.
+Use devtools while debugging stale-looking state. If UI does not update, confirm the component subscribes with `form.Subscribe` or `useSelector`.
 
 ## Debugging
 

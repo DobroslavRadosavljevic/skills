@@ -21,6 +21,7 @@ Install the adapter for the framework:
 - Angular: `@tanstack/angular-store`
 - Svelte: `@tanstack/svelte-store`
 - Lit: `@tanstack/lit-store`
+- Octane: `@tanstack/octane-store`
 
 Current docs use `useSelector` as the read API across many adapters, with `useStore` retained as a deprecated alias. Confirm adapter-specific signatures before changing non-React code.
 
@@ -60,7 +61,7 @@ Guidance:
 
 ## Debugging Without Devtools
 
-No Store-specific devtools package was found in npm during the 2026-07-08 snapshot. Use local debugging tools:
+No Store-specific devtools package was found in npm during the 2026-08-06 snapshot. Use local debugging tools:
 
 - Log from actions, not every render.
 - Temporarily subscribe to a store and print state transitions.

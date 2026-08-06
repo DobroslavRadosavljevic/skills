@@ -1,26 +1,31 @@
 # TanStack Store Source Map
 
-Snapshot date: 2026-07-08.
+Snapshot date: 2026-08-06.
 
 ## Current Package Evidence
 
-Npm evidence from this snapshot:
+Npm evidence from this snapshot (`dist-tags.latest`):
 
-- `@tanstack/store`: `0.11.0`
-- `@tanstack/react-store`: `0.11.0`
-- `@tanstack/solid-store`: `0.11.0`
-- `@tanstack/vue-store`: `0.11.0`
-- `@tanstack/angular-store`: `0.11.0`
-- `@tanstack/svelte-store`: `0.12.0`
-- `@tanstack/preact-store`: `0.13.1`
-- `@tanstack/lit-store`: `0.14.0`
+- `@tanstack/store`: `0.11.1`
+- `@tanstack/react-store`: `0.11.1`
+- `@tanstack/solid-store`: `0.11.1`
+- `@tanstack/vue-store`: `0.11.1`
+- `@tanstack/angular-store`: `0.11.1`
+- `@tanstack/svelte-store`: `0.12.1`
+- `@tanstack/preact-store`: `0.13.2`
+- `@tanstack/lit-store`: `0.14.1`
+- `@tanstack/octane-store`: `0.12.2`
 
 Package notes:
 
-- `@tanstack/react-store` depends on `@tanstack/store@0.11.0` and `use-sync-external-store`.
+- `@tanstack/store@0.11.1` (2026-08-05) is a patch that inlines reactive flag constants in generated builds for better tree-shaking (`#350`). No public API changes from `0.11.0`.
+- Adapter packages at this snapshot depend on `@tanstack/store@0.11.1`.
+- `@tanstack/react-store` also depends on `use-sync-external-store@^1.6.0`.
 - React peer range is React and ReactDOM `^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0`.
 - The installation docs say the React adapter is currently ReactDOM-only, not React Native.
+- Official site still labels Store as **alpha**; packages remain on the `0.x` line.
 - No published `@tanstack/store-devtools` or `@tanstack/react-store-devtools` package was found during this snapshot.
+- `@tanstack/store` still publishes a `beta` dist-tag (`0.0.1-beta.174`); prefer `latest` unless a project deliberately tracks beta.
 
 Context7 resolved official TanStack Store docs:
 
@@ -45,7 +50,8 @@ React:
 - `useCreateAtom`: `https://tanstack.com/store/latest/docs/framework/react/reference/functions/useCreateAtom`
 - `useCreateStore`: `https://tanstack.com/store/latest/docs/framework/react/reference/functions/useCreateStore`
 - `createStoreContext`: `https://tanstack.com/store/latest/docs/framework/react/reference/functions/createStoreContext`
-- `useStore`: `https://tanstack.com/store/latest/docs/framework/react/reference/functions/useStore`
+- `_useStore` (experimental): `https://tanstack.com/store/latest/docs/framework/react/reference/functions/useStore`
+- `useStore` (deprecated alias): `https://tanstack.com/store/latest/docs/framework/react/reference/functions/useStore-1`
 
 Core reference:
 
@@ -68,6 +74,7 @@ Framework adapters:
 - Svelte: `https://tanstack.com/store/latest/docs/framework/svelte/quick-start`
 - Angular: `https://tanstack.com/store/latest/docs/framework/angular/quick-start`
 - Lit: `https://tanstack.com/store/latest/docs/framework/lit/quick-start`
+- Octane: `https://tanstack.com/store/latest/docs/framework/octane/quick-start`
 
 ## Raw Docs
 

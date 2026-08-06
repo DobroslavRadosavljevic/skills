@@ -1,6 +1,6 @@
 # Source Map
 
-Snapshot date: 2026-07-08.
+Snapshot date: 2026-08-06.
 
 This reference records the current docs and package evidence used to create the skill. Refresh these sources whenever the user asks for latest behavior, when package versions differ, or when work touches SSR, testing, route generation, auth, search params, or data loading.
 
@@ -10,6 +10,7 @@ Context7 resolution:
 
 - Selected docs surface: `/websites/tanstack_router_v1`.
 - Other relevant match: `/tanstack/router`, which has more snippets but may include version-specific package snapshots.
+- CLI scaffolding: `/tanstack/cli` for `@tanstack/cli create --router-only`.
 
 Official public docs:
 
@@ -83,23 +84,31 @@ Official raw-doc mirrors used for spot checks:
 
 ## Package Snapshot
 
-Latest npm versions observed on 2026-07-08:
+Latest npm `latest` dist-tags observed on 2026-08-06:
 
-- `@tanstack/react-router`: `1.170.17`
-- `@tanstack/router-plugin`: `1.168.19`
-- `@tanstack/react-router-devtools`: `1.167.0`
+- `@tanstack/react-router`: `1.170.20`
+- `@tanstack/router-core`: `1.171.17`
+- `@tanstack/router-plugin`: `1.168.25`
+- `@tanstack/router-cli`: `1.167.23`
+- `@tanstack/react-router-devtools`: `1.167.1`
 - `@tanstack/react-router-ssr-query`: `1.167.1`
 - `@tanstack/eslint-plugin-router`: `1.162.0`
 - `@tanstack/zod-adapter`: `1.167.0`
-- `@tanstack/cli`: `0.69.5`
+- `@tanstack/cli`: `0.70.1`
+
+Related Start packages (not Router SPA deps; noted for SSR/Start adjacency):
+
+- `@tanstack/react-start`: `1.168.37` (`latest`; Start still not documented as stable 1.0)
 
 ## Current Status Notes
 
 - TanStack Router supports React and Solid. This skill focuses on React and `@tanstack/react-router` unless the repo is clearly Solid.
 - React requires React 18 or later with `createRoot`; TypeScript 5.3 or higher is recommended.
 - File-based routing is the preferred and recommended route configuration for most projects. Code-based routes remain fully supported.
+- Official quick start scaffolds with `@tanstack/cli create --router-only` (interactive prompts for file/code routes, TypeScript, Tailwind, toolchain, Git).
 - Router provides typed navigation, typed JSON-first search params, path/search validation, nested layouts, route loaders with SWR caching, preloading, error boundaries, route masking, custom history, and SSR support.
-- SSR APIs are documented as experimental because they share underlying implementation with TanStack Start before Start reaches stable status.
+- As of `@tanstack/react-router@1.170.19`, match loading uses a lane-based scheduler; documented `gcTime` / `preloadGcTime` defaults are **5 minutes** (`300_000`), matching runtime. `router.invalidate()` retires matching active preload lanes.
+- SSR APIs remain documented as experimental because they share underlying implementation with TanStack Start before Start reaches stable status.
 
 ## Refresh Triggers
 

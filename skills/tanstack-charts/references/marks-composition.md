@@ -79,7 +79,7 @@ lineY(rows, { x: 'date', y: 'value', z: 'region' })
 
 When `z` is omitted on a connected line/area, an authored `color` channel can also create path groups. Explicit `z` wins when fields differ.
 
-### Bars And Areas (`0.3.x`)
+### Bars And Areas (`0.3.x`+)
 
 **Single length channels stack implicitly** at repeated categorical positions (positive/negative diverge from zero):
 
@@ -205,8 +205,9 @@ Clipping applies to the mark group, not axes/legends. Leave it off when annotati
 ## Composed Example
 
 ```ts
-import { scaleLinear, scaleUtc } from 'd3-scale'
+import { scaleUtc } from 'd3-scale'
 import { areaY, defineChart, lineY } from '@tanstack/charts'
+import { scaleLinear } from '@tanstack/charts-scales/linear'
 import { tooltip } from '@tanstack/charts/tooltip'
 
 interface DailyTemperature {

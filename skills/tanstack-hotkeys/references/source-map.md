@@ -1,13 +1,14 @@
 # TanStack Hotkeys Source Map
 
-Snapshot date: 2026-07-08.
+Snapshot date: 2026-08-06.
 
 ## Current Package Evidence
 
-Npm evidence from this snapshot:
+Npm `latest` dist-tags verified on this snapshot (published 2026-04-25; unchanged since the prior 2026-07-08 skill snapshot):
 
 - `@tanstack/hotkeys`: `0.8.0`
-- `@tanstack/react-hotkeys`: `0.10.0`
+- `@tanstack/hotkeys-devtools`: `0.9.0`
+- `@tanstack/react-hotkeys`: `0.10.0` (depends on `@tanstack/hotkeys@0.8.0`, `@tanstack/react-store@^0.11.0`)
 - `@tanstack/react-hotkeys-devtools`: `0.7.0`
 - `@tanstack/preact-hotkeys`: `0.10.0`
 - `@tanstack/preact-hotkeys-devtools`: `0.7.0`
@@ -21,12 +22,20 @@ Npm evidence from this snapshot:
 
 `@tanstack/hotkeys-core` was not found on npm. The core package name is `@tanstack/hotkeys`. Framework packages re-export core APIs, so React apps usually install only `@tanstack/react-hotkeys` unless they need direct vanilla JS usage.
 
+Official overview still marks TanStack Hotkeys as **alpha**; APIs may change. Re-check docs before treating edge behavior as stable.
+
 Context7 resolved official TanStack Hotkeys docs:
 
-- `/websites/tanstack_hotkeys`: official website docs, high reputation, highest score during research.
-- `/tanstack/hotkeys`: official repository docs, high reputation.
+- `/websites/tanstack_hotkeys`: official website docs, high reputation, preferred for current guides.
+- `/tanstack/hotkeys`: official repository docs, high reputation, strong snippet coverage.
 
-The official overview currently marks TanStack Hotkeys as alpha and notes that APIs are subject to change. Re-check docs before treating edge behavior as stable.
+Refresh commands:
+
+```sh
+npm view @tanstack/react-hotkeys version dist-tags
+npm view @tanstack/hotkeys version dist-tags
+npm view @tanstack/react-hotkeys-devtools version dist-tags
+```
 
 ## Official Current Docs
 
@@ -71,11 +80,13 @@ Core references:
 - `formatWithLabels`: `https://tanstack.com/hotkeys/latest/docs/reference/functions/formatWithLabels`
 - `parseHotkey`: `https://tanstack.com/hotkeys/latest/docs/reference/functions/parseHotkey`
 - `normalizeHotkey`: `https://tanstack.com/hotkeys/latest/docs/reference/functions/normalizeHotkey`
+- `normalizeHotkeyFromParsed`: `https://tanstack.com/hotkeys/latest/docs/reference/functions/normalizeHotkeyFromParsed`
 - `normalizeRegisterableHotkey`: `https://tanstack.com/hotkeys/latest/docs/reference/functions/normalizeRegisterableHotkey`
 - `validateHotkey`: `https://tanstack.com/hotkeys/latest/docs/reference/functions/validateHotkey`
 - `HotkeyManager`: `https://tanstack.com/hotkeys/latest/docs/reference/classes/HotkeyManager`
 - `SequenceManager`: `https://tanstack.com/hotkeys/latest/docs/reference/classes/SequenceManager`
 - `KeyStateTracker`: `https://tanstack.com/hotkeys/latest/docs/reference/classes/KeyStateTracker`
+- `createSequenceMatcher`: `https://tanstack.com/hotkeys/latest/docs/reference/functions/createSequenceMatcher`
 
 ## Raw Docs
 

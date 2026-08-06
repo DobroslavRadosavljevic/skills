@@ -1,18 +1,24 @@
 # TanStack Query Source Map
 
-Snapshot date: 2026-07-08.
+Snapshot date: 2026-08-06.
 
 ## Current Package Evidence
 
-Npm evidence from this snapshot:
+Npm evidence from this snapshot (`latest` dist-tag unless noted):
 
-- `@tanstack/react-query`: `5.101.2`
-- `@tanstack/query-core`: `5.101.2`
-- `@tanstack/react-query-devtools`: `5.101.2`
-- `@tanstack/eslint-plugin-query`: `5.101.2`
-- `@tanstack/react-query` dist-tags: `latest` is `5.101.2`, `previous` is `4.44.0`, `rc` is `5.0.0-rc.16`, `beta` is `5.0.0-beta.35`, `alpha` is `5.0.0-alpha.91`
+- `@tanstack/react-query`: `5.101.4`
+- `@tanstack/query-core`: `5.101.4`
+- `@tanstack/react-query-devtools`: `5.101.4`
+- `@tanstack/eslint-plugin-query`: `5.101.4`
+- `@tanstack/react-query-persist-client`: `5.101.4`
+- `@tanstack/query-async-storage-persister`: `5.101.4`
+- `@tanstack/query-sync-storage-persister`: `5.101.4` (deprecated; prefer async persister)
+- `@tanstack/query-broadcast-client-experimental`: `5.101.4`
+- `@tanstack/react-query-next-experimental`: `5.101.4`
+- `@tanstack/react-query` dist-tags: `latest` is `5.101.4`, `previous` is `4.44.0`, `rc` is `5.0.0-rc.16`, `beta` is `5.0.0-beta.35`, `alpha` is `5.0.0-alpha.91`
+- Peer dependency: `react` `^18 || ^19`
 
-Context7 resolved official TanStack Query docs. The best repository-backed library ID available during research was `/tanstack/query/v5.90.3`; npm showed the current latest package patch as `5.101.2`, so source files from the `main` branch and `/query/latest` docs were also checked.
+Context7 resolved official TanStack Query docs. Prefer `/websites/tanstack_query_v5` or `/tanstack/query` for current guides. The newest repository-backed versioned ID available during research was `/tanstack/query/v5.90.3`; npm showed the current latest package patch as `5.101.4`, so source files from the `main` branch and `/query/latest` docs were also checked. Prefer tanstack.com `/query/latest` and GitHub raw docs over older Context7 version pins when they disagree.
 
 ## Official Current Docs
 
@@ -82,6 +88,8 @@ Use GitHub raw docs when the website is hard to fetch:
 - `https://raw.githubusercontent.com/TanStack/query/main/docs/framework/react/plugins/<plugin-name>.md`
 - `https://raw.githubusercontent.com/TanStack/query/main/docs/eslint/eslint-plugin-query.md`
 
+When raw `main` and `/query/latest` disagree on support windows or APIs, prefer the published `/query/latest` site and the installed package types.
+
 ## Refresh Triggers
 
 Refresh docs before relying on this skill when:
@@ -89,5 +97,5 @@ Refresh docs before relying on this skill when:
 - The installed package is not v5, or package versions differ across `@tanstack/react-query`, `query-core`, devtools, and plugins.
 - The task touches SSR, Server Components, streaming, router prefetching, persistence, broadcast sync, or offline mutations.
 - Code uses positional `useQuery(key, fn)` signatures, `cacheTime`, `Hydrate`, query `onSuccess`, or `status: 'loading'`.
-- TypeScript errors mention `queryOptions`, `mutationOptions`, `Register`, `skipToken`, `initialPageParam`, or hydration.
+- TypeScript errors mention `queryOptions`, `mutationOptions`, `Register`, `skipToken`, `initialPageParam`, `environmentManager`, or hydration.
 - The repo has custom query key factories, active route loaders, or cross-tab/offline behavior.

@@ -9,7 +9,6 @@ description: >-
   Start house style. Optional with-* overlays for generated OpenAPI clients,
   Better Auth client, TanStack Query, route gates, TanStack Form, env, client
   authorization, UI package, Effect, and Vitest.
-disable-model-invocation: true
 ---
 
 # TanStack Start Architecture
@@ -20,7 +19,10 @@ skill alone — it does not depend on other skills.
 **Job:** where UI, hooks, and feature code live; folder/file naming; ownership.
 
 **Not this skill:** Start/Router API quirks, SSR adapters, deployment, or latest
-framework docs. Prefer current TanStack Start / Router docs for those.
+framework docs. Prefer current TanStack Start / Router docs for those. Official
+Start docs still describe the framework as a Release Candidate (API considered
+stable; not bug-free). Prefer npm `latest` of `@tanstack/react-start` +
+`@tanstack/react-router` over stale “alpha” labels elsewhere.
 
 If the target repo already documents architecture (e.g. `AGENTS.md`) and it
 conflicts, **repo wins** unless the user asks to migrate toward this skill.
@@ -29,7 +31,8 @@ conflicts, **repo wins** unless the user asks to migrate toward this skill.
 
 | Piece | Default |
 | --- | --- |
-| Framework | TanStack Start + file-based TanStack Router |
+| Framework | TanStack Start + file-based TanStack Router (Vite or Rsbuild) |
+| Entrypoints | `src/router.tsx` (`getRouter`), `routes/__root.tsx`, generated `routeTree.gen.ts`; optional `start.ts` / `server.ts` |
 | Pages | Folder + `index.tsx` per page (no flat page leaves) |
 | Route-only code | Hyphen-prefixed colocated folders (`-components`, `-hooks`, `-lib`) |
 | Reusable features | `src/modules/<feature>/` after a reuse gate |

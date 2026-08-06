@@ -1,5 +1,7 @@
 # Transforms And Layouts
 
+Snapshot: `@tanstack/charts@0.6.5` (transform surface stable since `0.3.0`).
+
 Transforms are ordinary eager functions: rows in, rows out. They do not rewrite mark options, cache results, or own framework reactivity.
 
 ```text

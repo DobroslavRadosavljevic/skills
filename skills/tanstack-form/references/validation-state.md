@@ -76,7 +76,9 @@ Validators may return strings, booleans, numbers, objects, arrays, or any truthy
 
 ## Standard Schema
 
-TanStack Form supports Standard Schema validation. Current docs call out Zod, Valibot, ArkType, Yup, and Effect Schema support. Use current major versions of those libraries and verify their own docs for parser behavior.
+TanStack Form supports Standard Schema validation natively. Current docs call out Zod, Valibot, ArkType, and Effect Schema. Use current major versions of those libraries and verify their own docs for parser behavior. Prefer passing schemas directly to `validators` over legacy `@tanstack/*-form-adapter` packages.
+
+When a form-level Standard Schema validator fails, `state.errorMap.onChange` (and other timing keys) is typed as `Record<string, StandardSchemaV1Issue[]>` keyed by field name. Iterate the record to render messages; do not treat it like a plain string error.
 
 ```tsx
 import { z } from 'zod'

@@ -10,6 +10,8 @@ Common feature names:
 - Faceting: `columnFacetingFeature`
 - Pagination: `rowPaginationFeature`
 - Row selection: `rowSelectionFeature`
+- Cell selection: `cellSelectionFeature`
+- Cell spanning: `cellSpanningFeature`
 - Row pinning: `rowPinningFeature`
 - Row expanding: `rowExpandingFeature`
 - Column pinning: `columnPinningFeature`
@@ -17,7 +19,10 @@ Common feature names:
 - Column ordering: `columnOrderingFeature`
 - Column sizing: `columnSizingFeature`
 - Column resizing: `columnResizingFeature`
-- Grouping and aggregation: `columnGroupingFeature`
+- Aggregation: `rowAggregationFeature`
+- Grouping: `columnGroupingFeature`
+
+Kitchen-sink shortcut: `stockFeatures` registers every stock feature. Prefer explicit registration for production bundles.
 
 ## Sorting
 
@@ -27,14 +32,16 @@ Setup:
 import {
   createSortedRowModel,
   rowSortingFeature,
-  sortFns,
+  sortFn_alphanumeric,
   tableFeatures,
 } from '@tanstack/react-table'
 
 const features = tableFeatures({
   rowSortingFeature,
   sortedRowModel: createSortedRowModel(),
-  sortFns,
+  sortFns: {
+    alphanumeric: sortFn_alphanumeric,
+  },
 })
 ```
 
@@ -50,7 +57,7 @@ type SortingState = ColumnSort[]
 
 Use `manualSorting: true` for server-side sorting. If manual sorting is on, the table assumes incoming `data` is already sorted. Do not combine client-side sorting with server-side pagination or filtering unless intentionally sorting only the loaded page.
 
-Built-in sort functions:
+Built-in sort functions (`sortFn_*`):
 
 - `alphanumeric`
 - `alphanumericCaseSensitive`
@@ -76,14 +83,16 @@ Column filtering setup:
 import {
   columnFilteringFeature,
   createFilteredRowModel,
-  filterFns,
+  filterFn_includesString,
   tableFeatures,
 } from '@tanstack/react-table'
 
 const features = tableFeatures({
   columnFilteringFeature,
   filteredRowModel: createFilteredRowModel(),
-  filterFns,
+  filterFns: {
+    includesString: filterFn_includesString,
+  },
 })
 ```
 
@@ -94,7 +103,9 @@ const features = tableFeatures({
   columnFilteringFeature,
   globalFilteringFeature,
   filteredRowModel: createFilteredRowModel(),
-  filterFns,
+  filterFns: {
+    includesString: filterFn_includesString,
+  },
 })
 ```
 
@@ -112,11 +123,12 @@ type ColumnFiltersState = ColumnFilter[]
 
 Global filter state is `globalFilter` and is commonly a string, though custom filter functions can use other shapes.
 
-Built-in filter functions:
+Built-in filter functions (`filterFn_*`):
 
 - `includesString`
 - `includesStringSensitive`
 - `equalsString`
+- `equalsStringSensitive`
 - `equals`
 - `weakEquals`
 - `arrIncludes`
@@ -124,8 +136,17 @@ Built-in filter functions:
 - `arrIncludesSome`
 - `arrHas`
 - `inNumberRange`
+- `inDateRange`
 - `between`
 - `betweenInclusive`
+- `empty`
+- `notEmpty`
+- `startsWith`
+- `endsWith`
+- `greaterThan`
+- `greaterThanOrEqualTo`
+- `lessThan`
+- `lessThanOrEqualTo`
 
 UI APIs:
 
@@ -149,7 +170,7 @@ import {
   createFacetedRowModel,
   createFacetedUniqueValues,
   createFilteredRowModel,
-  filterFns,
+  filterFn_includesString,
   tableFeatures,
 } from '@tanstack/react-table'
 
@@ -160,7 +181,9 @@ const features = tableFeatures({
   facetedRowModel: createFacetedRowModel(),
   facetedUniqueValues: createFacetedUniqueValues(),
   facetedMinMaxValues: createFacetedMinMaxValues(),
-  filterFns,
+  filterFns: {
+    includesString: filterFn_includesString,
+  },
 })
 ```
 
@@ -281,6 +304,41 @@ Options:
 - `enableMultiRowSelection`
 - `enableSubRowSelection`
 
+## Cell Selection
+
+Spreadsheet-style rectangular cell ranges:
+
+```tsx
+import { cellSelectionFeature, tableFeatures } from '@tanstack/react-table'
+
+const features = tableFeatures({ cellSelectionFeature })
+```
+
+Bind mouse handlers on cells:
+
+```tsx
+<td
+  onMouseDown={cell.getSelectionStartHandler()}
+  onMouseEnter={cell.getSelectionExtendHandler()}
+>
+  <table.FlexRender cell={cell} />
+</td>
+```
+
+State is an ordered array of range operations with anchor/focus corners. Prefer stable `getRowId`. Useful APIs include `table.getSelectedCellCount()`, `table.getSelectedCellIds()`, `table.getSelectedCellRangesData()`, `table.setCellSelection()`, and `cell.getCanSelect()`.
+
+## Cell Spanning
+
+Merge adjacent body cells with `cellSpanningFeature`:
+
+```tsx
+import { cellSpanningFeature, tableFeatures } from '@tanstack/react-table'
+
+const features = tableFeatures({ cellSpanningFeature })
+```
+
+Opt columns into row spanning with `spanRows`, and declare horizontal spans with `spanColumns`. Skip covered cells (`rowSpan === 0` or `colSpan === 0`, or `cell.getIsCovered()`). Spans are derived from the rendered row model, not stored state.
+
 ## Row Pinning
 
 Setup:
@@ -351,7 +409,7 @@ const features = tableFeatures({ columnOrderingFeature })
 
 Column reorder order:
 
-1. Column pinning splits columns into left, center, and right regions.
+1. Column pinning splits columns into start, center, and end regions.
 2. Manual column ordering applies to unpinned center columns.
 3. Grouping can move or remove grouped columns when `groupedColumnMode` is active.
 
@@ -381,36 +439,38 @@ import { columnPinningFeature, tableFeatures } from '@tanstack/react-table'
 const features = tableFeatures({ columnPinningFeature })
 ```
 
-State has left and right column ID arrays:
+State uses logical start/end regions (LTR usually maps start→left, end→right; RTL reverses that):
 
 ```ts
 type ColumnPinningState = {
-  left?: string[]
-  right?: string[]
+  start: string[]
+  end: string[]
 }
 ```
 
 APIs:
 
 - `column.getCanPin()`
-- `column.pin('left')`
-- `column.pin('right')`
+- `column.pin('start')`
+- `column.pin('end')`
 - `column.pin(false)`
 - `column.getIsPinned()`
 - `column.getPinnedIndex()`
 - `column.getStart()`
 - `column.getAfter()`
-- `table.getLeftHeaderGroups()`
+- `table.getStartHeaderGroups()`
 - `table.getCenterHeaderGroups()`
-- `table.getRightHeaderGroups()`
-- `row.getLeftVisibleCells()`
+- `table.getEndHeaderGroups()`
+- `row.getStartVisibleCells()`
 - `row.getCenterVisibleCells()`
-- `row.getRightVisibleCells()`
+- `row.getEndVisibleCells()`
 
 Implementation choices:
 
 - Use sticky CSS with one table for most cases.
-- Use split left, center, and right table regions when the design requires independent pinned areas.
+- Use split start, center, and end table regions when the design requires independent pinned areas.
+
+Do not use the old v8/beta `left` / `right` pinning terminology or `getLeft*` / `getRight*` helpers.
 
 ## Column Sizing And Resizing
 
@@ -455,12 +515,13 @@ APIs:
 - `column.getStart()`
 - `column.getAfter()`
 - `table.getTotalSize()`
-- `table.getLeftTotalSize()`
+- `table.getStartTotalSize()`
 - `table.getCenterTotalSize()`
-- `table.getRightTotalSize()`
+- `table.getEndTotalSize()`
 - `header.getResizeHandler()`
 - `column.getCanResize()`
 - `column.getIsResizing()`
+- `table.setColumnResizing()`
 
 Resizing options:
 
@@ -468,44 +529,34 @@ Resizing options:
 - `columnResizeMode: 'onChange'` updates during drag and can need extra performance work.
 - `columnResizeDirection: 'rtl'` supports right-to-left layouts.
 
-Current beta note: the docs spell one table API as `table.setcolumnResizing` with lowercase `c`. Verify current types before using it.
-
 For large tables, prefer CSS variables plus narrow atom subscriptions so column width updates do not rerender the whole body.
 
-## Grouping And Aggregation
+## Aggregation
 
-Setup:
+Aggregation is independent from grouping. Register `rowAggregationFeature` whenever columns calculate totals or aggregated values:
 
 ```tsx
 import {
-  aggregationFns,
-  columnGroupingFeature,
-  createGroupedRowModel,
+  aggregationFn_count,
+  aggregationFn_mean,
+  aggregationFn_sum,
+  rowAggregationFeature,
   tableFeatures,
 } from '@tanstack/react-table'
 
 const features = tableFeatures({
-  columnGroupingFeature,
-  groupedRowModel: createGroupedRowModel(),
-  aggregationFns,
+  rowAggregationFeature,
+  aggregationFns: {
+    count: aggregationFn_count,
+    mean: aggregationFn_mean,
+    sum: aggregationFn_sum,
+  },
 })
 ```
 
-If users should expand and collapse grouped rows, also register:
+A column accepts one aggregation or an array. Multiple entries return an object keyed by name or descriptor `id`. Read with `column.getAggregationValue()`.
 
-```tsx
-const features = tableFeatures({
-  columnGroupingFeature,
-  rowExpandingFeature,
-  groupedRowModel: createGroupedRowModel(),
-  expandedRowModel: createExpandedRowModel(),
-  aggregationFns,
-})
-```
-
-Grouping state is `string[]` of column IDs. `groupedColumnMode` can be `'reorder'`, `'remove'`, or `false`.
-
-Built-in aggregation functions:
+Built-in aggregation functions (`aggregationFn_*`):
 
 - `sum`
 - `count`
@@ -516,6 +567,42 @@ Built-in aggregation functions:
 - `median`
 - `unique`
 - `uniqueCount`
+- `first`
+- `last`
+
+## Grouping
+
+Setup:
+
+```tsx
+import {
+  columnGroupingFeature,
+  createGroupedRowModel,
+  tableFeatures,
+} from '@tanstack/react-table'
+
+const features = tableFeatures({
+  columnGroupingFeature,
+  groupedRowModel: createGroupedRowModel(),
+})
+```
+
+When grouped rows should also calculate aggregate values, register both features:
+
+```tsx
+const features = tableFeatures({
+  columnGroupingFeature,
+  rowAggregationFeature,
+  rowExpandingFeature,
+  groupedRowModel: createGroupedRowModel(),
+  expandedRowModel: createExpandedRowModel(),
+  aggregationFns: {
+    sum: aggregationFn_sum,
+  },
+})
+```
+
+Grouping state is `string[]` of column IDs. `groupedColumnMode` can be `'reorder'`, `'remove'`, or `false`.
 
 APIs:
 
@@ -528,8 +615,8 @@ APIs:
 - `row.getIsGrouped()`
 - `row.getGroupingValue(columnId)`
 - `cell.getIsGrouped()`
-- `cell.getIsAggregated()`
 - `cell.getIsPlaceholder()`
+- `cell.getIsAggregated()` (from `rowAggregationFeature`)
 
 Use `manualGrouping: true` only when server-side grouping and aggregation are already represented in incoming data. The docs warn this usually needs substantial custom rendering.
 
@@ -595,6 +682,8 @@ APIs:
 - `table.toggleAllRowsExpanded()`
 - `table.setExpanded()`
 - `table.resetExpanded()`
+- `table.getMaxSubRowDepth()`
+- `row.getDisplayIndex()`
 
 Filtering hierarchical rows:
 

@@ -110,7 +110,7 @@ Or by field map when the names differ:
 />
 ```
 
-Group fields are typed to the group, but the parent form could contain broader values. Prefer `group.getFieldValue` and group methods inside group render functions.
+Group fields are typed to the group, but the parent form could contain broader values. Prefer `group.getFieldValue` and group methods inside group render functions. For reactive reads, subscribe with `useSelector(group.store, ...)` or `useSelector(group.form.store, ...)`.
 
 ## Arrays
 

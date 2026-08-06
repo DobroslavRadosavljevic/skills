@@ -24,7 +24,7 @@ Use this skill when the work touches TanStack Start or `@tanstack/react-start`.
 
 - Treat TanStack Start as a full-stack React framework powered by TanStack Router. Keep Router conventions central: typed file routes, route loaders, route context, search params, and route invalidation.
 - Prefer folder + `index.tsx` for every page route (avoid flat page leaves when colocation is needed). Colocate route-only modules with hyphen-prefixed folders (`-components`, `-hooks`, `-lib`, …). Put reusable feature code in `src/modules/<feature>/` (reuse test). Never add unprefixed non-route files under `src/routes` — they become URLs. Details: [route-colocation.md](references/route-colocation.md).
-- TanStack Start docs currently describe it as a Release Candidate: feature-complete with an API considered stable, but not bug-free. React Server Components remain experimental. Verify the latest docs before depending on unstable or newly changed behavior.
+- TanStack Start remains a Release Candidate as of 2026-08-06: feature-complete with an API considered stable, but not bug-free before v1. npm `latest` is the current recommended line. React Server Components remain experimental. Verify the latest docs before depending on unstable or newly changed behavior.
 - Use server functions for same-origin app RPC. Use server routes for public or external HTTP endpoints, webhooks, form posts, and API-style `Response` handling.
 - Do not rely on route guards as the data security boundary. Authorize every server function and server route that touches private data.
 - Remember that route loaders are isomorphic. Put secrets and server-only work behind server functions, server routes, server-only utilities, or `.server.*` modules.

@@ -4,8 +4,9 @@
 
 ```tsx
 import { useMemo } from 'react'
-import { scaleBand, scaleLinear } from 'd3-scale'
 import { barY, defineChart } from '@tanstack/charts'
+import { scaleBand } from '@tanstack/charts-scales/band'
+import { scaleLinear } from '@tanstack/charts-scales/linear'
 import { tooltip } from '@tanstack/charts/tooltip'
 import { Chart } from '@tanstack/react-charts'
 
@@ -73,7 +74,7 @@ Common:
 - `onFocusChange`, `onFocusGroupChange`, `onSelect`, `onRender`
 - `idPrefix`, `renderSvg`, `measureText` for advanced SSR/resources
 
-Definition-owned (not overridden by adapter props): `focus`, `maxFocusDistance`, `spatialIndex`, `animate`, `keyboard`, `tooltip`.
+Definition-owned (not overridden by adapter props): `focus`, `maxFocusDistance`, `spatialIndex`, `animate`, `keyboard`, `tooltip`, `motion`, `pointer`.
 
 ### React Entry Points
 
@@ -81,10 +82,20 @@ Definition-owned (not overridden by adapter props): `focus`, `maxFocusDistance`,
 | --- | --- |
 | `@tanstack/react-charts` | Default SVG `Chart` (native tooltip, no React body bridge) |
 | `@tanstack/react-charts/canvas` | Optional Canvas `Chart` |
-| `@tanstack/react-charts/core` | Application-supplied `renderer` |
+| `@tanstack/react-charts/core` | Application-supplied `renderer` (for example `motion()`) |
 | `@tanstack/react-charts/tooltip` | `Chart` / `CanvasChart` / `RendererChart` with `renderTooltipBody` |
 
 Existing `renderTooltipBody` users must import from `/tooltip`, not the root.
+
+## React Native (Experimental, `0.5.0+`)
+
+```tsx
+import { defineChart, lineY } from '@tanstack/charts/universal'
+import { Chart } from '@tanstack/react-native-charts'
+import { tooltip } from '@tanstack/react-native-charts/tooltip'
+```
+
+Install `@tanstack/react-native-charts` with React `^19.2.3`, React Native `^0.86.0`, and `react-native-svg` `>=15.15.4 <16`. Expo 57 can use `expo install react-native-svg`. Definitions must come from `/universal` so the browser host stays unreachable. Treat as experimental: packed Metro/Expo fixtures exist; bare-native/Android device parity and screen readers are not currently claimed.
 
 ## Sizing
 
@@ -95,7 +106,7 @@ Existing `renderTooltipBody` users must import from `/tooltip`, not the root.
 | `aspectRatio` without height | Measured width / ratio |
 | Neither height nor aspect ratio | Default height `320` |
 
-`initialWidth` drives server/hidden first paint when width is responsive. Fixed `height` wins over `aspectRatio`.
+`initialWidth` drives server/hidden first paint when width is responsive. Fixed `height` wins over `aspectRatio`. React hosts serialize proportional CSS sizing as a unitless value.
 
 Outer structure: `.ts-chart-host` → `.ts-chart-surface` → `svg.ts-chart` or Canvas root. Adapter `className`/`style` apply to the outer host.
 
@@ -121,6 +132,12 @@ Focus modes:
 | omitted | Nearest point in 2D (`maxFocusDistance` default 48) |
 | `nearest-x` / `nearest-y` | Axis-prioritized nearest |
 | `group-x` / `group-y` | One point per group at nearest axis value |
+| `false` | Omit generated focus geometry and native focus work (`0.6.5`) |
+| `focusDisabled` | Application gesture owns the surface |
+
+Default pointer focus resolves against **painted** mark geometry (`0.5.1+`). Facet-local primary markers stay bound to the primary point; use `whenFocused(..., { match: 'x' | 'y' })` for synchronized cursors across facets without extra selected points.
+
+Keep the built-in primary focus ring even when authored focus marks are present (`0.6.3+`). Set `focusRing: false` only when replacing that indicator explicitly.
 
 Grouped multi-series tooltips:
 
@@ -138,7 +155,7 @@ defineChart({
     portal,
     anchor: 'group-center',
     placement: ['top', 'right', 'left', 'bottom'],
-    sort: 'color-domain',
+    sort: 'color-domain', // default is visual mark order (0.4.0+)
   },
 })
 ```
@@ -159,7 +176,7 @@ tooltip: {
 }
 ```
 
-Precedence: `content` → `formatGroup` → `format` → automatic. Bars/areas with explicit baselines report interval length (segment value), not cumulative endpoint.
+Precedence: `content` → `formatGroup` → `format` → automatic. Bars/areas with explicit baselines report interval length (segment value), not cumulative endpoint. Item/format callbacks receive `{ pinned }`.
 
 React tooltip body composition:
 
@@ -186,17 +203,28 @@ Keep interactive controls behind `pinned`. Transient tooltips are inert to point
 
 Keyboard (when enabled): focus enters first point; arrows navigate; Home/End extremes; Enter/Space select/pin; Escape dismisses sticky tooltip. Pointer and keyboard must expose the same semantic state. `tabIndex` defaults to `0`; `keyboard: false` forces `-1`.
 
-### Application-Owned Gestures
+### Application-Owned Gestures And Pointer Timing
 
 Brush, zoom, scrubbers, and editors are application-owned. Invert pixels through a copied chart scale from `onRender` / `host.getScene()`, then rebuild the definition with a configured domain. Disable native focus when it conflicts:
 
 ```ts
 import { focusDisabled } from '@tanstack/charts/focus/disabled'
 
-defineChart(definition, {
+defineChart({
+  marks,
+  x,
+  y,
   focus: focusDisabled,
   keyboard: false,
 })
+```
+
+Set `pointer: false` when the app decides when inspection begins (for example after a touch hold). Resolve and paint through the controller from `host.interaction` or `onRender`:
+
+```ts
+const target = interaction.resolvePointer(event.clientX, event.clientY)
+interaction.setControlledFocus(target)
+interaction.setControlledFocus(null) // release
 ```
 
 ## Themes
@@ -215,6 +243,8 @@ Use definition `theme` only when a chart needs explicit scene colors. Semantic s
 
 ## Animation
 
+Lightweight default-SVG tweening:
+
 ```ts
 defineChart({
   marks,
@@ -227,10 +257,47 @@ defineChart({
 
 `respectReducedMotion` defaults to `true`. `resize: false` (default) avoids restarting animation on responsive relayout. Static SVG / SSR / `createChartScene` do not animate. Stable keys preserve continuity.
 
+### Optional `motion()` renderer (`0.6.0+`)
+
+Use when animation quality is part of the chart contract. Each host has **one** animation owner: default SVG uses `animate`; `motion()` ignores `animate` and reads definition-level motion.
+
+```ts
+import { motion } from '@tanstack/charts/motion'
+import { mountChartRenderer } from '@tanstack/charts/renderer'
+import { createChartSpring } from '@tanstack/charts/spring'
+
+const definition = defineChart({
+  motion: {
+    transition: { type: 'spring', stiffness: 170, damping: 18, mass: 1 },
+  },
+  marks: [
+    lineY(rows, {
+      x: 'date',
+      y: 'actual',
+      key: 'id',
+      motion: { transition: { type: 'spring', mass: 1.25 } },
+    }),
+  ],
+  x: { scale: xScale },
+  y: { scale: yScale },
+})
+
+const host = mountChartRenderer(container, {
+  definition,
+  renderer: motion(),
+  width: 640,
+  height: 360,
+  ariaLabel: 'Actual revenue',
+})
+```
+
+In React/Octane, pass the same renderer through `@tanstack/*/core`. Motion declarations can live on the chart, mark, axis, ticks, tick labels, or axis label; callbacks can specialize `enter` / `update` / `exit`. Springs use physical `stiffness` / `damping` / `mass` (no duration). For streaming traces, configure rolling path motion (`path: { update: 'rolling', x: 'shift', y: 'reproject' }`) only with the motion renderer. See the Motion reference for cascade and limits.
+
 ## SSR And Hydration
 
 - SVG adapters emit complete accessible SVG at `initialWidth` on the server, then adopt/reconcile on the client.
 - Canvas adapters emit an accessible shell (no pixel paint on server); client paints after mount.
+- `motion()` adopts server-rendered SVG without replaying entrance motion.
 - Keep definitions, transformed data, formatters, and dimensions deterministic across server and client.
 - Do not branch to a different chart component tree solely because code is on the server.
 - React generates a sanitized `idPrefix` from `useId()` when omitted.
@@ -252,7 +319,7 @@ runtime.destroy()
 
 ## Other Framework Adapters
 
-Same definition works across adapters. Mounting APIs differ (component, directive, custom element). React and Octane currently provide `/canvas` and `/core` entries; other adapters are SVG-first at `0.3.1`.
+Same definition works across adapters. Mounting APIs differ (component, directive, custom element). React and Octane currently provide `/canvas` and `/core` entries; other adapters are SVG-first at `0.6.5`.
 
 Tooltip body composition surfaces:
 
@@ -263,6 +330,7 @@ Tooltip body composition surfaces:
 | Svelte | `tooltipBody` snippet |
 | Angular | tooltip body template binding |
 | Lit / Alpine | `renderTooltipBody` in options |
+| React Native | `@tanstack/react-native-charts/tooltip` |
 
 ## Callbacks
 

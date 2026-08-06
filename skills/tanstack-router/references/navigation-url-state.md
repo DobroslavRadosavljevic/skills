@@ -163,7 +163,7 @@ export const Route = createFileRoute('/shop/products')({
 })
 ```
 
-With Zod v4, current docs say the schema can be used directly. With Zod v3, use `@tanstack/zod-adapter` and `fallback()` when defaults/catches need correct input/output inference.
+With Zod v4, pass the schema directly to `validateSearch`. With Zod v3, wrap with `zodValidator` from `@tanstack/zod-adapter` (and use adapter helpers such as `fallback()` when defaults/catches need correct input/output inference). Prefer `.catch()` / adapter fallbacks for malformed URL input; `.default()` also works but can make search fields required in navigation types.
 
 Valibot, ArkType, and Effect Schema can work directly when they implement Standard Schema.
 

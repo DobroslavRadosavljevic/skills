@@ -132,7 +132,7 @@ const { isPending, variables, isError, mutate } = addTodoMutation
 
 Render `variables` while pending and optionally keep it visible with retry UI on error.
 
-Cache-level optimistic updates are better when multiple surfaces need the optimistic data:
+Cache-level optimistic updates are better when multiple surfaces need the optimistic data. Mutation callbacks receive a `MutationFunctionContext` with `context.client` (prefer this over a closed-over `useQueryClient()` when writing shared optimistic helpers):
 
 ```tsx
 useMutation({

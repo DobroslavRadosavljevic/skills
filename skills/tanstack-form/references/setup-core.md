@@ -112,16 +112,18 @@ The form object itself does not cause React re-renders on every state change. Su
 </form.Subscribe>
 ```
 
-Use `useStore` when component logic needs reactive values:
+Use `useSelector` when component logic needs reactive values:
 
 ```tsx
-import { useStore } from '@tanstack/react-form'
+import { useSelector } from '@tanstack/react-form'
 
-const firstName = useStore(form.store, (state) => state.values.firstName)
-const errors = useStore(form.store, (state) => state.errorMap)
+const firstName = useSelector(form.store, (state) => state.values.firstName)
+const errors = useSelector(form.store, (state) => state.errorMap)
 ```
 
 Always pass a selector. Whole-store subscriptions cause unnecessary re-renders.
+
+`useStore` is still exported as a deprecated alias of the store hook. Prefer `useSelector` in new code; pass `{ compare }` as the third argument when a custom equality check is needed.
 
 ## App Form Hooks
 

@@ -65,8 +65,8 @@ Default behavior can surprise people:
 Use `staleTime` first when a query refetches too often. Use:
 
 - `staleTime: number` for freshness windows.
-- `staleTime: Infinity` for data that should not refetch unless invalidated manually.
-- `staleTime: 'static'` for data that should not refetch even when invalidated.
+- `staleTime: Infinity` to skip staleness-based refetches until the query is invalidated manually.
+- `staleTime: 'static'` to never refetch from staleness, invalidation, or `refetchOnMount` / `refetchOnWindowFocus` / `refetchOnReconnect` set to `"always"`. Use for boot-time feature flags, login permissions, or other data that cannot change while the app runs.
 - `gcTime` for how long inactive cache data stays in memory.
 
 ## Query Basics
@@ -165,9 +165,23 @@ queryClient.setQueryData(groupOptions(1).queryKey, newGroups)
 
 Use `infiniteQueryOptions` for reusable infinite queries.
 
+Use `mutationOptions` for reusable, typed mutations:
+
+```tsx
+import { mutationOptions, useMutation } from '@tanstack/react-query'
+
+function addTodoOptions() {
+  return mutationOptions({
+    mutationFn: (newTodo: NewTodo) => postTodo(newTodo),
+  })
+}
+
+useMutation(addTodoOptions())
+```
+
 ## TypeScript
 
-Current docs state that TanStack Query follows the DefinitelyTyped support window and supports TypeScript versions released within the last two years. In this snapshot, that means TypeScript 5.4 or newer.
+Current `/query/latest` TypeScript docs state that TanStack Query follows the DefinitelyTyped support window and supports TypeScript versions released within the last two years. In this snapshot, that means TypeScript 5.4 or newer. Prefer the published site over older migration notes that still mention TypeScript 4.7 as the v5 floor.
 
 Guidance:
 
@@ -176,6 +190,7 @@ Guidance:
 - The default error type is `Error`.
 - Narrow custom errors at the call site, for example with `axios.isAxiosError(error)`.
 - Use module augmentation of `Register` for global error, meta, query key, and mutation key types.
+- Lock `@tanstack/react-query` to a specific patch when type changes between patches matter; type updates are treated as non-breaking patches.
 
 Example:
 

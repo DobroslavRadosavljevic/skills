@@ -58,7 +58,7 @@ If the app uses TanStack Start or custom SSR, follow Start/SSR host-specific doc
 
 ## SSR
 
-TanStack Router SSR APIs are documented as experimental while Start is not fully stable. Verify current docs before changing SSR code.
+TanStack Router SSR APIs are documented as experimental while TanStack Start has not reached stable 1.0 (still RC-adjacent as of this skill snapshot). Verify current docs before changing SSR code.
 
 For SSR, create routers via a factory:
 
@@ -133,11 +133,12 @@ export function getRouter() {
   })
 
   setupRouterSsrQueryIntegration({ router, queryClient })
+
   return router
 }
 ```
 
-Create a fresh `QueryClient` per SSR request. Pass `wrapQueryClient: false` if the app already owns its provider. Use `dehydrateOptions` and `hydrateOptions` when payload filtering or custom serialization is needed.
+Create a fresh `QueryClient` per SSR request. Pass `wrapQueryClient: false` if the app already owns its provider. Optional flags include `handleRedirects` for `redirect()` thrown from queries/mutations. Use `dehydrateOptions` and `hydrateOptions` when payload filtering or custom serialization is needed.
 
 ## Testing File-Based Routes
 

@@ -4,33 +4,40 @@
 
 Use this when a codebase has v8 patterns such as `useReactTable`, `getCoreRowModel`, or `getSortedRowModel`.
 
-1. Install v9 beta packages explicitly with `@beta`.
+1. Install stable v9 packages (`bun add @tanstack/react-table`). No `@beta` tag needed.
 2. Replace `useReactTable` with `useTable`.
-3. Add a required `features` option from `tableFeatures()`.
+3. Add a required `features` option from `tableFeatures()`, or temporarily use `stockFeatures`.
 4. Move row model factories and function registries into `tableFeatures()`.
-5. Replace `table.getState()` render reads with `table.state`, `table.store`, `table.atoms`, or a `useTable` selector.
-6. Replace `onStateChange`; it is removed. Use individual `onXChange` callbacks, external atoms, or `table.store.subscribe`.
-7. Update types to include `typeof features`, especially `ColumnDef<typeof features, TData>` and `createColumnHelper<typeof features, TData>()`.
-8. Replace broad `flexRender` patterns with `table.FlexRender` or v9 `FlexRender` where appropriate.
-9. Remove method destructuring from row, cell, column, and header instances.
-10. Use `useLegacyTable` only as a temporary bridge if the migration must be staged.
+5. Prefer individual `filterFn_*` / `sortFn_*` / `aggregationFn_*` imports in those registry slots.
+6. Replace `table.getState()` render reads with `table.state`, `table.store`, `table.atoms`, or a `useTable` selector.
+7. Replace `onStateChange`; it is removed. Use individual `onXChange` callbacks, external atoms, or `table.store.subscribe`.
+8. Update types to include `typeof features`, especially `ColumnDef<typeof features, TData>` and `createColumnHelper<typeof features, TData>()`.
+9. Replace broad `flexRender` patterns with `table.FlexRender` or v9 `FlexRender` where appropriate.
+10. Remove method destructuring from row, cell, column, and header instances.
+11. Update column pinning from `left` / `right` to logical `start` / `end`.
+12. Split aggregation onto `rowAggregationFeature`; keep `columnGroupingFeature` only when grouping rows.
+13. Use `useLegacyTable` only as a temporary bridge if the migration must be staged.
 
 ## Key API Changes
 
-| v8 pattern | v9 beta pattern |
+| v8 pattern | v9 pattern |
 | --- | --- |
 | `useReactTable` | `useTable` |
-| No required `features` option | `features: tableFeatures(...)` |
+| No required `features` option | `features: tableFeatures(...)` or `stockFeatures` |
 | `getCoreRowModel()` option | Core row model is automatic |
 | `getFilteredRowModel()` option | `filteredRowModel: createFilteredRowModel()` in `tableFeatures()` |
 | `getSortedRowModel()` option | `sortedRowModel: createSortedRowModel()` in `tableFeatures()` |
 | `getPaginationRowModel()` option | `paginatedRowModel: createPaginatedRowModel()` in `tableFeatures()` |
 | `filterFns`, `sortingFns`, `aggregationFns` on table options | `filterFns`, `sortFns`, `aggregationFns` slots in `tableFeatures()` |
+| Bundled grouping + aggregation | `columnGroupingFeature` and `rowAggregationFeature` are separate |
+| Column pinning `left` / `right` | Logical `start` / `end` |
+| `table.getLeftHeaderGroups()` / `getRight*` | `table.getStartHeaderGroups()` / `getEnd*` |
+| `table.getLeftTotalSize()` / `getRightTotalSize()` | `table.getStartTotalSize()` / `getEndTotalSize()` |
 | `table.getState()` | `table.state`, `table.store.state`, `table.atoms.<slice>.get()`, or selector |
 | `onStateChange` | Individual `onXChange`, external atoms, or `table.store.subscribe` |
 | Global meta declaration merging | Per-feature `metaHelper` preferred |
 
-The v9 docs mention a beta.10 breaking change: row models and function registries moved into `features`, and row model factories no longer receive arguments.
+Row models and function registries live in `features`. Row model factories no longer receive arguments.
 
 ## `useLegacyTable`
 
@@ -61,9 +68,10 @@ Preferred staged path:
 
 1. Make the existing v8-style table compile under `useLegacyTable`.
 2. Replace `useLegacyTable` with `useTable`.
-3. Define a real `features` object.
+3. Define a real `features` object, or temporarily use `stockFeatures`.
 4. Move row models and registries into `tableFeatures`.
 5. Replace Legacy types with v9 types.
+6. Adopt `start` / `end` pinning and split aggregation if those features are used.
 
 ## State Surfaces
 
@@ -108,6 +116,14 @@ Use `useTable(options, () => null)` or a constant selector when the table owner 
 ```tsx
 <table.Subscribe source={table.atoms.rowSelection}>
   {(rowSelection) => <SelectionSummary rowSelection={rowSelection} />}
+</table.Subscribe>
+```
+
+`table.Subscribe` also accepts a store selector without an explicit source:
+
+```tsx
+<table.Subscribe selector={(state) => state.pagination}>
+  {(pagination) => <span>Page {pagination.pageIndex + 1}</span>}
 </table.Subscribe>
 ```
 
@@ -186,14 +202,16 @@ import {
   createSortedRowModel,
   createTableHook,
   rowSortingFeature,
-  sortFns,
+  sortFn_alphanumeric,
   tableFeatures,
 } from '@tanstack/react-table'
 
 const features = tableFeatures({
   rowSortingFeature,
   sortedRowModel: createSortedRowModel(),
-  sortFns,
+  sortFns: {
+    alphanumeric: sortFn_alphanumeric,
+  },
 })
 
 const { useAppTable, createAppColumnHelper } = createTableHook({
@@ -212,3 +230,5 @@ const table = useAppTable({
 ```
 
 Use the optional component registry only when the project benefits from standardized table, header, cell, or context components.
+
+`tableOptions()` can compose reusable option bags (features, row models, defaults) without creating a full custom hook.

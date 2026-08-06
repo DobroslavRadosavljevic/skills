@@ -37,6 +37,8 @@ useHotkeySequence(['D', 'W'], () => deleteWord())
 useHotkeySequence(['D', 'I', 'W'], () => deleteInnerWord())
 ```
 
+For standalone sequence matching outside React hooks, use `createSequenceMatcher` from the core package (re-exported by `@tanstack/react-hotkeys`).
+
 ## Dynamic Sequence Lists
 
 Use `useHotkeySequences` for dynamic lists:
@@ -134,17 +136,18 @@ Return value:
 - `isRecording`
 - `recordedHotkey`
 - `startRecording`
-- `stopRecording`
+- `stopRecording` (same as cancel in the React adapter)
 - `cancelRecording`
-- `clearRecording`
+
+There is no `clearRecording` method. Clearing is keyboard-driven during an active session.
 
 Recording behavior:
 
 - Modifier-only keys wait for a non-modifier key.
 - Modifier plus key records the combination.
 - Single non-modifier keys record as a single key.
-- Escape cancels recording.
-- Backspace or Delete clears the current hotkey.
+- Escape cancels recording (`onCancel`).
+- Backspace or Delete clears the current hotkey (`onClear`) and stops recording.
 - Recorded values use portable `Mod` format.
 - `ignoreInputs` defaults to `true`; Escape still cancels when focused in an input.
 

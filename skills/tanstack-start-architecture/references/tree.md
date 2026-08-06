@@ -66,15 +66,19 @@ Typical feature names mirror backend domains when both exist: `billing`, `users`
 
 ```text
 src/
-  router.tsx
+  router.tsx                 # export getRouter() → fresh router each call
   routes/__root.tsx
   routeTree.gen.ts           # generated — do not hand-edit
-  start.ts                   # optional
-  server.ts                  # optional custom server
+  start.ts                   # optional createStart (middleware, defaultSsr, …)
+  server.ts                  # optional custom server entry
   modules/
   components/
   lib/
 ```
+
+App root also owns the bundler config (`vite.config.ts` or `rsbuild.config.ts`)
+and `package.json`. Do not add a second router factory or parallel route-tree
+generator.
 
 ## Naming
 

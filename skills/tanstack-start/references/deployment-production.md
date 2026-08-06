@@ -53,7 +53,24 @@ For Workers and other edge runtimes, read `process.env` per request inside handl
 
 ## Netlify
 
-Current docs use `@netlify/vite-plugin-tanstack-start` for Netlify integration. A manual `netlify.toml` uses:
+Current docs prefer `@netlify/vite-plugin-tanstack-start` for Netlify integration:
+
+```ts
+import netlify from '@netlify/vite-plugin-tanstack-start'
+import { tanstackStart } from '@tanstack/react-start/plugin/vite'
+import viteReact from '@vitejs/plugin-react'
+import { defineConfig } from 'vite'
+
+export default defineConfig({
+  plugins: [
+    netlify(),
+    tanstackStart(),
+    viteReact(),
+  ],
+})
+```
+
+Deploy with Netlify CLI (`bunx netlify deploy`) or continuous deployment. A manual `netlify.toml` remains valid:
 
 ```toml
 [build]
@@ -69,11 +86,25 @@ If SPA mode uses server functions or server routes, ensure redirects allow those
 
 ## Railway, Nitro, Vercel, Node, And Bun
 
-Railway follows the Nitro deployment path in current docs and may be auto-detected. Vercel, Node server, Bun, and other targets have target-specific entry/runtime requirements. Before editing production config:
+Current hosting docs use the `nitro` package with the `nitro/vite` plugin for Nitro-based targets (Railway, Vercel, and other Nitro deploy presets). Example shape:
+
+```ts
+import { tanstackStart } from '@tanstack/react-start/plugin/vite'
+import { nitro } from 'nitro/vite'
+import viteReact from '@vitejs/plugin-react'
+import { defineConfig } from 'vite'
+
+export default defineConfig({
+  plugins: [tanstackStart(), nitro(), viteReact()],
+})
+```
+
+Railway follows the Nitro path and may auto-detect build settings. Node server, Bun, and other targets have target-specific entry/runtime requirements. Before editing production config:
 
 - Confirm the adapter target in Start docs.
 - Confirm whether the app emits server output, static client output, or both.
 - Confirm host env variable names and secret injection timing.
+- Note that npm `latest` for `nitro` may still be a beta line; follow current Start hosting docs for the install/plugin contract.
 - Smoke test deployed SSR, server functions, server routes, redirects, and asset serving.
 
 ## Server Entry Point

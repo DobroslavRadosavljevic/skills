@@ -229,7 +229,9 @@ Important caveats:
 - Awaiting one Server Component prefetch before rendering another can create server waterfalls.
 - Framework parallel routes or loaders can flatten those waterfalls.
 - The docs warn against using Next.js Server Actions to fetch data in a client `queryFn`; use API routes or an RPC layer for client-side query fetching. Server Actions remain appropriate for mutations.
-- The experimental package `@tanstack/react-query-next-experimental` supports streamed hydration for Suspense on the server. Treat it as experimental and verify current docs before adopting.
+- As of React Query v5.40.0, pending queries can be dehydrated and streamed to the client. Extend `shouldDehydrateQuery` with `defaultShouldDehydrateQuery(query) || query.state.status === 'pending'` when intentionally streaming unfinished prefetches; keep persistence dehydrate options limited to successful queries so promises are not written to storage.
+- Use `environmentManager.isServer()` from `@tanstack/react-query` in app-router style providers when choosing a fresh server client vs a stable browser client, matching the advanced SSR guide.
+- The experimental package `@tanstack/react-query-next-experimental` supports streamed hydration for Suspense on the server via `ReactQueryStreamedHydration`. Treat it as experimental and verify current docs before adopting.
 
 ## Hydration Migration Notes
 

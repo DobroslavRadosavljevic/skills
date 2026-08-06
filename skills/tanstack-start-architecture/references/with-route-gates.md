@@ -4,7 +4,11 @@ Load when pathless layouts enforce auth, onboarding, guest-only, or org capabili
 
 ## Stance
 
-Gates are **UX redirects**, not the sole security boundary. APIs still authorize. Compose gates as pathless layout layers (`_private`, `_auth`, `_onboarding`, …).
+Gates are **UX redirects**, not the sole security boundary. Start docs: protect the
+data/API boundary first — authorize every server function / server route / API
+that touches private data. `beforeLoad` keeps users out of screens; it does not
+replace server authorization. Compose gates as pathless layout layers
+(`_private`, `_auth`, `_onboarding`, …).
 
 ## Tree
 

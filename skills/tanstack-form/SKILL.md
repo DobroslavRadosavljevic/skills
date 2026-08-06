@@ -1,6 +1,6 @@
 ---
 name: tanstack-form
-description: "Build, review, debug, migrate, or plan TanStack Form v1 React forms with current docs. Use for @tanstack/react-form, @tanstack/form-core, useForm, form.Field, createFormHook, createFormHookContexts, withForm, withFieldGroup, formOptions, form.Subscribe, useStore, validators, Standard Schema validation, Zod, Valibot, ArkType, Effect Schema, async validation, dynamic validation, array fields, FormGroup, linked fields, listeners, SSR, TanStack Start, Next.js, Remix, devtools, UI libraries, accessibility, and production form composition."
+description: "Build, review, debug, migrate, or plan TanStack Form v1 React forms with current docs. Use for @tanstack/react-form, @tanstack/form-core, useForm, form.Field, createFormHook, createFormHookContexts, withForm, withFieldGroup, formOptions, form.Subscribe, useSelector, useStore, validators, Standard Schema validation, Zod, Valibot, ArkType, Effect Schema, async validation, dynamic validation, array fields, FormGroup, linked fields, listeners, SSR, TanStack Start, Next.js, Remix, devtools, UI libraries, accessibility, and production form composition."
 ---
 
 # TanStack Form
@@ -25,7 +25,7 @@ Use this skill when work touches TanStack Form v1, especially `@tanstack/react-f
 - Prefer type inference from `defaultValues` or shared `formOptions`. Avoid adding broad `useForm<MyType>()` generics unless the local codebase already needs them.
 - Use plain `useForm` plus `form.Field` for small or one-off forms. For product forms and design-system integration, prefer `createFormHook` with pre-bound field and form components.
 - Treat TanStack Form fields as controlled fields. Wire `value`, `onBlur`, and `onChange` explicitly to the field API.
-- Subscribe deliberately. Use `form.Subscribe` for UI fragments and `useStore(form.store, selector)` for component logic. Avoid whole-store subscriptions.
+- Subscribe deliberately. Use `form.Subscribe` for UI fragments and `useSelector(form.store, selector)` for component logic. Prefer `useSelector` over deprecated `useStore`. Avoid whole-store subscriptions.
 - Keep validation timing intentional. Choose `onChange`, `onBlur`, `onSubmit`, `onMount`, `onDynamic`, and async validators based on UX, not by habit.
 - Standard Schema validation checks input values; it does not hand transformed output to `onSubmit`. Parse inside `onSubmit` when transformed schema output matters.
 - Use `onChangeListenTo` or `onBlurListenTo` for cross-field validation and `listeners` for side effects such as resets, analytics, or autosave.

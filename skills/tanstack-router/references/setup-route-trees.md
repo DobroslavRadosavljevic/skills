@@ -4,13 +4,13 @@ Use this reference for installation, file-based routing, code-based routing, rou
 
 ## Starting A Router App
 
-Use TanStack CLI for a new router-only project:
+Official quick start scaffolds a router-only SPA with TanStack CLI:
 
 ```bash
 bunx @tanstack/cli@latest create --router-only
 ```
 
-The CLI asks for file-based or code-based routing, TypeScript, Tailwind, toolchain setup, and Git initialization.
+Pass an app name when useful (`bunx @tanstack/cli@latest create my-app --router-only`). The CLI asks for file-based or code-based routing, TypeScript, Tailwind, toolchain setup, and Git initialization. Use `-y` for non-interactive defaults when appropriate.
 
 Do not install packages without approval when repo policy requires package-safety review.
 

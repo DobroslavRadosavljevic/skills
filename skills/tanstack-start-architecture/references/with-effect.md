@@ -19,7 +19,7 @@ Load this file **only** when the Start app uses Effect (or the user asks to adop
 ## Soft defaults
 
 - Mirror naming from a sibling API when both exist.
-- If the app later adds `createServerFn`, keep authz + mapping inside the server function (future `with-server-functions` territory).
+- When using Start `createServerFn`, keep authz + mapping inside the server function handler (not only in route `beforeLoad`).
 
 ## Checklist add-on
 
