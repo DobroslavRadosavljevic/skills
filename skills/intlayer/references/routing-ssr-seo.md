@@ -20,80 +20,113 @@ intlayer({
 })
 ```
 
-## Locale-aware navigation
+## Locale-aware navigation (native TanStack only)
 
-### `LocalizedLink`
+**Hard rule:** Do not create, keep, or recommend wrappers around TanStack Router navigation (`LocalizedLink`, `useLocalizedNavigate`, `locacalizeTo`, etc.). Use `@tanstack/react-router` `Link` and `useNavigate` directly with typed `to` paths that include the locale slot and `params.locale` from `getPrefix`.
 
-Strip the `{-$locale}` segment from `to`, inject `params.locale` via `getPrefix(locale).localePrefix`:
+In `prefix-no-default`, `getPrefix(locale).localePrefix` is `undefined` for the default locale — pass that through so the optional `{-$locale}` segment is omitted.
+
+### `Link`
 
 ```tsx
-import { Link, type LinkComponentProps } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { getPrefix } from "intlayer";
 import { useLocale } from "react-intlayer";
 
-export const LOCALE_ROUTE = "{-$locale}" as const;
-
-export function LocalizedLink(props: Omit<LinkComponentProps, "to"> & { to?: string }) {
+function Nav() {
   const { locale } = useLocale();
   const { localePrefix } = getPrefix(locale);
 
   return (
-    <Link
-      {...props}
-      params={{
-        locale: localePrefix,
-        ...(typeof props.params === "object" ? props.params : {}),
-      }}
-      to={`/${LOCALE_ROUTE}${props.to ?? ""}` as LinkComponentProps["to"]}
-    />
+    <>
+      <Link to="/{-$locale}/" params={{ locale: localePrefix }}>
+        Home
+      </Link>
+      <Link to="/{-$locale}/about" params={{ locale: localePrefix }}>
+        About
+      </Link>
+    </>
   );
 }
 ```
 
-In `prefix-no-default`, default locale `localePrefix` may be empty — that is expected.
+### `useNavigate`
 
-### `useLocalizedNavigate`
+```tsx
+import { useNavigate } from "@tanstack/react-router";
+import { getPrefix } from "intlayer";
+import { useLocale } from "react-intlayer";
 
-Mirror the same prefix injection with `useNavigate` from TanStack Router. Prefer typed helpers from the official guide / template when the project already has them.
+function GoAbout() {
+  const navigate = useNavigate();
+  const { locale } = useLocale();
+  const { localePrefix } = getPrefix(locale);
+
+  return (
+    <button
+      type="button"
+      onClick={() =>
+        navigate({
+          to: "/{-$locale}/about",
+          params: { locale: localePrefix },
+        })
+      }
+    >
+      About
+    </button>
+  );
+}
+```
 
 ### Locale switcher
 
+Stay on the current route and only change `locale` via function-style `params` (TanStack optional-path i18n pattern). Call `setLocale` for Intlayer client state:
+
 ```tsx
-import { useLocation } from "@tanstack/react-router";
-import {
-  getHTMLTextDir,
-  getLocaleName,
-  getPathWithoutLocale,
-  getPrefix,
-} from "intlayer";
+import { Link } from "@tanstack/react-router";
+import { getHTMLTextDir, getLocaleName, getPrefix } from "intlayer";
 import { useLocale } from "react-intlayer";
-import { LocalizedLink } from "./localized-link";
 
 export function LocaleSwitcher() {
-  const { pathname } = useLocation();
   const { availableLocales, locale, setLocale } = useLocale();
-  const pathWithoutLocale = getPathWithoutLocale(pathname);
 
   return (
     <ul>
-      {availableLocales.map((localeEl) => (
-        <li key={localeEl}>
-          <LocalizedLink
-            aria-current={localeEl === locale ? "page" : undefined}
-            onClick={() => setLocale(localeEl)}
-            params={{ locale: getPrefix(localeEl).localePrefix }}
-            to={pathWithoutLocale}
-          >
-            <span dir={getHTMLTextDir(localeEl)} lang={localeEl}>
-              {getLocaleName(localeEl)}
-            </span>
-          </LocalizedLink>
-        </li>
-      ))}
+      {availableLocales.map((localeEl) => {
+        const { localePrefix } = getPrefix(localeEl);
+
+        return (
+          <li key={localeEl}>
+            <Link
+              aria-current={localeEl === locale ? "page" : undefined}
+              onClick={() => setLocale(localeEl)}
+              params={(prev) => ({
+                ...prev,
+                locale: localePrefix,
+              })}
+              to="."
+            >
+              <span dir={getHTMLTextDir(localeEl)} lang={localeEl}>
+                {getLocaleName(localeEl)}
+              </span>
+            </Link>
+          </li>
+        );
+      })}
     </ul>
   );
 }
 ```
+
+If `to="."` is insufficient for a given route tree, use the concrete current route `to` (for example `"/{-$locale}/about"`) with the same `params` updater — still no wrapper.
+
+### Migrate / delete wrappers
+
+When a project already has `LocalizedLink`, `useLocalizedNavigate`, or similar:
+
+1. Delete the wrapper files.
+2. Rewrite call sites to native `Link` / `useNavigate` with full `to` + `params.locale`.
+3. Do not reintroduce wrappers “for DX” — typed route paths are the DX.
 
 ## Server functions
 
@@ -181,8 +214,10 @@ Follow the current Start guide + template for the exact `sitemap[.]xml.ts` shape
 
 - Missing `routeFileIgnorePattern` → `.content.*` become routes.
 - Using `next-intlayer` APIs on Start.
+- Adding or keeping `LocalizedLink` / `useLocalizedNavigate` (or any Link/navigate wrapper) instead of native TanStack `Link` / `useNavigate`.
+- Copying Intlayer Start template / docs navigation wrappers instead of native optional-param links.
 - `vite-intlayer` only in `devDependencies` while production SSR needs the proxy.
 - Locale slot mismatches `routing.mode`.
 - Reading cookies/headers in `beforeLoad` instead of `params.locale`.
-- Forgetting empty `localePrefix` for default locale in `prefix-no-default`.
+- Passing a fake default-locale prefix when `getPrefix` returns `localePrefix: undefined` in `prefix-no-default`.
 - Treating content nodes as raw strings in HTML attributes.

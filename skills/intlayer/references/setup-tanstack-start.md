@@ -172,10 +172,7 @@ project/
   vite.config.ts
   src/
     components/
-      localized-link.tsx
       locale-switcher.tsx
-    hooks/
-      useLocalizedNavigate.ts
     routes/
       __root.tsx
       {-$locale}/
@@ -188,4 +185,6 @@ project/
         $.tsx
 ```
 
-Official template: https://github.com/aymericzip/intlayer-tanstack-start-template
+Do **not** add `localized-link.tsx`, `useLocalizedNavigate.ts`, or any other Link/navigate wrappers. Use native TanStack Router `Link` / `useNavigate` with `{-$locale}` and `params.locale` (see [routing-ssr-seo.md](routing-ssr-seo.md)).
+
+Official template: https://github.com/aymericzip/intlayer-tanstack-start-template — treat its `LocalizedLink` / `useLocalizedNavigate` samples as outdated for this skill; strip them on adopt/migrate.

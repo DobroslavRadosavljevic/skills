@@ -29,6 +29,7 @@ Treat canary and prerelease dist-tags as unavailable unless the project explicit
 3. Prefer official docs pages and the Start guide. If docs and package metadata disagree, report the mismatch.
 4. Check the local project package versions before applying docs that require a minimum Intlayer version.
 5. Prefer the React TanStack Start guide over Next.js (`next-intlayer`) or Solid Start (`solid-intlayer`) pages unless the project uses those stacks.
+6. Ignore Intlayer docs/template samples that introduce `LocalizedLink` / `useLocalizedNavigate`. This skill requires native TanStack Router `Link` / `useNavigate` with `{-$locale}` + `params.locale` only.
 
 ## Official Pages
 
