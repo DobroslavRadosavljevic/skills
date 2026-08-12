@@ -20,6 +20,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `date-fns` | date-fns v4 date/time math with `@date-fns/tz` and `@date-fns/utc`. |
 | `decimal-js` | decimal.js v10 arbitrary-precision math, money patterns, and rounding. |
 | `deduplicate` | Collapse duplicated knowledge into one source of truth and rewire consumers. |
+| `design-engineer` | Diagnose UI/UX, propose multiple solutions, pick the best, and ship craft. |
 | `drizzle-orm` | Drizzle ORM 1.0 RC (not 0.x): schema, RQBv2, kit, seed, validators, and Effect drivers. |
 | `effect` | Build, review, debug, migrate, or plan Effect v4 TypeScript code. |
 | `elysia` | Build, review, debug, test, and deploy Elysia applications with current docs. |

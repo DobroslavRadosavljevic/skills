@@ -1,0 +1,4 @@
+interface:
+  display_name: "Design Engineer"
+  short_description: "Diagnose UI/UX, compare solutions, ship craft"
+  default_prompt: "Use $design-engineer to diagnose this UI, propose multiple solutions, pick the best, and implement the fix."
