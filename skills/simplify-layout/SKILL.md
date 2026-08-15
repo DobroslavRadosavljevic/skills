@@ -1,6 +1,6 @@
 ---
 name: simplify-layout
-description: Shortens file and folder names and groups related code so paths stay scannable. Folder context carries the noun; leaf files stay short verbs or aspects; related modules sit together. Use when the user asks to simplify names, improve grouping, clean a file tree, shorten paths, reorganize related modules, or make a package or feature layout easier to scan — not for broad boundary or scalability migrations, or general smell cleanup (use unsmell).
+description: Shortens file and folder names and groups related code so paths stay scannable. Folder context carries the noun; leaf files stay short verbs or aspects; related modules sit together. Use when the user asks to simplify names, shorten paths, or make a package or feature layout easier to scan — not for cohesion-only splits that keep descriptive names, broad boundary or scalability migrations, or general smell cleanup.
 ---
 
 # Simplify Layout

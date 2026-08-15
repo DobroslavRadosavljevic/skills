@@ -49,6 +49,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `react` | Build, review, debug, migrate, or plan React apps with current React docs. |
 | `react-boundaries` | Enforce leaf-owned state/queries, no prop-drill hubs; TanStack-aware composition. |
 | `react-email` | Build, render, and send HTML emails with React Email (v6 components, CLI, editor). |
+| `reorganize` | Split oversized files and group related code into a coherent folder tree. |
 | `research` | Investigate external sources and codebase evidence before recommending next steps. |
 | `schema-dts` | Type-safe Schema.org JSON-LD with Google schema-dts (WithContext, Graph, gen). |
 | `sentry` | Sentry JS/TS SDKs: errors, tracing, replay, logs, source maps, and framework packages. |

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Reorganize"
+  short_description: "Split mixed/oversized files into a cohesive domain tree"
+  default_prompt: "Use $reorganize to propose splitting oversized or mixed files and grouping related modules into a domain folder tree. Keep names descriptive; do not shorten them. Inventory export groups, map splits, and wait for apply."
