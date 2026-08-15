@@ -1,0 +1,4 @@
+interface:
+  display_name: "Create Durable Plan"
+  short_description: "Advanced plan pack under /plans"
+  default_prompt: "Use $create-durable-plan. If repo-root plans/ is missing, set it up from scratch. Research this codebase and current docs into TRACE.md, then write a full pack under plans/<YYYY-MM-DD-slug> (PLAN, STATUS, TRACE, CONTRACT, EXECUTION, split phases if needed) with a work graph, file recipes, invariants, verification matrix, and stop conditions so another agent can execute without guessing. Do not implement unless I ask after the pack exists."

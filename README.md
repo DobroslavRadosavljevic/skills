@@ -16,6 +16,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `bun` | Bun runtime, package manager, test runner, bundler, bunfig, and Node compat. |
 | `clickhouse` | ClickHouse OLAP from TypeScript: @clickhouse/client, MergeTree, ingest, and Cloud. |
 | `compound-ui` | Build or refactor React UI into shadcn-style compound components. |
+| `create-durable-plan` | Advanced durable plan packs under `plans/<date-slug>`: graph, contracts, evidence, file recipes. |
 | `d3` | D3.js visualizations: scales, shapes, selections, layouts, geo, and React interop. |
 | `date-fns` | date-fns v4 date/time math with `@date-fns/tz` and `@date-fns/utc`. |
 | `decimal-js` | decimal.js v10 arbitrary-precision math, money patterns, and rounding. |
