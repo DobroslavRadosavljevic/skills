@@ -1,0 +1,4 @@
+interface:
+  display_name: "Design"
+  short_description: "Enforce shadcn website visual design by surface"
+  default_prompt: "Use $design to apply shadcn token, type, color, spacing, and surface rules to this website UI."
