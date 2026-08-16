@@ -1,0 +1,4 @@
+interface:
+  display_name: "SEO"
+  short_description: "Complete SEO playbook for search, snippets, and AI citations"
+  default_prompt: "Use $seo to research, brief, write, implement, or audit this page or site against crawl/index, copywriting, on-page, linking, schema, and preview rules."
