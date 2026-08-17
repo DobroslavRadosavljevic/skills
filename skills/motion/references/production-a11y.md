@@ -39,14 +39,18 @@ import { MotionConfig } from "motion/react"
 </MotionConfig>
 ```
 
+Import `correctParentTransform` / `transformViewBoxPoint` from `motion/react` when remapping pointer space.
+
 | Prop | Role |
 |------|------|
 | `transition` | Default transition for descendants |
 | `reducedMotion` | `"user"` \| `"always"` \| `"never"` (**default `"never"`**) |
 | `nonce` | CSP for injected styles |
 | `transformPagePoint` | Remap pointer for drag/pan (scaled parents, SVG viewBox) |
+| `isValidProp` | Motion 13: optional filter (e.g. `@emotion/is-prop-valid`) |
+| `skipAnimations` | Skip playback (tests / tooling; `useAnimate` respects it) |
 
-Prop filtering for custom components is via `motion.create` options (`forwardMotionProps`), not a primary `isValidProp` MotionConfig API in current docs.
+Prop filtering for CSS-in-JS: Motion 13 requires explicit `isValidProp` or `motion.create(StyledComponent)` — [packages-react.md](packages-react.md).
 
 ## Reduced motion (library)
 
@@ -70,9 +74,9 @@ style={{ y: reduce ? 0 : y }}
 
 Docs: [performance](https://motion.dev/docs/performance) · [frame](https://motion.dev/docs/frame)
 
-- Prefer `opacity` / `transform` (and often `filter` / `clipPath`).
+- Prefer `opacity` / `transform` (and often `filter` / `clipPath`). Hardware-accelerated `backgroundColor` and SVG in supported browsers (12.43+).
 - Independent transforms (`x`, `scale` as separate props) use CSS variables — for critical jank, a single `transform` string can be faster.
-- Layout animations measure then transform — cheaper than animating width/height, still not free; use `layoutDependency`, avoid during horizontal resize storms.
+- Layout animations measure then transform — cheaper than animating width/height, still not free; use `layoutDependency`, avoid during horizontal resize storms; axis-lock with `layout="x"|"y"` when only one axis changes.
 - Batch reads/writes with `frame` / `frame.postRender`.
 - Prefer `filter: drop-shadow()` over animated `boxShadow` when paint-bound.
 - Pause tab-hidden work: `usePageInView` + `useAnimationFrame`.
@@ -111,7 +115,7 @@ Await a frame before asserting styles when the library schedules microtasks.
 |------|--------|
 | Hover color / simple opacity | CSS transition |
 | One-off keyframes, no React tree | CSS / WAAPI / `motion/mini` |
-| Screenshot-style page morph, OK if non-interruptible | View Transitions |
+| Screenshot-style page morph, OK if non-interruptible | `animateView` or View Transitions |
 | Enter/exit, variants, gestures in React | Motion `motion` / LazyMotion |
 | Shared element / interruptible layout | Motion `layout` / `layoutId` |
 | Drag / reorder / layout | `domMax` or full Motion |
@@ -138,6 +142,9 @@ Apply the seven-question gate in `SKILL.md` and [foundations.md](foundations.md)
 | Wrapping `AnimatePresence` in `&&` | Condition **inside** presence |
 | `key={index}` for reordering lists | Stable `id` |
 | Full `motion` under LazyMotion | Use `m` + `strict` |
+| `AnimateView` from `motion/react` in OSS | MIT `animateView` from `"motion"`; React `AnimateView` is Motion+ |
+| `axis="y"` always on Reorder | Auto-detect; `"xy"` for grids (13.1) |
+| Mini `{ path: arc() }` | Full `motion` / `useAnimate` |
 
 ## Product-practice mapping
 

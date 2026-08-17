@@ -1,11 +1,11 @@
 ---
 name: motion
-description: "Build, review, debug, migrate, or plan UI animation with Motion for React (motion/react) and product motion design. Use for React/Next/Vite apps: motion.div, AnimatePresence, variants, gestures, drag, layout/layoutId, LazyMotion, useScroll, useAnimate, MotionValues, reducedMotion, framer-motion→motion migration, CSS/WAAPI/View Transitions alternatives, microinteractions, page transitions, accessibility, and performance-safe animation. Do not use for Vue, vanilla-only Motion, React Native, or non-interactive film/video unless adapting it to product UI."
+description: "Build, review, debug, migrate, or plan UI animation with Motion for React (motion/react, motion@13). Use for React/Next/Vite: motion.div, AnimatePresence, variants, gestures, drag, layout/layoutId, LazyMotion, useScroll, useAnimate, MotionValues, animateView, arc(), Reorder grids, reducedMotion, framer-motion→motion, Motion 13 isValidProp, CSS/WAAPI/View Transitions, microinteractions, page transitions, accessibility, and performance-safe animation. Do not use for Vue, vanilla-only Motion, React Native, or non-interactive film/video unless adapting it to product UI."
 ---
 
 # Motion
 
-Use this skill for **[Motion for React](https://motion.dev/docs/react)** (`motion` / formerly Framer Motion) and for **product motion design** (purpose, tokens, a11y, performance). Prefer current [motion.dev React docs](https://motion.dev/docs/react) over memory — pin narrative to **`motion@12.x`**.
+Use this skill for **[Motion for React](https://motion.dev/docs/react)** (`motion` / formerly Framer Motion) and for **product motion design** (purpose, tokens, a11y, performance). Prefer current [motion.dev React docs](https://motion.dev/docs/react) over memory — pin narrative to **`motion@13.x`** (latest line **13.1.0**).
 
 **Scope:** React and React-based frameworks only (Next.js, Vite+React, Remix, etc.). Do not implement Motion for Vue, vanilla-only pages, or React Native.
 
@@ -23,33 +23,36 @@ Before proposing or coding animation, answer:
 6. What is the reduced-motion equivalent?
 7. Will this animate on the compositor, or does it trigger layout or paint?
 
-If it fails, remove it or simplify. Then choose the smallest tool: CSS → `motion/react-mini` / LazyMotion → full `motion/react`.
+If it fails, remove it or simplify. Then choose the smallest tool: CSS → `motion/react-mini` / LazyMotion → full `motion/react` → `animateView` (View Transitions) only when a screenshot-style morph fits.
 
 ## Workflow
 
-1. Confirm React surface: `motion/react` or `motion/react-client` (Next App Router). Prefer `bun add motion`. Do not generate `framer-motion`, `motion-v`, or vanilla CDN Motion for new code.
-2. Refresh versions, entry points, and doc URLs from [source-map.md](references/source-map.md).
+1. Confirm React surface: `motion/react` or `motion/react-client` (Next App Router). Prefer `bun add motion`. Do not generate `framer-motion`, `motion-v`, or vanilla CDN Motion for new React UI.
+2. Refresh versions, entry points, and doc URLs from [source-map.md](references/source-map.md). Target **13.x**. On 13.0+, Emotion/Styled Components need explicit `isValidProp` or reversed composition — [packages-react.md](references/packages-react.md).
 3. Apply product motion judgment from [foundations.md](references/foundations.md) (purpose, tokens, duration/easing).
-4. For declarative APIs (`motion.*`, variants, transitions, gestures, `AnimatePresence`, SVG), use [setup-react-core.md](references/setup-react-core.md).
+4. For declarative APIs (`motion.*`, variants, transitions, `arc()`, gestures, `AnimatePresence`, SVG), use [setup-react-core.md](references/setup-react-core.md).
 5. For MotionValues, `useAnimate`, scroll, layout/`layoutId`, Reorder, and related hooks, use [values-scroll-layout.md](references/values-scroll-layout.md).
-6. For Next/RSC, Mini, LazyMotion sizing, migration, and Motion+, use [packages-react.md](references/packages-react.md).
-7. For LazyMotion recipes, `MotionConfig`, reduced motion, performance, testing, and AI traps, use [production-a11y.md](references/production-a11y.md).
-8. For CSS / WAAPI / FLIP / View Transitions / scroll-driven CSS (when not using Motion), use [web-implementation.md](references/web-implementation.md).
-9. For UI pattern recipes, use [component-recipes.md](references/component-recipes.md).
-10. For audits, handoff, and QA, use [deliverables-qa.md](references/deliverables-qa.md). Also load [accessibility.md](references/accessibility.md) and [performance.md](references/performance.md) when those are the focus.
+6. For View Transitions via `animateView` (MIT, from `"motion"`) vs Motion+ `AnimateView`, use [view-animations.md](references/view-animations.md).
+7. For Next/RSC, Mini, LazyMotion sizing, migration, and Motion+, use [packages-react.md](references/packages-react.md).
+8. For LazyMotion recipes, `MotionConfig`, reduced motion, performance, testing, and AI traps, use [production-a11y.md](references/production-a11y.md).
+9. For CSS / WAAPI / FLIP / View Transitions / scroll-driven CSS (when not using Motion), use [web-implementation.md](references/web-implementation.md).
+10. For UI pattern recipes, use [component-recipes.md](references/component-recipes.md).
+11. For audits, handoff, and QA, use [deliverables-qa.md](references/deliverables-qa.md). Also load [accessibility.md](references/accessibility.md) and [performance.md](references/performance.md) when those are the focus.
 
 ## Implementation Judgment
 
 - **Canonical import:** `import { motion, AnimatePresence } from "motion/react"`. Next App Router: `import * as motion from "motion/react-client"` or `"use client"`.
 - Root **`<MotionConfig reducedMotion="user">`** — library default is `"never"` (OS preference ignored until you opt in).
-- Prefer **transform / opacity**; use `layout` / `layoutId` for size/position morphs (not `animate` width/height).
+- Prefer **transform / opacity**; use `layout` / `layoutId` for size/position morphs (not `animate` width/height). Axis-lock with `layout="x"` / `layout="y"` / `layout="position"` when needed.
 - **`AnimatePresence` outside** the conditional; stable **`key`s**; `mode="wait"` is single-child only.
 - Prefer **`delayChildren: stagger(...)`** over legacy `staggerChildren` for new code.
-- Custom components: **`motion.create(Component)`** once (never inside render); forward refs.
+- Curved travel: **`transition={{ path: arc() }}`** or `transition.layout.path` — not mini `animate()`.
+- Custom components: **`motion.create(Component)`** once (never inside render); forward refs. Motion 13: do not assume Emotion prop filtering unless `MotionConfig isValidProp={isPropValid}`.
 - High-frequency scroll/drag: **MotionValues** + `style`, not `useState` every frame.
 - Bundle: **`LazyMotion` + `m` from `motion/react-m`**; `domAnimation` vs `domMax` (layout/drag).
 - Mini (`motion/react-mini`) cannot use independent transforms like `x` / `y` — use full `useAnimate` or CSS `transform`.
-- Motion+ / `motion-plus` is **paid** — do not assume it in OSS projects.
+- **`animateView`** is in core `motion` (not Motion+). React component **`AnimateView`** is still **paid**. Do not assume Motion+ / `motion-plus` in OSS.
+- **Reorder:** omit `axis` unless overriding; `"xy"` for grids; RTL is supported.
 
 ## Verification
 
@@ -59,3 +62,4 @@ If it fails, remove it or simplify. Then choose the smallest tool: CSS → `moti
 - Layout: non-static parent for `popLayout`; `layoutScroll` / `layoutRoot` when needed.
 - Tests: `transition={{ duration: 0 }}` or `false`; await `frame.postRender` before style asserts when needed.
 - Bundle check if adding full `motion` vs LazyMotion/mini.
+- CSS-in-JS after 13.0: no leaked style props on the DOM (or `isValidProp` / reverse composition).

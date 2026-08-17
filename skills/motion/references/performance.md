@@ -4,11 +4,12 @@ Use for compositor-only rules, layout-thrash prevention, will-change, responsive
 
 ## Motion library (npm)
 
-- Prefer opacity/transform; use `layout` (FLIP via transform) instead of animating width/height.
+- Prefer opacity/transform; use `layout` (FLIP via transform) instead of animating width/height. Axis-lock `layout="x"|"y"` when only one axis changes.
 - High-frequency scroll/drag: MotionValues in `style`, not `useState` every frame.
 - Bundle: LazyMotion + `m` / mini before full `motion/react`; `domAnimation` vs `domMax`.
 - Independent `x`/`scale` props use CSS variables — for critical jank consider a single `transform` string.
 - Layout: `layoutDependency`, `layoutScroll`/`layoutRoot`, `scrollbar-gutter: stable`.
+- `backgroundColor` and SVG can hardware-accelerate in supported browsers.
 - Details: [production-a11y.md](production-a11y.md) · https://motion.dev/docs/performance
 
 ## Performance rules

@@ -201,6 +201,8 @@ CSS example:
 
 Avoid view transitions that animate the entire page by default without purpose. Name only the important shared elements when possible.
 
+Motion wrapper (springs, auto names, interruption queue): [view-animations.md](view-animations.md) (`animateView` from `"motion"`).
+
 ### Scroll-driven animation
 
 Use scroll-driven animation only when scroll progress is the userâ€™s direct control or the animation explains scroll position. Good uses include reading progress, section reveals that do not block reading, sticky narrative transitions, and data-storytelling where scroll controls time.

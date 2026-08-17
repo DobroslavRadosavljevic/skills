@@ -36,7 +36,14 @@ import { AnimatePresence, LayoutGroup, Reorder, motion } from "motion/react"
   </AnimatePresence>
 </LayoutGroup>
 
-<Reorder.Group axis="y" values={items} onReorder={setItems}>
+<Reorder.Group values={items} onReorder={setItems}>
+  {items.map((item) => (
+    <Reorder.Item key={item.id} value={item}>{item.label}</Reorder.Item>
+  ))}
+</Reorder.Group>
+
+// Grid / wrap
+<Reorder.Group axis="xy" values={items} onReorder={setItems} className="grid">
   {items.map((item) => (
     <Reorder.Item key={item.id} value={item}>{item.label}</Reorder.Item>
   ))}
@@ -233,7 +240,7 @@ forward/back direction: consistent with navigation model
 reduced motion: instant or short fade
 ```
 
-Use shared-element transitions for cards-to-detail, image galleries, product pages, and drill-in flows. Avoid heavy page-wide motion in productivity apps where navigation is frequent.
+Use shared-element transitions for cards-to-detail, image galleries, product pages, and drill-in flows. Motion: `layoutId` for interruptible morphs; `animateView` when a View Transition snapshot is acceptable ([view-animations.md](view-animations.md)). Avoid heavy page-wide motion in productivity apps where navigation is frequent.
 
 ### List add/remove/reorder
 

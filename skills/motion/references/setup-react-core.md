@@ -24,9 +24,11 @@ const MotionCard = motion.create(Card)
 motion.create(Component, { forwardMotionProps: true })
 ```
 
-Requirements: forward `ref` to a DOM node (React 19: `props.ref`). Never call `motion.create()` inside render.
+Requirements: forward `ref` to a DOM node (React 19: `props.ref`). Wrong ref type throws (12.43+). Never call `motion.create()` inside render.
 
 Deprecated: `motion.custom()`. Prefer `motion.create` over bare `motion(Component)` in new code.
+
+**Motion 13 + CSS-in-JS:** Emotion/Styled Components no longer get automatic prop filtering. Prefer `motion.create(StyledDiv)` (styling library owns forwarding) or inject `isValidProp` — [packages-react.md](packages-react.md).
 
 ## Animation props
 
@@ -44,7 +46,22 @@ Independent transforms: `x`, `y`, `z`, `scale`, `scaleX/Y`, `rotate`, `rotateX/Y
 
 Defaults: physical props → spring; visual (`opacity`, color) → tween.
 
-Keyframes: `animate={{ x: [0, 100, 0] }}`; `null` = current value; `times` on transition for pacing. Curved motion: `transition={{ path: arc() }}` with `arc` from `motion/react`.
+Keyframes: `animate={{ x: [0, 100, 0] }}`; `null` = current value; `times` on transition for pacing.
+
+Curved motion (`arc` from `motion/react` or `"motion"`):
+
+```tsx
+import { arc, motion } from "motion/react"
+
+<motion.div
+  animate={{ x: 200, y: 100 }}
+  transition={{ duration: 1, path: arc({ strength: 0.5, peak: 0.5, rotate: true }) }}
+/>
+```
+
+Options: `strength` (default 0.5), `peak` (0.5), `direction` (`"cw"` | `"ccw"` | auto), `rotate` (`boolean` | 0–1). Memoize `arc()` when using automatic direction so interruptions stay stable. Use `transition.layout.path` for layout/`layoutId`. **Not** supported by mini `animate()`.
+
+Animatable colors include `oklch`, `oklab`, `lab`, `lch`, `color`, `color-mix`, `light-dark`. `backgroundColor` and SVG can use hardware acceleration in supported browsers (12.43+).
 
 ## Variants and orchestration
 
@@ -87,7 +104,7 @@ const item = {
 | spring (duration) | `duration` + `bounce` (0–1), or `visualDuration` |
 | inertia | `power`, `timeConstant`, `modifyTarget`, `min`/`max` — used by `dragTransition` |
 
-Also: `delay`, `repeat` / `Infinity`, `repeatType`: `"loop" | "reverse" | "mirror"`, `repeatDelay`, `when`, `delayChildren`.
+Also: `delay`, `repeat` / `Infinity`, `repeatType`: `"loop" | "reverse" | "mirror"`, `repeatDelay`, `when`, `delayChildren`, `path`. Sequences support `repeatType` / `repeatDelay` (12.39+).
 
 Per-value / inherit:
 
@@ -128,7 +145,9 @@ Targets may be objects **or** variant labels.
 />
 ```
 
-Event `info`: `point`, `delta`, `offset`, `velocity`. Nested `<img>`: `draggable={false}`. Scaled/SVG parents: `MotionConfig transformPagePoint={…}`.
+Event `info`: `point`, `delta`, `offset`, `velocity`. Nested `<img>`: `draggable={false}`. Scaled/SVG parents: `MotionConfig transformPagePoint={correctParentTransform(ref)}` or `transformViewBoxPoint(svgRef)`.
+
+`dragSnapToOrigin` may be `true` or `"x"` / `"y"` (per-axis). `dragDirectionLock` + `onDirectionLock`. Child `stopPropagation` no longer breaks drag end (12.41+).
 
 ## AnimatePresence
 

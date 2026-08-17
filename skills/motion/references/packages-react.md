@@ -65,17 +65,37 @@ Recipes: [production-a11y.md](production-a11y.md).
 
 ## Migration checklist
 
-1. `bun remove framer-motion && bun add motion`
+1. `bun remove framer-motion && bun add motion` (install **13.x** unless the repo is pinned).
 2. Rewrite imports per [source-map.md](source-map.md).
-3. React 12 rename: no major React API break beyond package path.
+3. **13.0 CSS-in-JS:** `@emotion/is-prop-valid` is no longer an optional dependency. If styled `motion` components leak props to the DOM:
+
+```tsx
+import isPropValid from "@emotion/is-prop-valid"
+import { MotionConfig } from "motion/react"
+
+<MotionConfig isValidProp={isPropValid}>
+  <App />
+</MotionConfig>
+```
+
+Or reverse composition so the styling library owns forwarding:
+
+```tsx
+const StyledDiv = styled.div`/* styles */`
+const MotionDiv = motion.create(StyledDiv)
+```
+
+Styled Components 6: transient props / `shouldForwardProp`.
+
 4. Scan for: `exitBeforeEnter`, `AnimateSharedLayout`, `positionTransition`/`layoutTransition`, `motion.custom`, `useViewportScroll`, `useCycle`.
 5. Add root `MotionConfig reducedMotion="user"` if missing.
+6. Reorder lists: `axis` is optional (auto-detect); use `axis="xy"` for grids.
 
 ## Motion+ (paid)
 
 Docs: [Motion+](https://motion.dev/plus) · [install](https://motion.dev/docs/motion-plus-installation)
 
-Private registry `@motionplus/*` / `motion-plus`. Premium components — **do not** assume in OSS apps. Core path: MIT `motion` + `motion/react*`.
+Private registry `@motionplus/*` / `motion-plus`. Premium components (`AnimateView`, Carousel, Cursor, …) — **do not** assume in OSS apps. Core path: MIT `motion` + `motion/react*` + `animateView` from `"motion"`.
 
 ## Out of scope
 
@@ -94,3 +114,4 @@ Private registry `@motionplus/*` / `motion-plus`. Premium components — **do no
 | Tiny imperative in a component | `motion/react-mini` `useAnimate` (if props fit) |
 | Springs / `x` / layout / drag | Full `motion/react` or LazyMotion `domMax` |
 | Simple hover color | CSS — [web-implementation.md](web-implementation.md) |
+| View Transition morph (MIT) | `animateView` from `"motion"` — [view-animations.md](view-animations.md) |
