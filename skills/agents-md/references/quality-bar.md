@@ -9,7 +9,8 @@ Use this checklist when creating or reviewing. Mark N/A only when truly irreleva
 - [ ] No secrets, tokens, private keys, or live credentials.
 - [ ] Commands are copy-pasteable and match real scripts/CI/Makefiles.
 - [ ] Linked paths exist (or the review explicitly flags dead links).
-- [ ] Root file roughly ≤150 lines (or nested split justified); no essay dumps.
+- [ ] Root file includes the Communication (ASD-STE100) block from [communication.md](communication.md), unmodified.
+- [ ] Root file roughly ≤150 lines (or nested split justified); no essay dumps. Communication still counts and stays.
 - [ ] Each retained line passes the litmus test: removing it would cause a real agent mistake.
 
 ## Coverage (include when applicable)
@@ -18,6 +19,7 @@ Use this checklist when creating or reviewing. Mark N/A only when truly irreleva
 | --- | --- |
 | Stack | Names frameworks/tools with versions or release lines when ambiguity would change code |
 | Commands | Install, dev, test, lint/typecheck, build appear early with useful flags/filters |
+| Communication | Root file has the ASD-STE100 block from communication.md, not a paraphrase |
 | Layout | Non-obvious paths called out; obvious `src/` trees not narrated |
 | Conventions | Only project-specific rules; style enforced by tooling is linked or omitted |
 | Testing | How to run focused tests; expectation to fix green / add tests when changing code |
@@ -36,7 +38,7 @@ Passes:
 
 Fails:
 
-- Generic “be helpful / write clean code”.
+- Generic “be helpful / write clean code” (Communication is the STE block, not this)
 - Full style guide paste.
 - Auto-generated tour of every folder the model can already see.
 - Duplicating README marketing or human onboarding fluff.

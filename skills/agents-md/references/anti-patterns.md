@@ -6,8 +6,9 @@ Do not ship these.
 
 | Anti-pattern | Why it hurts | Do instead |
 | --- | --- | --- |
+| Missing Communication (ASD-STE100) | Agents write long passive jargon to humans | Paste the block from communication.md into the root file |
 | README clone | Dilutes agent signal; duplicates human docs | Keep human onboarding in `README.md`; link it |
-| Generic advice (“write clean code”) | Models already know this | Encode only project-specific constraints |
+| Generic advice (“write clean code”) | Models already know this | Encode only project-specific constraints, plus required Communication |
 | Full style guide paste | Burns context; drifts from prettier/eslint | Rely on formatters/linters; note only exceptions |
 | Entire architecture essay inline | Always-on context overload | Short summary + link / index table |
 | Auto-init dump left unedited | ETH Zurich-style findings: generic context can *hurt* | Strip the obvious; keep gotchas and commands |
@@ -24,7 +25,7 @@ Do not ship these.
 - **One mega-file for a large monorepo** — nest package-level files; keep root as workspace map + shared rules.
 - **Contradictory nested files** — state overrides explicitly (“For this package, use `make test-payments` instead of root `bun test`”).
 - **Deep link chains** — from `AGENTS.md`, link one level to real docs; do not make agents chase nested “see also” mazes.
-- **Empty ceremonial headings** — delete unused sections from the template.
+- **Empty ceremonial headings** — delete unused sections from the template. Keep Communication on the root file.
 
 ## Process
 

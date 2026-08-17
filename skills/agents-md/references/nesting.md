@@ -36,6 +36,7 @@ Behavior varies slightly by tool, but practical rules:
 | --- | --- |
 | Package manager and workspace filters | Package-local scripts |
 | Shared boundaries and invariants | Extra never/ask-first for that area |
+| Communication (ASD-STE100) on the root file | Repeat Communication only if this package overrides writing rules |
 | Index of major apps/packages | Pointers to package docs |
 | Default test/lint entrypoints | Alternate runners (e.g. breeze, bazel, just) |
 

@@ -8,7 +8,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 
 | Skill | Purpose |
 | --- | --- |
-| `agents-md` | Create, review, or enforce high-quality AGENTS.md project agent context. |
+| `agents-md` | Create, review, or enforce AGENTS.md with commands, boundaries, and required ASD-STE100 communication. |
 | `base-ui` | Build, review, migrate, or debug React UIs with Base UI primitives. |
 | `better-auth` | TypeScript auth with better-auth, official plugins, adapters, and security. |
 | `brainstorm` | Explore ideas, plans, research, and codebase questions in a read-only session. |

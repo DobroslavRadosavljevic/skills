@@ -5,7 +5,8 @@ description: >-
   “README for coding agents” format). Use when the user invokes $agents-md,
   says AGENTS.md, agents.md, agent instructions, project agent context,
   nest AGENTS.md, or asks to scaffold, audit, improve, or standardize
-  repository guidance for AI coding agents.
+  repository guidance for AI coding agents. Always include the ASD-STE100
+  Communication block in new or existing root AGENTS.md files.
 ---
 
 # AGENTS.md
@@ -30,7 +31,8 @@ If ambiguous, ask once: create, review, improve, or nest?
 ## Core Rules
 
 - Prefer one root `AGENTS.md`. Nest only when a subtree has different commands, boundaries, or conventions.
-- Every line must earn its keep. Litmus: *Would removing this cause the agent to make a mistake it would not otherwise make?* If no, delete it.
+- **Required:** every root `AGENTS.md` must include the Communication (ASD-STE100) block from [references/communication.md](references/communication.md). Paste it as-is. Nested files skip it unless they override writing rules.
+- Every other line must earn its keep. Litmus: *Would removing this cause the agent to make a mistake it would not otherwise make?* If no, delete it.
 - Target **≤150 lines** for a root file; **30–50** is enough for small repos. Split or index when larger.
 - Put **exact executable commands early** (with flags/filters the project actually uses). Agents will re-run these.
 - Prefer **pointers and an orientation table** over pasting architecture essays, full style guides, or README clones.
@@ -45,16 +47,17 @@ If ambiguous, ask once: create, review, improve, or nest?
 
 ## Quality Bar (must pass)
 
-A great `AGENTS.md` covers these when they apply (omit empty sections; do not pad):
+A great `AGENTS.md` covers these when they apply (omit empty sections; do not pad). **Communication is not optional** on the root file.
 
 1. **Stack** — languages, frameworks, key libs **with versions** when non-obvious.
 2. **Commands** — install, dev, test, lint/typecheck, build; scoped variants for monorepos.
-3. **Layout** — where source, tests, configs, and generated output live (only if non-standard).
-4. **Conventions** — project-specific style/architecture rules agents get wrong; link to lint/format otherwise.
-5. **Testing** — how to run focused tests, what “done” means, whether to add tests unprompted.
-6. **Git / PR** — commit/PR norms that differ from defaults (title format, required checks).
-7. **Boundaries** — always / ask first / never (secrets, vendor dirs, prod config, schema, deps).
-8. **Index** — links or a table to deeper docs (architecture, ADRs, security model) instead of inlining them.
+3. **Communication** — the ASD-STE100 block from [references/communication.md](references/communication.md) (required on root files).
+4. **Layout** — where source, tests, configs, and generated output live (only if non-standard).
+5. **Conventions** — project-specific style/architecture rules agents get wrong; link to lint/format otherwise.
+6. **Testing** — how to run focused tests, what “done” means, whether to add tests unprompted.
+7. **Git / PR** — commit/PR norms that differ from defaults (title format, required checks).
+8. **Boundaries** — always / ask first / never (secrets, vendor dirs, prod config, schema, deps).
+9. **Index** — links or a table to deeper docs (architecture, ADRs, security model) instead of inlining them.
 
 Full checklist: [references/quality-bar.md](references/quality-bar.md).
 
@@ -71,8 +74,9 @@ Before writing:
 ### 2. Draft or edit
 
 - Use [references/template.md](references/template.md) as a starting shape; delete unused sections.
-- Put high-frequency commands near the top.
-- Encode only project-specific constraints; strip generic advice agents already know.
+- Always paste the Communication block from [references/communication.md](references/communication.md) into the root file.
+- Put high-frequency commands near the top. Put Communication next.
+- Encode only project-specific constraints; strip generic advice agents already know. Do not strip Communication.
 - For monorepos, follow [references/nesting.md](references/nesting.md).
 
 ### 3. Validate
@@ -80,6 +84,7 @@ Before writing:
 Check against:
 
 - Quality bar above and [references/quality-bar.md](references/quality-bar.md).
+- Communication block present and unmodified: [references/communication.md](references/communication.md).
 - Anti-patterns in [references/anti-patterns.md](references/anti-patterns.md).
 - Good/bad patterns in [references/examples.md](references/examples.md).
 

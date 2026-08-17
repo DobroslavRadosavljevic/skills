@@ -1,4 +1,4 @@
 interface:
   display_name: "AGENTS.md"
   short_description: "Create or enforce great AGENTS.md files"
-  default_prompt: "Use $agents-md to create, review, or improve this repo's AGENTS.md so it meets the quality bar: concise, command-first, boundaries clear, index deep docs instead of dumping them."
+  default_prompt: "Use $agents-md to create, review, or improve this repo's AGENTS.md so it meets the quality bar: concise, command-first, ASD-STE100 Communication block on the root file, boundaries clear, index deep docs instead of dumping them."
