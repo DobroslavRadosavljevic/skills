@@ -1,68 +1,68 @@
 # Explanations
 
-How to talk so the user can follow without a glossary open.
+Talk so a careful non-native reader can act without a glossary.
 
 ## Default shape
 
-1. **Outcome** — what is true now / what you will do.
-2. **Why it matters** — one sentence, practical.
-3. **Detail** — only as deep as needed (steps, files, commands).
-4. **Technical appendix** — optional; exact symbols, errors, types.
+1. **Outcome** — what is true now, or what you will do.
+2. **Why** — one short sentence, practical.
+3. **Detail** — steps, files, commands. One step per sentence.
+4. **Exact text** — optional. Symbol, error, or type.
 
 Example:
 
-> The deploy failed because the app could not reach the database.  
-> I’ll point the config at the right database URL and redeploy.  
-> Exact error: `ECONNREFUSED 127.0.0.1:5432` (nothing listening on the Postgres port).
+> The deploy failed. The app could not reach the database.
+> I will set the correct database URL and deploy again.
+> Exact error: `ECONNREFUSED 127.0.0.1:5432` (nothing listens on the Postgres port).
 
-## Word swaps (default → only when required)
+## Word swaps (default → only when that is the real term)
 
-| Prefer | Instead of (unless that is the real term in play) |
+| Prefer | Instead of |
 | --- | --- |
 | use | leverage, utilize |
-| start / set up | bootstrap, spin up, provision (unless cloud APIs) |
-| show / display | surface, expose (UI) |
-| change | mutate (unless describing immutable updates) |
-| piece / part | component (unless React/UI component) |
+| start / set up | bootstrap, spin up, provision (unless that is the cloud API) |
+| show | surface, expose (unless that is the API) |
+| change | mutate (unless you talk about immutable updates) |
+| part | component (unless it is a UI component) |
 | connect | wire up, instrument |
-| limit / rule | constraint (unless DB/constraint) |
-| retry / back off | exponential backoff strategy (unless implementing it) |
+| limit / rule | constraint (unless it is a database constraint) |
+| retry | exponential backoff strategy (unless you implement that) |
 | copy / list | enumerate |
-| simple / small | lightweight, ergonomic, idiomatic (as filler) |
+| small | lightweight, ergonomic, idiomatic (as filler) |
 
-Not a ban list for code comments that must match APIs — a ban on **default voice**.
+This is a ban on default voice. Code comments may keep API words.
 
 ## Acronyms
 
-- Universal OK without expansion: HTTP, HTTPS, URL, URI, JSON, HTML, CSS, SQL, API, ID, UI, CLI, Git.
-- Expand once, then shorten: “JWT (login token)”, “SSR (HTML built on the server)”, “ORM (typed database helper)”.
-- Never stack: “RQB v2 DSL via JIT codecs” → explain the idea, then name the pieces if needed.
+- OK without expansion: HTTP, HTTPS, URL, URI, JSON, HTML, CSS, SQL, API, ID, UI, CLI, Git.
+- Expand once, then reuse: “JWT (login token)”, “SSR (HTML built on the server)”.
+- Never stack unexplained short forms in one sentence.
 
-## Teaching without condescension
+## Teaching
 
-- Don’t say “simply”, “just”, “obviously”.
-- Don’t quiz the user.
-- Don’t dump five alternative architectures when they asked for a fix.
-- Offer a short “deeper detail” only if useful: “I can go into how the cache keys work if you want.”
+- Do not say “simply”, “just”, “obviously”.
+- Do not quiz the user.
+- Do not list five designs when they asked for a fix.
+- Offer more depth in one short line if it helps: “I can explain how the cache keys work.”
 
-## Status and progress updates
+## Status
 
 Plain:
 
-- “Updating the login form validation next.”
-- “Blocked: need the staging database URL.”
+- “I will update the login form validation next.”
+- “Blocked: I need the staging database URL.”
 
 Not:
 
 - “Proceeding to hydrate the validation schema abstraction for the auth concern.”
 
-## Errors and failures
+## Errors
 
-1. What failed (human).
-2. Likely reason (human).
-3. What to do (human).
-4. Exact message / code (technical).
+1. What failed (human, STE).
+2. Likely reason (human, STE).
+3. What to do (command, ≤ 20 words).
+4. Exact message (technical).
 
-## When the user is clearly expert
+## Expert users
 
-If they write in precise jargon and ask for precise jargon, **match their level** — still avoid muddy prose and still keep names readable. Plain language is not baby talk; it is clarity.
+If they use exact jargon and ask for exact jargon, keep their terms. Still use STE sentence limits, active voice, and one word per idea. STE is clarity, not baby talk.

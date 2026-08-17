@@ -6,28 +6,40 @@
 
 **Bad:** “The rollout was non-convergent because the control plane couldn’t reconcile the desired stateful set due to a probe failure on the dependency graph.”
 
-**Good:** “The new version didn’t come up. The health check failed because the app couldn’t connect to Redis. I’ll fix the Redis URL and deploy again.”
+**Good:** “The new version did not start. The health check failed. The app could not connect to Redis. I will fix the Redis URL and deploy again.”
 
-### What changed in a PR
+### What changed
 
 **Bad:** “Refactored the domain layer to improve cohesion and invert dependencies across the billing bounded context.”
 
-**Good:** “Moved invoice totals into `billing/calculate-total.ts` so the payment page isn’t doing that math itself.”
+**Good:** “I moved invoice totals into `billing/calculate-total.ts`. The payment page no longer does that math.”
 
-### Introducing a library term
+### New library term
 
 **Bad:** “Use RQBv2 `defineRelations` for your graph.”
 
-**Good:** “We’ll declare how tables link to each other with Drizzle’s `defineRelations` helper (the relational query API). That lets you load a user and their posts in one query.”
+**Good:** “We will declare how tables link with Drizzle’s `defineRelations` helper. That is the relational query API. Then you can load a user and their posts in one query.”
+
+### STE length
+
+**Bad:** “In order to proceed, the environment variable that points at the database should be updated so that the application can establish a connection.”
+
+**Good:** “Set `DATABASE_URL` to the real database. Then start the app again.”
+
+### STE voice
+
+**Bad:** “The switch must be turned.”
+
+**Good:** “Turn the switch.”
 
 ## Naming
 
 | Bad | Good | Why |
 | --- | --- | --- |
-| `mgr.ts` | `session-manager.ts` or better `get-session.ts` | “mgr” says nothing |
+| `mgr.ts` | `get-session.ts` | “mgr” says nothing |
 | `doProcess()` | `sendWelcomeEmail()` | Verb + object |
 | `flag` | `isEmailVerified` | Boolean reads as a question |
-| `data.ts` | `pricing-table.ts` | What’s inside? |
+| `data.ts` | `pricing-table.ts` | Says what is inside |
 | `AuthNznOrchestrator` | `login-flow.ts` / `startLogin` | Ordinary words |
 | `tmp-final-v3/` | `onboarding/` | Durable domain name |
 | `h()` | `toHtml()` | Greppable intent |
@@ -38,12 +50,12 @@
 
 **Good:**
 
-> Postgres rejected the migration because the `users.email` column already exists.  
-> That usually means the migration ran once already. I’ll check the migrations table and skip or fix the duplicate step.  
+> Postgres rejected the migration. The `users.email` column already exists.
+> The migration likely ran once already. I will check the migrations table and skip or fix the duplicate step.
 > SQL: `ERROR: column "email" of relation "users" already exists`
 
 ## Manual invocation
 
-User: “plain-language this” / “rename clearly” / “explain simply”
+User: “plain-language this” / “STE this” / “rename clearly”
 
-Agent: rewrite the last explanation and/or rename the scoped symbols/files to pass the aloud/search/teammate tests, then show a short before→after list.
+Agent: rewrite the last explanation and/or rename the scoped symbols to pass STE and the aloud/search/teammate tests. Show a short before → after list.

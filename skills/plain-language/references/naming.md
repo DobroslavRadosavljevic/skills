@@ -6,7 +6,7 @@ Rules for files, folders, symbols, routes, flags, and product terms. Goal: a str
 
 1. **Full words over clever short forms.** `invoice` not `invc`, unless the whole codebase already says `inv`.
 2. **Say the role.** `parseEnv` not `helpers2`.
-3. **Stable domain language.** Pick one word per concept (`signIn` vs `logIn` — one only) and stick to it.
+3. **One word per idea.** Pick one word per concept (`signIn` vs `logIn` — one only) and stick to it. Same rule as STE in prose.
 4. **No comedy names in production paths.** Fine in throwaway scratch; not in shared folders.
 5. **Match local convention** for case (`camelCase`, `kebab-case`, `PascalCase`) — clarity first, style second.
 

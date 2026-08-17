@@ -1,4 +1,4 @@
 interface:
   display_name: "Plain Language"
-  short_description: "Clear explanations and readable names"
-  default_prompt: "Use $plain-language for every explanation and name in this work. Prefer human-readable words; use deep technical terms only when necessary, and define them briefly."
+  short_description: "STE-100 hard prose and readable names"
+  default_prompt: "Use $plain-language as a hard gate. Write every user-facing sentence in ASD-STE100 Simplified Technical English: simple words with one meaning, one word per idea, instructions of 20 words or less, active voice, one topic per paragraph. Keep exact API names when needed and define them once. Use readable names in code."

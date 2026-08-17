@@ -45,7 +45,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `oxfmt` | Full Oxfmt usage guide plus setup, Prettier migration, and CI formatting. |
 | `oxlint` | Full Oxlint usage guide plus setup, rules/plugins, type-aware lint, and ESLint migration. |
 | `permix` | Type-safe Permix permissions: setup/check, SSR, React/Next, and server middleware. |
-| `plain-language` | Always-on clear explanations and readable naming; technical depth only when needed. |
+| `plain-language` | Always-on ASD-STE100 hard prose (short, active, one word per idea) plus readable naming. |
 | `playwright` | Build, review, debug, configure, or plan Playwright E2E tests and browser automation. |
 | `react` | Build, review, debug, migrate, or plan React apps with current React docs. |
 | `react-boundaries` | Enforce leaf-owned state/queries, no prop-drill hubs; TanStack-aware composition. |
