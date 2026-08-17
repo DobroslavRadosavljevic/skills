@@ -1,0 +1,4 @@
+interface:
+  display_name: "Copywriting"
+  short_description: "Visitor copy; ban model words and cloned pages"
+  default_prompt: "Use $copywriting. Name the surface. Write to one reader. Keep every line dead simple. Ban jargon. For docs, UI, and errors, use ASD-STE100: 20-word instructions, active voice, one word per idea. Each file gets its own outline. Real numbers. No words from slop-words.md. No CMS notes. Run the sweep."
