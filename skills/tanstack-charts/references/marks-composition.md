@@ -2,22 +2,24 @@
 
 ## Task-First Selection
 
-Start from the reader question, then pick marks:
-
 | Reader task | First choice | Notes |
 | --- | --- | --- |
-| Change over ordered time | `lineY` | `areaY` for magnitude/bands; bars for discrete periods |
-| Compare categories | `barY` / `barX` | Prefer zero baseline on quantitative axis |
-| Relationship | `dot` | Add `r` + `rScale` (`scaleSqrt`) for bubble size |
-| Interval / range | `areaY`/`rect`/`barY` with `y1`/`y2` | Candlestick = link + ranged rect pattern |
-| Composition | Implicit stack or `layout: stack()` | Normalized: `offset: 'normalize'`; mosaic via `rect` |
-| Side-by-side groups | `layout: group()` | Explicit; default length-channel geometry stacks |
-| Distribution | `binX` / D3 bins → `rect`/`barY` | Box/violin via composed marks |
+| Change over ordered time | `lineY` | `areaY` for magnitude; `differenceY` for two series; bars for discrete periods |
+| Least-squares trend | `linearRegressionY` | Confidence band from the same family |
+| Compare categories | `barY` / `barX` | Zero baseline on the quantitative axis |
+| Relationship | `dot` | `r` + `rScale` (`scaleSqrt`) for bubbles; `hexbin` / `contour` when dense |
+| Interval / range | `areaY`/`rect`/`barY` with `y1`/`y2` | Candlestick = `link` + ranged `rect` |
+| Composition | Implicit stack or `layout: stack()` | Normalized offset; mosaic via `mosaicY` + `rect`; `waffleY` for unit charts |
+| Side-by-side groups | `layout: group()` | Default length-channel geometry stacks |
+| Distribution | `binX` → `rect`; `boxY`; `violinY`; `ridgelineY` | Prefer first-party `boxY` over hand-composed fences |
 | Matrix | `cell` / `rect` | |
-| Small multiples | `facet` / `facetChart` | |
+| Small multiples | `facet` / `facetChart` / `composeViews` | |
+| Hierarchy | `treemap`, `sunburst`, `treeLayout` + marks | Exact `/hierarchy/*` entries |
+| Flow | `sankeyDiagram` | `@tanstack/charts/network/sankey` |
+| Network | `forceLayout` then `dot`/`link` | Static settlement only; drag is app-owned |
 | Pie / radar | `@tanstack/charts/polar` | Not a root Cartesian default |
 | Maps | `@tanstack/charts/geo` (`geoShape`) | Projection factory is app/D3-owned |
-| Focus decoration | `whenFocused(bandX(...), { match: 'x' })` | Shared focus-layer marks |
+| Focus decoration | `crosshair`, `whenFocused`, `focusGuideX/Y` | `decorative(...)` for non-interactive siblings |
 
 Prefer the smallest complete composition before facets, custom marks, or overlays.
 
@@ -25,246 +27,134 @@ Prefer the smallest complete composition before facets, custom marks, or overlay
 
 | Visual task | Marks |
 | --- | --- |
-| Trend / path | `lineY` |
+| Trend / path | `lineY`, `lineX` |
+| Difference of two paths | `differenceY`, `differenceX` |
+| Regression | `linearRegressionY`, `linearRegressionX` |
 | Range / filled trend | `areaY`, `areaX` |
-| Category comparison | `barY`, `barX` |
-| Intervals / heatmap cells | `rect`, `cell` |
+| Category comparison | `barY`, `barX`, `waffleY`, `waffleX` |
+| Intervals / heatmap | `rect`, `cell` |
 | Observations | `dot`, `hexagon` |
+| Dodge / beeswarm-style | `dodgeX`, `dodgeY`, `createDotLayout` |
+| Tukey summary | `boxY`, `boxX` (`boxRows` for reusable stats) |
+| Density ridges | `ridgelineY`, `ridgelineX`, `violinY`, `violinX` |
 | References | `ruleX`, `ruleY` |
-| Categorical band highlights | `bandX`, `bandY` |
-| Labels | `text` |
+| Categorical bands | `bandX`, `bandY` |
+| Labels / frame | `text`, `frame` |
 | Directed relations | `arrow`, `link`, `vector` |
-| Distribution glyphs | `tickX`, `tickY` |
-| Frame | `frame` |
+| Glyphs | `tickX`, `tickY` |
 | Facets | `facet`, `facetChart` |
+| Views | `composeViews`, `viewGrid` from `@tanstack/charts/view` |
 | Focus-gated layers | `whenFocused(mark, filter?)` |
+| Data-less cursor | `crosshair` from `@tanstack/charts/crosshair` |
+| Hierarchy / network / spatial | exact subpaths — not assumed on the root |
 
-`link` supports per-datum `strokeWidth` / `strokeOpacity` and line caps (useful with application-owned `d3-sankey` layouts).
+`link` supports per-datum `strokeWidth` / `strokeOpacity` (Sankey-style composition). Polar/geo/spatial/hierarchy/network stay on capability subpaths so Cartesian charts stay lean.
 
 ## Layer Order
 
-Marks earlier in the array paint behind later marks. Default escalation:
+Marks earlier in the array paint behind later marks. Default: background → reference bands/rules → primary geometry → highlight dots → labels.
 
-1. Background regions / filled areas
-2. Reference bands and rules
-3. Primary bars or lines
-4. Highlight dots, ticks, vectors
-5. Labels and annotations
+### Decorative layers
 
-Annotations are ordinary marks with their own data and identity—there is no separate overlay subsystem.
+When two marks describe the same observations, one layer should own hit-testing:
+
+```ts
+import { decorative } from '@tanstack/charts/mark/decorative'
+
+const marks = [
+  decorative(lineY(rows, { x: 'date', y: 'value' })),
+  dot(rows, { x: 'date', y: 'value' }),
+]
+```
+
+`decorative(mark)` keeps scale channels, layout, motion, and paint. It removes interaction points. Input must be an always-painted mark without focus/state behavior.
+
+Reusable units of ordinary marks: `compositeMark` from `@tanstack/charts/mark/composite`.
 
 ## Mark And Datum Identity
 
-- Give marks an explicit `id` when they are conditional, reordered, or need stable reconciliation across definitions.
-- Built-ins infer datum identity from unique top-level `id`, nested `data.id`, or mark-specific position (`barY`→`x`, `lineY`/`areaY`→`x`, etc.).
-- Supply `key` when inferred identity is not the entity's stable identity.
-- Avoid unstable array-index keys for live updating charts.
-- Marks accept optional `states` for focus-driven presentation overrides.
-
-```ts
-lineY(rows, {
-  id: 'actual-revenue',
-  x: 'date',
-  y: 'actual',
-})
-```
+- Explicit `id` when marks are conditional, reordered, or must reconcile across definitions.
+- Infer datum identity from unique `id`, nested `data.id`, or mark-specific position.
+- Supply `key` when inferred identity is not stable. Avoid array-index keys.
+- Optional `states` for focus-driven presentation overrides.
 
 ## Grouping, Color, And Stacking
 
-`z` partitions connected geometry (independent lines/areas) and feeds default categorical color when `color` is omitted:
+`z` partitions connected geometry. Authored `color` can also create path groups when `z` is omitted; explicit `z` wins.
+
+**Single length channels stack implicitly** at repeated categorical positions:
 
 ```ts
-lineY(rows, { x: 'date', y: 'value', z: 'region' })
+barY(rows, { x: 'quarter', y: 'revenue', color: 'region' })
 ```
 
-When `z` is omitted on a connected line/area, an authored `color` channel can also create path groups. Explicit `z` wins when fields differ.
-
-### Bars And Areas (`0.3.x`+)
-
-**Single length channels stack implicitly** at repeated categorical positions (positive/negative diverge from zero):
-
-```ts
-import { barY, group, stack } from '@tanstack/charts'
-
-barY(rows, {
-  x: 'quarter',
-  y: 'revenue',
-  color: 'region',
-})
-```
-
-Side-by-side groups require an explicit layout:
+Side-by-side:
 
 ```ts
 barY(rows, {
   x: 'quarter',
   y: 'revenue',
   color: 'region',
-  layout: group(), // or group({ padding: 0.2 }) / group({ scale })
+  layout: group(),
 })
 ```
 
-Configure stack order/offset only when defaults are insufficient:
+`layout: group()` groups by `z` when present, otherwise by discrete `color`.
+
+Explicit stack policy:
 
 ```ts
-barY(rows, {
-  x: 'quarter',
-  y: 'revenue',
-  color: 'segment',
-  layout: stack({
-    order: ['Core', 'Services'], // or 'input' | 'ascending' | 'descending'
-    offset: 'normalize', // 'diverging' | 'normalize' | 'center' | 'wiggle'
-    reverse: false,
-  }),
+layout: stack({
+  order: ['Core', 'Services'],
+  offset: 'normalize',
+  reverse: false,
 })
 ```
 
-Supplying `y1`/`y2` (or `x1`/`x2` on `barX`) **opts out** of implicit stacking and treats channels as authored endpoints:
+`y1`/`y2` (or `x1`/`x2`) **opts out** of implicit stacking. Prefer `stackRowsY` / `stackRowsX` when endpoints are reused outside the mark. Do not use obsolete `groupScale`.
 
-```ts
-barY(stackedRows, {
-  x: 'category',
-  y1: 'start',
-  y2: 'end',
-  z: 'segment',
-})
-```
+## Gaps, Curves, Style
 
-Do not expect `groupScale` from older docs/snippets—use `layout: group(...)`. Prefer `stackRowsY` / `stackRowsX` transforms when stack endpoints must be reused outside one mark (tables, exports, linked views).
+`lineY` / `areaY` split at missing positional values. Treat breaks as evidence.
 
-When `y1`/`x1` is omitted on interval-capable marks, baselines default to zero where supported.
-
-## Gaps And Missing Values
-
-`lineY` and `areaY` split geometry at missing/invalid positional values. Treat breaks as evidence, not as zeros:
-
-```ts
-lineY(rows, {
-  x: 'date',
-  y: (row) => (row.Date.getUTCMonth() < 3 ? null : row.Close),
-})
-```
-
-## Curves
-
-Straight lines/areas need no `d3-shape`. Opt in explicitly:
+Straight paths need no `d3-shape`. Opt in:
 
 ```ts
 import { curveMonotoneX } from 'd3-shape'
 import { d3Curve, lineY } from '@tanstack/charts'
 
-lineY(rows, {
-  x: 'date',
-  y: 'value',
-  curve: d3Curve(curveMonotoneX),
-})
+lineY(rows, { x: 'date', y: 'value', curve: d3Curve(curveMonotoneX) })
 ```
 
 Horizontal `areaX` uses `d3AreaXCurve` from `@tanstack/charts/d3/area-x`.
 
-## Style Vs Encoding
+`fill`/`stroke` bypass the color scale. Dot `r` is pixels unless `rScale` is provided; use `scaleSqrt` for quantitative area.
 
-- Constants (`stroke: '#2563eb'`, `fillOpacity: 0.2`) are fixed paint.
-- Semantic color across observations: use `z`/`color` channels plus `color.scale` / theme palette / `colorLegend`.
-- Local highlight styling can use visual accessors without inventing a shared scale.
-- `fill`/`stroke` bypass the color scale and legend.
-
-Radius on `dot` is pixels unless `rScale` is provided; use an area-preserving scale such as `scaleSqrt` for quantitative bubble size.
-
-## Focus-Layer Marks
+## Polar And Geo
 
 ```ts
-import { bandX, whenFocused } from '@tanstack/charts'
-
-whenFocused(
-  bandX(rows, {
-    x: 'category',
-    fill: '#64748b',
-    fillOpacity: 0.14,
-    inset: -6,
-  }),
-  { match: 'x' },
-)
+import { pie, polar, radialArc, focusGroupAngle } from '@tanstack/charts/polar'
+import { geoShape } from '@tanstack/charts/geo'
 ```
 
-Use these instead of renderer-specific focus decoration when migrating.
-
-## Clipping
-
-```ts
-defineChart({
-  marks,
-  x: { scale: xScale },
-  y: { scale: yScale },
-  clip: true,
-})
-```
-
-Clipping applies to the mark group, not axes/legends. Leave it off when annotations should extend past the plot.
-
-## Composed Example
-
-```ts
-import { scaleUtc } from 'd3-scale'
-import { areaY, defineChart, lineY } from '@tanstack/charts'
-import { scaleLinear } from '@tanstack/charts-scales/linear'
-import { tooltip } from '@tanstack/charts/tooltip'
-
-interface DailyTemperature {
-  date: Date
-  high: number
-  low: number
-}
-
-const temperatureChart = defineChart({
-  marks: [
-    areaY(rows, {
-      id: 'daily-range',
-      x: 'date',
-      y1: 'low',
-      y2: 'high',
-      fill: '#60a5fa',
-      fillOpacity: 0.24,
-    }),
-    lineY(rows, {
-      id: 'daily-low',
-      x: 'date',
-      y: 'low',
-      stroke: '#2563eb',
-    }),
-    lineY(rows, {
-      id: 'daily-high',
-      x: 'date',
-      y: 'high',
-      stroke: '#dc2626',
-    }),
-  ],
-  x: { scale: scaleUtc, axis: { label: 'Day' } },
-  y: {
-    scale: scaleLinear,
-    nice: true,
-    grid: true,
-    axis: { label: 'Temperature (°F)' },
-  },
-  tooltip,
-})
-```
-
-## Misleading Defaults To Avoid
-
-- Bars without a zero baseline when magnitude comparison is the task.
-- Connecting unordered categories with lines.
-- Dual unrelated quantitative axes that imply false correlation—prefer aligned small multiples.
-- Stacks when interior-layer comparison matters more than totals (prefer `layout: group()` or small multiples).
-- Encoding essential state with color alone.
-- Jumping to 3D or decorative effects for analytical marks.
+Ordinary pies can keep default nearest focus (`radialArc` attaches slice geometry, including the donut hole). Multi-series radial charts: `focus: focusGroupAngle`.
 
 ## Escalation Order
 
-1. One built-in mark
+1. One built-in or first-party composite (`boxY`, `waffleY`, `sankeyDiagram`, …)
 2. Several built-ins sharing scales
 3. Implicit stack / `layout: group()` / `layout: stack()`
-4. Facets or linked views
+4. Facets, `composeViews`, or linked views
 5. TanStack or D3-prepared rows into built-ins
-6. `createMark` for new geometry
-7. Application-owned overlay / gesture controller
+6. `compositeMark`
+7. `createMark`
+8. Application overlay / gesture controller
+
+## Misleading Defaults To Avoid
+
+- Bars without a zero baseline when magnitude is the task
+- Lines connecting unordered categories
+- Dual unrelated quantitative axes — prefer small multiples
+- Stacks when interior-layer comparison matters (`group()` or facets)
+- Essential state encoded with color alone
+- Jumping to 3D or decorative effects for analytical marks

@@ -1,4 +1,4 @@
 interface:
   display_name: "TanStack Charts"
   short_description: "Build TanStack Charts visualizations"
-  default_prompt: "Use $tanstack-charts to build, review, migrate, or debug this TanStack Charts implementation with current documentation (0.6.x pre-alpha APIs: tooltip extensions, composable axes, stack/group layouts, transforms, optional motion(), React Native adapter)."
+  default_prompt: "Use $tanstack-charts to build, review, migrate, or debug this TanStack Charts implementation with current documentation (0.14.x pre-alpha: unified @tanstack/charts package, @tanstack/charts/react and /scales/*, svgAnimation, tooltip extensions, composable axes, stack/group layouts, transforms, optional motion(), interaction subpaths)."
