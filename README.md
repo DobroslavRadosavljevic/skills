@@ -15,6 +15,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `bullmq` | Build, review, debug, operate, or migrate BullMQ Redis job queues. |
 | `bun` | Bun runtime, package manager, test runner, bundler, bunfig, and Node compat. |
 | `clickhouse` | ClickHouse OLAP from TypeScript: @clickhouse/client, MergeTree, ingest, and Cloud. |
+| `clone-to-temp` | Manual-only: fetch repos and datasets into ignored `.temp/` for read-only inspection (never run or install). |
 | `compound-ui` | Build or refactor React UI into shadcn-style compound components. |
 | `copywriting` | Simple visitor copy for sites, apps, and docs. STE for technical text. Bans jargon and model words. |
 | `create-durable-plan` | Advanced durable plan packs under `plans/<date-slug>`: graph, contracts, evidence, file recipes. |

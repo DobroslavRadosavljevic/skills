@@ -1,0 +1,4 @@
+interface:
+  display_name: "Clone to temp"
+  short_description: "Put clones and datasets in ignored .temp/"
+  default_prompt: "Use $clone-to-temp to fetch this into project-root .temp/ and ignore that folder."
