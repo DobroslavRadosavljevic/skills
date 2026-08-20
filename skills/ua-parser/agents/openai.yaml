@@ -1,0 +1,4 @@
+interface:
+  display_name: "UAParser.js"
+  short_description: "User-Agent detection (OSS + PRO)"
+  default_prompt: "Use $ua-parser to build, review, migrate, or debug this UAParser.js user-agent detection with current docs, covering ua-parser-js and @ua-parser-js/pro-* packages."

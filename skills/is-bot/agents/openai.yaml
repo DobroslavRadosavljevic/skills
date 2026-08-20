@@ -1,0 +1,4 @@
+interface:
+  display_name: "isbot"
+  short_description: "Detect crawlers from User-Agent"
+  default_prompt: "Use $is-bot to build, review, migrate, or debug this isbot User-Agent bot detection with current documentation."

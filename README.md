@@ -36,6 +36,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `heyapi` | Hey API (`@hey-api/openapi-ts`): OpenAPI → TypeScript SDKs, validators, Query plugins. |
 | `impit` | Apify Impit: browser-impersonating HTTP (TLS/HTTP fingerprints) for Node, Python, Rust. |
 | `intlayer` | Build, review, configure, or debug Intlayer v9 i18n in TanStack Start React apps. |
+| `is-bot` | Detect self-identifying crawlers/spiders from User-Agent with isbot v5 (`isBot`, custom lists). |
 | `jsdoc` | Purposeful JSDoc for complex or non-obvious TypeScript; no type-echo or narration. |
 | `kafka` | Apache Kafka from TypeScript: prefer @platformatic/kafka, topics, and delivery semantics. |
 | `kill-legacy` | Remove legacy, deprecated, compatibility-shim, and fallback code paths. |
@@ -80,6 +81,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `tsdown` | Rolldown library bundler: config, dts, exports, deps, watch/unbundle, and tsup migration. |
 | `turborepo` | Full Turborepo usage guide plus tasks, caching, filters, prune/Docker CI, and monorepo integrations. |
 | `turborepo-architecture` | Portable monorepo house style: apps/packages layout, turbo rules, and boundaries. |
+| `ua-parser` | UAParser.js v2 User-Agent detection: OSS AGPL, PRO packages, Client Hints, bots, and extensions. |
 | `ultraplan` | Ask detailed planning questions, recommend answers, and produce a precise implementation plan before work starts. |
 | `ultra-review` | Exhaustive code review of git changes (default) or a pointed target, with skill loading and research. |
 | `unsmell` | Find and fix maintainability problems across a codebase or scoped area. |
