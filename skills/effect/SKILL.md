@@ -1,52 +1,80 @@
 ---
 name: effect
-description: "Build, review, debug, migrate, or plan Effect v4 beta TypeScript code with current docs. Use for effect@beta, Effect, Effect.gen, Context.Service, Context.Reference, Layer, ManagedRuntime, Config, ConfigProvider, Scope, Fiber, Stream, Queue, Result, Cause, Schema v4, Schema.Class, Schema.TaggedErrorClass, Schema.decodeUnknown, Schema.encode, unstable modules, effect/unstable/http, platform packages, @effect/vitest, and Effect v3 to v4 migrations."
+description: "Build, review, debug, migrate, or plan Effect v4 RC TypeScript. Use for effect@rc, Effect.fn, Effect.gen, Context.Service, Context.Reference, Layer, ManagedRuntime, Config, Schema v4, Stream, Queue, Tx*, Result, Cause, Fiber, unstable modules (http, httpapi, sql, ai, rpc, cluster, workflow, cli), platform/sql/ai/atom packages, @effect/vitest@rc, and v3 to v4 migrations."
 ---
 
 # Effect
 
-Use this skill when work touches Effect v4 beta usage, service/layer architecture, runtime entrypoints, Schema v4, platform modules, testing, or migrations from Effect v3.
+Use this skill for Effect **v4 RC** (`effect@rc`, currently `4.0.0-rc.x`). npm `latest` is still Effect **v3**. Do not mix v3 and v4 packages.
 
 ## Workflow
 
-1. Inspect the local Effect surface before changing code:
-   - Package versions for `effect`, `@effect/*`, TypeScript, runtime platform packages, test libraries, and adapters.
-   - Imports: root `effect`, direct modules like `effect/Effect`, `effect/Schema`, `effect/unstable/*`, platform packages, or old v3 packages.
-   - Runtime boundary: CLI, HTTP handler, worker, server, browser, test, library, or framework-managed entrypoint.
-   - Dependency shape: services, layers, config providers, platform layers, managed runtimes, and scope ownership.
-2. Clone `Effect-TS/effect-smol` into `.temp/effect-smol` (if missing) and always browse that checkout when referencing Effect v4 code — APIs, migration guides, package READMEs, and tests. Do not rely on memory or stale docs alone. Details: [source-map.md](references/source-map.md).
-3. Refresh current docs whenever the task asks for latest behavior or the local beta version is different. Start from [source-map.md](references/source-map.md).
-4. For install/version, core Effect usage, generator style, typed errors, async interop, config, and runtime boundaries, use [setup-core.md](references/setup-core.md).
-5. For services, `Context.Service`, references, layers, memoization, scopes, and `ManagedRuntime`, use [services-layers-runtime.md](references/services-layers-runtime.md).
-6. For Schema v4 shapes, validation, classes, tagged errors, transformations, codecs, serialization, and JSON Schema generation, use [schema-v4.md](references/schema-v4.md).
-7. For `@effect/vitest` (runners, TestClock, layers, flaky/live, good/bad patterns), use [vitest-testing.md](references/vitest-testing.md).
-8. For v3 to v4 migration, unstable modules, and HTTP/platform packages, use [migration-platform-testing.md](references/migration-platform-testing.md).
-9. Implement in the existing project style:
-   - Match the installed beta version and local import style.
-   - Prefer explicit service and layer composition over hidden globals.
-   - Keep framework/process edges thin; push business logic into Effects, services, and layers.
-   - Treat `effect/unstable/*` APIs as beta-plus-unstable. Check installed declarations before using or recommending them.
+1. Inspect the local Effect surface: `effect` / `@effect/*` versions, import style (`from "effect"` vs `effect/Effect`), runtime (CLI, HTTP, worker, browser, test), and whether layers/config/platform are already in play.
+2. Prefer a local checkout of **`Effect-TS/effect` `main`** under `.temp/effect` (v4 RC source). `Effect-TS/effect-smol` is **archived**; v4 history now lives in `Effect-TS/effect`. Browse sources, `LLMS.md`, `MIGRATION.md`, `migration/*`, `packages/effect/SCHEMA.md`, and `ai-docs/`. Details: [source-map.md](references/source-map.md).
+3. Refresh docs when the installed RC differs from the snapshot or the task asks for latest APIs. Resolve library docs, then check installed `.d.ts`.
+4. Route by concern:
+   - Install, `Effect.fn`/`gen`, errors, forks, run, Config → [setup-core.md](references/setup-core.md)
+   - Services, layers, scopes, `ManagedRuntime`, `Layer.launch` → [services-layers-runtime.md](references/services-layers-runtime.md)
+   - Full **stable** module catalog (what each module is for) → [modules-stable.md](references/modules-stable.md)
+   - Stream, Queue/PubSub, fibers, STM-like `Tx*`, caching, requests → [concurrency.md](references/concurrency.md)
+   - Schema v4 → [schema-v4.md](references/schema-v4.md)
+   - `effect/unstable/*` → [modules-unstable.md](references/modules-unstable.md)
+   - `@effect/platform-*`, `sql-*`, `ai-*`, `atom-*`, OTel, tools → [ecosystem.md](references/ecosystem.md)
+   - `@effect/vitest@rc` → [vitest-testing.md](references/vitest-testing.md)
+   - v3 → v4 → [migration.md](references/migration.md)
+5. Implement in project style: match the installed RC, keep framework edges thin, compose layers explicitly, treat `effect/unstable/*` as RC-plus-unstable (may break in minor releases).
 
-## Effect Judgment
+## Coding style (canonical)
 
-- Effect v4 is beta. Be honest about API drift and verify local declarations before making broad changes.
-- Use `Context.Service` for v4 services. Do not introduce v3 `Context.Tag`, `Context.GenericTag`, `Effect.Tag`, or `Effect.Service` patterns in v4 code.
-- Prefer `yield* Service` inside `Effect.gen` for service access. Use `Service.use` and `useSync` only for small, local one-liners.
-- Define layers explicitly with `Layer.succeed`, `Layer.effect`, or `Layer.effectDiscard`; wire dependencies with `Layer.provide` and `Layer.provideMerge`.
-- Compose and provide layers once when possible. Use `Layer.fresh` or `Effect.provide(..., { local: true })` only for intentional isolation.
-- Use `ManagedRuntime.make(layer)` for repeated JS entrypoint runs against shared services, and dispose it when done.
-- Use `Effect.runPromise`, `runPromiseExit`, `runFork`, or their `With` variants only at application edges.
-- Inside `Effect.gen`, `yield*` works with Yieldable values. Outside generators, convert non-Effect Yieldables explicitly or use module functions such as `Ref.get`, `Deferred.await`, and `Fiber.join`.
-- Prefer typed failures and tagged error classes over throwing. Use defects only for unrecoverable programmer errors.
-- Keep Schema v4 encode/decode direction visible at boundaries; do not assume decoded `Type` and encoded input are the same.
-- For tests: install **v4** `@effect/vitest@beta` (→ `4.0.0-beta.x`; never bare/`latest` → `0.30.x` v3). Prefer `it.effect` (already scoped + TestClock/TestConsole). Import `TestClock` from `effect/testing`. Do not use `it.scoped` / `it.scopedLive` for Effect Scope. Treat `layer()` as shared across tests unless you `Effect.provide` per test.
+From Effect’s own `LLMS.md` / `ai-docs`:
+
+- Named effectful functions use **`Effect.fn("name")`** (span + stack). Library internals in Effect’s own repo prefer **`Effect.fnUntraced`**. Do **not** wrap `Effect.gen` in a plain function; do **not** `.pipe` the result of `Effect.fn`.
+- Domain errors: **`Schema.TaggedError`**. Always `return yield*` when failing so TypeScript narrows.
+- Services: **`Context.Service`**, identifier like `"myapp/db/Database"`, implement with **`Database.of({ ... })`**, attach **`static readonly layer`**. Prefer `yield* Service` over `Service.use` except one-liners.
+- Untrusted data: **Schema**, not ad-hoc predicates. Use **`Predicate`** for `isString` / `isObject` / composition — do not invent those helpers.
+- Dates/time in Effect programs: **`DateTime`** + **`Clock`**, not raw `Date.now()`.
+- Observability: logs/traces/metrics in core; new projects prefer `effect/unstable/observability` OTLP. Use `@effect/opentelemetry` when an existing OTel SDK is required.
+- Process entry: **`NodeRuntime.runMain` / `BunRuntime.runMain`** (`BunRuntime` is the shared Node runner) or **`DenoRuntime` / `BrowserRuntime`**, or **`Layer.launch`**. Prefer those over `Runtime.makeRunMain`. Cloudflare: no platform package — Fetch + SQL D1/DO drivers.
+- Prefer **Stream/Sink** over Channel; **Schema** over SchemaAST; **Cache vs ScopedCache vs Pool vs RcMap** per [concurrency.md](references/concurrency.md).
+
+## Judgment
+
+- Align every `@effect/*` package to the **same** `4.0.0-rc.N` as `effect`.
+- TypeScript **5.9+** (7 recommended for Effect’s TS tooling). `strict: true`. Node 18+ generally; some SQL drivers need Node 22.16+.
+- No v3 APIs in v4 code: `Context.Tag` / `GenericTag`, `Effect.Tag` / `Effect.Service`, `Either`, `FiberRef`, `Effect.catchAll`, `Effect.fork` (use `forkChild`), `Effect.async` (use `callback`).
+- Layers memoize **across** `Effect.provide` unless `{ local: true }` or `Layer.fresh`.
+- `Runtime<R>` is gone. Run with `Effect.run*` / `run*With(context)` or `ManagedRuntime`.
+- `Ref` / `Deferred` / `Fiber` are **not** yieldable Effects — use `Ref.get`, `Deferred.await`, `Fiber.join`.
+- Prefer typed failures over throw/die. Defects are programmer errors.
+- Keep Schema `Encoded` vs `Type` visible at boundaries.
+- Tests: `@effect/vitest@rc` + `vitest@^4.1.0`. Prefer `it.effect` (already scoped + TestClock; **do not** wrap in `Effect.scoped`). Import `TestClock` from `effect/testing`. `it.effect` suppresses logs; `it.live` does not.
+- Do not: `catchAll`/`fork`/`forkDaemon`/`Context.Tag`/`Effect.Service`/`.Default`/`Either`/`FiberRef`/`Date.now`/`try/catch` in `gen`/`Schema.Date` for ISO strings/`Union(A,B)`/`it.effect` + extra `Effect.scoped`.
+
+## Module routing (quick)
+
+| Need | Use |
+| --- | --- |
+| Workflows, errors, concurrency | `Effect`, `Cause`, `Exit`, `Result`, `Fiber` |
+| DI | `Context`, `Layer`, `ManagedRuntime` |
+| Config | `Config`, `ConfigProvider` |
+| Validation / domain types | `Schema` (+ `Schema.Class` / `TaggedError`) |
+| Time | `Clock`, `Duration`, `DateTime`, `Cron`, `Schedule` |
+| Collections | `Array`, `Chunk`, `HashMap`, `HashSet`, `Record`, `Option` |
+| One producer, many consumers | `PubSub` |
+| Work queue | `Queue` |
+| Pull streams | `Stream` / `Sink` / `Channel` (low-level) |
+| Atomic multi-ref updates | `Effect.tx` + `TxRef` / `TxQueue` / … |
+| HTTP client/server | `effect/unstable/http` + `@effect/platform-*` |
+| Schema-first HTTP API | `effect/unstable/httpapi` |
+| SQL | `effect/unstable/sql` + `@effect/sql-*` |
+| LLM / tools | `effect/unstable/ai` + `@effect/ai-*` |
+| Tests | `@effect/vitest`, `effect/testing` |
+
+Every stable module: [modules-stable.md](references/modules-stable.md). Every unstable area: [modules-unstable.md](references/modules-unstable.md).
 
 ## Verification
 
-Prefer the repo's existing checks. For meaningful Effect v4 work, include the relevant subset:
-
-- Typecheck for `Effect<A, E, R>` requirements, service availability, layer composition, Schema encoded/type sides, and beta API names.
-- Focused tests with `@effect/vitest@beta` (`it.effect`, TestClock, scoped resources, typed Exit/Result failures). Use per-test `Effect.provide` when isolation matters; treat shared `layer()` as suite-scoped.
-- Runtime smoke at JS/framework edges where Effects are run or managed runtimes are disposed.
-- Schema decode/encode tests for valid input, invalid input, defaults, excess properties, transformations, classes, tagged errors, and generated JSON Schema.
-- Migration scans for v3-only APIs, old package imports, old catch/fork names, old runtime patterns, `FiberRef`, `Either`, and removed Schema APIs.
+- Typecheck `Effect<A, E, R>`, layers, Schema encoded/type sides, RC names.
+- `@effect/vitest@rc`: `it.effect`, TestClock, Exit/Result, per-test `Effect.provide` when isolation matters.
+- Schema: valid/invalid input, defaults, excess keys, classes, tagged errors, JSON Schema.
+- Migration scan: v3 imports, `Either`, `FiberRef`, old catch/fork/runtime/Schema APIs.

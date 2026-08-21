@@ -1,141 +1,117 @@
-# Setup And Core Use
+# Setup and core use
 
-Use this reference for package versions, imports, core Effect APIs, config, and JS runtime boundaries.
+## Packages
 
-## Package Setup
+```sh
+bun add effect@rc
+bun add -d @effect/vitest@rc vitest
+```
 
-- To try Effect v4 beta, install the beta dist-tag (and matching ecosystem packages):
+Keep every `@effect/*` on the **same** `4.0.0-rc.N` as `effect`. npm `latest` is v3 (`effect@3.x`, `@effect/vitest@0.30.x`).
 
-  ```sh
-  bun add effect@beta
-  bun add -d @effect/vitest@beta vitest
-  ```
+Requirements (from Effect README, rc.111):
 
-- Keep all Effect ecosystem packages on matching beta versions. If `effect` is `4.0.0-beta.102`, install `@effect/vitest@4.0.0-beta.102` (or `@effect/vitest@beta` when it points at the same build).
-- Stable npm `latest` for several packages (including `@effect/vitest`) is still Effect **v3**. Always use `@beta` / explicit `4.0.0-beta.x` for v4.
-- Effect core requires TypeScript 5.4 or newer and strict type checking.
-- Use project package manager conventions and existing lockfile policy. Do not install packages without approval if the task is only research or skill creation.
+- TypeScript **5.9+** (`strict: true`). TypeScript 7 recommended for Effect’s TS tooling.
+- Node.js 18+ generally; `@effect/sql-sqlite-node` needs Node **22.16+**.
 
 ## Imports
 
-Common v4 imports:
-
 ```ts
-import { Context, Effect, Layer, Schema } from "effect";
+import { Context, Effect, Layer, Schema } from "effect"
+import { HttpClient } from "effect/unstable/http"
+import { TestClock } from "effect/testing"
 ```
 
-Direct module imports are also used in the repository:
+Direct modules (`import * as Effect from "effect/Effect"`) are also valid. Match the repo. Unstable paths are explicit.
 
-```ts
-import * as Effect from "effect/Effect";
-import * as Layer from "effect/Layer";
-import * as Schema from "effect/Schema";
-```
+## Constructors
 
-Use the local project style. Use direct imports when the project already prefers them or when tree-shaking/import clarity matters.
+- `Effect.succeed` / `Effect.fail` / `Effect.die`
+- `Effect.sync` — sync side effects
+- `Effect.promise` — reject → **defect**
+- `Effect.tryPromise({ try, catch })` — reject → typed `E`
+- `Effect.callback` (v3 `Effect.async`)
 
-Unstable modules use explicit paths:
+Prefer typed failures for domain/boundary errors.
 
-```ts
-import { HttpClient, HttpClientRequest, HttpClientResponse } from "effect/unstable/http";
-```
+## `Effect.gen` and `Effect.fn`
 
-Check installed declarations first: unstable APIs can change during beta.
-
-## Core Constructors
-
-- `Effect.succeed(value)` for pure success.
-- `Effect.fail(error)` for typed failure.
-- `Effect.sync(() => value)` for synchronous side effects.
-- `Effect.promise(() => promise)` for promises that should reject as defects.
-- `Effect.tryPromise({ try, catch })` for expected promise rejection mapped to typed failure.
-- `Effect.callback(...)` for callback-style async APIs.
-- `Effect.die(defect)` for unrecoverable defects.
-
-Prefer typed failures for domain and boundary errors.
-
-## `Effect.gen`
-
-Use `Effect.gen` for sequential effectful code:
+Sequential logic:
 
 ```ts
 const program = Effect.gen(function*() {
-  const service = yield* MyService;
-  const value = yield* service.load("id");
-  return value;
-});
+  const db = yield* Database
+  return yield* db.query("select 1")
+})
 ```
 
-In v4, many values are Yieldable but not Effect subtypes. `yield*` works inside generators, but outside generators use module functions or `.asEffect()` where available.
-
-Important examples:
-
-- `Ref` is not yielded as an effectful read; use `Ref.get(ref)`.
-- `Deferred` is not yielded as an await; use `Deferred.await(deferred)`.
-- `Fiber` is not yielded as a join; use `Fiber.join(fiber)`.
-- `Option`, `Result`, `Config`, and `Context.Service` remain yieldable in generators.
-
-## Error Handling
-
-Important v4 names:
-
-- `Effect.catch` replaces `Effect.catchAll`.
-- `Effect.catchCause` replaces `Effect.catchAllCause`.
-- `Effect.catchDefect` replaces `Effect.catchAllDefect`.
-- `Effect.catchFilter` and `Effect.catchCauseFilter` replace the old `catchSome*` style.
-- `Effect.catchTag` and `Effect.catchTags` remain central for tagged errors.
-- `Effect.catchReason` and `Effect.catchReasons` handle nested tagged reasons.
-
-Capture failures with `Effect.result` or `Effect.exit` when tests or callers need to observe both success and failure.
-
-## Forking And Fibers
-
-Important v4 names:
-
-- `Effect.forkChild` replaces old `Effect.fork`.
-- `Effect.forkDetach` replaces old `Effect.forkDaemon`.
-- `Effect.forkScoped` and `Effect.forkIn` remain.
-- Fork variants accept options such as `startImmediately` and `uninterruptible`.
-- `Effect.forkAll` and `Effect.forkWithErrorHandler` are removed.
-
-Join fibers explicitly:
+Named functions — **`Effect.fn("sameNameAsFunction")`**, extra combinators as extra arguments, **no `.pipe` on `Effect.fn`**:
 
 ```ts
-const fiber = yield* Effect.forkChild(task);
-const value = yield* Fiber.join(fiber);
+export const loadUser = Effect.fn("loadUser")(
+  function*(id: string): Effect.fn.Return<User, AppError> {
+    return yield* repo.get(id)
+  },
+  Effect.catch((e) => Effect.logError(e).pipe(Effect.andThen(Effect.fail(e)))),
+  Effect.annotateLogs({ method: "loadUser" })
+)
 ```
 
-## Running Effects
+`return yield*` on failures so control-flow narrowing works.
 
-Run Effects at application or integration boundaries, not deep in business logic.
+Yieldable in generators: `Effect`, `Option`, `Result`, `Config`, `Context.Service` (service keys are Effects). **Not** yieldable as effects: `Ref`, `Deferred`, `Fiber` — use module functions. Do **not** pass `Option`/`Result` to `Effect.map` without converting. Migration docs mention `.asEffect()`; **confirm it exists on the installed RC** before using it.
 
-- `Effect.runPromise(effect)` resolves success or rejects on failure.
-- `Effect.runPromiseExit(effect)` returns an `Exit`.
-- `Effect.runFork(effect)` starts a fiber for effects with no service requirements.
-- `Effect.runPromiseWith(context)(effect)` and related `With` variants run with explicit services.
-- `Effect.runForkWith(context)(effect)` replaces old `Runtime.runFork(runtime)` usage.
+## Errors
 
-Use `AbortSignal` run options when bridging request lifetimes or cancellation-aware JS APIs.
+| v3 | v4 |
+| --- | --- |
+| `catchAll` | `catch` |
+| `catchAllCause` | `catchCause` |
+| `catchAllDefect` | `catchDefect` |
+| `catchSome` | `catchFilter` (Filter module) |
+| `catchSomeCause` | `catchCauseFilter` |
+| `catchTag` / `catchTags` | unchanged |
+
+Also: `Effect.catchReason` / `catchReasons` / `unwrapReason` for nested tagged `reason` (parent tag + reason tag). `catch` recovers **typed errors only**, not defects. `catchSomeDefect` is **removed**. Array form: `Effect.catchTag(["A", "B"], handler)`.
+
+Define errors with `Schema.TaggedError`. Observe both sides with `Effect.result` / `Effect.exit`.
+
+## Forking
+
+| v3 | v4 |
+| --- | --- |
+| `Effect.fork` | `Effect.forkChild` |
+| `Effect.forkDaemon` | `Effect.forkDetach` |
+
+`forkScoped` / `forkIn` remain. Options include `startImmediately`, `uninterruptible`. `forkAll` / `forkWithErrorHandler` removed.
+
+```ts
+const fiber = yield* Effect.forkChild(task)
+const value = yield* Fiber.join(fiber)
+```
+
+## Running
+
+Only at edges:
+
+- `Effect.runPromise` / `runPromiseExit` / `runFork`
+- `runPromiseWith(context)` / `runForkWith(context)` when you already have a `Context`
+- Long-running process: `NodeRuntime.runMain` / `BunRuntime.runMain` (same shared impl in `platform-node-shared`), `DenoRuntime.runMain`, or `BrowserRuntime.runMain`. Or `Layer.launch`. Prefer those over `Runtime.makeRunMain`.
+- Framework bridge: `ManagedRuntime.make(layer)` then dispose
+- Tests: **fork** effects that `sleep`, then `TestClock.adjust` — otherwise they hang
+
+Pass `AbortSignal` when bridging HTTP request cancellation.
 
 ## Config
 
-- `Config<T>` describes how to read, decode, and validate typed configuration.
-- Config values are yieldable in `Effect.gen` and read from the active `ConfigProvider`.
-- The default provider is `ConfigProvider.fromEnv()`.
-- `ConfigProvider.fromUnknown(value)` is useful for tests and embedded defaults.
-- `ConfigProvider.fromEnv({ env })` reads a supplied env record or the default runtime env.
-- `ConfigProvider.fromDotEnvContents(contents)` parses `.env` text.
-- `ConfigProvider.fromDotEnv()` reads a `.env` file and requires `FileSystem`.
-- `ConfigProvider.layer(provider)` replaces the active provider.
-- `ConfigProvider.layerAdd(provider, { asPrimary })` composes a provider with the current provider.
-- `ConfigProvider.constantCase` bridges camelCase config paths to `CONSTANT_CASE` env vars.
-- `ConfigProvider.nested(provider, prefix)` scopes lookups under a prefix.
+`Config<T>` is yieldable. Default provider: `ConfigProvider.fromEnv()`. Tests: `fromUnknown`, `fromEnv({ env })`, `fromDotEnvContents`. `layer` / `layerAdd`, `constantCase`, `nested`.
 
-Keep environment policy explicit. If a project already uses a schema-backed env library, do not replace it with Effect Config just because Effect offers Config.
+Do not rip out a working env schema library only because Config exists.
 
-## Runtime Boundary Judgment
+## Other core renames
 
-- Keep framework callbacks, request handlers, CLIs, and workers as thin bridges.
-- Construct the app layer once per process or request according to the platform's data isolation needs.
-- Do not rebuild expensive layers for every operation unless isolation is required.
-- Dispose scopes and managed runtimes when their lifecycle ends.
+- `Effect.andThen` (old `zipRight`)
+- `Effect.tap` (old `zipLeft` in some uses)
+- `Effect.result` (old `either`)
+- `Layer.effect` (old `Layer.scoped`)
+- `Layer.effectDiscard` (old `scopedDiscard`)

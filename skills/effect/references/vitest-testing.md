@@ -1,26 +1,16 @@
 # Testing With `@effect/vitest`
 
-Deep guide for testing Effect **v4** programs under Vitest. This skill targets **v4 only**: `@effect/vitest@4.0.0-beta.x` (snapshot **`4.0.0-beta.102`**, peer `effect@^4.0.0-beta.102`).
+Deep guide for testing Effect **v4 RC** programs under Vitest. Snapshot: `@effect/vitest@4.0.0-rc.111` with `effect@4.0.0-rc.111`, peer `vitest@^4.1.0`.
 
 ## Install (Effect v4)
 
-Always install the **v4 beta** package — same dist-tag as `effect@beta`:
-
 ```sh
-bun add -d effect@beta @effect/vitest@beta vitest
+bun add -d effect@rc @effect/vitest@rc vitest
 ```
 
-Or pin the matching beta build:
+Or pin matching RC builds. Keep `effect` and `@effect/vitest` on the **same** `4.0.0-rc.N`.
 
-```sh
-bun add -d effect@4.0.0-beta.102 @effect/vitest@4.0.0-beta.102 vitest
-```
-
-- Peers on beta.102: `effect@^4.0.0-beta.102`, `vitest@^3.0.0 || ^4.0.0`.
-- Keep `effect` and `@effect/vitest` on the **same beta.N**.
-- `@effect/vitest@beta` resolves to **`4.0.0-beta.x`** (v4). That is the correct install for this skill.
-
-**Gotcha:** bare `bun add -d @effect/vitest` (npm `latest`) still resolves to **`0.30.x` (Effect v3)**. Never use that in an Effect v4 repo.
+**Gotcha:** bare `bun add -d @effect/vitest` (npm `latest`) still resolves to **`0.30.x` (Effect v3)**. Never use that in an Effect v4 repo. `@beta` is the older v4 line; prefer `@rc`.
 
 ## How it works
 
@@ -31,7 +21,7 @@ import { describe, expect, it, layer } from "@effect/vitest"
 import { Effect } from "effect"
 ```
 
-Internally (beta.102):
+Internally (conceptual):
 
 ```ts
 // Conceptual — from package internals
@@ -43,11 +33,11 @@ it.live    → Effect.scoped                              → Effect.exit → Ef
 
 Implications:
 
-1. **`it.effect` already provides a `Scope`** — `acquireRelease` typechecks without a separate scoped runner.
-2. **Test environment** is `TestClock` + `TestConsole` from **`effect/testing`** (not a v3-style `TestContext` / `TestServices` aggregate exported from `"effect"`).
-3. Vitest’s abort **signal** is forwarded to `Effect.runPromise`.
+1. **`it.effect` already provides a `Scope`** — do **not** also wrap with `Effect.scoped`. `acquireRelease` typechecks without a separate scoped runner.
+2. **Test environment** is `TestClock` + `TestConsole` from **`effect/testing`**. **`it.effect` suppresses logs**; **`it.live`** uses the live clock and shows logs.
+3. Vitest’s abort **signal** is forwarded to `Effect.runPromise`. Default timeout **5000**.
 4. Failed `Cause`s are pretty-logged before the test fails.
-5. Use **`it.effect`**, not `test.effect` (only `it` is Effect-wired; or `makeMethods` / `describeWrapped`).
+5. Use **`it.effect`**, not `test.effect`. `TestClock.adjust("1000 millis")` or milliseconds. Fork sleepers first.
 
 ## Core runners
 
@@ -62,7 +52,7 @@ Modifiers on `it.effect` / `it.live`: `.skip`, `.skipIf`, `.runIf`, `.only`, `.e
 
 ### Stale names — do not use for Effect Scope
 
-| Name | Reality in v4 beta |
+| Name | Reality in v4 RC |
 |---|---|
 | `it.scoped` | **Vitest fixtures** API — not Effect Scope |
 | `it.scopedLive` | **Removed** — use `it.live` |
@@ -275,7 +265,7 @@ or construct a **fresh** layer per test (avoid a single shared `MemoMap`).
 
 ## Good patterns
 
-1. Install **v4** only: `effect@beta` + `@effect/vitest@beta` (same beta.N), never `@latest` / bare package.
+1. Install **v4 RC** only: `effect@rc` + `@effect/vitest@rc` (same rc.N), never `@latest` / bare package.
 2. Prefer `it.effect` + in-body `expect` / `Effect.exit`.
 3. Control time with `TestClock` from `effect/testing`; fork before `adjust`.
 4. Use `it.effect` for scoped resources (already scoped).
@@ -289,19 +279,19 @@ or construct a **fresh** layer per test (avoid a single shared `MemoMap`).
 
 | Anti-pattern | Why |
 |---|---|
-| `bun add -d @effect/vitest` / `@latest` (0.30.x) | Effect **v3** package — use `@beta` / `4.0.0-beta.x` |
+| `bun add -d @effect/vitest` / `@latest` (0.30.x) | Effect **v3** package — use `@rc` / `4.0.0-rc.x` |
 | `import { TestClock } from "effect"` | Not exported — use `effect/testing` |
 | `test.effect(...)` | Not wired — use `it.effect` |
 | `it.scoped` / `it.scopedLive` for Effect Scope | Wrong API in v4 (`scoped` is Vitest fixtures / removed) |
 | Assuming `layer()` isolates mutable state | State is **shared** across tests |
 | Live `Effect.sleep` in unit tests | Slow and flaky — use TestClock |
 | `adjust` without forking sleepers | Deadlock / hang |
-| Relying on `addEqualityTesters()` | Currently a **no-op** stub in beta.102 |
+| Relying on `addEqualityTesters()` | Often a no-op stub — verify installed types |
 | v3 utils (`assertLeft`/`assertRight`, Exit-named `assertSuccess`) | Renamed for Result/Exit |
-| Mixing beta.N across packages | Peer mismatch |
+| Mixing rc.N across packages | Peer mismatch |
 | Using `it.flakyTest` to paper over race bugs | Hides nondeterminism instead of fixing it |
 
-## Public surface (beta.102)
+## Public surface (rc)
 
 ### `@effect/vitest`
 
@@ -317,7 +307,7 @@ or construct a **fresh** layer per test (avoid a single shared `MemoMap`).
 
 ## Migration from `@effect/vitest` v3 (`0.30.x`)
 
-| v3 | v4 beta |
+| v3 | v4 RC |
 |---|---|
 | `it.effect` = TestServices, often no Scope | `it.effect` = TestClock+TestConsole + **Scope** |
 | `it.scoped` / `it.scopedLive` | Removed — use `it.effect` / `it.live` |
@@ -326,12 +316,12 @@ or construct a **fresh** layer per test (avoid a single shared `MemoMap`).
 | `addEqualityTesters` registers Equal | Empty stub |
 | Either left/right utils | Result success/failure utils |
 | Exit helpers named `assertSuccess` | `assertExitSuccess` / `assertExitFailure` |
-| Vitest peer `^3.2` | `^3 \|\| ^4` |
+| Vitest peer `^3.2` | `^4.1.0` (see installed package.json) |
 
 ## Sources
 
 - Package README (verify against source — overview table can lag): https://github.com/Effect-TS/effect/blob/main/packages/vitest/README.md
-- Tagged: https://github.com/Effect-TS/effect/blob/effect@4.0.0-beta.102/packages/vitest/README.md
+- Tagged: https://github.com/Effect-TS/effect/blob/effect@4.0.0-rc.111/packages/vitest/README.md
 - Sources: `packages/vitest/src/index.ts`, `utils.ts`, `internal/internal.ts`
 - TestClock site docs are often v3-leaning — prefer `effect/testing` + this package for v4
 - npm: https://www.npmjs.com/package/@effect/vitest

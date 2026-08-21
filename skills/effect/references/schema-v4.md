@@ -1,6 +1,8 @@
 # Schema v4
 
-Use this reference for Effect Schema v4 validation, transformations, classes, errors, serialization, and JSON Schema generation.
+Use this reference for Effect Schema v4 validation, transformations, classes, errors, serialization, and JSON Schema generation. Canonical guide in-repo: `packages/effect/SCHEMA.md`. Snapshot: Effect **4.0.0-rc**.
+
+Preferred error type in new code: `Schema.TaggedError` (also `Schema.TaggedErrorClass` / `Schema.ErrorClass`). Prefer `Schema.decodeUnknownEffect` at Effect boundaries; `decodeUnknownSync` / `Exit` / `Result` variants for tests and sync parsers. JSON Schema: `Schema.toJsonSchemaDocument`. SQL dual models: `effect/unstable/schema` `Model`.
 
 ## Mental Model
 
@@ -14,6 +16,21 @@ Schema v4 defines both the encoded input side and decoded runtime type side.
 - Effectful transformations and filters require effectful parser/encoder variants.
 
 Do not assume encoded and decoded types match when transformations, defaults, classes, or codecs are involved.
+
+## v3 → v4 traps
+
+| Trap | Correct v4 |
+| --- | --- |
+| `Schema.Date` | Encoded **`Date`** (`DateFromSelf`). ISO strings → **`Schema.DateFromString`** |
+| `Schema.Redacted` | Now “from self”. Wrap a value → **`RedactedFromValue`** |
+| `Union(A, B)` / `Literal("a", "b")` | **`Union([A, B])`**, **`Literals(["a", "b"])`** |
+| `decodeUnknown` / `decode` as Effect | **`decodeUnknownEffect`**, **`decodeEffect`**. Old `*Either` → **`*Exit`** |
+| `filter` / `positive` | **`.check(...)`** / `makeFilter` / `refine`. `positive`/`negative` **removed** |
+| `optionalWith({ exact })` | **`optionalKey`**; defaults → **`withDecodingDefaultType*`** |
+| `ParseResult.ArrayFormatter` | **`Schema.SchemaError`** + **`SchemaIssue`** |
+| `effect/Either` in schemas | **`Result`** |
+
+Decode and encode can have **separate service requirements**. SQL/JSON dual models: `effect/unstable/schema` `Model`, not extra `Schema.Data` (removed).
 
 ## Basic Schemas
 
