@@ -21,7 +21,7 @@ Paths are relative to the Start app `src/` (or `apps/<web>/src/` in a monorepo).
 | `src/routes/**` | URL tree, `beforeLoad` gates, layout/page UI used only by that route (`-components`, `-hooks`, `-lib`) |
 | `src/modules/<feature>/` | Reusable feature code (shared hooks, form schemas, clients used by 2+ routes) |
 | `src/components/` | App-wide UI toolkit (shell primitives, form kit, root document helpers) |
-| `src/lib/` | Non-feature infra (API error helpers, env wrappers, analytics) |
+| `src/lib/` | Non-feature infra (API error helpers, analytics). Env schema lives in `src/env.ts` (T3 Env), not here. |
 
 ## Page + colocation
 

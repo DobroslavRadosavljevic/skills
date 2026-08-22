@@ -18,7 +18,7 @@ Package scaffold:
 ```text
 App scaffold:
 - [ ] apps/<name>/ package + entry
-- [ ] .env / .env.example + src/env.ts
+- [ ] .env / .env.example + src/env.ts (T3 Env createEnv)
 - [ ] wires package Layers/clients from env
 - [ ] quality scripts + optional dev/start
 - [ ] root convenience script filter (optional)

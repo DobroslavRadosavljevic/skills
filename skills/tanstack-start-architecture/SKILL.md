@@ -85,7 +85,7 @@ Extensions add rules; they do not replace the core tree.
 | TanStack Query + loaders / ensureQueryData | [with-tanstack-query.md](references/with-tanstack-query.md) |
 | Pathless auth / onboarding / org gates | [with-route-gates.md](references/with-route-gates.md) |
 | TanStack Form + module/route schemas | [with-tanstack-form.md](references/with-tanstack-form.md) |
-| `createEnv` / `VITE_` client keys | [with-env.md](references/with-env.md) |
+| T3 Env / `VITE_` client keys | [with-env.md](references/with-env.md) |
 | Pure authz package + client adapters | [with-client-authorization.md](references/with-client-authorization.md) |
 | Workspace UI package + Storybook/tokens | [with-ui-package.md](references/with-ui-package.md) |
 | Effect Schema / server-only Effect | [with-effect.md](references/with-effect.md) |

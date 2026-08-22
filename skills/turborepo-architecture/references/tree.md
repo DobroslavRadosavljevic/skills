@@ -14,7 +14,7 @@
   apps/<app>/
     package.json               # @org/<app>
     .env · .env.example
-    src/env.ts                 # validated env
+    src/env.ts                 # T3 Env createEnv
     src/…                      # app entry + feature trees
     tsconfig.json              # extends ../../tsconfig.base.json
     oxlint.config.ts · oxfmt.config.ts   # when using those overlays

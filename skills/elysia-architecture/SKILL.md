@@ -77,7 +77,7 @@ Extensions add rules; they do not replace the core tree.
 | When | Extension |
 | --- | --- |
 | Effect services / Layers / tagged errors | [with-effect.md](references/with-effect.md) |
-| `createEnv` / packages must not read `process.env` | [with-env.md](references/with-env.md) |
+| T3 Env / packages must not read `process.env` | [with-env.md](references/with-env.md) |
 | Session auth mount + `{ auth: true }` macro | [with-session-auth.md](references/with-session-auth.md) |
 | Capabilities / grants / identity permissions | [with-capability-authz.md](references/with-capability-authz.md) |
 | Bearer API keys on a jobs/public API | [with-api-key-auth.md](references/with-api-key-auth.md) |

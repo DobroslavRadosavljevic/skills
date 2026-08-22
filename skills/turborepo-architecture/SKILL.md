@@ -34,7 +34,7 @@ conflicts, **repo wins** unless the user asks to migrate toward this skill.
 | Layout | `apps/*`, `packages/*` |
 | Orchestration | Turborepo (`turbo.jsonc` / `turbo.json`) |
 | Internal packages | `"exports": { ".": "./src/index.ts" }` — Bun runs TS directly |
-| Env | Apps own `.env` + validated env; packages take `.make(options)` |
+| Env | Apps own `.env` + T3 Env `src/env.ts`; packages take `.make(options)` |
 | Verification | Full graph for closing gates; `--filter` for mid-edit iteration |
 
 ## Modes
