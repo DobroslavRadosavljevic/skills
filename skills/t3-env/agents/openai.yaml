@@ -1,0 +1,4 @@
+interface:
+  display_name: "T3 Env"
+  short_description: "Type-safe env validation with T3 Env"
+  default_prompt: "Use $t3-env to build, review, migrate, or debug this T3 Env createEnv schema with current documentation."

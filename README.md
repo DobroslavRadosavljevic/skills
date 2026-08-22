@@ -65,6 +65,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `simplify-layout` | Shorten file and folder names and group related modules so paths stay scannable. |
 | `storybook` | Build, review, debug, configure, migrate, or plan Storybook 10 UI workshops. |
 | `subagents` | Split harder work into safe disjoint lanes and coordinate subagent results. |
+| `t3-env` | Type-safe env vars with T3 Env: createEnv, server/client split, Standard Schema, presets. |
 | `tailwind` | Build, review, debug, configure, or migrate Tailwind CSS projects. |
 | `tailwind-variants` | Build, review, debug, migrate, or plan Tailwind Variants class recipes. |
 | `takumi` | JSX/HTML to OG images & animations with takumi-js (no headless browser). |
