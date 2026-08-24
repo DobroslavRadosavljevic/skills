@@ -9,8 +9,8 @@ bun add -D oxfmt
 ```json
 {
   "scripts": {
-    "fmt": "oxfmt",
-    "fmt:check": "oxfmt --check"
+    "format": "oxfmt",
+    "format:check": "oxfmt --check"
   }
 }
 ```

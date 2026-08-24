@@ -12,7 +12,7 @@ Use this skill when work touches Oxfmt or Oxc formatting: install/config, day-to
 1. Inspect the local Oxfmt surface before changing code:
    - Package version for `oxfmt` (still **0.x / beta** until 1.0).
    - Config: prefer `oxfmt.config.ts` / `.mts` with `defineConfig`; also accept `.oxfmtrc.json(c)` (one type per directory); Vite+ may use `fmt` in `vite.config.ts` instead.
-   - Remaining Prettier/Biome setup, `.prettierignore`, scripts (`fmt` / `fmt:check`), editor default formatter.
+   - Remaining Prettier/Biome setup, `.prettierignore`, scripts (`format` / `format:check`), editor default formatter.
 2. For setup, how-to, style choices, sorting, monorepos, pairing with Oxlint, or troubleshooting, follow the full guide first: [usage-guide.md](references/usage-guide.md).
 3. Refresh current official docs when versions differ from the snapshot or the work touches language support, sorting, or migration. Start from [source-map.md](references/source-map.md).
 4. Route deeper detail to the focused references:

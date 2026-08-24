@@ -172,8 +172,8 @@ Optional editor knobs:
 ```json
 {
   "scripts": {
-    "fmt": "oxfmt",
-    "fmt:check": "oxfmt --check"
+    "format": "oxfmt",
+    "format:check": "oxfmt --check"
   },
   "lint-staged": {
     "*": "oxfmt --no-error-on-unmatched-pattern"
@@ -183,7 +183,7 @@ Optional editor knobs:
 
 ```yaml
 - run: bun install --frozen-lockfile
-- run: bun run fmt:check
+- run: bun run format:check
 ```
 
 Optional autofix bots (e.g. autofix.ci) can run `oxfmt` write on PRs — keep `--check` as the merge gate.

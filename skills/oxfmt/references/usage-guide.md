@@ -27,8 +27,8 @@ Oxfmt is still **0.x (beta)** — pin via the lockfile.
 ```json
 {
   "scripts": {
-    "fmt": "oxfmt",
-    "fmt:check": "oxfmt --check"
+    "format": "oxfmt",
+    "format:check": "oxfmt --check"
   }
 }
 ```
@@ -57,8 +57,8 @@ export default defineConfig({
 ### Step 4 — First format
 
 ```sh
-bun run fmt          # write (default)
-bun run fmt:check    # verify; exit 1 if drift
+bun run format          # write (default)
+bun run format:check    # verify; exit 1 if drift
 ```
 
 ### Step 5 — Editor
@@ -80,7 +80,7 @@ Install `oxc.oxc-vscode`. Prefer the full `.vscode/settings.json` recipe (format
 
 ```yaml
 - run: bun install --frozen-lockfile
-- run: bun run fmt:check
+- run: bun run format:check
 ```
 
 Never use write mode as the only CI gate without review — `--check` is the merge gate.
@@ -91,7 +91,7 @@ Never use write mode as the only CI gate without review — `--check` is the mer
 
 | Goal | Command |
 | --- | --- |
-| Format repo (write) | `bunx oxfmt` or `bun run fmt` |
+| Format repo (write) | `bunx oxfmt` or `bun run format` |
 | Format one path | `bunx oxfmt src/app.ts` |
 | Format globs | `bunx oxfmt 'src/**/*.{ts,tsx}'` |
 | Exclude via CLI | `bunx oxfmt 'src/**' '!**/fixtures/**'` |
@@ -242,7 +242,7 @@ Before promising full-repo format for a framework, check [language support](http
 
 ### Local development
 
-1. Format on save via Oxc extension **or** run `bun run fmt` before commit.
+1. Format on save via Oxc extension **or** run `bun run format` before commit.
 2. Optionally lint-staged:
 
 ```json
@@ -256,17 +256,17 @@ Before promising full-repo format for a framework, check [language support](http
 ### Before opening a PR
 
 ```sh
-bun run fmt
-bun run fmt:check
+bun run format
+bun run format:check
 ```
 
 ### CI
 
 ```sh
-bun run fmt:check
+bun run format:check
 ```
 
-If check fails: run `bun run fmt`, commit, push. Do not “fix” by disabling the gate.
+If check fails: run `bun run format`, commit, push. Do not “fix” by disabling the gate.
 
 ### Stdin / editor non-LSP
 
@@ -317,8 +317,8 @@ Use `--disable-nested-config` when a single root config should apply everywhere 
 ```json
 {
   "scripts": {
-    "fmt": "oxfmt",
-    "fmt:check": "oxfmt --check",
+    "format": "oxfmt",
+    "format:check": "oxfmt --check",
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
     "check": "oxfmt --check && oxlint"
