@@ -35,7 +35,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `handoff` | Produce or consume agent-to-agent handoff context so another session can resume work. |
 | `heyapi` | Hey API (`@hey-api/openapi-ts`): OpenAPI → TypeScript SDKs, validators, Query plugins. |
 | `impit` | Apify Impit: browser-impersonating HTTP (TLS/HTTP fingerprints) for Node, Python, Rust. |
-| `intlayer` | Build, review, configure, or debug Intlayer v9 i18n in TanStack Start React apps. |
+| `intlayer` | Build, review, configure, or debug Intlayer 9.4 i18n in TanStack Start React apps. |
 | `is-bot` | Detect self-identifying crawlers/spiders from User-Agent with isbot v5 (`isBot`, custom lists). |
 | `jsdoc` | Purposeful JSDoc for complex or non-obvious TypeScript; no type-echo or narration. |
 | `kafka` | Apache Kafka from TypeScript: prefer @platformatic/kafka, topics, and delivery semantics. |
