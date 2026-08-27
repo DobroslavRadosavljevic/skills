@@ -1,0 +1,4 @@
+interface:
+  display_name: "AI SDK"
+  short_description: "Build AI SDK 7 TypeScript apps and agents"
+  default_prompt: "Use $ai-sdk to build, review, migrate, or debug this Vercel AI SDK 7 implementation with current documentation."
