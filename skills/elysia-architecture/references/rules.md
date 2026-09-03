@@ -3,18 +3,19 @@
 ## MUST
 
 1. Put new HTTP surface under `modules/<feature>/routes/`.
-2. Export **one** named Elysia instance per route file.
+2. Export **one** named `const` Elysia instance per route file (not a factory function).
 3. Keep `routes/index.ts` as a mount table only.
 4. Put request/response contracts under `schema/`.
 5. Keep handlers thin; put business rules in domain/services modules.
 6. Map domain failures to HTTP status + small public body **in the route**.
 7. Preserve import direction: routes → domain; never domain → routes; never route → route across features.
 8. Prefer short leaf names; let the folder carry the feature noun.
+9. Import `db`, `runtime`, and env at the using module. Services own DB access; routes import `runtime` only to run Effects.
 
 ## MUST NOT
 
 1. Flat `routes/users.ts` mega-files with many unrelated verbs (unless the feature is a single trivial endpoint and stays that way).
-2. `utils/makeRoute.ts`, `createCrudRoutes()`, or shared HTTP mapper helpers that hide handlers.
+2. `utils/makeRoute.ts`, `createCrudRoutes()`, `export function featureRoutes(db)`, `.decorate("db", db)` / `.decorate("runtime", runtime)` on features, or shared HTTP mapper helpers that hide handlers.
 3. Hand-written TypeScript interfaces that duplicate Elysia/schema contracts for the same boundary.
 4. Growing `utils/` with auth wrapping, status mapping, or OpenAPI glue — keep that at the route edge or in dedicated plugins.
 5. Importing from another feature’s `routes/` to “reuse a handler.”
@@ -36,6 +37,8 @@
 | `services/` importing `routes/` | Invert: route calls service |
 | `schema` types only as TS interfaces next to handler | Move to `schema/` and wire into the route options |
 | `modules/utils/http.ts` | Delete; push logic into plugins or route edges |
+| `export function cmsRoutes(db)` + `.decorate("db", db)` | `export const listLocalesRoute = new Elysia(...)`; `import { db } from "…"` in the service (or route only if no service yet) |
+| `localesRoutes(runtime)` passed from `main` | `import { runtime } from "../../runtime"` in the route file |
 
 ## Conflict with local docs
 

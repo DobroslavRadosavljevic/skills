@@ -75,3 +75,17 @@ interface StatusResponse { plan: string }  // hand-written
 ```
 
 One schema under `schema/response.ts`, used as the route `response` contract.
+
+## Bad — inject DB or runtime through a route factory
+
+```ts
+// modules/cms.ts
+export function cmsRoutes(db: Db) {
+  return new Elysia({ name: "cms", prefix: "/v1" })
+    .decorate("db", db)
+    .get("/locales", ({ db }) => localeService.listLocales(db))
+    .post("/locales", ({ db, body }) => localeService.createLocale(db, body))
+}
+```
+
+Split into `routes/list-locales.ts` / `routes/create-locale.ts` that export `const` instances. Import `db` (or `runtime`) in the service or route file. Mount those consts from `routes/index.ts`.

@@ -13,6 +13,7 @@ Feature scaffold:
 - [ ] domain/services module(s) for business rules
 - [ ] Feature mounted from app entry (or parent mount table)
 - [ ] No HTTP helpers in utils/
+- [ ] Routes export const instances; no function(db|runtime) factories or decorate-db
 - [ ] If Effect in repo → also with-effect.md checklist
 ```
 
@@ -34,7 +35,7 @@ New endpoint:
 Layout review:
 - [ ] Tree matches references/tree.md
 - [ ] Mount tables have no handlers
-- [ ] No route factories / *-http utils
+- [ ] No route factories / *-http utils / decorate(db|runtime) injection
 - [ ] No route→route or service→route imports
 - [ ] Names short; no repeated parent noun in leaves
 - [ ] Propose move map before rewriting paths

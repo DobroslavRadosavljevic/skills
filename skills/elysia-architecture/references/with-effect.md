@@ -16,7 +16,7 @@ Load this file **only** when the target app already uses Effect (or the user ask
 
 ## MUST (Effect)
 
-1. **Services own domain logic.** Routes call into the runtime (`runPromise` / `ManagedRuntime`) and stay free of business rules.
+1. **Services own domain logic.** Routes `import { runtime } from "…/runtime"` and call `runtime.runPromise` / `ManagedRuntime`. Stay free of business rules. Do not pass `runtime` into `export function routes(runtime)`.
 2. **One tagged error class per failure mode.** Name the file after the error (`insufficient-credits.error.ts` → `InsufficientCreditsError`). Do **not** use one catch-all tag with a `reason` / `message` discriminator.
 3. **Services declare precise error unions.** Routes map with `Effect.catchTag("ExactTag", …)` (or equivalent) to fixed HTTP bodies/status codes.
 4. **Never branch on `error.reason` or `error.message`** to pick HTTP status when tags exist.
@@ -33,6 +33,7 @@ Load this file **only** when the target app already uses Effect (or the user ask
 3. Catch-all `DomainError` with stringly `kind` fields for HTTP branching.
 4. Passing broad manually typed HTTP `Context` into services — pass validated data / ids only.
 5. Creating a second `ManagedRuntime` per request or per feature without a documented reason.
+6. `export function featureRoutes(runtime)` or `.decorate("runtime", runtime)` — import the one app runtime.
 
 ## Tree add-ons
 
@@ -51,6 +52,8 @@ apps/<api>/src/
 ## Route edge (conceptual)
 
 ```ts
+import { runtime } from "../../../runtime";
+
 await runtime.runPromise(
   Effect.gen(function* () {
     const svc = yield* FeatureService;
@@ -78,4 +81,5 @@ Effect overlay:
 - [ ] Feature live.ts merged into single app runtime.ts
 - [ ] Infra .make(options) from env; dispose runtime on shutdown
 - [ ] No catch-all reason discriminator for HTTP
+- [ ] Routes import runtime; no function(runtime) / decorate runtime
 ```

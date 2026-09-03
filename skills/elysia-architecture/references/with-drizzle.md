@@ -16,13 +16,13 @@ packages/<database>/
 apps/<api>/src/
   runtime.ts                 # DatabaseService.make({ url: env.DATABASE_URL })
   modules/<feature>/services/*.service.ts
-    # yield* DatabaseService (or inject client) — queries live here
+    # yield* DatabaseService (or import shared client) — queries live here
 ```
 
 ## MUST
 
 1. Add/change tables in the **database package**, then migrate/push with repo scripts.
-2. Access DB from **services**, not from `routes/<action>.ts` handlers (beyond passing ids).
+2. Access DB from **services**, not from `routes/<action>.ts` handlers (beyond passing ids). Services `import` the shared client / `DatabaseService` — they do not take `db` from a route factory or from `{ db }` on context.
 3. Construct the DB Layer once in app `runtime.ts` from validated env.
 4. Keep auth-adapter / seed sync clients separate when the auth library needs its own drizzle instance — do not fork schema definitions.
 
@@ -30,7 +30,8 @@ apps/<api>/src/
 
 1. `drizzle()` with `process.env.DATABASE_URL` inside a random feature package.
 2. Copy-paste table definitions into API modules.
-3. Run migrations from HTTP request handlers.
+3. `export function featureRoutes(db: Db)` or `.decorate("db", db)` so handlers can query.
+4. Run migrations from HTTP request handlers.
 
 ## Checklist
 
@@ -40,4 +41,5 @@ Drizzle overlay:
 - [ ] Service uses DatabaseService / shared client
 - [ ] Route stays free of table imports for writes
 - [ ] runtime wires DB from env
+- [ ] Services import client; no route factory / decorate(db)
 ```

@@ -48,7 +48,28 @@ src/
   index.ts        # composition root
 ```
 
-Use one feature-scoped Elysia instance as the HTTP controller. Keep non-request-dependent business logic in plain functions or modules. Do not pass the entire dynamic Elysia context into a class controller or service; destructure only the values the operation needs.
+Use one feature-scoped Elysia instance as the HTTP controller. Official best practice is `export const auth = new Elysia({ prefix: '/auth' })` — a named instance, not a function that receives the parent app or a database.
+
+Keep non-request-dependent business logic in plain functions or modules. Those modules import their own clients (SQL/Drizzle, Effect services). Do not pass the entire dynamic Elysia context into a class controller or service; destructure only request values the operation needs (body, params, cookie).
+
+```ts
+// ✅ Do — instance export; import singletons
+import { Elysia } from 'elysia'
+import { db } from '../../db'
+import * as localeService from '../services/locales'
+
+export const listLocalesRoute = new Elysia({ name: 'CMS_LIST_LOCALES' })
+  .get('/locales', () => localeService.listLocales(db), {
+    response: LocaleListSchema
+  })
+
+// ❌ Don't — factory + decorate to inject DB/runtime
+export function cmsRoutes(db: Db) {
+  return new Elysia({ name: 'cms' })
+    .decorate('db', db)
+    .get('/locales', ({ db }) => localeService.listLocales(db))
+}
+```
 
 Use a request-dependent Elysia plugin when logic genuinely needs cookies, headers, validated body/query data, lifecycle participation, or typed context extension.
 
@@ -83,5 +104,6 @@ Elysia selects parsers from content type and schema. Built-in parsing covers tex
 - Does each route use the correct verb and most specific path?
 - Are feature prefixes applied exactly once?
 - Are handlers thin and schemas colocated with the boundary?
+- Does each route file export a `const` instance and import db/runtime instead of taking them as factory arguments?
 - Is portable code free of Bun-only `server`, `Bun.file`, and `Bun.*` assumptions?
 - Are body parsing, upload limits, response headers, and streaming cleanup explicit where necessary?

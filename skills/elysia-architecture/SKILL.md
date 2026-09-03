@@ -2,10 +2,12 @@
 name: elysia-architecture
 description: >-
   Enforce portable Elysia app architecture: feature modules, folder trees,
-  naming, one-route-one-file, thin handlers, schema/services ownership, and
-  mount tables. Use when scaffolding a new Elysia API or feature, adding
-  endpoints, reviewing or reorganizing module layout, or when the user asks
-  for elysia-architecture / Elysia house style. Optional with-* overlays for
+  naming, one-route-one-file, thin handlers, schema/services ownership,
+  mount tables, and direct imports of db/runtime (no route factories).
+  Use when scaffolding a new Elysia API or feature, adding endpoints,
+  reviewing or reorganizing module layout, or when the user asks for
+  elysia-architecture / Elysia house style. Reject export function
+  routes(db) / decorate-db injection. Optional with-* overlays for
   Effect, env, session auth, capability authz, API keys, Drizzle, OpenAPI,
   observability, HTTP errors, domain packages, plugins, cron, webhooks,
   service auth, and Vitest.
@@ -46,16 +48,17 @@ when those stacks are present (see below).
 ## Hard rules (core)
 
 1. **Feature = `src/modules/<feature>/`.** Group by domain (`billing`, `users`), not by technical layer at the app root.
-2. **One route file = one exported Elysia plugin** with a stable `name`, and typically one HTTP verb (or a tight related group). Do not pack unrelated verbs into one file.
+2. **One route file = one exported `const` Elysia plugin** with a stable `name`, and typically one HTTP verb (or a tight related group). Do not pack unrelated verbs into one file. Do not `export function makeXRoutes(...)`.
 3. **`routes/index.ts` is a mount table only** — `.use(child)` (+ `prefix`). No handlers, no domain logic, no shared mappers.
 4. **Schemas live under `schema/`** (`body`, `response`, `query`, `params` as needed). Do not dump DTOs into route files or invent parallel hand-written response interfaces when schemas already define the contract.
 5. **Routes stay thin.** HTTP concerns (auth guards, status mapping, request/response) in the route file; business rules in services (or plain domain modules).
 6. **No route factories / shared HTTP wrappers.** Do not invent `makeSyncGet`, `mapXToHttp`, or `utils/*-http.ts` that wrap handlers. Inline the edge in each route file.
-7. **Map failures at the HTTP edge only.** Public bodies stay small (e.g. `{ error: string }` + status). Do not leak internal causes.
-8. **Do not grow `utils/` for HTTP.** Prefer `schema/`, services/domain, or inlined route edges.
-9. **Naming:** folder = noun/domain; file = action or aspect (`create.ts`, `status.ts`). Do not repeat the parent folder in the leaf name (`billing/billing-status.ts` → `billing/routes/status.ts`).
-10. **Import direction:** routes → schema + services; services must not import routes. Cross-feature deps go through services/shared packages, not route→route imports.
-11. **Mount** feature trees from the app entry (or a parent feature’s mount table).
+7. **Import process resources. Do not inject them.** Database, Effect runtime, env, queues: `import { db } from "…"`, `import { runtime } from "…"`. Forbidden: `export function cmsRoutes(db: Db)`, `.decorate("db", db)` / `.decorate("runtime", runtime)` on feature routes, or passing those values through mount-table arguments. Shared-package plugins may take **options** (origins, prefix); apps still import their own singletons.
+8. **Map failures at the HTTP edge only.** Public bodies stay small (e.g. `{ error: string }` + status). Do not leak internal causes.
+9. **Do not grow `utils/` for HTTP.** Prefer `schema/`, services/domain, or inlined route edges.
+10. **Naming:** folder = noun/domain; file = action or aspect (`create.ts`, `status.ts`). Do not repeat the parent folder in the leaf name (`billing/billing-status.ts` → `billing/routes/status.ts`).
+11. **Import direction:** routes → schema + services; services must not import routes. Cross-feature deps go through services/shared packages, not route→route imports.
+12. **Mount** feature trees from the app entry (or a parent feature’s mount table).
 
 Details, anti-patterns, and examples: [rules.md](references/rules.md), [tree.md](references/tree.md), [examples.md](references/examples.md).
 

@@ -1,6 +1,6 @@
 ---
 name: elysia
-description: "Build, review, debug, test, migrate, secure, or deploy Elysia and ElysiaJS applications with current documentation. Use for Bun or Node Elysia servers, routes, schemas and validation, lifecycle hooks, plugins and scope, guards, macros, context extension, error handling, Eden Treaty, OpenAPI, WebSocket, SSE, runtime adapters, and production readiness."
+description: "Build, review, debug, test, migrate, secure, or deploy Elysia and ElysiaJS applications with current documentation. Use for Bun or Node Elysia servers, routes, schemas and validation, lifecycle hooks, plugins and scope, guards, macros, context extension, error handling, Eden Treaty, OpenAPI, WebSocket, SSE, runtime adapters, and production readiness. Reject route factories that pass db, Effect runtime, or other app singletons as arguments or via decorate; import those modules directly."
 ---
 
 # Elysia
@@ -28,6 +28,9 @@ Use this skill when the work touches Elysia or ElysiaJS.
 
 - Treat schemas as executable HTTP contracts. Define request and per-status response schemas where the boundary matters; do not duplicate them with hand-written interfaces.
 - Keep route handlers thin. Prefer feature-scoped Elysia instances for HTTP concerns and ordinary functions/modules for business logic that does not need request context.
+- Export a `const` Elysia instance from each route/plugin file. Do not wrap routes in `export function featureRoutes(db)` / `(runtime)` / similar factories.
+- Import app singletons (database client, Effect `ManagedRuntime`, env, mailer) in the module that uses them. Services import the DB; routes import `runtime` only to `runPromise`. Do not pass those values as function arguments, and do not `.decorate("db", db)` (or runtime) just to thread them through handlers.
+- Plugin factories that accept options are only for reusable/shared plugins (config such as prefix, version, CORS origins). They are not how the app wires its database or runtime into features.
 - Let Elysia infer handler context. Do not pass a broad manually typed `Context` through controllers or services when destructured values or schema-derived types are sufficient.
 - Respect chain order. Interceptor hooks apply to routes and plugins registered after them, except `onRequest`, which is global to incoming requests.
 - Respect plugin encapsulation. A plugin's lifecycle hooks and schemas do not automatically protect parent routes. Choose `local`, `scoped`, or `global` deliberately and test the boundary.

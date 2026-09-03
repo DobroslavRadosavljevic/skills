@@ -4,12 +4,14 @@ Use this reference for application composition, cross-cutting behavior, dependen
 
 ## Plugin Model
 
-Every Elysia instance can run independently or be composed with `.use(...)`. Treat feature instances as explicit dependency boundaries.
+Every Elysia instance can run independently or be composed with `.use(...)`. Treat feature instances as explicit **HTTP** dependency boundaries (auth macros, models, request-derived context).
 
-- A feature that needs a database, auth service, model set, or macro should `.use(...)` that plugin itself.
 - Prefer a new named Elysia instance over a callback that mutates the parent; instance boundaries are easier to reason about and infer.
+- A feature that needs auth macros, models, or request-derived identity should `.use(...)` that plugin itself.
+- App singletons (DB pool, Effect runtime, env) are **module imports**, not plugin dependencies. Do not require `.use(dbPlugin)` or `featureRoutes(db)` so a handler can query.
+- Official docs allow plugin factories for reusable config (prefix, version, origins). Use that only for portable plugins. Do not use a factory to inject the process database or runtime into every feature.
 - Add `name` to a reusable plugin when lifecycle deduplication matters. Add `seed` when two configurations should be considered distinct.
-- Use global dependencies sparingly for concerns that truly apply everywhere, such as CORS, telemetry, or logging. Keep typed business dependencies explicit.
+- Use global plugins sparingly for concerns that truly apply everywhere, such as CORS, telemetry, or logging.
 
 ## Scope Is a Security Boundary
 
@@ -43,7 +45,7 @@ Use the smallest matching primitive:
 | API | Timing | Use for | Avoid |
 | --- | --- | --- | --- |
 | `state` | app setup | shared mutable primitive state in `store` | request-local or durable distributed state |
-| `decorate` | app setup | immutable/singleton helpers and non-primitive services | values derived from a request |
+| `decorate` | app setup | immutable helpers that belong on **request context** (logger facade used in hooks, request-id helpers) | app DB, Effect runtime, env, or any value the module can `import` |
 | `derive` | transform, before validation | request values that intentionally do not depend on validated input | auth identity from unvalidated data |
 | `resolve` | before handle, after validation | typed request-derived identity or resources | global singleton setup |
 
@@ -53,6 +55,7 @@ Additional rules:
 - Mutate primitive state through `store.property`; destructuring a primitive loses the reference.
 - Decorated values should normally be treated as immutable even though JavaScript permits mutation.
 - Do not put ordinary pure helpers on context merely for convenience. Import them normally.
+- Do not decorate the database, Effect `ManagedRuntime`, or env onto context so routes can pull `{ db }`. Import `db` / `runtime` in the service or route file. Official `decorate` exists for request-adjacent singletons, not as a DI container for process resources.
 - Prefix or suffix plugin-owned decorators, stores, models, errors, and macros when names can collide.
 
 ## Macros

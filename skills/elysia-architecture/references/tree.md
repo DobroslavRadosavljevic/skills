@@ -48,15 +48,19 @@ modules/credits/routes/…
 ## Route file shape (conceptual)
 
 ```ts
+import { runtime } from "../../../runtime"; // or import { db } from "../../../db"
+
 export const featureActionRoute = new Elysia({ name: "FEATURE_ACTION_ROUTE" })
   // .use(authPlugin) / guards as needed
   .post("/…", async ({ body, status }) => {
-    // thin: call domain, map outcomes to status(...)
+    // thin: call domain via imported runtime/db, map outcomes to status(...)
   }, {
     body: BodySchema,
     response: { 200: OkSchema, 400: ErrorSchema },
   });
 ```
+
+Do not `export function featureActionRoute(db)` or decorate those imports onto context.
 
 ## Naming
 
