@@ -27,6 +27,7 @@ New endpoint:
 - [ ] Handler thin; domain call extracted
 - [ ] Failures mapped at edge to status + small body
 - [ ] Mounted in routes/index.ts
+- [ ] Endpoint tests via treaty(app) from @elysia/eden — no handle/Request helpers
 ```
 
 ## Review / reorganize

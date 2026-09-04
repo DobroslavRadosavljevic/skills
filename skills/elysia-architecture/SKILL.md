@@ -10,7 +10,7 @@ description: >-
   routes(db) / decorate-db injection. Optional with-* overlays for
   Effect, env, session auth, capability authz, API keys, Drizzle, OpenAPI,
   observability, HTTP errors, domain packages, plugins, cron, webhooks,
-  service auth, and Vitest.
+  service auth, and Vitest. HTTP tests: Eden treaty(app), not handle/Request.
 disable-model-invocation: true
 ---
 
@@ -93,4 +93,4 @@ Extensions add rules; they do not replace the core tree.
 | In-process cron ticks | [with-cron.md](references/with-cron.md) |
 | Provider webhooks | [with-webhooks.md](references/with-webhooks.md) |
 | Internal shared-secret routes | [with-service-auth.md](references/with-service-auth.md) |
-| Vitest — Elysia `handle` / what to test | [with-vitest.md](references/with-vitest.md) |
+| Vitest — Eden `treaty(app)` / what to test | [with-vitest.md](references/with-vitest.md) |

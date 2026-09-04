@@ -15,12 +15,12 @@ packages/billing/
     setup/postgres-url.ts
 ```
 
-## Good — API unit via HTTP handle
+## Good — API HTTP via Eden Treaty
 
 ```text
 apps/api/
-  tests/unit/billing/status.test.ts   # plugin.handle(new Request(...))
-  tests/integration/billing/…         # real DB
+  tests/unit/billing/status.test.ts   # treaty(statusRoute) + mocks
+  tests/integration/billing/…         # treaty(app) + real DB
 ```
 
 ## Bad — Bun runner

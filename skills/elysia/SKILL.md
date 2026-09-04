@@ -1,6 +1,6 @@
 ---
 name: elysia
-description: "Build, review, debug, test, migrate, secure, or deploy Elysia and ElysiaJS applications with current documentation. Use for Bun or Node Elysia servers, routes, schemas and validation, lifecycle hooks, plugins and scope, guards, macros, context extension, error handling, Eden Treaty, OpenAPI, WebSocket, SSE, runtime adapters, and production readiness. Reject route factories that pass db, Effect runtime, or other app singletons as arguments or via decorate; import those modules directly."
+description: "Build, review, debug, test, migrate, secure, or deploy Elysia and ElysiaJS applications with current documentation. Use for Bun or Node Elysia servers, routes, schemas and validation, lifecycle hooks, plugins and scope, guards, macros, context extension, error handling, Eden Treaty, OpenAPI, WebSocket, SSE, runtime adapters, and production readiness. Reject route factories that pass db, Effect runtime, or other app singletons as arguments or via decorate; import those modules directly. Endpoint tests must use @elysia/eden treaty(app) — ban app.handle(new Request(...)) helpers."
 ---
 
 # Elysia
@@ -40,16 +40,16 @@ Use this skill when the work touches Elysia or ElysiaJS.
 - Treat OpenAPI security declarations as documentation only. Enforce authentication and authorization in guards, macros, hooks, or handlers.
 - Do not assume Bun-only APIs on other adapters. `server` and `server.requestIP` are Bun-specific; adapter and platform limitations must shape the implementation.
 - Do not quote benchmark numbers as general application performance guarantees. Profile the actual app and runtime.
+- Test HTTP endpoints with Eden Treaty (`treaty(app)` from `@elysia/eden`). Ban `app.handle(new Request(...))`, `plugin.handle(...)`, and helpers such as `const handle = (path) => app.handle(new Request(\`http://localhost${path}\`))`.
 
 ## Verification
 
 Prefer repository-owned commands. For meaningful Elysia changes, cover the relevant subset:
 
 - Typecheck and production build with the actual runtime/adapter.
-- Direct `app.handle(new Request('http://localhost/...'))` tests for success, validation failures, auth failures, error mapping, headers, and status-specific response bodies.
-- Scope/order regression tests when changing hooks, guards, macros, or plugin composition.
-- `await app.modules` before testing deferred or lazy-loaded plugins.
-- Eden contract tests when the application exports its type to clients.
+- Eden Treaty tests (`treaty(app)`) for success, validation failures, auth failures, error mapping, headers, and status-specific response bodies. Assert `{ data, error, status }`.
+- Scope/order regression tests when changing hooks, guards, macros, or plugin composition (still via Treaty).
+- `await app.modules` before Treaty calls against deferred or lazy-loaded plugins.
 - Generated OpenAPI inspection when schemas, response status maps, tags, security metadata, or type generation changes.
 - Real HTTP smoke test for listen/export, proxy headers, cookies, CORS preflight, streaming, and runtime-specific behavior.
 - WebSocket connection, invalid-message, close, timeout, and backpressure checks when realtime behavior changes.

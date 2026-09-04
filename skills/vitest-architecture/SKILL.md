@@ -6,7 +6,7 @@ description: >-
   and unit vs integration boundaries. Use when scaffolding tests, reviewing test
   layout, adding Vitest to a package, or when the user asks for
   vitest-architecture. Optional with-* overlays for testcontainers, Effect
-  testing, Elysia handle, React happy-dom, typecheck projects, Storybook
+  testing, Elysia Eden treaty, React happy-dom, typecheck projects, Storybook
   browser, live harnesses, and coverage. Not a Vitest API docs skill.
 disable-model-invocation: true
 ---
@@ -72,7 +72,7 @@ Load **only** when the matching stack is present (or the user asks):
 | --- | --- |
 | Testcontainers / Docker in integration | [with-testcontainers.md](references/with-testcontainers.md) |
 | `@effect/vitest` / Layers in tests | [with-effect-testing.md](references/with-effect-testing.md) |
-| Elysia `plugin.handle(Request)` | [with-elysia-handle.md](references/with-elysia-handle.md) |
+| Elysia Eden `treaty(app)` | [with-elysia-eden.md](references/with-elysia-eden.md) |
 | React + happy-dom / Testing Library | [with-react-happy-dom.md](references/with-react-happy-dom.md) |
 | `*.test-d.ts` type projects | [with-typecheck-project.md](references/with-typecheck-project.md) |
 | Storybook + Vitest browser | [with-storybook-browser.md](references/with-storybook-browser.md) |

@@ -85,3 +85,4 @@ tests/
 ```
 
 Name tests by aspect (`status.test.ts`), not by repeating the whole package name.
+HTTP endpoint tests use `treaty(app)` from `@elysia/eden`, not `handle`/`Request`.

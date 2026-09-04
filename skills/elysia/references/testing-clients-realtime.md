@@ -1,49 +1,62 @@
 # Testing, Clients, OpenAPI, and Realtime
 
-Use this reference for direct request tests, Eden clients, generated API documentation, WebSocket, streams, and SSE.
+Use this reference for Eden endpoint tests, generated API documentation, WebSocket, streams, and SSE.
 
-## Direct Request Tests
+## Endpoint tests: Eden Treaty only
 
-Elysia accepts Web Standard `Request` objects through `app.handle` and returns `Response` objects. This exercises routing and lifecycle without opening a port.
+Official contract: [Eden Treaty unit tests](https://elysiajs.com/eden/treaty/unit-test) and [unit test](https://elysiajs.com/patterns/unit-test). Pass the Elysia instance to `treaty` from `@elysia/eden`. Treaty infers the app type, calls through `handle` internally, and needs no `listen()`.
+
+Use Treaty 2 `treaty`, not legacy `edenTreaty`.
 
 ```ts
-import { describe, expect, it } from 'bun:test'
+import { describe, expect, it } from 'vitest' // or bun:test if that is the repo runner
 import { Elysia, t } from 'elysia'
+import { treaty } from '@elysia/eden'
 
 const app = new Elysia().post('/users', ({ body }) => body, {
   body: t.Object({ name: t.String({ minLength: 1 }) })
 })
 
+const api = treaty(app)
+
 describe('POST /users', () => {
   it('validates and returns a user', async () => {
-    const response = await app.handle(new Request('http://localhost/users', {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ name: 'Elysia' })
-    }))
+    const { data, error, status } = await api.users.post({ name: 'Elysia' })
 
-    expect(response.status).toBe(200)
-    expect(await response.json()).toEqual({ name: 'Elysia' })
+    expect(error).toBeNull()
+    expect(status).toBe(200)
+    expect(data).toEqual({ name: 'Elysia' })
   })
 })
 ```
 
-The URL must be absolute (`http://localhost/path`), not only `/path`.
+Rules:
 
-Test response status, body, content type, headers, cookies, and side effects. Add negative tests for validation, authorization, not found, thrown errors, and plugin scope. Use a real listening server when behavior depends on sockets, runtime server APIs, proxy/IP resolution, streaming timing, TLS, or deployment adapters.
+- Mount the same exported `const` plugin (or composed app) the production tree uses. `treaty(app)` — type inference is automatic when the instance is passed.
+- For a URL client (`treaty<App>('http://…')`) export `type App = typeof app`. Use a URL only when you need a real network boundary.
+- Handle `error` before treating `data` as present. Statuses 300+ populate `error`, not `data`.
+- Path params are function calls in the chain: `api.users({ id: '42' }).get()`.
+- Test validation, authorization, not found, thrown errors, plugin scope, headers, and cookies via Treaty (`status`, `error`, `headers`, `response`).
+- `await app.modules` before Treaty calls when lazy/deferred plugins register after startup.
+- In-process `treaty(app)` does **not** prove CORS, proxies, TLS, cookie jar behavior across origins, or adapter listen quirks. Use a listening URL client or a deploy smoke test for those.
+- If a huge root app slows inference, Treaty a relevant sub-app instance, not a hand-built `Request`.
 
-Wait for `await app.modules` before testing lazy or deferred plugins.
-
-## Eden Treaty
-
-Eden provides end-to-end types from an exported server type without code generation. For new work, use Treaty 2's `treaty`, not legacy `edenTreaty`.
+### Banned
 
 ```ts
-// server.ts
-export const app = new Elysia().get('/health', () => ({ ok: true }))
-export type App = typeof app
+// ❌ Don't
+export const handle = (path: string) =>
+  app.handle(new Request(`http://localhost${path}`))
 
-// client.ts
+await app.handle(new Request('http://localhost/users', { method: 'POST', … }))
+await plugin.handle(new Request('http://localhost/…'))
+```
+
+Do not wrap `handle`/`Request` in test helpers. Do not use `edenFetch` as the default for route tests — `treaty` is the typed surface.
+
+## Eden as an HTTP client
+
+```ts
 import { treaty } from '@elysia/eden'
 import type { App } from './server'
 
@@ -51,11 +64,7 @@ const api = treaty<App>('https://api.example.com')
 const { data, error, status } = await api.health.get()
 ```
 
-- Handle `error` before using `data` as non-null. HTTP statuses 300 and above populate `error` rather than `data`.
-- Passing an Elysia instance to `treaty(app)` uses `app.handle` directly and is useful for contract tests.
-- Use a URL client for a network boundary; do not mistake in-process Treaty tests for proof of CORS, proxies, cookies, TLS, or platform behavior.
-- Eden interprets streams and SSE as async generators.
-- If a very large root app causes slow client inference, export a relevant sub-app type instead of the whole server type.
+Eden interprets streams and SSE as async generators.
 
 ## OpenAPI
 
@@ -105,7 +114,7 @@ Incoming stringified JSON is parsed for schema validation by default. Configure 
 - `maxPayloadLength`, `idleTimeout`, compression, `backpressureLimit`, and whether to close on backpressure.
 - Invalid messages, reconnect behavior, close codes, drain/backpressure handling, and resource cleanup.
 
-WebSocket configuration follows Bun's server APIs, so verify adapter/platform support rather than assuming parity everywhere.
+Prefer Eden Treaty WebSocket clients when the app type is available. WebSocket configuration follows Bun's server APIs, so verify adapter/platform support rather than assuming parity everywhere.
 
 ## Streams and SSE
 

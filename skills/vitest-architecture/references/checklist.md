@@ -31,6 +31,7 @@ Integration test:
 - [ ] Real dep strategy chosen (containers / host DB / live skipIf)
 - [ ] Timeouts / fileParallelism sensible
 - [ ] Load matching with-* overlay if needed
+- [ ] Elysia HTTP: treaty(app) — see with-elysia-eden.md (no handle/Request)
 ```
 
 ## Review
