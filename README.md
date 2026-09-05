@@ -35,6 +35,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `grok` | Cursor IDE only: always-on lock to Grok 4.6 (`cursor-grok-4.6-*`, any reasoning effort). Skip in Codex. |
 | `handoff` | Produce or consume agent-to-agent handoff context so another session can resume work. |
 | `heyapi` | Hey API (`@hey-api/openapi-ts`): OpenAPI → TypeScript SDKs, validators, Query plugins. |
+| `improve-prompt` | Rewrite rough requests into clear, proportional, actionable prompts without doing the work. |
 | `impit` | Apify Impit: browser-impersonating HTTP (TLS/HTTP fingerprints) for Node, Python, Rust. |
 | `intlayer` | Build, review, configure, or debug Intlayer 9.4 i18n in TanStack Start React apps. |
 | `is-bot` | Detect self-identifying crawlers/spiders from User-Agent with isbot v5 (`isBot`, custom lists). |
