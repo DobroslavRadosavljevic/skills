@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "nitro": {
+      "source": "DobroslavRadosavljevic/skills",
+      "sourceType": "github",
+      "skillPath": "skills/nitro/SKILL.md",
+      "computedHash": "dc7344f40aad3afb1d51e2374c185c5781718e02b621b8882393c533a0fad5a1"
+    }
+  }
+}

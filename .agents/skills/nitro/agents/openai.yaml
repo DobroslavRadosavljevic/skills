@@ -1,0 +1,4 @@
+interface:
+  display_name: "Nitro"
+  short_description: "Build and deploy Nitro servers anywhere"
+  default_prompt: "Use $nitro to scaffold, configure, cache, and deploy this Nitro v3 app with current documentation and the correct preset."
