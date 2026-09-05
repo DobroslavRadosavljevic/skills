@@ -47,6 +47,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `mantine-hooks` | Build, review, debug, migrate, or plan React code with `@mantine/hooks` only. |
 | `mobbin` | Enforce Mobbin MCP for real shipped-app UI/UX inspiration before designing. |
 | `motion` | Motion for React (`motion/react`) plus product UI motion design, a11y, and performance. |
+| `nitro` | Nitro v3 servers: file routes, Vite plugin, cache/storage, and deploy-anywhere presets. |
 | `oxfmt` | Full Oxfmt usage guide plus setup, Prettier migration, and CI formatting. |
 | `oxlint` | Full Oxlint usage guide plus setup, rules/plugins, type-aware lint, and ESLint migration. |
 | `permix` | Type-safe Permix permissions: setup/check, SSR, React/Next, and server middleware. |
