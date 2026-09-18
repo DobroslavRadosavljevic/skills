@@ -11,6 +11,7 @@ bunx intlayer build --watch
 bunx intlayer test              # alias: content test
 bunx intlayer list              # alias: content list
 bunx intlayer fill
+bunx intlayer fill --ci         # 9.5.2: not `intlayer ci fill`
 bunx intlayer push
 bunx intlayer pull
 bunx intlayer extract
@@ -31,8 +32,21 @@ bunx intlayer --version
 | `doc translate` / `doc review` | Markdown/docs AI pass |
 | `scan <url>` | Public URL i18n/SEO + page-size audit |
 | `projects list` | Discover Intlayer projects in a tree |
-| `ci` | Run CLI with auto-injected CMS credentials |
 | `editor` / live-sync commands | Visual editor process; runtime CMS reflection |
+
+### `--ci` (9.5.2)
+
+`intlayer ci <command>` is **removed**. Pass `--ci` on the real command:
+
+```bash
+bunx intlayer build --ci
+bunx intlayer fill --ci
+bunx intlayer push --ci
+```
+
+Runs the command in every Intlayer project in the monorepo (or only the current project when invoked from a project directory). Inject per-project CMS credentials with `INTLAYER_PROJECT_CREDENTIALS` — a JSON map of project path → `{ "clientId", "clientSecret" }`.
+
+Older CI/CD pages and Context7 snippets may still show `npx intlayer ci fill`. Rewrite those to `bunx intlayer fill --ci`.
 
 Suggested scripts (adapt to `bunx`):
 
@@ -54,7 +68,7 @@ Use fill/push/pull/extract/scan only when AI fill, CMS, or audits are in scope.
 1. Set `editor.enabled: true` plus `editor.applicationURL`.
 2. Dashboard client: `editor.clientId` / `editor.clientSecret` from https://app.intlayer.org/projects.
 3. `IntlayerProvider` wraps strings in editor `IntlayerNode` proxies (`postMessage` to the iframe) when the editor is on. Disable per tree with `disableEditor`.
-4. `build.minify` is **ignored** while the editor is enabled.
+4. `build.minify` field-renaming is **skipped** while the editor is enabled (editor resolves by `keyPath`).
 5. Self-host: override `editor.cmsURL` and `editor.backendURL`.
 
 `@intlayer/editor` is optional the same way as analytics: missing package ⇒ no-op / tree-shaken.
@@ -63,7 +77,7 @@ Use fill/push/pull/extract/scan only when AI fill, CMS, or audits are in scope.
 
 - `dictionary.location`: `local` | `remote` | `hybrid`.
 - Push local dictionaries, edit in CMS, pull back — or keep hybrid.
-- `editor.liveSync: true` fetches remote dictionaries at runtime (dev start / prod build as configured).
+- `editor.liveSync` fetches remote dictionaries at runtime (dev start / prod build as configured). Types default `true`; confirm against the installed package.
 - Programmatic access: `@intlayer/api` (OAuth2 `client_credentials`; fetch/push dictionaries from scripts). Do not put API secrets in client bundles.
 
 ## AI fill
@@ -76,7 +90,7 @@ Configure `ai.provider` / `model` / `apiKey` / `applicationContext`. Per-diction
 
 Official DX extras (not required for Start i18n):
 
-- MCP: `bunx intlayer init mcp` — https://intlayer.org/doc/mcp-server
+- MCP: `bunx intlayer init mcp` — local `bunx @intlayer/mcp`, remote `https://mcp.intlayer.org` — https://intlayer.org/doc/mcp-server
 - LSP: editor diagnostics for dictionaries
 - They also ship agent skill snippets inside the engine; this repo skill is independent — do not load those files as a substitute for this folder.
 
@@ -98,14 +112,15 @@ Events (batched ~20s, anonymous SHA-256 session, country-only geo, no query stri
 | `content_exposure` | `useIntlayer` resolution (coalesced per flush window) |
 | `conversion` | `useConversion()` |
 
-A/B without flicker:
+A/B without flicker (9.5 React path):
 
 ```ts
-import { getGlobalAnalyticsClient } from "@intlayer/analytics/client";
-import { useConversion, useIntlayer } from "react-intlayer";
+import { useConversion, useExperiment, useIntlayer } from "react-intlayer";
 
-const client = getGlobalAnalyticsClient();
-const variant = client?.getVariant("homepage-hero", ["control", "black_friday"]);
+const { variant, isAssigned } = useExperiment("homepage-hero", [
+  "control",
+  "black_friday",
+]);
 const content = useIntlayer("hero-banner", { variant });
 
 const trackConversion = useConversion();
@@ -116,6 +131,17 @@ trackConversion({
 });
 ```
 
-`getVariant(experimentKey, variants)` is a pure function of session id + key (stable, no round-trip). Tune `analytics.enabled`, `flushInterval`, `sampleRate`. Dashboard: audience, content-stats, experiment z-test. Bot traffic is filtered (9.4).
+`useExperiment(experimentKey, variants, weights?)` assigns deterministically per session (no round-trip), records exposure once per mount, and treats the first variant as control until `isAssigned`. Same hooks also export from `react-intlayer/analytics`.
+
+Lower-level (non-React / 9.4 style) still works:
+
+```ts
+import { getGlobalAnalyticsClient } from "@intlayer/analytics/client";
+
+const client = getGlobalAnalyticsClient();
+const variant = client?.getVariant("homepage-hero", ["control", "black_friday"]);
+```
+
+`getVariant(experimentKey, variants)` is a pure function of session id + key. Prefer `useExperiment` in React on 9.5+. Tune `analytics.enabled`, `flushInterval`, `sampleRate`. Dashboard: audience, content-stats, experiment z-test. Bot traffic is filtered (9.4).
 
 React / Next / React Native via `react-intlayer` only today; Vue/Svelte/etc. bindings are planned.

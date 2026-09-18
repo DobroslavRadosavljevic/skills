@@ -1,6 +1,6 @@
 # SSR and Backend Integration
 
-Low-level Vite SSR, middleware mode, production dual builds, and embedding Vite behind an existing backend.
+Low-level Vite SSR, middleware mode, production dual builds, and embedding Vite behind an existing backend. Snapshot: `vite@8.3.0`.
 
 ## When to use what
 
@@ -8,7 +8,7 @@ Low-level Vite SSR, middleware mode, production dual builds, and embedding Vite 
 |---|---|
 | SPA / static site | Default Vite — no SSR APIs |
 | Custom Node SSR | `middlewareMode` + `ssrLoadModule` + dual `vite build` |
-| Meta-framework (Nuxt, Remix, etc.) | Prefer that framework’s Vite integration |
+| Meta-framework (Nuxt, React Router, etc.) | Prefer that framework’s Vite integration |
 | Rails / Laravel / PHP / etc. | Backend integration + manifest |
 | Multi-runtime future | Environment API (**RC**) |
 
@@ -62,7 +62,7 @@ APIs: `vite.middlewares`, `transformIndexHtml`, `ssrLoadModule`, `ssrFixStacktra
 
 ### WebSocket proxy + middlewareMode
 
-Pass the parent HTTP server so WS proxy binds correctly:
+Pass the parent HTTP server so WS proxy binds correctly. Configure the socket with **`server.ws`** (8.1+; old `server.hmr.server` still synced but deprecated):
 
 ```ts
 import http from 'node:http'
@@ -88,7 +88,11 @@ const vite = await createServer({
 }
 ```
 
+If `build.ssr: true`, set the SSR entry via top-level `input` or `build.rolldownOptions.input`.
+
 Prod server imports `./dist/server/entry-server.js`, serves `dist/client` static assets, and does **not** need Vite middleware.
+
+`--app` / `builder: {}` builds **all** environments (experimental Environment API builder). Keep dual `vite build` / `vite build --ssr` unless the framework already opted into the app builder.
 
 ### SSR config knobs
 
@@ -101,6 +105,8 @@ Prod server imports `./dist/server/entry-server.js`, serves `dist/client` static
 Docs: https://vite.dev/config/ssr-options
 
 For worker targets, `ssr.noExternal: true` is common; Node builtins will error if pulled in.
+
+`build.ssrEmitAssets` will be replaced by `build.emitAssets` once Environment API is stable.
 
 ## Backend integration (non-JS HTML hosts)
 
@@ -119,11 +125,13 @@ export default defineConfig({
   build: {
     manifest: true, // → dist/.vite/manifest.json
     rolldownOptions: {
-      input: '/path/to/main.js', // non-HTML entry
+      input: '/path/to/main.js', // or top-level input
     },
   },
 })
 ```
+
+Prefer top-level `input` so the same entry is used in **dev**.
 
 **Dev** — inject into backend-rendered HTML:
 
@@ -142,7 +150,7 @@ import 'vite/modulepreload-polyfill'
 
 (`vite/modulepreload-polyfill` is a **virtual module** — empty in dev, polyfill in client build.)
 
-**Prod** — read `ManifestChunk` fields (`file`, `css`, `imports`, `dynamicImports`, `isEntry`) and emit `<link>` / `<script type="module">` (+ modulepreload as needed).
+**Prod** — read `ManifestChunk` fields (`file`, `css`, `imports`, `dynamicImports`, `isEntry`) and emit `<link>` / `<script type="module">` (+ modulepreload as needed). Plugins can also read `viteMetadata.importedCss` / `importedAssets` on output chunks.
 
 ## Proxy patterns
 
@@ -164,13 +172,32 @@ If `base` is non-relative, prefix proxy keys accordingly. Proxied traffic skips 
 
 | Value | Behavior |
 |---|---|
-| `spa` | HTML middleware + SPA fallback (default-ish for SPAs) |
+| `spa` | HTML middleware + SPA fallback (default) |
 | `mpa` | Multi-page HTML |
 | `custom` | No Vite HTML middlewares — parent server owns HTML (SSR) |
 
 ## Environment API note
 
-Future SSR direction uses per-environment Module Runner APIs. Status **RC**. Existing `ssrLoadModule` remains the practical path for many apps today; frameworks may adopt Environment API earlier.
+Status **RC** (Vite 6+ through 8.3). Some APIs still experimental. Docs still say typical plugins should **not** abandon `server.moduleGraph` / `ssrLoadModule` yet.
+
+Future SSR direction: per-environment Module Runner (`environment.runner.import`) instead of `ssrLoadModule`. Frameworks (and RSC via `@vitejs/plugin-rsc`) may adopt earlier. SPA/MPA need not set `environments`.
+
+Example (framework-style, RC):
+
+```ts
+const viteServer = await createServer({
+  server: { middlewareMode: true },
+  appType: 'custom',
+  environments: {
+    server: {},
+  },
+})
+const { render } = await viteServer.environments.server.runner.import(
+  '/src/entry-server.js',
+)
+```
+
+Guard with `isRunnableDevEnvironment` in TypeScript.
 
 Docs: https://vite.dev/guide/api-environment · https://vite.dev/changes/ssr-using-modulerunner
 
@@ -179,3 +206,4 @@ Docs: https://vite.dev/guide/api-environment · https://vite.dev/changes/ssr-usi
 - AuthZ and secrets stay on the **backend**, not in Vite client bundles.
 - `vite preview` is for local smoke of static output — not a hardened prod SSR host.
 - CORS/`server.origin` matter when the browser loads Vite assets from another origin.
+- `server.cors: true` and `server.allowedHosts: true` expose source to other sites — use explicit lists.

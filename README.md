@@ -10,11 +10,11 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | --- | --- |
 | `agents-md` | Create, review, or enforce AGENTS.md with commands, boundaries, and required ASD-STE100 communication. |
 | `ai-sdk` | Vercel AI SDK 7 TypeScript: Core, UI, agents, harnesses, Gateway, multimodal, and v5–v7 migrations. |
-| `base-ui` | Build, review, migrate, or debug React UIs with Base UI primitives. |
-| `better-auth` | TypeScript auth with better-auth, official plugins, adapters, and security. |
+| `base-ui` | Build, review, migrate, or debug React UIs with Base UI 1.8 primitives. |
+| `better-auth` | TypeScript auth with better-auth 1.7, official plugins, adapters, and security. |
 | `brainstorm` | Explore ideas, plans, research, and codebase questions in a read-only session. |
-| `bullmq` | Build, review, debug, operate, or migrate BullMQ Redis job queues. |
-| `bun` | Bun runtime, package manager, test runner, bundler, bunfig, and Node compat. |
+| `bullmq` | Build, review, debug, operate, or migrate BullMQ 6 Redis/Postgres job queues. |
+| `bun` | Bun 1.4 runtime, package manager, test runner, bundler, bunfig, and Node compat. |
 | `clickhouse` | ClickHouse OLAP from TypeScript: @clickhouse/client, MergeTree, ingest, and Cloud. |
 | `clone-to-temp` | Manual-only: fetch repos and datasets into ignored `.temp/` for read-only inspection (never run or install). |
 | `compound-ui` | Build or refactor React UI into shadcn-style compound components. |
@@ -31,13 +31,13 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `elysia` | Build, review, debug, test, and deploy Elysia applications with current docs. |
 | `elysia-architecture` | Portable Elysia house style: feature modules, routes, schemas, and ownership. |
 | `evlog` | Build, review, debug, configure, or migrate evlog 2.29 wide-event TypeScript logging (CLI map, drains, AI/eve, telemetry). |
-| `feedsmith` | Feedsmith v3+ RSS/Atom/RDF/JSON Feed/OPML parse and generate for TypeScript. |
+| `feedsmith` | Feedsmith 3.0 RSS/Atom/RDF/JSON Feed/OPML parse and generate for TypeScript. |
 | `grok` | Cursor IDE only: always-on lock to Grok 4.6 (`cursor-grok-4.6-*`, any reasoning effort). Skip in Codex. |
 | `handoff` | Produce or consume agent-to-agent handoff context so another session can resume work. |
 | `heyapi` | Hey API (`@hey-api/openapi-ts`): OpenAPI → TypeScript SDKs, validators, Query plugins. |
 | `improve-prompt` | Rewrite rough requests into clear, proportional, actionable prompts without doing the work. |
 | `impit` | Apify Impit: browser-impersonating HTTP (TLS/HTTP fingerprints) for Node, Python, Rust. |
-| `intlayer` | Build, review, configure, or debug Intlayer 9.4 i18n in TanStack Start React apps. |
+| `intlayer` | Build, review, configure, or debug Intlayer 9.5 i18n in TanStack Start React apps. |
 | `is-bot` | Detect self-identifying crawlers/spiders from User-Agent with isbot v5 (`isBot`, custom lists). |
 | `jsdoc` | Purposeful JSDoc for complex or non-obvious TypeScript; no type-echo or narration. |
 | `kafka` | Apache Kafka from TypeScript: prefer @platformatic/kafka, topics, and delivery semantics. |
@@ -48,12 +48,12 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `mobbin` | Enforce Mobbin MCP for real shipped-app UI/UX inspiration before designing. |
 | `motion` | Motion for React (`motion/react`) plus product UI motion design, a11y, and performance. |
 | `nitro` | Nitro v3 servers: file routes, Vite plugin, cache/storage, and deploy-anywhere presets. |
-| `oxfmt` | Full Oxfmt usage guide plus setup, Prettier migration, and CI formatting. |
-| `oxlint` | Full Oxlint usage guide plus setup, rules/plugins, type-aware lint, and ESLint migration. |
-| `permix` | Type-safe Permix permissions: setup/check, SSR, React/Next, and server middleware. |
+| `oxfmt` | Full Oxfmt 0.68 usage guide plus setup, Prettier migration, and CI formatting. |
+| `oxlint` | Full Oxlint 1.83 usage guide plus setup, rules/plugins, type-aware lint, and ESLint migration. |
+| `permix` | Type-safe Permix 4.3 permissions: setup/check, SSR, React/Next/Nest, and server middleware. |
 | `plain-language` | Always-on ASD-STE100 hard prose (short, active, one word per idea) plus readable naming. |
-| `playwright` | Build, review, debug, configure, or plan Playwright E2E tests and browser automation. |
-| `react` | Build, review, debug, migrate, or plan React apps with current React docs. |
+| `playwright` | Build, review, debug, configure, or plan Playwright 1.63 E2E tests and browser automation. |
+| `react` | Build, review, debug, migrate, or plan React 19.3 apps with current React docs. |
 | `react-boundaries` | Enforce leaf-owned state/queries, no prop-drill hubs; TanStack-aware composition. |
 | `react-email` | Build, render, and send HTML emails with React Email (v6 components, CLI, editor). |
 | `reorganize` | Split oversized files and group related code into a coherent folder tree. |
@@ -71,7 +71,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `t3-env` | Type-safe env vars with T3 Env: createEnv, server/client split, Standard Schema, presets. |
 | `tailwind` | Build, review, debug, configure, or migrate Tailwind CSS projects. |
 | `tailwind-variants` | Build, review, debug, migrate, or plan Tailwind Variants class recipes. |
-| `takumi` | JSX/HTML to OG images & animations with takumi-js (no headless browser). |
+| `takumi` | JSX/HTML to OG images & animations with takumi-js 2.14 (no headless browser). |
 | `tanstack-charts` | Build, review, debug, migrate, or plan TanStack Charts visualizations. |
 | `tanstack-form` | Build, review, debug, migrate, or plan TanStack Form React forms. |
 | `tanstack-hotkeys` | Build, review, debug, migrate, or plan TanStack Hotkeys shortcut systems. |
@@ -90,10 +90,10 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `ultra-review` | Exhaustive code review of git changes (default) or a pointed target, with skill loading and research. |
 | `unsmell` | Find and fix maintainability problems across a codebase or scoped area. |
 | `visx` | Airbnb visx React+D3 visualization primitives, XYChart, and v3→v4 migration. |
-| `vite` | Vite 8 tooling: config, Rolldown/Oxc builds, plugins, SSR, and v7→v8 migration. |
-| `vitest` | Vitest 4 testing: config, mocks, coverage, browser mode, projects, and Jest/v3 migration. |
-| `vitest-architecture` | Portable Vitest house style: unit/integration projects, tests/ layout, and scripts. |
-| `zod` | Build, review, debug, migrate, or plan Zod v4 validation and schema code. |
+| `vite` | Vite 8.3 tooling: config, Rolldown/Oxc builds, plugins, SSR, and v7→v8 migration. |
+| `vitest` | Vitest 5 testing: config, mocks, coverage, browser mode, projects, and Jest/v4/v5 migration. |
+| `vitest-architecture` | Portable Vitest 5 house style: unit/integration projects, tests/ layout, and scripts. |
+| `zod` | Build, review, debug, migrate, or plan Zod 4.6 validation and schema code. |
 
 ## Install With skills.sh
 

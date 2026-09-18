@@ -13,7 +13,7 @@ disable-model-invocation: true
 
 # Vitest Architecture
 
-Portable testing house style for Vitest 4 in monorepos (and single packages).
+Portable testing house style for Vitest 5 in monorepos (and single packages).
 Use this skill alone — it does not depend on other skills.
 
 **Job:** where tests live, how projects/scripts are split, unit vs integration.
@@ -28,7 +28,7 @@ conflicts, **repo wins** unless the user asks to migrate toward this skill.
 
 | Piece | Default |
 | --- | --- |
-| Runner | Vitest 4 — never Bun’s `bun test` / `bun:test` |
+| Runner | Vitest 5 — never Bun’s `bun test` / `bun:test` |
 | Config | **Per workspace** `vitest.config.ts` + unit/integration projects (not a monorepo-root Vitest workspace) |
 | Layout | `tests/unit/**`, `tests/integration/**` |
 | Default gate | Unit only (`test` / `test:watch`) |

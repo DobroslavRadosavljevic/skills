@@ -4,7 +4,7 @@ Configuration resolution, CLI flags, suite/test APIs, environments, and setup.
 
 ## Config resolution
 
-1. Dedicated **`vitest.config.*`** → Vitest options apply; **Vite config is ignored**
+1. Dedicated **`vitest.config.*`** in the **current working directory** (not parent dirs) → Vitest options apply; **Vite config is ignored**
 2. Else `--config <path>`
 3. Else **`vite.config.*`** with `test: { … }`
 4. Or gate in Vite config via `process.env.VITEST` / mode `test`
@@ -30,17 +30,20 @@ If using Vite’s `defineConfig`, add:
 
 ### Defaults agents should know
 
-| Option | Default (v4) |
+| Option | Default (v5) |
 |---|---|
 | `include` | `**/*.{test,spec}.?(c|m)[jt]s?(x)` |
 | `environment` | `node` |
 | `globals` | `false` |
 | `pool` | `forks` |
 | `fileParallelism` | `true` |
-| `clearMocks` / `mockReset` / `restoreMocks` | `false` |
-| `exclude` | mainly `**/node_modules/**` + `**/.git/**` (simplified vs v3) |
+| `clearMocks` | **`true`** |
+| `mockReset` / `restoreMocks` | `false` |
+| `exclude` | mainly `**/node_modules/**` + `**/.git/**` |
+| `fsModuleCache` | `false` |
+| `sharedViteServer` | `true` (inline projects) |
 
-Prefer `test.dir` to scope discovery over huge exclude lists. v4 renamed `workspace` → **`projects`**.
+Prefer `test.dir` to scope discovery over huge exclude lists. `workspace` → **`projects`**. Inline projects default to **`extends: true`**.
 
 ## CLI
 
@@ -49,16 +52,18 @@ Prefer `test.dir` to scope discovery over huge exclude lists. v4 renamed `worksp
 | `vitest` | Watch in TTY; often `run` under CI/non-TTY |
 | `vitest run` | Single run (CI / agents) |
 | `vitest related <files>` | Tests covering files (static imports); add `--run` for hooks |
-| `vitest bench` | Benchmarks only (experimental) |
-| `vitest list` | List matching tests |
+| `vitest bench` | Benchmark files only (`*.bench.*` / `benchmark.include`) |
+| `vitest list` | List matching tests (**static parse** by default; `--no-static-parse` to execute) |
+| `vitest doctor` | Measure pool / isolate / vm / `fsModuleCache` / happy-dom alternatives |
 | `vitest init browser` | Scaffold browser setup |
 
 Useful flags:
 
 ```sh
--t / --testNamePattern
+-t / --testNamePattern          # matches "suite > test" full name
 -u / --update
 -c / --config
+-p / --project <name>           # repeatable; supports * and !exclusions
 --environment node|jsdom|happy-dom
 --globals
 --changed [since]
@@ -66,6 +71,7 @@ Useful flags:
 --reporter default|verbose|dot|json|junit|github-actions|agent|minimal|…
 --passWithNoTests
 --bail <n>
+--repeats <n>                   # run every test n extra times (flake hunt)
 --testTimeout / --hookTimeout
 --maxWorkers <n|%>
 --fileParallelism / --no-file-parallelism
@@ -73,10 +79,13 @@ Useful flags:
 --isolate / --no-isolate
 --allowOnly
 --typecheck / --typecheck.only
---project <name>          # repeatable
 --shard=1/3
 --browser[=chromium]
+--fsModuleCache / --clearCache
+--detectAsyncLeaks              # slow; debug only
 ```
+
+`--merge-reports` reads blobs from `.vitest/blob/` by default and supports non-sharded multi-environment runs.
 
 Docs: https://vitest.dev/guide/cli
 
@@ -113,23 +122,28 @@ describe('suite', () => {
 })
 ```
 
-### Options signature (v4)
+### Options signature
 
 ```ts
 it('name', { timeout: 10_000, retry: 2, tags: ['slow'] }, async () => {})
 // NOT: it('name', fn, { timeout })  — removed in v4
 ```
 
-Also: `test.extend` fixtures; `onTestFinished` / `onTestFailed`; `aroundEach` / `aroundAll` (4.1+).
+Opt out of inherited concurrency with `{ concurrent: false }` — **`test.sequential` / `describe.sequential` are removed**.
+
+Also: `test.extend` fixtures; `onTestFinished` / `onTestFailed`; `aroundEach` / `aroundAll`.
 
 ### Expect essentials
 
 - Equality: `toBe`, `toEqual`, `toStrictEqual`
-- Async: **always** `await expect(p).resolves…` / `.rejects…`
+- Async: **always** `await expect(p).resolves…` / `.rejects…` (unawaited **fails**)
 - Soft: `expect.soft`
-- Poll: `expect.poll`
+- Poll: `await expect.poll(async ({ signal }) => …, { timeout }).toBe(…)` — times out by **failing**; cancel with `AbortSignal`
 - Extend: `expect.extend`
 - Assertions count: `expect.assertions(n)`
+- Custom matcher types: `interface Matchers<R, T> { … }` (`R` = return, `T` = received). Do **not** augment only `jest.Matchers`.
+
+`toThrow('')` is a substring match (matches every message). Use `/^$/` for an empty message.
 
 Docs: https://vitest.dev/api/expect
 
@@ -137,6 +151,8 @@ Docs: https://vitest.dev/api/expect
 
 - **Files:** parallel via pool workers (`fileParallelism`, `maxWorkers`)
 - **Tests in a file:** sequential by default; `.concurrent` / `sequence.concurrent` for parallel within the same worker (helps I/O waits)
+
+`test.for` / `test.each` `$` placeholders no longer wrap strings in quotes; truncate with `taskTitleValueFormatTruncate` (default 40).
 
 ## Environments
 
@@ -156,7 +172,11 @@ test: {
 
 Browser Mode is separate (`test.browser`) — not an `environment` string.
 
+Assignments to `globalThis` / `window` in jsdom/happy-dom now update the **underlying window** (e.g. `innerWidth` can affect `matchMedia`).
+
 CSS/asset import errors from deps → `server.deps.inline: ['pkg']`.
+
+Custom environments: `populateGlobal` `originals` map holds **property descriptors** — restore with `Object.defineProperty`.
 
 ## setupFiles vs globalSetup
 
@@ -166,6 +186,8 @@ CSS/asset import errors from deps → `server.deps.inline: ['pkg']`.
 | Process | Same as tests | Main thread, isolated |
 | Vitest APIs | Yes | Limited — use `provide`/`inject` |
 | Teardown | afterEach/afterAll in files | Exported teardown / return fn |
+
+Root `globalSetup` is **not** inherited by inline projects (it already runs once). Non-root extended configs still inherit `globalSetup`.
 
 ## globals
 
@@ -195,12 +217,17 @@ test: {
   bail: 0,
   passWithNoTests: false,
   allowOnly: !process.env.CI,
-  clearMocks: false,
+  clearMocks: true, // v5 default
   mockReset: false,
   restoreMocks: false,
   unstubEnvs: false,
   unstubGlobals: false,
   sequence: { concurrent: false, hooks: 'stack' },
   css: false, // or true / options
+  fsModuleCache: false, // persist transforms across processes
+  injectCjsGlobals: true, // module/exports/require/__dirname in ESM
+  detectAsyncLeaks: false, // slow; debug leftover timers
 }
 ```
+
+`experimental.diagnostics` (default on) prints pool/isolate/`fsModuleCache` hints after a run. Disable with `experimental: { diagnostics: false }` if the noise is unwanted. Measure instead of guessing: `vitest doctor`.

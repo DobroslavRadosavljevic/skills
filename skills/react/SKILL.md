@@ -1,11 +1,13 @@
 ---
 name: react
-description: Build, review, debug, migrate, or plan React applications and components using current React documentation. Use for React, React DOM, hooks, JSX, Server Components, Server Functions, Actions/forms, React Compiler, hydration, rendering roots, React 19 upgrades, or questions about modern React patterns and best practices.
+description: Build, review, debug, migrate, or plan React applications and components using current React documentation. Use for React, React DOM, hooks, JSX, Server Components, Server Functions, Actions/forms, React Compiler, hydration, rendering roots, React 19/19.3 upgrades, View Transitions, Fragment refs, browser-only rendering, Trusted Types, or questions about modern React patterns and best practices.
 ---
 
 # React
 
 Use this skill to make React choices from current docs plus the local app's actual version, framework, and conventions.
+
+Snapshot: `react@19.3.0` / `react-dom@19.3.0` (2026-09-18). Refresh from [source-map.md](references/source-map.md) if versions differ.
 
 ## Workflow
 
@@ -18,12 +20,12 @@ Use this skill to make React choices from current docs plus the local app's actu
    - Use [source-map.md](references/source-map.md) for the captured latest-version snapshot and official source links.
 3. Load the focused reference file for the task:
    - [core-react.md](references/core-react.md): component design, JSX, state, effects, hooks, purity, performance, and testing judgment.
-   - [react-19.md](references/react-19.md): React 19/19.2 APIs, upgrades, Actions, forms, Server Components, Server Functions, Compiler, and release-channel caveats.
-   - [react-dom.md](references/react-dom.md): `createRoot`, `hydrateRoot`, DOM forms, hydration, server/static rendering, resources, and escape hatches.
+   - [react-19.md](references/react-19.md): React 19–19.3 APIs, upgrades, Actions, forms, Server Components, Server Functions, Compiler, View Transitions, Fragment refs, and release-channel caveats.
+   - [react-dom.md](references/react-dom.md): `createRoot`, `hydrateRoot`, `browser()`, DOM forms, hydration, server/static rendering, Trusted Types, resources, and escape hatches.
 4. Implement in the existing project style:
    - Prefer framework primitives over direct React DOM APIs when the framework owns routing, data fetching, SSR, RSC, or hydration.
    - Preserve local component boundaries, accessibility conventions, tests, and styling patterns.
-   - Avoid introducing React 19.2-only or canary-only APIs unless the app's dependencies support them.
+   - Avoid introducing React 19.3-only or canary-only APIs unless the app's dependencies support them.
 5. Verify the smallest meaningful surface:
    - Run the project's relevant typecheck, lint, test, build, story, or browser verification command.
    - For visible UI changes, inspect the real screen state when feasible.
@@ -37,5 +39,7 @@ Use this skill to make React choices from current docs plus the local app's actu
 - Keep Effect dependencies honest. Prove a value is non-reactive by moving it out of the component or into an Effect/Event boundary instead of suppressing the linter.
 - Put user-caused side effects in event handlers or Actions. Put render-caused external synchronization in Effects.
 - Prefer local state. Lift state only when multiple components need to coordinate. Use reducers for complex transitions and `useSyncExternalStore` for external stores.
+- On React 19.3 SSR, prefer `use(browser())` from `react-dom` over `typeof window` or a mounted-state Effect for Client Components that cannot produce matching HTML.
+- Treat `<ViewTransition>` as a Transition/Suspense animation boundary. Do not call the browser `startViewTransition` API for React-managed updates.
 - Treat Server Components, Server Functions, and React DOM server/static APIs as framework integration territory unless the task is explicitly building framework infrastructure.
 - Treat canary and experimental docs as unavailable in stable apps unless the project explicitly uses those channels.

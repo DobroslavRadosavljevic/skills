@@ -1,5 +1,7 @@
 # Base UI Component Patterns
 
+Anatomy and notes for `@base-ui/react@1.8.0`. Fetch the component `.md` page before relying on a prop that is not listed here.
+
 ## Table Of Contents
 
 - Overlays
@@ -35,35 +37,19 @@ import { Dialog } from '@base-ui/react/dialog';
 </Dialog.Root>
 ```
 
-Control with `open` and `onOpenChange` when opening from outside the trigger, closing after async submit, or coordinating route state.
+Control with `open` and `onOpenChange` when opening from outside the trigger, closing after async submit, or coordinating route state. `initialFocus` and `finalFocus` live on `Dialog.Popup`.
+
+Detached triggers: `const handle = Dialog.createHandle()` (optionally with a payload type), then pass `handle` to `Dialog.Trigger` and `Dialog.Root`. Imperative `open()` / `openWithPayload()` are ignored unless a root using that handle is mounted; remounting does not replay a prior open.
+
+From 1.8.0, outside-press ignores pointer downs that began before the dialog opened.
 
 ### Alert Dialog
 
-Use Alert Dialog when the user must explicitly confirm or cancel before continuing.
-
-```tsx
-import { AlertDialog } from '@base-ui/react/alert-dialog';
-
-<AlertDialog.Root>
-  <AlertDialog.Trigger />
-  <AlertDialog.Portal>
-    <AlertDialog.Backdrop />
-    <AlertDialog.Viewport>
-      <AlertDialog.Popup>
-        <AlertDialog.Title />
-        <AlertDialog.Description />
-        <AlertDialog.Close />
-      </AlertDialog.Popup>
-    </AlertDialog.Viewport>
-  </AlertDialog.Portal>
-</AlertDialog.Root>
-```
-
-When opening from a menu item, control the dialog state and set it from the menu item's handler.
+Use Alert Dialog when the user must explicitly confirm or cancel before continuing. Anatomy matches Dialog (`Trigger`, `Portal`, `Backdrop`, `Viewport`, `Popup`, `Title`, `Description`, `Close`). When opening from a menu item, control the dialog state and set it from the menu item's handler.
 
 ### Drawer
 
-Use Drawer for swipe-to-dismiss panels. The v1.6.0 docs call Drawer stable and include native swipe-performance fixes.
+Use Drawer for swipe-to-dismiss panels. Drawer is stable. It extends Dialog with gestures, snap points, and indent.
 
 ```tsx
 import { Drawer } from '@base-ui/react/drawer';
@@ -85,7 +71,11 @@ import { Drawer } from '@base-ui/react/drawer';
 </Drawer.Root>
 ```
 
-Style drawer movement with drawer CSS variables such as `--drawer-swipe-progress`, `--drawer-swipe-movement-x`, and `--drawer-swipe-strength` when using swipe gestures.
+Related parts (not extra packages): `Drawer.SwipeArea` for swipe-to-open, `Drawer.Provider` + `Drawer.Indent` + `Drawer.IndentBackground` for the indent effect, `Drawer.createHandle` for detached triggers.
+
+For bottom sheets with form fields, wrap the portal tree in `Drawer.VirtualKeyboardProvider`. It sets `--drawer-keyboard-inset` only while the keyboard is aligned — always write `var(--drawer-keyboard-inset, 0px)`. Keep header/footer outside the scroll body.
+
+Style swipe with `--drawer-swipe-progress`, `--drawer-swipe-movement-x` / `--drawer-swipe-movement-y`, and `--drawer-swipe-strength`. 1.8.0 ignores undirected swipes on snap points and respects canceled snap dismissal.
 
 ## Positioned Popups
 
@@ -111,7 +101,7 @@ import { Popover } from '@base-ui/react/popover';
 </Popover.Root>
 ```
 
-`Popover.Root` supports `modal={false}`, `modal={true}`, and `modal="trap-focus"`. For focus-trapped modal popovers, render `Popover.Close` inside `Popover.Popup`; it can be visually hidden if needed so touch screen readers have an escape path.
+`Popover.Root` supports `modal={false}`, `modal={true}`, and `modal="trap-focus"`. For focus-trapped modal popovers, render `Popover.Close` inside `Popover.Popup`; it can be visually hidden if needed so touch screen readers have an escape path. 1.8.0 mounts triggers faster and ignores outside presses that began before open.
 
 ### Tooltip
 
@@ -132,7 +122,7 @@ import { Tooltip } from '@base-ui/react/tooltip';
 </Tooltip.Provider>
 ```
 
-Use Tooltip for hints for sighted users, not required information. Keep keyboard focus and hover behavior intact.
+Use Tooltip for hints for sighted users, not required information. For a transient "Copied" message, use Toast (optionally anchored) so screen readers hear it. 1.8.0 respects a trigger delay even when the provider delay is `0`.
 
 ### Preview Card
 
@@ -148,6 +138,7 @@ import { Menu } from '@base-ui/react/menu';
 <Menu.Root>
   <Menu.Trigger />
   <Menu.Portal>
+    <Menu.Backdrop />
     <Menu.Positioner>
       <Menu.Popup>
         <Menu.Arrow />
@@ -156,24 +147,26 @@ import { Menu } from '@base-ui/react/menu';
         <Menu.Separator />
         <Menu.SubmenuRoot>
           <Menu.SubmenuTrigger />
-          <Menu.Portal>
-            <Menu.Positioner>
-              <Menu.Popup />
-            </Menu.Positioner>
-          </Menu.Portal>
         </Menu.SubmenuRoot>
         <Menu.Group>
           <Menu.GroupLabel />
         </Menu.Group>
-        <Menu.RadioGroup />
-        <Menu.CheckboxItem />
+        <Menu.RadioGroup>
+          <Menu.RadioItem>
+            <Menu.RadioItemIndicator />
+          </Menu.RadioItem>
+        </Menu.RadioGroup>
+        <Menu.CheckboxItem>
+          <Menu.CheckboxItemIndicator />
+        </Menu.CheckboxItem>
+        <Menu.Viewport />
       </Menu.Popup>
     </Menu.Positioner>
   </Menu.Portal>
 </Menu.Root>
 ```
 
-Use `Menu.LinkItem` or `render={<a />}` only when the item is truly navigation. Verify typeahead, arrow navigation, submenu hover delay, Escape propagation, and focus return.
+Use `Menu.LinkItem` or `render={<a />}` only when the item is truly navigation. `Menu.Viewport` supports content transitions. Verify typeahead, arrow navigation, submenu hover delay, Escape propagation, and focus return.
 
 ### Context Menu
 
@@ -183,7 +176,7 @@ Context Menu appears at the pointer on right click or long press. Its anatomy is
 
 Use Menubar for application command bars. Use Navigation Menu for website navigation with links and hover/focus panels.
 
-Navigation Menu uses `Root`, `List`, `Item`, `Trigger`, `Content`, `Portal`, `Positioner`, `Popup`, `Arrow`, `Viewport`, and `Link`. For framework routing, render `NavigationMenu.Link` through the framework link component while preserving Base UI props.
+Navigation Menu uses `Root`, `List`, `Item`, `Trigger`, `Content`, `Portal`, `Positioner`, `Popup`, `Arrow`, `Viewport`, and `Link`. For framework routing, render `NavigationMenu.Link` through the framework link component while preserving Base UI props. `keepMounted` is supported on Navigation Menu content. 1.8.0 keeps focus on the trigger when opening and exposes `data-disabled` on `NavigationMenu.Trigger`.
 
 ### Tabs
 
@@ -199,7 +192,7 @@ import { Tabs } from '@base-ui/react/tabs';
 </Tabs.Root>
 ```
 
-For tabs as links, use `Tabs.Tab nativeButton={false} render={<Link href="/overview" />}`. Verify panel focus, disabled tabs, missing active values, and `onValueChange` reasons when controlling state.
+`value` is required on `Tabs.Tab` and `Tabs.Panel`. For tabs as links, use `Tabs.Tab nativeButton={false} render={<Link href="/overview" />}`. Indicator positioning accounts for 3D transforms (1.8.0).
 
 ## Selection And Autocomplete
 
@@ -231,11 +224,11 @@ import { Select } from '@base-ui/react/select';
 </Select.Root>
 ```
 
-Use `Select.Label` for accessible naming. Verify form serialization, disabled items, typeahead, multiple mode, and `finalFocus` if relevant.
+Use `Select.Label` for accessible naming. 1.8.0 allows opening and browsing the popup while `readOnly`. Multiple selection highlights from the first selected item. Verify form serialization, disabled items, typeahead, and `finalFocus`.
 
 ### Combobox
 
-Use Combobox when users type into an input and select from predefined items.
+Use Combobox when users type into an input and must pick from predefined items (filterable Select). Use Autocomplete for freeform search. Use Select when there is no input.
 
 ```tsx
 import { Combobox } from '@base-ui/react/combobox';
@@ -244,15 +237,29 @@ import { Combobox } from '@base-ui/react/combobox';
   <Combobox.Label />
   <Combobox.InputGroup>
     <Combobox.Input />
-    <Combobox.Clear />
     <Combobox.Trigger />
+    <Combobox.Icon />
+    <Combobox.Clear />
+    <Combobox.Value />
+    <Combobox.Chips>
+      <Combobox.Chip>
+        <Combobox.ChipRemove />
+      </Combobox.Chip>
+    </Combobox.Chips>
   </Combobox.InputGroup>
   <Combobox.Portal>
+    <Combobox.Backdrop />
     <Combobox.Positioner>
       <Combobox.Popup>
+        <Combobox.Arrow />
+        <Combobox.Status />
         <Combobox.Empty />
         <Combobox.List>
-          {(item) => <Combobox.Item value={item} />}
+          {(item) => (
+            <Combobox.Item value={item}>
+              <Combobox.ItemIndicator />
+            </Combobox.Item>
+          )}
         </Combobox.List>
       </Combobox.Popup>
     </Combobox.Positioner>
@@ -260,11 +267,42 @@ import { Combobox } from '@base-ui/react/combobox';
 </Combobox.Root>
 ```
 
-The v1.6.0 docs mention an `open` requirement for the `inline` prop. Fetch exact docs before using `inline`.
+Also available: `Combobox.Row`, `Combobox.Group` / `Combobox.GroupLabel`, `Combobox.Separator`, `Combobox.Collection`, `Combobox.useFilter`, `Combobox.useFilteredItems`.
+
+**`createItems` (1.8.0):** when the app stores IDs, not objects, derive value/label once:
+
+```tsx
+const items = Combobox.createItems(users, {
+  getValue: (user) => user.id,
+  getLabel: (user) => user.name,
+});
+
+<Combobox.Root items={items}>
+  <Combobox.List>
+    {(user) => (
+      <Combobox.Item key={user.id} value={user.id}>
+        {user.name}
+      </Combobox.Item>
+    )}
+  </Combobox.List>
+</Combobox.Root>
+```
+
+Create static collections at module scope. Memoize on dynamic data. List render still receives source items; `value` / `onValueChange` receive derived IDs. Pass **source items** (not derived IDs) to `filteredItems`. Items must not be nullish and must not use an `items` array property (that shape is a group). Wrapper types: see [core-patterns.md](core-patterns.md).
+
+Rule of thumb: primitives for simple lists, object values when the selected record is app state, `createItems()` when selection is a stable ID. With object values and refetching rows, use `isItemEqualToValue` to compare IDs.
+
+**`inline`:** render the list without Combobox's popup. Always pass `open` (typically `true`) so the list is considered visible. In a Combobox-inside-Dialog composition, bind Combobox `open`/`onOpenChange` to the dialog so filter, highlight, and input reset when the dialog closes.
+
+**`multiple`:** render chips via `Combobox.Value` + `Combobox.Chips`. Supply `aria-label` / `aria-description` yourself. To keep the typed filter after a selection: when the input is outside the popup, `cancel()` an `item-press` close in `onOpenChange`; when the input is inside, `cancel()` `onInputValueChange` when `eventDetails.isItemPress`.
+
+Labeling: if `Combobox.Input` is the form control, use `Field.Label` or a native label. `Combobox.Label` labels `Combobox.Trigger` for the input-inside-popup pattern.
+
+1.8.0 also: `readOnly` still allows opening and browsing; `data-readonly` on `Trigger`; grid groups use `rowgroup`.
 
 ### Autocomplete
 
-Use Autocomplete when input text and suggestions are tightly linked, including freeform and structured item flows.
+Use Autocomplete when input text and suggestions are tightly linked, including freeform (`mode="both"`) and structured item flows. There is **no** `Autocomplete.createItems`.
 
 ```tsx
 import { Autocomplete } from '@base-ui/react/autocomplete';
@@ -273,12 +311,15 @@ import { Autocomplete } from '@base-ui/react/autocomplete';
   <Autocomplete.InputGroup>
     <Autocomplete.Input />
     <Autocomplete.Trigger />
+    <Autocomplete.Icon />
     <Autocomplete.Clear />
     <Autocomplete.Value />
   </Autocomplete.InputGroup>
   <Autocomplete.Portal>
+    <Autocomplete.Backdrop />
     <Autocomplete.Positioner>
       <Autocomplete.Popup>
+        <Autocomplete.Arrow />
         <Autocomplete.Status />
         <Autocomplete.Empty />
         <Autocomplete.List>
@@ -290,13 +331,11 @@ import { Autocomplete } from '@base-ui/react/autocomplete';
 </Autocomplete.Root>
 ```
 
-Use `itemToStringValue` when item values are objects. Verify grid mode arrow-key behavior when using rich rows.
+Also: `Autocomplete.Row`, `Group` / `GroupLabel`, `Separator`, `Collection`, `useFilter`, `useFilteredItems`. Use `itemToStringValue` when item values are objects. Verify grid-mode arrow keys. 1.8.0: `readOnly` can still open and browse; grid groups use `rowgroup`. Filtering respects `locale` (1.7.0).
 
 ## Forms And Controls
 
 ### Field, Fieldset, And Form
-
-Use Field for labels, descriptions, validation, and external form-library state. Use Fieldset for grouped controls and legends.
 
 ```tsx
 import { Field } from '@base-ui/react/field';
@@ -310,7 +349,7 @@ import { Field } from '@base-ui/react/field';
 </Field.Root>
 ```
 
-`Field.Root` props include `name`, `dirty`, `touched`, `disabled`, `invalid`, `validate`, and `actionsRef`. `name` on `Field.Root` takes precedence over `Field.Control` for submission.
+`Field.Item` wraps each checkbox/radio option inside a `Fieldset`. 1.8.0: Field syncs controlled value changes into field state, validates once on Enter inside a Form, and keeps custom validity ownership correct. See [core-patterns.md](core-patterns.md) for validation modes and RHF/Zod wiring.
 
 ### Checkbox
 
@@ -325,11 +364,11 @@ import { Checkbox } from '@base-ui/react/checkbox';
 </label>
 ```
 
-An enclosing native `label` is the simplest labeling pattern. With sibling `label htmlFor`, prefer `nativeButton render={<button />}` on `Checkbox.Root`.
+An enclosing native `label` or `Field.Label` is the simplest labeling pattern. Checkbox roots render a `span` with a hidden input, not a button. If a sibling `label htmlFor` is required, follow current checkbox docs for `nativeButton` + `render={<button />}`.
 
 ### Checkbox Group
 
-Use `CheckboxGroup` for shared value state across multiple checkboxes. Provide a group label with `aria-labelledby`, `Fieldset.Legend`, or equivalent accessible markup.
+Use `CheckboxGroup` for shared value state across multiple checkboxes. Provide a group label with `Fieldset.Legend` or `aria-labelledby`. Wrap each option in `Field.Item`.
 
 ### Radio
 
@@ -365,15 +404,28 @@ import { Slider } from '@base-ui/react/slider';
 </Slider.Root>
 ```
 
-For multiple thumbs, set `index` and `aria-label` per thumb.
+For multiple thumbs, set `index` and `aria-label` per thumb. Optional `Slider.Value` for the formatted readout. `thumbAlignment="edge"` is available for range thumbs.
 
 ### Number Field
 
-Use `NumberField.Root`, `NumberField.Group`, `NumberField.Input`, `NumberField.Increment`, and `NumberField.Decrement`. Check current docs for locale, formatting, snapping, and precision behavior.
+Use `NumberField.Root`, `NumberField.Group`, `NumberField.Input`, `NumberField.Increment`, `NumberField.Decrement`, and optionally `NumberField.ScrubArea` / `NumberField.ScrubAreaCursor`. Check current docs for `locale`, `format`, `snapOnStep`, `allowOutOfRange`, and `allowWheelScrub`. 1.8.0 stops press-and-hold when disabled, ignores horizontal-wheel scrub, and preserves selection on focus.
 
 ### OTP Field
 
-For current package versions, import `{ OTPField }` from `@base-ui/react/otp-field`. Verify exact anatomy from current docs before implementing because v1.6.0 included an import rename.
+Stable. Import `{ OTPField } from '@base-ui/react/otp-field'`.
+
+```tsx
+import { OTPField } from '@base-ui/react/otp-field';
+
+<OTPField.Root length={6} id="verification-code">
+  <OTPField.Input />
+  <OTPField.Input aria-label="Character 2 of 6" />
+  {/* remaining slots */}
+  <OTPField.Separator />
+</OTPField.Root>
+```
+
+`length` is required. First input uses the field `id`; later slots need `aria-label`. Use `normalizeValue` (idempotent) after `validationType` filtering — not the old `sanitizeValue` name. `validationType` defaults to `'numeric'`. `autoSubmit` submits the owning form when complete; 1.7.0 keeps focus on an invalid field when `autoSubmit` is blocked.
 
 ## Disclosure And Layout
 
@@ -392,7 +444,7 @@ import { Accordion } from '@base-ui/react/accordion';
 </Accordion.Root>
 ```
 
-Accordion panel height can be animated with `--accordion-panel-height` and `data-starting-style`/`data-ending-style`.
+Keyboard navigation follows APG. Animate panel height with `--accordion-panel-height` and `data-starting-style`/`data-ending-style`. `multiple` defaults to `false`.
 
 ### Collapsible
 
@@ -400,7 +452,7 @@ Use Collapsible for a single disclosure panel controlled by a button. Use Accord
 
 ### Scroll Area
 
-Scroll Area supplies a native scroll container with custom scrollbars. Under strict CSP, check whether scrollbar-hiding inline style elements require `CSPProvider` or external CSS.
+Scroll Area supplies a native scroll container with custom scrollbars. 1.7.0: `ScrollArea.Thumb` provides WebKit overscroll feedback. 1.8.0: scrollbars do not steal focus and are hidden from the accessibility tree. Under strict CSP, check whether scrollbar-hiding inline style elements require `CSPProvider` or external CSS.
 
 ## Feedback
 
@@ -417,6 +469,7 @@ import { Toast } from '@base-ui/react/toast';
           <Toast.Content>
             <Toast.Title />
             <Toast.Description />
+            <Toast.Action />
             <Toast.Close />
           </Toast.Content>
         </Toast.Root>
@@ -426,7 +479,36 @@ import { Toast } from '@base-ui/react/toast';
 </Toast.Provider>
 ```
 
-Use `Toast.useToastManager()` to add and read toasts. Style with toast CSS variables such as `--toast-index`, `--toast-height`, `--toast-offset-y`, and swipe movement variables.
+Use `Toast.useToastManager()` inside a provider for `toasts`, `add`, `update`, `close`, and `promise`. `Toast.createToastManager()` is the same manager outside React (no reactive `toasts` array); pass it into `Toast.Provider`.
+
+`add` with an existing `id` upserts in place and increments `toast.updateKey` (replay attention styles without remounting). Object `update` replaces listed fields, including `data` as a whole. From 1.8.0, pass a function to merge:
+
+```tsx
+toastManager.update(toastId, (prevToast) => ({
+  data: prevToast.data && { ...prevToast.data, progress: 100 },
+}));
+```
+
+`data` is `undefined` until set. Anchored toasts use `Toast.Positioner` / `Toast.Arrow` and `positionerProps` on add options. Style with `--toast-index`, `--toast-height`, `--toast-offset-y`, and swipe movement variables.
+
+### Avatar
+
+```tsx
+import { Avatar } from '@base-ui/react/avatar';
+
+<Avatar.Root>
+  <Avatar.Fallback>LT</Avatar.Fallback>
+  <Avatar.Image src="" />
+</Avatar.Root>
+```
+
+Default: preload `src`, then mount the image. That breaks `loading="lazy"` and optimizers that rewrite the URL. Pass `keepMounted` so the `<img>` (or `render={<Image ... />}`) is in the DOM immediately:
+
+```tsx
+<Avatar.Image keepMounted render={<Image src="/avatar.png" width={32} height={32} alt="" />} />
+```
+
+With `keepMounted`, stack Image after Fallback in the same positioned box. Hide loading/error with `visibility` (not `display: none`) via `data-loading` / `data-error` so lazy loading still intersects the viewport. `delay={0}` shows Fallback immediately (1.7.0).
 
 ### Progress And Meter
 
@@ -434,11 +516,16 @@ Use Progress for task completion status. Use Meter for bounded scalar measuremen
 
 ## Common Gotchas
 
-- Missing labels are still your bug; Base UI does not invent product copy.
+- Missing labels are still your bug; Base UI does not invent product copy. Chip/OTP slot descriptions are also app-owned.
 - Missing `ref` forwarding or prop spreading in a custom `render` component breaks accessibility and behavior.
 - Portal z-index fights usually mean the app root is not isolated.
 - Tailwind v4 examples copied into Tailwind v3 projects may silently fail.
 - Popup animations can unmount too early if `keepMounted`, controlled `open`, or detectable opacity animation is missing.
 - Rendering a button-like part as a link, or a link-like part as a button, can break keyboard and assistive tech semantics.
 - Event cancellation can keep an uncontrolled component open or unchanged; use it intentionally and test reason strings.
-- Pinned repos may lag current docs. Compare `package.json` and lockfile version before using newly documented props.
+- Combobox `createItems` is not Autocomplete. Passing a collection into a wrapper typed as `Combobox.Root.Props<Value, Multiple>` (two generics) fails on `defaultValue`.
+- `inline` Combobox without a controlled `open` is not considered visible.
+- `Avatar.Image` without `keepMounted` will not lazy-load or compose with `next/image`.
+- Toast object `update` replaces `data`; use the function form to merge.
+- Async Field `validate` does not block `onSubmit`. Neutral `valid: null` is expected while it runs.
+- Pinned repos may lag current docs. Compare `package.json` and lockfile version before using 1.7/1.8 APIs.

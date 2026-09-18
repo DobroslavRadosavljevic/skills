@@ -9,7 +9,7 @@ Coverage is **package-local**. Do not force 100% thresholds on every workspace.
 ## MUST
 
 1. Configure coverage on that package’s Vitest config (`provider: "v8"` or repo standard).
-2. Set explicit `coverage.include` (Vitest 4 does not use legacy `coverage.all` the same way).
+2. Set explicit `coverage.include` (Vitest 5 does not use legacy `coverage.all` the same way).
 3. Expose `test:coverage` (or `vitest run --coverage`) as an opt-in script unless CI already requires it.
 
 ## MUST NOT

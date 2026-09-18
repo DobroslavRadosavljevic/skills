@@ -30,29 +30,43 @@ Standalone `intlayerCompiler()` still exists for plugin order; with `intlayer()`
 
 ## Bundle optimization
 
-Master switch: `build.optimize` (default **true in production**).
+Master switch: `build.optimize` (default **`undefined` = production only**).
 
 | Knob | Default | Notes |
 | --- | --- | --- |
 | `dictionary.importMode` | `static` | See below. Ignored if optimize is off. |
-| `build.minify` | `false` | Shrink dictionaries. **Ignored if `editor.enabled`**. |
+| `build.minify` | `false` | Shrink dictionaries. Field-renaming skipped if `editor.enabled`. |
 | `build.purge` | `false` | Drop unused keys. Ignored if optimize is off. |
+| `build.chunkGrouping` | `true` | 9.5: one dynamic-locale request per code-split boundary instead of per dictionary. Client production; `importMode: "dynamic"` only. |
+| `build.dictionariesPreload` | `true` | 9.5: start the locale fetch at chunk evaluation (`import()` / hover preload) so readers often skip Suspense. Client only. Collections/variants stay on-demand. Not applied by Metro. |
 | `build.outputFormat` | `["cjs","esm"]` | Generated module shape |
 | `build.mode` | `auto` | `manual` ⇒ you run `intlayer build` |
+
+`intlayer()` registers these Vite plugins in production (do not add them by hand unless you own plugin order):
+
+| Plugin | Role |
+| --- | --- |
+| `intlayerOptimize` | Rewrite `useIntlayer('key')` → dictionary import |
+| `intlayerPrune` | Drop unused fields |
+| `intlayerMinify` | Shorten field names |
+| `intlayerChunk` | Group dynamic per-locale JSON by boundary (`chunkGrouping`) |
+| `intlayerPreload` | Kick the locale fetch with the consuming chunk (`dictionariesPreload`) |
 
 `importMode`:
 
 | Mode | Behaviour |
 | --- | --- |
 | `static` | Build-time static import (`useIntlayer` → `useDictionary`) |
-| `dynamic` | Dynamic import + Suspense (`useDictionaryDynamic`) |
+| `dynamic` | Dynamic import + Suspense (`useDictionaryDynamic`). 9.5 grouping/preload make this viable on Start without a request waterfall. |
 | `fetch` | Live/CMS fetch; falls back to `dynamic` |
 
 Requires `@intlayer/babel` / `@intlayer/swc` (wired by the Vite/Next plugins). **Dictionary keys in `useIntlayer("key")` must be static string literals** for the rewrite. Per-file `importMode` on a dictionary overrides the global default. `getIntlayer` / `getIntlayerAsync` / `useDictionary` are not rewritten by importMode; `getIntlayerAsync` has its **own** rewrite to per-locale chunks.
 
 Do not index content objects with runtime keys (`content.status[type]`). That marks the branch opaque for minify/purge. Use `select()` / `enu()` / `cond()` / `gender()` and call the node.
 
-## 9.4 `getIntlayerAsync` vs `getIntlayer`
+Purge tracks destructured fields (`const { title } = useIntlayer("app")`) more reliably than `const content = useIntlayer("app")` passed around opaquely. If the analyser cannot follow a binding, it keeps the full dictionary.
+
+## 9.4+ `getIntlayerAsync` vs `getIntlayer`
 
 | | `getIntlayer` | `getIntlayerAsync` |
 | --- | --- | --- |

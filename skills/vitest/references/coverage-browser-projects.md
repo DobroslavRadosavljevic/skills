@@ -27,7 +27,7 @@ export default defineConfig({
         functions: 80,
         branches: 70,
         statements: 80,
-        // perFile: true,
+        // perFile: true, // or { lines: 50, … }
         // 100: true,
       },
     },
@@ -37,10 +37,14 @@ export default defineConfig({
 
 | Provider | Package | Notes |
 |---|---|---|
-| `v8` | `@vitest/coverage-v8` | Default; AST remapping on by default in v4 |
-| `istanbul` | `@vitest/coverage-istanbul` | Instrument-based |
+| `v8` | `@vitest/coverage-v8` | Default; AST remapping |
+| `istanbul` | `@vitest/coverage-istanbul` | Instrument-based; `@vitest/istanbuljs` internals |
 
-v4 removals: `coverage.all`, `coverage.extensions`, `ignoreEmptyLines`, `experimentalAstAwareRemapping`. Default report is **files loaded by tests** unless `include` is set.
+`include` / `exclude` match paths **relative to the project root** (no picomatch `contains`). A pattern with no wildcard is a directory (`'src'` → `src/**`). Default report is **files loaded by tests** unless `include` is set.
+
+Glob-pattern thresholds do **not** inherit top-level `perFile` — set `perFile` on each glob. `thresholds.perFile` may be an object; `thresholds.autoUpdate` may be a `(new, previous) => number` function.
+
+`coverage.autoAttachSubprocess` (v8, default `false`) tracks `child_process` / `worker_threads` via `NODE_V8_COVERAGE` (I/O cost).
 
 Ignore hints need `@preserve` so transforms keep them:
 
@@ -74,6 +78,8 @@ export default defineConfig({
       }),
       instances: [{ browser: 'chromium' }], // firefox | webkit too
       headless: true,
+      locators: { exact: true, errorFormat: 'aria' }, // exact is default
+      traceView: false, // DOM snapshot replay in UI / HTML reporter
     },
   },
 })
@@ -91,14 +97,28 @@ test('ui', async () => {
 | Package | Role |
 |---|---|
 | `@vitest/browser-playwright` | Recommended provider |
-| `@vitest/browser-webdriverio` | WDIO |
 | `@vitest/browser-preview` | Local preview only — **not for CI** |
+| `@vitest/browser-webdriverio` | Community-maintained; npm lags core — prefer Playwright for new work |
 
-v4: provider is a **factory**, not a string; import page from **`vitest/browser`** (not `@vitest/browser/context`). `@vitest/browser` package is no longer required for typical setups.
+Provider is a **factory**, not a string; import page from **`vitest/browser`**. `@vitest/browser` is not required for typical setups (still used for `SerializedLocator` in custom commands). `browser.api` is gone — set top-level `api` (default port **63315**).
 
-CLI: `--browser=chromium`, `--browser.headless`. Without config `browser`, bare `--browser` fails (v3.2+).
+CLI: `--browser=chromium`, `--browser.headless`. Without config `browser`, bare `--browser` fails.
 
-Framework helpers (community/ecosystem): `vitest-browser-react`, `vitest-browser-vue`, etc. Prefer `userEvent` from `vitest/browser` when applicable.
+Locator defaults:
+
+- **`locators.exact: true`** — `getByText('Item')` does not match `Item 1`. Set `exact: false` to restore substring matching.
+- Locator errors can print the **ARIA tree** (`errorFormat: 'aria' | 'html' | 'all'`).
+- `toHaveTextContent` is **exact string equality** (no `RegExp`). Partial/regex → `toMatchTextContent`.
+- Custom commands receive `{ selector, locator }` (`SerializedLocator`), not a bare selector string.
+- `vitest-browser-vue` / `vitest-browser-svelte` `render` is **async** (`await render(…)`).
+
+`browser.traceView: true` records DOM snapshots for replay in browser UI, Vitest UI, and the HTML reporter (all providers). Playwright `.trace.zip` is a separate `browser.trace` path.
+
+Failure screenshots go under `.vitest/attachments/failure-screenshots/`. `toMatchScreenshot` references default to `__screenshots__` via `browser.expect.toMatchScreenshot.screenshotDirectory` (not `browser.screenshotDirectory`).
+
+Orchestrator URLs require `sessionId` — use the URL Vitest prints, not a bare `/__vitest_test__/`.
+
+Framework helpers: `vitest-browser-react`, `vitest-browser-vue`, `vitest-browser-svelte`. Prefer `userEvent` from `vitest/browser` when applicable.
 
 Docs: https://vitest.dev/guide/browser/
 
@@ -112,7 +132,7 @@ export default defineConfig({
   test: {
     projects: [
       {
-        extends: true, // inherit root plugins/pool
+        // extends: true is the default — inherits root plugins/pool
         test: {
           name: 'unit',
           include: ['**/*.unit.test.ts'],
@@ -136,10 +156,12 @@ export default defineConfig({
 })
 ```
 
-- `test.workspace` → **`test.projects`** (deprecated since 3.2, gone as primary API in v4 docs).
+- `test.workspace` → **`test.projects`**.
+- **Inline** projects inherit the declaring config (`extends: true`) and **share its Vite server** when they do not change Vite options (`sharedViteServer`, default on). Arrays like `setupFiles` **concat**. Set `extends: false` / `sharedViteServer: false` to opt out. Duplicate `extends: true` on an already-inheriting project can double plugins — drop the redundant flag.
+- **File/dir** projects do **not** inherit root options. If a referenced config declares `projects`, it becomes a **container** for nested projects named `app (unit)`, `app (e2e)`, … (v4 ignored nested `projects`). Do not `mergeConfig` the root (which has `projects`) into a leaf.
 - Root config is **not** automatically a project unless listed.
-- Root owns **coverage**, **reporters**, and other process-global options.
-- Filter: `vitest run --project unit` (repeatable).
+- Root owns **coverage**, **reporters**, `attachmentsDir`, `resolveSnapshotPath`.
+- Filter: `vitest run -p unit` (repeatable). `--project app` matches nested `app (unit)`. Supports `*` and `!exclude`.
 - Project files may use `defineProject` to reject root-only options.
 
 Docs: https://vitest.dev/guide/projects
@@ -162,16 +184,13 @@ test: {
 |---|---|
 | `forks` | Default; safest with native addons; `chdir` OK |
 | `threads` | Faster IPC; Prisma/bcrypt-style natives may crash |
-| `vmThreads` / `vmForks` | Faster isolation tradeoffs; ESM memory / Error global quirks |
+| `vmThreads` / `vmForks` | Faster isolation tradeoffs; `require(esm)` supported; ESM memory / Error global quirks |
 
-v4 pool rewrite:
-
-- `maxThreads` / `maxForks` → **`maxWorkers`**
-- `VITEST_MAX_THREADS` / `FORKS` → **`VITEST_MAX_WORKERS`**
-- `singleThread` / `singleFork` → `maxWorkers: 1` + often `isolate: false`
-- **`poolOptions` removed** — flatten to top-level options
+`VITEST_POOL_ID` / `VITEST_WORKER_ID` are **1-based** (v4 was 0-based). Node and browser pools do not share ids.
 
 `fileParallelism: false` effectively serializes files (`maxWorkers: 1`).
+
+`vitest doctor` measures alternative pool/isolate/vm/`fsModuleCache` configs against a passing baseline.
 
 Docs: https://vitest.dev/guide/parallelism
 
@@ -180,7 +199,17 @@ Docs: https://vitest.dev/guide/parallelism
 ```sh
 bun add -d @vitest/ui
 bunx vitest --ui
+# prints http://localhost:<port>/__vitest__/?token=...  — token is required
 ```
+
+Default artifact root: **`.vitest/`** (gitignore it).
+
+| Reporter | Default output (v5) |
+|---|---|
+| `html` | `.vitest/index.html` (`outputDir`; `singleFile: true` inlines assets) |
+| `json` | `.vitest/json/output.json` (no longer stdout; `{ stdout: true }` to pipe) |
+| `junit` | `.vitest/junit/output.xml` |
+| `blob` | `.vitest/blob/blob-*.json` |
 
 ```ts
 test: {
@@ -203,24 +232,33 @@ vitest run --shard=1/2 --reporter=blob --coverage
 vitest run --merge-reports --reporter=junit --coverage
 ```
 
-v4: `basic` reporter removed → `['default', { summary: false }]`.
+`basic` reporter remains `['default', { summary: false }]`. Duration output includes percentages (`environment 79%, import 13%, …`).
 
-## Benchmarks (experimental)
+## Benchmarks
+
+`bench` is a **test-context fixture**, not a top-level import. Only files matching `benchmark.include` (default `**/*.{bench,benchmark}.?(c|m)[jt]s?(x)`).
 
 ```ts
-import { bench, describe } from 'vitest'
+import { expect, test } from 'vitest'
 
-describe('sort', () => {
-  bench('native', () => {
-    ;[3, 1, 2].sort()
-  })
+test('sort', async ({ bench }) => {
+  const result = await bench.compare(
+    bench('native', () => {
+      ;[3, 1, 2].sort()
+    }),
+    bench('custom', () => customSort()),
+  )
+  expect(result.get('native')).toBeFasterThan(result.get('custom'))
 })
 ```
 
 ```sh
 bunx vitest bench
-bunx vitest bench --outputJson main.json
-bunx vitest bench --compare main.json
+# persist: writeResult option + bench.from() — not --outputJson / --compare
 ```
 
-Does **not** follow SemVer — treat as experimental. Config under `test.benchmark`.
+- `vitest` ignores bench files unless `benchmark.enabled: true`.
+- `vitest bench` runs only benchmarks (sequential; no file parallelism).
+- Removed: top-level `bench`, `bench.only/skip/todo`, `benchmark.reporters` / `outputFile` / `compare` / `outputJson`, `--compare`, `--outputJson`.
+- Use `test.skip` / `test.only` on the surrounding test; JSON reporter includes a `benchmarks` field.
+- Custom provider: `benchmark.provider` (advanced).

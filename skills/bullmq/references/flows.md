@@ -4,6 +4,8 @@
 
 Use `FlowProducer` when a parent must not become waitable until children finish successfully (or until configured failure policies resolve dependencies). Prefer a single processor with sequential steps only for tightly coupled local work. Prefer flows for cross-queue fan-out, aggregation, or deep dependency trees.
 
+`new FlowProducer(opts, backendFactory?)` — same `connection` / backend rules as Queue. `waitUntilReady()` is `Promise<void>`. `getBackend()` for datastore escape hatches.
+
 ## Add a Flow
 
 ```typescript
@@ -25,9 +27,12 @@ const tree = await flowProducer.add({
 Rules:
 
 - Parent and children may use different `queueName`s.
-- Add is atomic for the tree.
+- Add is atomic for the tree (`addBulk` is atomic across several trees).
 - Parent sits in `waiting-children` until children resolve, then moves to waiting/delayed/prioritized as appropriate.
-- Flow job `opts` omit `repeat`, `deduplication`, and `debounce` (and children also omit `parent`).
+- Nodes without `opts.jobId` get a **UUID** (v6; not Redis incremental ids). Custom `jobId` still must not contain `:`.
+- **Deduplication is not allowed on nodes with children** (runtime: `Deduplication options cannot be used on flow nodes with children`). Leaf nodes may use `deduplication`.
+- All flow job opts omit `repeat`. Nested children also omit `parent`.
+- `debounce` is gone from JobsOptions; do not set it on flow nodes.
 
 Provide per-queue defaults via the second argument when needed:
 
@@ -55,18 +60,16 @@ await flowProducer.add(
 import { Worker } from 'bullmq';
 
 const steps = new Worker('steps', async job => {
-  // ...
   return 250;
 }, { connection });
 
 const renovate = new Worker('renovate', async job => {
   const values = await job.getChildrenValues();
-  // values keyed by child job keys → return values
   return Object.values(values).reduce((a: number, b: number) => a + b, 0);
 }, { connection });
 ```
 
-Other useful APIs: dependency getters/counts on Job, flow tree inspection helpers from docs. Failed ignored children: `getIgnoredChildrenFailures()`.
+Useful APIs: `getDependencies` / `getDependenciesCount` (processed, unprocessed, failed, ignored), `getIgnoredChildrenFailures()`, `getFailedChildrenValues()`, `flowProducer.getFlow({ queueName, id, prefix?, depth?, maxChildren? })`.
 
 ## Serial Chains
 
@@ -97,7 +100,7 @@ Set these on the **child** `opts`. Default without them: parent stays blocked un
 | `failParentOnFailure: true` | Fail parent when this child fails (lazy until a worker processes the parent; often `UnrecoverableError`). Can recurse up the tree. |
 | `ignoreDependencyOnFailure: true` | Drop dependency on fail; parent may proceed; inspect via `getIgnoredChildrenFailures()`. |
 | `removeDependencyOnFailure: true` | Remove dependency on fail; parent proceeds when no pending children remain. |
-| `continueParentOnFailure: true` | Parent can activate on child fail without waiting for siblings (≥ 5.58). Pair with `removeUnprocessedChildren()` / `getFailedChildrenValues()` when compensating. |
+| `continueParentOnFailure: true` | Parent can activate on child fail without waiting for siblings. Pair with `removeUnprocessedChildren()` / `getFailedChildrenValues()` when compensating. |
 
 ```typescript
 children: [
@@ -118,7 +121,7 @@ children: [
 
 ## Runtime Children / Step Parents
 
-For saga-ish steps that spawn children mid-flight, persist step state with `job.updateData`, then `moveToWaitingChildren(token)` and throw `WaitingChildrenError` (does not burn `attemptsMade`). Pass the lock `token` into move helpers. See process-step-jobs in the source map.
+For saga-ish steps that spawn children mid-flight, persist step state with `job.updateData`, then `moveToWaitingChildren(token)` and throw `WaitingChildrenError` (does not burn `attemptsMade`). Always pass the lock `token` into move helpers.
 
 ## Removal Rules
 
@@ -134,4 +137,5 @@ When removing flow jobs:
 - Inspect parent state `waiting-children` when parents never run.
 - Confirm every child queue has workers.
 - Verify failure options on the **child** `opts`, not only the parent.
+- If add throws about deduplication, move `deduplication` to a leaf (or enqueue a follow-up job from the parent processor).
 - Keep trees shallow unless the product truly needs deep nesting — ops and failure reasoning grow with depth.

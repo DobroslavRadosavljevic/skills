@@ -10,6 +10,8 @@ import { createPermix } from 'permix'
 function createPermix<D extends Definition>(initialRules?: Rules<D>): Permix<D>
 ```
 
+Always pass the generic. Initial rules (optional) mark the instance ready immediately — same as calling `setup` right after create.
+
 ### Definition shapes
 
 ```ts
@@ -41,17 +43,21 @@ createPermix<['read', 'write']>()
 
 `ActionSpec`: `{ name: string; type?: unknown; required?: boolean }`.
 
+Without `type`, rule-callback data is `unknown`. With `type` only, `check` data is optional. With `required: true`, TypeScript requires the data argument.
+
 ### Helpers / types
 
 | Export | Role |
 |---|---|
-| `ValidateDefinition<T>` | Keep shared schema consistent |
+| `ValidateDefinition<T>` | Keep a shared schema consistent across server/client imports |
 | `Rules<D>` | Type of `setup` payload |
-| `createRules<D>(rules)` | Typed rules factory |
-| `MergePermix<A, B>` | Merge definition trees |
-| `DehydratedState<D>` | SSR JSON payload |
-| `permix.$inferPath` | `'post.create' \| …` (type-only) |
+| `createRules<D>(rules)` | Typed rules factory (returns the input) |
+| `MergePermix<A, B>` | Merge definition trees (or `Permix` instances). Same entity key: actions concatenate; branch wins over leaf list |
+| `DehydratedState<D>` | SSR JSON payload (all leaves `boolean`) |
+| `permix.$inferPath` | `'post.create' \| …` (type-only; `undefined` at runtime) |
 | `permix.$inferDefinition` | Definition type (type-only) |
+
+Also exported (advanced / adapters): `Action`, `ActionName`, `ActionSpec`, `Definition`, `CheckArgs`, `CheckContext`, `CheckerFn`, `DataAtPath`, `RulesPaths`, `SpecialPath`, `SpecialSymbol`, `createCheck`, `createCheckContext`, `createHooks`, `createTemplate`, `dehydrateRules`, `hydrateRules`, `callRuleWithoutData`.
 
 ## setup
 
@@ -65,7 +71,7 @@ permix.setup({
 ```
 
 - Replaces previous rules entirely.
-- Cover all actions from the definition.
+- Cover all actions from the definition (`false` to deny).
 - Boolean or `(data?) => boolean`.
 - With `type` + `required: true`: callback param non-optional; `check` requires data.
 - With `type` only: data optional — omit data → typically `false` for `post?.…` rules.
@@ -102,18 +108,18 @@ await permix.isReadyAsync()
 permix.check('post.read')
 ```
 
-Checking without data when the rule needs entity data → **`false`** (docs). Throws inside a rule during dehydrate/`~all` without data are treated as **`false`**.
+Checking without data when the rule needs entity data → **`false`** (docs). Throws inside a rule during dehydrate/`~all` without data are treated as **`false`** (`callRuleWithoutData`).
 
 ## template
 
-Reusable rule factories on the instance:
+Reusable rule factories. **Always call the returned function.**
 
 ```ts
 const admin = permix.template({
   post: { create: true, read: true, edit: true, delete: true },
 })
 
-const member = permix.template(p => ({
+const member = permix.template((p: { userId: string }) => ({
   post: {
     create: true,
     read: true,
@@ -122,12 +128,13 @@ const member = permix.template(p => ({
   },
 }))
 
-permix.setup(admin)
-// or
+permix.setup(admin())
 permix.setup(member({ userId: user.id }))
 ```
 
-Confirm exact `template` overloads against current docs when parameterizing.
+Static templates are zero-arg (`admin()`). Dynamic templates take a parameter. Standalone files can return `Rules<D>` instead of using `template`.
+
+Docs: https://permix.letstri.dev/docs/guide/template
 
 ## ReBAC (relationship-based)
 
@@ -178,17 +185,20 @@ permix.hook('check', ({ path, data }) => {})
 permix.hookOnce('ready', () => {})
 ```
 
-Callback-form `check` reports `path: null` in the check hook context.
+`hook` returns an unsubscribe function. Callback-form `check` reports `path: null` in the check hook context.
 
 ## Errors
 
 | Error | When |
 |---|---|
+| `PermixError` | Base class |
 | `PermixNotReadyError` | `check` / `dehydrate` with no rules (no setup, no initial rules) |
 | `PermixRuleNotDefinedError` | Path missing / deeper than rules (`error.path`) |
-| `PermixNotFoundError` | Server integration: instance missing from request context |
+| `PermixNotFoundError` | Server integration: instance missing from request context (`error.key`) |
+| `PermixForbiddenError` | Default denial from **`permix/tanstack-start` `checkMiddleware`** (message `"Forbidden."`) |
+| `PermixInvalidActionsError` | **`permix/drizzle`**: invalid `actions` option |
 
-v3 logged and returned `false` in several of these cases — v4 **throws**.
+v3 logged and returned `false` in several of these cases — v4 **throws**. HTTP adapters typically return 403 JSON instead of `PermixForbiddenError`; Nest throws `ForbiddenException`; tRPC/oRPC throw `TRPCError`/`ORPCError` with code `FORBIDDEN`.
 
 ## No reset API
 
@@ -196,7 +206,7 @@ There is no `reset()`. Call `setup` with a new full rules object, or create a ne
 
 ## Security model
 
-1. **Server** runs `setup` from trusted session/user and `check` (or middleware) before mutations.
+1. **Server** runs `setup` from trusted session/user and `check` (or middleware / `@Check`) before mutations.
 2. **Client** mirrors rules for UX (buttons, routes, `Check` components).
 3. Dehydrated state is visible/editable in the browser — never the authority.
 

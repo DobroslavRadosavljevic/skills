@@ -24,7 +24,9 @@ await queue.add(
 );
 ```
 
-Without backoff, retries run immediately. Retried jobs keep their priority when returning to waiting.
+Without backoff, retries run immediately. Retried jobs keep their priority when returning to waiting. `jitter` is 0..1.
+
+Custom backoff: `settings.backoffStrategy` on the Worker. Return `0` to requeue immediately; `-1` to fail without retry.
 
 ### Special errors
 
@@ -53,7 +55,10 @@ const shouldWait = await job.moveToWaitingChildren(token);
 if (shouldWait) throw new WaitingChildrenError();
 ```
 
-`RateLimitError`, `DelayedError`, and `WaitingChildrenError` do **not** increment `attemptsMade`. Use `attemptsStarted` / `maxStartedAttempts` when looping these paths. Always pass the lock `token` into `moveToDelayed` / `moveToWaitingChildren`.
+`Job#discard()` is **removed** — use `UnrecoverableError`. `RateLimitError`, `DelayedError`, and `WaitingChildrenError` do **not** increment `attemptsMade`. Use `attemptsStarted` / Worker `maxStartedAttempts` when looping these paths. Always pass the lock `token` into `moveToDelayed` / `moveToWaitingChildren`.
+
+`WaitingError` (`bullmq:movedToWait`) is thrown when a job is moved from active back to wait/prioritized.
+
 ## Delayed Jobs
 
 ```typescript
@@ -62,12 +67,14 @@ await queue.add('reminder', { userId }, { delay: 60_000 });
 
 ## Job Schedulers (Repeatable Jobs)
 
+Legacy `Queue.add(..., { repeat })`, `Repeat`, `getRepeatableJobs`, `removeRepeatable`, and `removeRepeatableByKey` are **removed in v6**. v6 errors if it finds leftover v5 repeatable metadata. Migrate on v5 first — see [production-ops-integrations.md](production-ops-integrations.md).
+
 Prefer `upsertJobScheduler` so redeploys update rather than duplicate schedules:
 
 ```typescript
 await queue.upsertJobScheduler(
   'daily-digest',
-  { pattern: '0 15 3 * * *' }, // cron
+  { pattern: '0 15 3 * * *', tz: 'UTC' },
   {
     name: 'digest',
     data: { type: 'daily' },
@@ -80,12 +87,13 @@ await queue.upsertJobScheduler('heartbeat', { every: 1000 });
 
 Notes:
 
-- Historically called “repeatable jobs”; the modern factory API is Job Scheduler. Prefer it over `queue.add(..., { repeat })` (legacy/deprecated path since ~5.16).
 - New jobs are produced when the previous scheduler job **starts** processing — backlog/low concurrency can stretch the effective interval.
 - While active, a scheduler keeps one associated job in `delayed`.
 - You cannot set a custom `jobId` on scheduler-produced jobs.
-- Deduplication is not available directly on scheduler template opts; add a follow-up job from the processor if needed.
-- `QueueScheduler` is **not** required on BullMQ 2.0+ and must not be added on 5.x. Some older rate-limit doc snippets still show it — ignore those.
+- Deduplication is not available on scheduler template opts; add a follow-up job from the processor if needed.
+- `repeat.utc` is gone. Use `{ tz: 'UTC' }` for UTC cron. `RepeatOptions` also dropped cron-parser `currentDate` / `nthDayOfWeek`.
+- Manage with `getJobSchedulers()`, `getJobScheduler(id)`, `getJobSchedulersCount()`, `removeJobScheduler(id)`.
+- `QueueScheduler` is not required on BullMQ 2.0+ and must not be added on 6.x. Ignore old rate-limit snippets that still import it.
 
 ## Rate Limiting
 
@@ -100,7 +108,17 @@ const worker = new Worker('painter', async job => paint(job), {
 
 Rate-limited jobs stay waiting. Group-key rate limiting was removed from OSS in 3.0+; group rate limits are **Pro**.
 
-Manual / external 429 handling:
+Queue-level cap (all workers; worker `limiter` cannot override it):
+
+```typescript
+await queue.setGlobalRateLimit(1, 1000);
+const { max, duration } = await queue.getGlobalRateLimit();
+await queue.removeGlobalRateLimit();
+```
+
+Same idea for concurrency: `setGlobalConcurrency(n)` / `getGlobalConcurrency()` / `removeGlobalConcurrency()`. Worker `concurrency` is a local max that cannot exceed the global cap.
+
+Manual / external 429 handling — use **`queue.rateLimit`** (`Worker#rateLimit` is deprecated):
 
 ```typescript
 const worker = new Worker(
@@ -120,23 +138,22 @@ Helpers: `queue.getRateLimitTtl(maxJobs)`, `queue.removeRateLimitKey()`.
 
 ## Deduplication
 
-Always set a stable `deduplication.id`. Modes:
+Always set a stable `deduplication.id`. The `debounce` option, `Job#debounceId`, and the `debounced` event are **removed**. Use `deduplication` and listen for `deduplicated`. Deprecated aliases `getDebounceJobId` / `removeDebounceKey` still exist — prefer `getDeduplicationJobId` / `removeDeduplicationKey`.
+
+Modes:
 
 | Mode | Options | Behavior |
 | --- | --- | --- |
 | Simple | `{ id }` | While job incomplete, same id is ignored |
 | Throttle | `{ id, ttl }` | Same id ignored until TTL expires |
 | Debounce | `{ id, ttl, extend: true, replace: true }` + `delay` | Latest data wins; TTL resets |
-| Keep last if active | `{ id, keepLastIfActive: true }` | While active, store latest; enqueue after completion |
+| Keep last if active | `{ id, keepLastIfActive: true }` | While active, store latest; enqueue after completion (`ttl` ignored) |
 
 ```typescript
-// Simple
 await queue.add('sync', data, { deduplication: { id: `user:${id}` } });
 
-// Throttle
 await queue.add('sync', data, { deduplication: { id: `user:${id}`, ttl: 5000 } });
 
-// Debounce
 await queue.add(
   'sync',
   data,
@@ -146,13 +163,14 @@ await queue.add(
   },
 );
 
-// Keep last while active (e.g. deploy latest commit)
 await queue.add('deploy', { commit }, {
   deduplication: { id: `deploy:${repo}`, keepLastIfActive: true },
 });
 ```
 
-Listen for `deduplicated` on `QueueEvents` when ignored adds matter. Combine modes carefully; verify against current docs when mixing with delay.
+`keepLastIfActive` guarantees at most 1 active + 1 waiting per id. Combining it with `delay` yields a continuous debounce window after the active job finishes.
+
+Listen for `deduplicated` on `QueueEvents` (`jobId` kept, `deduplicatedJobId` ignored/replaced, `deduplicationId`). Manual `job.remove()` disables dedupe. `await job.removeDeduplicationKey()` or `queue.removeDeduplicationKey(id)` to stop early.
 
 ## Choosing a Control
 
@@ -162,6 +180,7 @@ Listen for `deduplicated` on `QueueEvents` when ignored adds matter. Combine mod
 | Permanent failure | `UnrecoverableError` |
 | Run later once | `delay` |
 | Cron / interval factory | `upsertJobScheduler` |
-| Protect downstream QPS | worker `limiter` / `rateLimit` |
+| Protect downstream QPS | worker `limiter` / `queue.rateLimit` / `setGlobalRateLimit` |
+| Cap parallelism across workers | `setGlobalConcurrency` |
 | Collapse duplicate enqueues | `deduplication` mode matching product |
 | Multi-step wait | `DelayedError` + `moveToDelayed`, or flows |

@@ -8,9 +8,9 @@ Day-to-day Permix v4 workflow. Prefer this for adoption; use sibling references 
 bun add permix
 ```
 
-Requires **Node.js >= 22** (package `engines`). Core has **zero** runtime dependencies. Install framework peers only when importing their subpaths (React, Express, etc.).
+Requires **Node.js >= 22** (package `engines`). Core has **zero** runtime dependencies. Install framework peers only when importing their subpaths (React, Express, Nest, etc.).
 
-Target **`permix@^4`** (stable snapshot **4.1.2**). Do not use stale npm `beta`/`rc` 2.x tags.
+Target **`permix@^4`** (stable snapshot **4.3.0**). Do not use stale npm `beta`/`rc` 2.x tags.
 
 ## 2. Define permissions
 
@@ -68,7 +68,6 @@ permix.setup({
 Reusable factories:
 
 ```ts
-import { createRules } from 'permix'
 import type { Rules } from 'permix'
 
 export function rulesFor(user: User): Rules<typeof permix.$inferDefinition> {
@@ -83,7 +82,7 @@ export function rulesFor(user: User): Rules<typeof permix.$inferDefinition> {
 }
 ```
 
-Or `permix.template(...)` for static / param-based rule sets — see [core-api.md](core-api.md).
+Or `permix.template(...)` — **call** the result: `permix.setup(admin())`. See [core-api.md](core-api.md).
 
 ## 4. Check permissions
 
@@ -123,7 +122,7 @@ export function getRules(role: 'admin' | 'user'): Rules<PermissionsDefinition> {
 }
 ```
 
-- Server adapter: `createPermix` from `permix/express` (etc.) with the same definition.
+- Server adapter: `createPermix` from `permix/express` / `permix/nest` / `permix/next` (etc.) with the same definition.
 - Client: `createPermix` from `permix` + UI adapter.
 - Path union: `type Path = typeof permix.$inferPath`.
 
@@ -157,7 +156,7 @@ function EditButton({ post }) {
 
 Pass the **same** instance to provider, hook, and `createComponents`. Gate on `isReady` before `check` when rules may not exist yet.
 
-Vue / Solid / Svelte follow the same `Provider` + `usePermix` + `Check` shape — see [frameworks-ssr.md](frameworks-ssr.md).
+Vue / Solid / Svelte follow the same `Provider` + `usePermix` + `Check` shape — see [frameworks-ssr.md](frameworks-ssr.md). Svelte: do not destructure `isReady`. Solid: `isReady()` is an accessor.
 
 ## 7. SSR hydration
 
@@ -195,19 +194,23 @@ app.use(
 app.post('/posts', permix.checkMiddleware('post.create'), handler)
 app.put(
   '/posts/:id',
-  permix.checkMiddleware(c => c('post.update', /* load entity in handler or middleware */)),
+  permix.checkMiddleware(c => c('post.update')),
   handler,
 )
 ```
 
 Same pair — `setupMiddleware` + `checkMiddleware` — on Hono, Elysia, Fastify, Node, and `permix/server`. Default denial is typically **403**; customize with `createPermix({ onForbidden })`.
 
-Next.js App Router: `createPermix` from `permix/next` (per-request via `cache()`). TanStack Start: `permix/tanstack-start`. Details: [frameworks-ssr.md](frameworks-ssr.md), [server-integrations.md](server-integrations.md).
+- **Next.js App Router:** `createPermix` from `permix/next` (per-request via `cache()`).
+- **TanStack Start:** `permix/tanstack-start`. Use `createSetupHandler` when the setup callback imports server-only modules.
+- **NestJS:** `permix/nest` — `APP_GUARD` + `permix.guard(...)` then `@permix.Check('post.create')`.
+
+Details: [frameworks-ssr.md](frameworks-ssr.md), [server-integrations.md](server-integrations.md).
 
 ## 9. Progressive adoption
 
 1. **Shared definition + server `setup`/`check`** in one API layer.
-2. **Middleware** on mutating routes.
+2. **Middleware / Nest `@Check`** on mutating routes.
 3. **Client UI** with `Check` / `usePermix` for hide/disable.
 4. **SSR dehydrate/hydrate** if first paint needs permissions.
 5. Optional: Drizzle CRUD helpers (`permix/drizzle`), Effect layer (`permix/effect`).
@@ -233,7 +236,7 @@ expect(permix.check('post.edit', { authorId: '1' })).toBe(true)
 expect(permix.check('post.edit')).toBe(false)
 ```
 
-For HTTP adapters, assert status 200 vs 403 with the framework’s request helpers.
+For HTTP adapters, assert status 200 vs 403 with the framework’s request helpers. For Nest, assert `ForbiddenException` / 403 and `PermixNotFoundError` when `@Check` runs without `guard()`.
 
 ## 11. Troubleshooting
 
@@ -243,7 +246,10 @@ For HTTP adapters, assert status 200 vs 403 with the framework’s request helpe
 | Functions always deny after SSR | Re-`setup` on client — dehydrate collapses functions to `false` |
 | `PermixRuleNotDefinedError` | Path missing from `setup` rules / typo vs definition |
 | TS wants data on `check` | Action has `required: true` |
-| Concurrent requests share permissions | Use `permix/next` / middleware adapters — not a global mutable core instance |
+| Concurrent requests share permissions | Use `permix/next` / middleware adapters / Nest `guard` — not a global mutable core instance |
+| TanStack Start client bundle includes DB/auth | Wrap setup with `createMiddleware().server(permix.createSetupHandler(...))` |
+| Nest `@Check` with no guard | Throws `PermixNotFoundError` (fail-closed) — register `permix.guard` first |
+| `permix.setup(admin)` type/runtime surprise | Call the template: `permix.setup(admin())` |
 | Still using `check('post', 'edit')` | Migrate to v4 — [migration-v4.md](migration-v4.md) |
 
 ## 12. What not to do
@@ -252,4 +258,5 @@ For HTTP adapters, assert status 200 vs 403 with the framework’s request helpe
 - Do not skip client `setup` after `hydrate` when you use function rules.
 - Do not call `checkAsync` (removed).
 - Do not use a single core singleton for concurrent server requests.
+- Do not treat TanStack Start `beforeLoad` checks as enforcement.
 - Do not leave v3 definition / two-arg `check` / Better Auth plugin APIs in a v4 app.

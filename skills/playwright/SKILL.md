@@ -1,23 +1,25 @@
 ---
 name: playwright
-description: "Build, review, debug, configure, migrate, or plan Playwright browser automation and E2E tests with current docs. Use for @playwright/test, playwright, playwright.config, locators, getByRole, assertions, fixtures, Page Object Model, storageState auth, network mocking, HAR, traces, UI Mode, codegen, CI sharding, Docker, APIRequestContext, experimental component testing, accessibility, screenshots, visual comparisons, and Playwright MCP or CLI agent tooling."
+description: "Build, review, debug, configure, migrate, or plan Playwright browser automation and E2E tests with current docs. Use for @playwright/test, playwright, playwright.config, locators, getByRole, locator.visible, frameLocator, assertions, fixtures, Page Object Model, storageState auth, test locks, retryStrategy, network mocking, HAR, traces, UI Mode, codegen, CI sharding, Docker, APIRequestContext, stories/galleries component testing, accessibility, screenshots, visual comparisons, AbortSignal, and Playwright MCP or CLI agent tooling."
 ---
 
 # Playwright
 
-Use this skill when work touches Playwright Test, browser automation, E2E tests, locators, fixtures, auth setup, network mocking, traces, CI, API testing alongside UI, or agent browser tooling built on Playwright.
+Use this skill when work touches Playwright Test, browser automation, E2E tests, locators, fixtures, auth setup, network mocking, traces, CI, API testing alongside UI, component stories, or agent browser tooling built on Playwright.
+
+Snapshot: `@playwright/test@1.63.0` / `playwright@1.63.0` / `playwright-core@1.63.0` (2026-09-18). Refresh from [source-map.md](references/source-map.md) if versions differ.
 
 ## Workflow
 
 1. Inspect the local Playwright surface before changing code:
-   - Package versions for `@playwright/test`, `playwright`, optional `@playwright/browser-*`, experimental CT packages, and Node.
-   - Config: `playwright.config.ts` / `.js`, `testDir`, projects, `use` options, `webServer`, reporters, retries/workers.
-   - Test layout: specs, setup projects, fixtures, POM classes, `playwright/.auth`, snapshots, and CI workflows.
-   - Runtime intent: E2E UI, API-only, auth reuse, network mocks, visual/a11y checks, component tests, or agent-driven exploration.
+   - Package versions for `@playwright/test`, `playwright`, optional `@playwright/browser-*`, leftover `@playwright/experimental-ct-*`, Node, and Docker image tags.
+   - Config: `playwright.config.ts` / `.js`, `testDir`, projects, `use` options, `webServer`, reporters, retries/`retryStrategy`/workers.
+   - Test layout: specs, setup projects, fixtures, POM classes, `playwright/.auth`, snapshots, stories/galleries, and CI workflows.
+   - Runtime intent: E2E UI, API-only, auth reuse, network mocks, visual/a11y checks, component stories, or agent-driven exploration.
 2. Refresh docs when the user asks for latest/current behavior, versions are unclear, or the work touches CI, CT, or agent tooling. Start from [source-map.md](references/source-map.md).
 3. For install, Library vs Test, config, projects, `webServer`, and CLI, use [setup-core.md](references/setup-core.md).
 4. For locators, actions, auto-waiting, web-first assertions, and anti-patterns, use [locators-assertions.md](references/locators-assertions.md).
-5. For fixtures, POM, auth/`storageState`, parallelism, and network/HAR mocking, use [fixtures-auth-network.md](references/fixtures-auth-network.md).
+5. For fixtures, POM, auth/`storageState`, parallelism, test locks, and network/HAR mocking, use [fixtures-auth-network.md](references/fixtures-auth-network.md).
 6. For traces, UI Mode, debug, CI/sharding/Docker, API testing, CT, a11y/visuals, and agent tooling, use [debugging-ci-advanced.md](references/debugging-ci-advanced.md).
 7. Implement in the existing project style:
    - Prefer `@playwright/test` for E2E. Use the `playwright` library only for standalone scripts/automation without the Test Runner.
@@ -27,13 +29,16 @@ Use this skill when work touches Playwright Test, browser automation, E2E tests,
 ## Playwright Judgment
 
 - Prefer user-facing locators: `getByRole` first, then label/placeholder/text/alt/title, then `getByTestId`. Avoid CSS/XPath unless justified.
+- Prefer `locator.visible()` over the `:visible` CSS pseudo-class. Prefer a unique role/name over visibility filters when the contract allows.
+- Use `page.frameLocator()` without a selector only when the target may live in any iframe; the rest of the locator still must resolve inside a single frame.
 - Assert with web-first `await expect(...).toBeVisible()` (and siblings). Never `expect(await locator.isVisible()).toBe(true)`.
 - Trust auto-waiting. Do not ship `waitForTimeout` / sleep-based synchronization.
 - Keep tests isolated. Prefer setup-project `storageState` or worker-scoped accounts over shared mutable login in every test.
+- For a shared external resource, declare a named `lock` instead of serializing the whole file. In default/serial mode a lock on one test is held for the whole file.
 - Mock third-party or uncontrollable network at `context`/`page.route`; start `waitForResponse` before the triggering action.
 - Local debug path: UI Mode → Trace Viewer for CI failures → `--debug` / Inspector for step-through.
-- CI defaults: `forbidOnly`, retries, `trace: 'on-first-retry'`, `screenshot: 'only-on-failure'`, install with `--with-deps` or a version-matched Docker image, scale with shards not only workers.
-- Treat experimental CT (React/Vue) as optional and separate from E2E. Svelte CT package was removed.
+- CI defaults: `forbidOnly`, retries, `trace: 'on-first-retry'`, `screenshot: 'only-on-failure'`, install with `--with-deps` or a version-matched Docker image (`mcr.microsoft.com/playwright:v1.63.0-noble`), scale with shards not only workers.
+- Component tests use built-in `mount` against a story gallery served by the app's own dev server. Do not add `@playwright/experimental-ct-*` on 1.63+. Stay on 1.62 until those packages are migrated.
 - For coding agents writing tests in-repo, prefer Playwright CLI when available; use Playwright MCP for live exploratory browser loops. Do not confuse harness browser tools with `@playwright/mcp`.
 
 ## Verification

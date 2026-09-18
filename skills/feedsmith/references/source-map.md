@@ -1,58 +1,73 @@
 # Source Map
 
-Research snapshot: **2026-08-06**.
+Research snapshot: **2026-09-18**.
 
 ## Versions / dist-tags
 
 | Tag | Version (npm) | Notes |
 |---|---|---|
-| `latest` | **2.9.6** | Stable 2.x — **not** this skill’s target |
-| `rc` | **3.0.0-rc.3** | Prefer for v3 work right now |
+| `latest` | **3.0.0** | Stable 3.x — this skill’s target (published 2026-09-18) |
+| `rc` | **3.0.0-rc.3** | Historical prerelease; do not prefer over `latest` |
 | `beta` | **3.0.0-beta.5** | Older than rc |
 | `next` | **3.0.0-next.6** | Older prerelease line |
+| (untagged) | **2.9.6** | Last 2.x; contrast only |
 
-Install v3 explicitly until `latest` points at 3.x:
+Install:
 
 ```sh
-bun add feedsmith@rc
-# or: bun add feedsmith@beta
+bun add feedsmith
 ```
 
-GitHub may say `@beta` / `@next`; always re-check:
+`latest` is 3.0.0. Do **not** install `feedsmith@rc` / `@beta` / `@next` unless the user explicitly wants a prerelease.
+
+Package exports: main `feedsmith` only — **`feedsmith/types` removed**. Dual ESM/CJS. Docs claim Node.js 14+ and modern browsers.
 
 ```sh
+bun info feedsmith
 npm view feedsmith version dist-tags
 ```
 
-Package exports (v3): main `feedsmith` only — **`feedsmith/types` removed**.
-
 ## Canonical docs
 
-1. https://v3.feedsmith.dev/
-2. https://v3.feedsmith.dev/quick-start
-3. https://v3.feedsmith.dev/parsing/
-4. https://v3.feedsmith.dev/generating/
-5. https://v3.feedsmith.dev/reference/typescript
-6. https://v3.feedsmith.dev/migration/v2-to-v3
-7. https://github.com/macieklamberski/feedsmith
-8. Stable 2.x docs (contrast only): https://feedsmith.dev/
+v3 is now the main site. Canonical URLs are `https://feedsmith.dev/…` (canonical link + sitemap). `https://v3.feedsmith.dev/` still serves the same 3.0 site and canonicalizes to `feedsmith.dev`.
 
-Context7 library id: `/macieklamberski/feedsmith` (may lag prerelease — prefer v3 site).
+1. https://feedsmith.dev/
+2. https://feedsmith.dev/quick-start
+3. https://feedsmith.dev/parsing/
+4. https://feedsmith.dev/parsing/dates
+5. https://feedsmith.dev/parsing/detecting
+6. https://feedsmith.dev/parsing/errors
+7. https://feedsmith.dev/parsing/namespaces
+8. https://feedsmith.dev/generating/
+9. https://feedsmith.dev/generating/strict-mode
+10. https://feedsmith.dev/generating/styling
+11. https://feedsmith.dev/generating/errors
+12. https://feedsmith.dev/generating/examples
+13. https://feedsmith.dev/reference/typescript
+14. https://feedsmith.dev/migration/v2-to-v3
+15. https://github.com/macieklamberski/feedsmith
+16. 2.x contrast only: https://v2.feedsmith.dev/
+
+Context7 library id: `/macieklamberski/feedsmith` (lags: still shows `feedsmith@beta` and v2 `{ lenient: true }` generate). Prefer the site + GitHub `v3.0.0` tag.
 
 ## Refresh
 
 ```sh
 bun info feedsmith
-npm view feedsmith@rc version
-npm view feedsmith dist-tags
+npm view feedsmith version dist-tags
 ```
 
 ## Stale-doc traps
 
-- Installing bare `feedsmith` → **2.9.x** while writing v3 APIs.
-- Imports from `feedsmith/types` or type aliases that flatten `RssFeed` → wrong shape.
-- Context7 / blogs showing v2 `lenient: true`, flat Atom `title: string`, string RSS persons.
+- Installing `feedsmith@rc` / `@beta` / `@next` now that `latest` is 3.0.0.
+- Treating https://feedsmith.dev/ as 2.x — 2.x moved to https://v2.feedsmith.dev/.
+- Treating https://v3.feedsmith.dev/ as a separate prerelease site — it mirrors 3.0 and canonicalizes to feedsmith.dev.
+- Quick Start / parsing overview still showing `rssFeed.dc?.creator` (singular). Types are plural: `dc?.creators`.
+- TypeScript “complete example” using `itunes.category: [{ name }]` and string `duration`. Types: `itunes.categories: [{ text }]`, `duration?: number` (seconds).
+- Generating examples passing RSS `guid` as a string. Type is `{ value, isPermaLink? }`.
+- Context7 / blogs showing v2 `lenient: true`, flat Atom `title: string`, string RSS persons, `feedsmith/types`.
 - Treating detect helpers as validation — only heuristics; parse to confirm.
-- Assuming RDF generation exists (planned; parse only).
+- Assuming RDF generation exists (planned; parse only). `src/feeds/rdf/` has parse + detect, no generate.
 - Expecting dates as `Date` after parse without `parseDateFn`.
-- Migration snippets that still show `Rss` / `Atom` namespaces vs current `RssFeed` / `AtomFeed` — prefer [TypeScript](https://v3.feedsmith.dev/reference/typescript) + per-format reference pages.
+- Treating `generateJsonFeed` as returning an XML/JSON **string** — it returns a JSON Feed **object**.
+- Migration snippets that still show `Rss` / `Atom` namespaces vs current `RssFeed` / `AtomFeed` — deprecated aliases exist until 4.x; prefer the new names.

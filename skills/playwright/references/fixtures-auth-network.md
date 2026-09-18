@@ -48,6 +48,31 @@ Fixtures give on-demand setup, colocated teardown via `use()`, and reuse across 
 - Prefer isolation over `serial` mode.
 - `workerIndex` vs `parallelIndex`: use `parallelIndex` when mapping to unique accounts that must stay stable across worker restarts.
 - Worker-scoped fixtures (`{ scope: 'worker' }`) fit shared auth accounts or expensive bootstrapping.
+- Unique backend rows: derive ids from `testInfo.testId`. Unique files: `testInfo.outputPath(...)`.
+
+### Test locks
+
+When a few tests share an external resource that cannot be concurrent, declare a named lock. Tests with the same lock name never run at the same time across files, workers, and projects; everything else stays parallel.
+
+```ts
+test('update user settings', { lock: 'user-settings' }, async ({ page }) => {
+  // ...
+})
+
+test('reset the database', { lock: ['database', 'external-api'] }, async () => {
+  // runs only when every listed lock is free
+})
+
+test.describe('billing', { lock: 'billing-account' }, () => {
+  // every test in the group holds the lock
+})
+```
+
+Playwright acquires all locks before the test starts and releases them when it finishes.
+
+In default and serial modes, tests in a file run together in order, so a lock on **any** test is held for the **whole file**. Prefer `fullyParallel` (or parallel describes) when locks should be per-test.
+
+Prefer locks over `mode: 'serial'` when only the shared resource needs exclusion.
 
 ## Auth / `storageState`
 
@@ -89,6 +114,18 @@ projects: [
 ]
 ```
 
+UI Mode does not auto-run project dependencies. Re-run the setup spec when auth expires.
+
+### Storage-state extras
+
+`storageState()` persists cookies, localStorage, and (when opted in) IndexedDB, WebAuthn credentials, and OPFS. Session storage is **not** persisted.
+
+| Need | Option |
+| --- | --- |
+| IndexedDB auth (e.g. Firebase) | `storageState({ path, indexedDB: true })` |
+| Virtual passkeys | `storageState({ path, credentials: true })` after `context.credentials.create` / `install` |
+| Origin private file system | `storageState({ path, opfs: true })` |
+
 ### Other auth patterns
 
 | Situation | Approach |
@@ -97,9 +134,15 @@ projects: [
 | Server-side session conflicts | Worker-scoped fixture + unique account per `parallelIndex` |
 | Multiple roles | `test.use({ storageState: '…/admin.json' })` per file/`describe` |
 | Logged-out tests | `test.use({ storageState: { cookies: [], origins: [] } })` |
-| IndexedDB-heavy apps | `storageState({ path, indexedDB: true })` |
 
-Session storage is not persisted by Playwright's storage-state API.
+### Web Storage API
+
+For the current origin, `page.localStorage` / `page.sessionStorage` read and write storage without `evaluate`:
+
+```ts
+await page.localStorage.setItem('token', 'abc')
+const token = await page.localStorage.getItem('token')
+```
 
 ## Network mocking
 
@@ -126,6 +169,8 @@ const responsePromise = page.waitForResponse('**/api/checkout')
 await page.getByRole('button', { name: 'Pay' }).click()
 const response = await responsePromise
 ```
+
+`httpCredentials` on context/`use` may be a single object or an **array**; the first entry whose `origin` matches the request is used, and entries without `origin` match any request.
 
 ### HAR
 

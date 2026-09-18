@@ -17,27 +17,30 @@ const spy = vi.spyOn(obj, 'ping').mockReturnValue('spy')
 
 | API | Role |
 |---|---|
-| `vi.fn` | Mock function (v4: better `new` / constructor support) |
+| `vi.fn` | Mock function; class mocks keep the implementation prototype |
 | `vi.spyOn` | Spy on object method / export |
-| `vi.mock` / `vi.unmock` | **Hoisted** module mock |
-| `vi.doMock` / `vi.doUnmock` | Not hoisted — call anywhere |
-| `vi.hoisted(() => …)` | Values available to hoisted `vi.mock` factories |
+| `vi.mock` / `vi.unmock` | **Hoisted** module mock — **top-level only** (throws if nested) |
+| `vi.doMock` / `vi.doUnmock` | Not hoisted — call anywhere (`using` auto-unmocks) |
+| `vi.hoisted(() => …)` | Values available to hoisted `vi.mock` factories — top-level only |
+| `vi.when(spy)` | Per-argument `calledWith` / `thenReturn` / `thenResolve`… |
 | `vi.mocked` | Typed mock helper |
 | `vi.importActual` / `vi.importMock` | Original / auto-mocked module |
 | `vi.resetModules` | Clear module cache |
-| `vi.clearAllMocks` | Clear call history |
+| `vi.clearAllMocks` | Clear call history (also the `clearMocks` default) |
 | `vi.resetAllMocks` | Clear history + reset impl |
-| `vi.restoreAllMocks` | Restore **`spyOn`** spies (v4: not automocks) |
-| `vi.useFakeTimers` / `useRealTimers` | Fake timers |
-| `vi.setSystemTime` | Mock `Date` |
+| `vi.restoreAllMocks` | Restore **`spyOn`** spies (not automocks) |
+| `vi.useFakeTimers` / `useRealTimers` | Fake timers (`Temporal` included when present) |
+| `vi.setSystemTime` | Mock `Date` and `Temporal.Now` |
 | `vi.stubEnv` / `unstubAllEnvs` | `process.env` / `import.meta.env` |
 | `vi.stubGlobal` / `unstubAllGlobals` | Globals |
 
 Docs: https://vitest.dev/api/vi · https://vitest.dev/guide/mocking
 
+`clearMocks` defaults to **`true`**: history is wiped before each test; implementations stay. Tests that record calls in `beforeAll` / module scope must assert in that hook, move the call into the test, or set `clearMocks: false`.
+
 ## Module mocks and hoisting
 
-`vi.mock`, `vi.unmock`, and `vi.hoisted` are rewritten to the **top of the file**. Factories cannot close over ordinary locals.
+`vi.mock`, `vi.unmock`, and `vi.hoisted` are rewritten to the **top of the file**. Factories cannot close over ordinary locals. Nested calls **throw**.
 
 ```ts
 import { vi } from 'vitest'
@@ -59,12 +62,43 @@ Type-friendly form:
 vi.mock(import('./db.js'), () => ({ getUser: vi.fn() }))
 ```
 
+Keep the original implementation while tracking calls:
+
+```ts
+vi.mock('./calculator.ts', { spy: true })
+```
+
 Notes:
 
 - Prefer returning `{ default, named }` explicitly when replacing modules (Jest factories that return “default only” differ).
 - Internal calls inside the real module are **not** redirected by mocking its exports from the outside.
-- Do not nest `vi.mock` inside `describe` (warn now; **error in v5**).
-- Automocked getters often return `undefined` until configured (v4).
+- Automocked getters often return `undefined` until configured.
+- Browser automocks without a factory now return **stubs** (`undefined` by default), not the real implementation. Use `{ spy: true }` or a factory if a test relied on the old leak-through.
+- `using _ = vi.doMock('mod')` unmocks when the block exits (Explicit Resource Management).
+
+## `vi.when` (5.0)
+
+```ts
+const findById = vi.fn()
+
+vi.when(findById)
+  .calledWith(1)
+  .thenResolve({ id: 1, name: 'Ella' })
+  .calledWith(expect.any(Number))
+  .thenReject(new Error('not found'))
+
+await expect(findById(1)).resolves.toEqual({ id: 1, name: 'Ella' })
+```
+
+- Matchers: deep equality + `expect.any()` etc.
+- `thenReturn` / `thenThrow` / `thenResolve` / `thenReject` (+ `Once` / `{ times }`).
+- Unmatched calls: `onUnmatched: 'passthrough' | 'throw' | fn` (default passthrough).
+- `expect(whenChain).toHaveBeenExhausted()` when every registered behavior was consumed.
+- `using w = vi.when(spy)…` restores the original implementation on block exit.
+
+## Class mocks
+
+`vi.fn(Dog)` / `spyOn` class / `.mockImplementation(class …)` now chain `prototype` to the implementation. Instances keep methods and pass `instanceof Dog`. Arrow-function implementations still throw “is not a constructor”. `mockReset` reverts the chain.
 
 ## Timers
 
@@ -77,6 +111,8 @@ await vi.runAllTimersAsync()
 
 vi.useRealTimers()
 ```
+
+When `Temporal` exists (native or polyfill), fake timers and `setSystemTime` mock `Temporal.Now` as well. Keep it native with `toNotFake: ['Temporal']`.
 
 Configure defaults via `test.fakeTimers` when many suites need the same policy.
 
@@ -107,11 +143,13 @@ await expect(html).toMatchFileSnapshot('./out.html')
 |---|---|
 | `toMatchSnapshot` | File under `__snapshots__` |
 | `toMatchInlineSnapshot` | Rewrites source |
-| `toMatchFileSnapshot` | Raw file path (async) |
+| `toMatchFileSnapshot` | Raw file path (async — **must await**) |
 | `toMatchScreenshot` | Browser visual regression |
-| `toMatchAriaSnapshot` / inline | ARIA tree (experimental, 4.1.4+) |
+| `toMatchAriaSnapshot` / inline | ARIA tree |
 
 Update: `vitest -u` / watch key `u`. In CI (`CI` truthy), snapshots are not written — mismatches fail.
+
+Inspected values and `test.each` / `test.for` titles use **pretty-format**. String `$` placeholders are no longer quoted (`case a1`, not `case 'a1'`).
 
 ### Concurrent + snapshots
 
@@ -135,6 +173,6 @@ expect.addSnapshotSerializer({
 
 Or config: `snapshotSerializers: ['./serializer.ts']`, plus `snapshotFormat`, `resolveSnapshotPath` (root-only).
 
-v4: custom elements print **shadow root** by default (`printShadowRoot: false` to revert).
+Custom elements print **shadow root** by default (`printShadowRoot: false` to revert).
 
 Docs: https://vitest.dev/guide/snapshot

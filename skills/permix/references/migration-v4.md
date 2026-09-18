@@ -2,13 +2,15 @@
 
 Breaking changes and a practical checklist. Source: https://permix.letstri.dev/docs/migration-v3-to-v4 and [PR #35](https://github.com/letstri/permix/pull/35).
 
+4.2.0 / 4.3.0 are **additive** on top of v4 (NestJS adapter, TanStack Start `createSetupHandler`, hydration first-paint fixes). See [source-map.md](source-map.md).
+
 ## Install
 
 ```sh
 bun add permix@^4
 ```
 
-v4 is developed against modern TypeScript; upgrade TS if inference breaks. Ignore stale npm `beta`/`rc` **2.x** tags.
+v4 is developed against modern TypeScript (the library itself builds with TS 6); upgrade TS if inference breaks. Ignore stale npm `beta`/`rc` **2.x** tags.
 
 ## Quick reference
 
@@ -31,6 +33,8 @@ v4 is developed against modern TypeScript; upgrade TS if inference breaks. Ignor
 | `permix/better-auth` | **removed** — map roles to `setup()` manually |
 
 `setup`, `template`, `dehydrate`/`hydrate`, `hook`, `isReady` / `isReadyAsync` remain (types/semantics updated). Nested definition trees and flat tuples are **new** in v4.
+
+Call templates: `permix.setup(admin())`, not `permix.setup(admin)`.
 
 ## 1. Definitions
 
@@ -99,6 +103,8 @@ const { check, isReady } = usePermix(permix)
 if (!isReady) return <div>Loading permissions…</div>
 ```
 
+Svelte: do not destructure `isReady` (getter). Solid: call `isReady()`.
+
 ## 4. Hydration / ready
 
 Unchanged serialization: functions → `false` in JSON.
@@ -108,6 +114,8 @@ Unchanged serialization: functions → `false` in JSON.
 | `isReady()` | `false` until client `setup()` |
 | `check` on dehydrated booleans | works |
 | Function rules | need client `setup` |
+
+From 4.2.0, Vue/Solid/Svelte show hydrated booleans on **first paint**; Svelte `PermixHydrate` follows `state` prop changes.
 
 ## 5. Server / RPC
 
@@ -131,7 +139,9 @@ Remove `permix/better-auth`, `permixPlugin`, `permixClient`, and `createPermix<D
 
 ## 7. New optional subpaths
 
-`permix/next`, `permix/tanstack-start`, `permix/server`, `permix/svelte`, `permix/drizzle`, `permix/drizzle/legacy`, `permix/effect`.
+`permix/next`, `permix/tanstack-start`, `permix/server`, `permix/svelte`, `permix/drizzle`, `permix/drizzle/legacy`, `permix/effect`, **`permix/nest`** (4.3.0).
+
+TanStack Start 4.2.0+: if `setupMiddleware` pulls server-only imports into the client bundle, switch to `createMiddleware().server(permix.createSetupHandler(...))`.
 
 ## Checklist
 
@@ -142,12 +152,13 @@ Remove `permix/better-auth`, `permixPlugin`, `permixClient`, and `createPermix<D
 5. After hydrate, client `setup`; replace `hook('hydrate')`.
 6. tRPC/oRPC: `setupContext`, `onForbidden`, dot paths.
 7. Remove Better Auth plugin wiring.
-8. Run typecheck + tests; fix `PermixNotReadyError` / `PermixRuleNotDefinedError` call sites that previously relied on `false`.
+8. Call `template()` results (`admin()`).
+9. Run typecheck + tests; fix `PermixNotReadyError` / `PermixRuleNotDefinedError` call sites that previously relied on `false`.
 
 ## What stayed the same
 
 - Rules shape in `setup` (nested booleans / functions).
-- `template` for reusable sets.
+- `template` for reusable sets (now clearly a factory you **invoke**).
 - Dehydrate/hydrate for SSR (with ready caveats).
 - Events `setup` / `ready` / `check`.
 - Philosophy: type-safe, framework-agnostic, ReBAC via closures.

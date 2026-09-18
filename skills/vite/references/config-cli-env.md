@@ -1,6 +1,6 @@
 # Config, CLI, and Env
 
-Shared config, CLI flags, environment/modes, assets, CSS, HMR, and dep optimization.
+Shared config, CLI flags, environment/modes, assets, CSS, HMR, and dep optimization. Snapshot: `vite@8.3.0`.
 
 ## Config files
 
@@ -17,23 +17,56 @@ Config loaders: default `bundle` (Rolldown temp bundle). `runner` / `native` are
 |---|---|
 | `root` | Project root (default cwd) — where `index.html` lives |
 | `base` | Public base path (default `/`) |
+| `input` | App entries (8.2+). Default for `build.rolldownOptions.input`, `build.lib.entry`, `build.ssr` if `true`, and `optimizeDeps.entries`. Prefer this over build-only `rolldownOptions.input`. |
 | `publicDir` | Default `public`; `false` disables |
 | `cacheDir` | Default `node_modules/.vite` |
 | `plugins` | Arrays flattened; falsy skipped |
 | `resolve.alias` | Absolute FS paths for filesystem aliases |
-| `resolve.tsconfigPaths` | Default **`false`** in Vite 8 — opt in for `paths` |
+| `resolve.tsconfigPaths` | Default **`false`**. Opt in for `compilerOptions.paths`. Not experimental. Does not apply inside `.less`. |
 | `resolve.dedupe` | Force single instance of a package |
-| `define` | Compile-time replacements (JSON-serializable / identifiers) via Oxc |
+| `define` | Compile-time replacements (JSON-serializable / identifiers) via **Oxc** |
 | `oxc` | Preferred transform options (JSX, include/exclude); `false` disables |
 | `esbuild` | **Deprecated** — converted to `oxc` |
-| `css.modules` / `postcss` / `preprocessorOptions` | CSS pipeline |
+| `css.modules` / `postcss` / `preprocessorOptions` | CSS pipeline (PostCSS transformer) |
 | `css.transformer` | `'postcss'` (default) \| `'lightningcss'` (**experimental**) |
+| `css.lightningcss` | Lightning CSS options (used for minify always; for transform when opted in) |
 | `envDir` / `envPrefix` | Env file directory / client prefix (default `VITE_`); empty prefix errors |
 | `appType` | `'spa'` \| `'mpa'` \| `'custom'` |
 | `assetsInclude` | Extra static asset patterns |
+| `html.cspNonce` / `html.additionalAssetSources` | CSP nonce; extra HTML asset attrs (8.1) |
+| `devtools` | **Experimental**. Enable Vite DevTools (8.3+ for full dev-server integration). Set in **user** config only. |
+| `tsconfig` | 8.3. Path to one tsconfig. **Discouraged** — overrides per-file discovery. |
 | `future` | Opt into upcoming breaks |
 
 Docs: https://vite.dev/config/shared-options
+
+### `oxc`
+
+```ts
+export default defineConfig({
+  oxc: {
+    jsx: { runtime: 'automatic', importSource: 'preact' },
+    // jsxInject: `import React from 'react'`,
+  },
+})
+```
+
+Default: transform `ts` / `jsx` / `tsx`. Customize with `oxc.include` / `oxc.exclude`.
+
+### DevTools
+
+```ts
+export default defineConfig({
+  devtools: true,
+  // or: { apply: 'serve' } | { apply: 'build' }
+})
+```
+
+Install `@vitejs/devtools` (and `@vitejs/devtools-vite` / `@vitejs/devtools-rolldown` as needed). Default `apply` is both serve and build.
+
+### `tsconfig` (8.3)
+
+Use only when automatic discovery cannot find the intended config. Prefer a nearby `tsconfig.json` + TypeScript `references`. For import remaps, prefer `resolve.alias` or package.json `imports` / `exports`.
 
 ## Server options
 
@@ -44,7 +77,7 @@ export default defineConfig({
     port: 5173,
     strictPort: true,
     open: true,
-    cors: true,
+    cors: true, // prefer an explicit origin list in real apps
     proxy: {
       '/api': {
         target: 'http://localhost:3000',
@@ -55,12 +88,24 @@ export default defineConfig({
     },
     warmup: { clientFiles: ['./src/main.tsx'] },
     middlewareMode: true, // or { server: parentHttpServer }
-    // forwardConsole: useful for agents (browser → terminal)
+    ws: { /* protocol, host, port, path, clientPort, timeout, server */ },
+    watch: {
+      // chokidar options; with bundled-dev also Rolldown watch options
+      // (usePolling, pollInterval, include, exclude, …)
+    },
+    forwardConsole: true, // auto-on when a coding agent is detected
   },
 })
 ```
 
-Proxied requests are **not** Vite-transformed. Docs: https://vite.dev/config/server-options
+- Proxied requests are **not** Vite-transformed.
+- WebSocket / HMR connection: **`server.ws`**. `server.hmr` remains for `overlay` (and `false` to disable HMR). `server.hmr.{protocol,host,port,…}` are **deprecated** (synced for now).
+- `server.forwardConsole`: browser errors/logs → terminal. Default auto when `@vercel/detect-agent` sees a coding agent.
+- `server.watch`: chokidar. In bundled-dev, also accepts Rolldown watch options (8.3).
+- `server.cors` default allows localhost / 127.0.0.1 / ::1 — do not set `true` casually.
+- `server.allowedHosts` default `[]` (localhost and IPs still allowed). Never `true` without understanding DNS rebinding.
+
+Docs: https://vite.dev/config/server-options
 
 ## CLI
 
@@ -71,9 +116,9 @@ Proxied requests are **not** Vite-transformed. Docs: https://vite.dev/config/ser
 | `vite preview` | Local preview of `dist` (not prod hosting) |
 | `vite optimize` | **Deprecated** |
 
-Useful flags: `--host`, `--port`, `--open`, `--force`, `-c/--config`, `--base`, `-m/--mode`, `--profile`, `-d/--debug`.
+Useful flags: `--host`, `--port`, `--open`, `--force`, `-c/--config`, `--base`, `-m/--mode`, `--profile [name]` (8.3; writes `<name>.cpuprofile`), `-d/--debug`, `--experimental-bundle` (bundled Dev Mode).
 
-Build flags: `--outDir`, `--ssr [entry]`, `--sourcemap`, `--minify` (default `oxc`), `--manifest`, `--ssrManifest`, `-w/--watch`, `--app` (**experimental**).
+Build flags: `--outDir`, `--ssr [entry]`, `--sourcemap`, `--minify` (default `oxc`), `--manifest`, `--ssrManifest`, `-w/--watch`, `--app` (**experimental**, all environments).
 
 Docs: https://vite.dev/guide/cli
 
@@ -110,11 +155,14 @@ Docs: https://vite.dev/guide/env-and-mode
 Framework plugins handle most HMR. Custom: https://vite.dev/guide/api-hmr  
 `import.meta.hot.accept` must receive **ids**, not URLs (Vite 8).
 
+Plugin HMR / WS send: `server.ws.send` (not the deprecated `server.hmr` socket fields).
+
 ### Glob import
 
 ```ts
 const modules = import.meta.glob('./dir/*.ts')
 const eager = import.meta.glob('./dir/*.ts', { eager: true })
+const ci = import.meta.glob('./dir/module*.js', { caseSensitive: false })
 ```
 
 Patterns must be **string literals**.
@@ -131,6 +179,8 @@ Patterns must be **string literals**.
 
 `new URL('./asset.png', import.meta.url)` works in client builds; **not SSR-safe**.
 
+Plugin-emitted files: JS `import.meta.ROLLDOWN_FILE_URL_<referenceId>`; CSS/HTML `__VITE_ASSET__<referenceId>__`.
+
 ### Workers
 
 Prefer:
@@ -139,9 +189,15 @@ Prefer:
 new Worker(new URL('./worker.js', import.meta.url), { type: 'module' })
 ```
 
+Search params on worker URLs are preserved (8.3). Unreferenced worker chunks are dropped.
+
 ### WASM
 
-ESM import or `?init`. Vite 8: `?init` works in SSR on Node-compatible runtimes.
+Direct ESM import (`import { add } from './add.wasm'`) or `?init`. Direct import is an async module (needs TLA). Vite 8: both work in SSR on Node-compatible runtimes.
+
+### JSON
+
+Default import plus named imports (`json.namedExports` default `true`). Vite 8.3 **warns** on named imports from JSON modules — prefer default import unless tree-shaking a root field is intentional.
 
 ## Dependency pre-bundling
 

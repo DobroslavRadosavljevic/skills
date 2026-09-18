@@ -5,7 +5,7 @@ End-to-end guide for installing, configuring, running, and adopting Oxlint day t
 Companion docs in this skill:
 
 - [setup-cli-config.md](setup-cli-config.md) — flags, config schema, nested configs, ignores
-- [rules-plugins-typeaware.md](rules-plugins-typeaware.md) — categories, plugins, type-aware
+- [rules-plugins-typeaware.md](rules-plugins-typeaware.md) — categories, plugins, React Compiler, JS plugins, type-aware
 - [eslint-ci-editors.md](eslint-ci-editors.md) — ESLint migrate/coexist, editors, CI
 
 Official quickstart: https://oxc.rs/docs/guide/usage/linter/quickstart.html
@@ -97,9 +97,11 @@ Optional: `bunx oxlint --deny-warnings` when warnings must fail the job.
 | Fail on warnings | `bunx oxlint --deny-warnings` |
 | Cap warnings | `bunx oxlint --max-warnings 0` |
 | Quiet (errors only) | `bunx oxlint --quiet` |
+| Silent (no diagnostics) | `bunx oxlint --silent` |
 | List rules | `bunx oxlint --rules` |
 | Print resolved config | `bunx oxlint --print-config` |
 | Type-aware | `bunx oxlint --type-aware` |
+| Per-rule timings | `bunx oxlint --debug timings` |
 | GitHub annotations | `bunx oxlint -f github` |
 | Agent-friendly output | `bunx oxlint -f agent` |
 
@@ -109,7 +111,7 @@ Optional: `bunx oxlint --deny-warnings` when warnings must fail the job.
 2. `--fix-suggestions` — may change behavior; review diffs.
 3. `--fix-dangerously` — dangerous fixes + suggestions; use rarely and review every change.
 
-Always re-run lint after fixing:
+Flags combine (`--fix --fix-suggestions`). Always re-run lint after fixing:
 
 ```sh
 bunx oxlint --fix && bunx oxlint
@@ -146,11 +148,13 @@ export default defineConfig({
     suspicious: "warn",
   },
   settings: {
-    react: { version: "detect" },
+    react: { version: "19.0.0" },
   },
   ignorePatterns: ["dist/**", "coverage/**"],
 });
 ```
+
+Enabling `react` with default `correctness` also turns on **experimental React Compiler recommended rules** (`react/immutability`, `react/purity`, …). That is intended if you are adopting the compiler. If not, turn the noisy `react/<id>` rules off — do not restore `react/react-compiler` (removed in 1.79).
 
 **Next.js:** add `"nextjs"` to `plugins` and set `settings.next.rootDir` in monorepos.
 
@@ -237,7 +241,7 @@ Rules of thumb:
 Typical loop for agents and humans:
 
 1. Run `bunx oxlint` (or `-f agent` for concise machine-oriented output).
-2. Group by rule id (e.g. `no-unused-vars`, `import/no-cycle`).
+2. Group by rule id (e.g. `no-unused-vars`, `import/no-cycle`, `react/immutability`).
 3. Prefer **fix code** over disable comments.
 4. Use `--fix` when the rule offers a safe fix.
 5. If a violation is intentional and local, suppress the smallest scope:
@@ -255,9 +259,10 @@ console.log("done");
 | Situation | Prefer |
 | --- | --- |
 | One-off exception | Inline `oxlint-disable-next-line` |
-| Whole test folder | `overrides` for that glob |
+| Whole test folder | `overrides` for that glob (`excludeFiles` if a subset should skip the override) |
 | Rule too noisy project-wide | Downgrade to `warn` or `"off"` with a comment in config PR |
 | Missing framework coverage | Enable the right plugin (don’t invent disable spam) |
+| React Compiler rules after enabling `react` | Keep if adopting the compiler; otherwise disable specific `react/*` ids |
 
 ---
 
@@ -285,7 +290,7 @@ export default defineConfig({
 
 (`!` negation works with gitignore-style patterns — use carefully.)
 
-Also respected: `.gitignore`, and `.eslintignore` during migration. Prefer consolidating into `ignorePatterns`.
+Also respected: `.gitignore` for directory walks (explicit file paths still lint), and `.eslintignore` during migration. Prefer consolidating into `ignorePatterns`.
 
 ---
 
@@ -388,7 +393,7 @@ export default defineConfig({
     suspicious: "warn",
   },
   options: { typeAware: true },
-  settings: { react: { version: "detect" } },
+  settings: { react: { version: "19.0.0" } },
   ignorePatterns: ["dist/**", "coverage/**"],
   overrides: [
     {
@@ -400,11 +405,21 @@ export default defineConfig({
 });
 ```
 
-(Requires `oxlint-tsgolint` when `typeAware` is true.)
+(Requires `oxlint-tsgolint` when `typeAware` is true. Expect experimental React Compiler correctness rules from the `react` plugin.)
 
 ---
 
-## 10. Troubleshooting
+## 10. Upgrading from 1.76.x
+
+1. Bump `oxlint` and `eslint-plugin-oxlint` together to **1.83.x**. Bump `@oxlint/migrate` to the same minor if you use it.
+2. Bump `oxlint-tsgolint` to **7.0.2002** (still TypeScript 7.0.2).
+3. Search for `react/react-compiler` and remove it. Compiler coverage is now per-category `react/*` rules (1.79).
+4. Re-run `bunx oxlint` after enabling `react` — new compiler diagnostics are expected, not a misconfigured plugin list.
+5. If JS plugins load Vue rules, 1.81 fixed plugin/Vue interaction; duplicate `jsPlugins` names now error (1.77).
+
+---
+
+## 11. Troubleshooting
 
 | Symptom | Likely cause | Fix |
 | --- | --- | --- |
@@ -416,10 +431,14 @@ export default defineConfig({
 | No files linted (exit 1) | Everything ignored | Fix `ignorePatterns` or use `--no-error-on-unmatched-pattern` |
 | Editor disagrees with CLI | Different cwd/config | Open workspace root; ensure local `oxlint` installed |
 | Template issues in Vue SFC | Script-only lint | Keep ESLint for templates |
+| Burst of `react/immutability` (etc.) after upgrade | Compiler rules in correctness | Keep if using the compiler; otherwise disable those ids |
+| `react/react-compiler` unknown | Removed in 1.79 | Use per-category `react/*` rules |
+| Gitignored file still linted | Explicit path | Expected; `.gitignore` applies to walks, not named files |
+| JS plugin name clash | Reserved native name | Alias via `{ name, specifier }` |
 
 ---
 
-## 11. Agent checklist
+## 12. Agent checklist
 
 When asked to “add Oxlint” or “fix lint”:
 
@@ -429,4 +448,5 @@ When asked to “add Oxlint” or “fix lint”:
 4. Run `oxlint --fix` then `oxlint`; leave a clean or explicitly suppressed result.
 5. Wire `package.json` scripts + CI + editor recommendation.
 6. Document type-aware separately if enabling it.
-7. Do not replace the formatter with Oxlint — point at Oxfmt when formatting is requested.
+7. After enabling `react` on ≥1.79, decide whether experimental compiler rules stay on.
+8. Do not replace the formatter with Oxlint — point at Oxfmt when formatting is requested.

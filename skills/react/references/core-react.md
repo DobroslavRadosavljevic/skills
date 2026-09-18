@@ -18,7 +18,7 @@
 
 Use this checklist before making React changes:
 
-1. Identify the React version and framework.
+1. Identify the React version and framework. Treat 19.3-only APIs (`<ViewTransition>`, `addTransitionType`, Fragment refs, `browser()`) as unavailable on `19.2.x` and below.
 2. Match local component, routing, data-fetching, styling, and test conventions.
 3. Decide whether the code runs during render, in an event handler, in an Effect, on the server, or during hydration.
 4. Keep state minimal and derive values during render when possible.
@@ -42,7 +42,7 @@ React render code must be pure enough to run, pause, discard, replay, or double-
 - Do not mutate props, state, context values, module-level caches, DOM, or external objects during render.
 - Local mutation of freshly created values is fine, such as pushing into an array created in the same render.
 - Do not call non-idempotent APIs like `new Date()` or `Math.random()` directly in rendering logic when the value is visible or semantically meaningful. Initialize state lazily or update in an Effect/event instead.
-- Browser-only APIs such as `window`, `document`, local storage, media queries, and layout reads are not safe during SSR render. Use framework utilities, client boundaries, or Effects.
+- Browser-only APIs such as `window`, `document`, local storage, media queries, and layout reads are not safe during SSR render. Use framework utilities, client boundaries, Effects, or (on React 19.3) `use(browser())` from `react-dom`. See [react-dom.md](react-dom.md).
 - Keep data normalization and pure calculations in render when they are cheap and derived from existing props/state.
 
 ## State
@@ -72,6 +72,7 @@ Avoid an Effect for:
 - Resetting all state on identity changes when a key can reset the subtree.
 - Chaining internal state updates that could be handled in one reducer or event.
 - Fetching data in a framework that already provides route loaders, Server Components, or mutations.
+- Gating a Client Component on `typeof window` or a `mounted` flag when React 19.3 `use(browser())` can suspend the subtree on the server instead.
 
 Dependency rules:
 
@@ -87,7 +88,7 @@ Dependency rules:
 - `use` is special: it can read Promises or Context during render and may be called conditionally or in loops, but it still must be called inside a component or Hook.
 - Keep custom Hooks focused on reusable behavior, not just a wrapper around a single `useState` unless it clarifies an API boundary.
 - Name custom Hooks with `use` and return a stable, understandable API.
-- Use `useLayoutEffect` only when a DOM read/write must happen before paint. Use `useEffect` for ordinary synchronization.
+- Use `useLayoutEffect` only when a DOM read/write must happen before paint. Use `useEffect` for ordinary synchronization. Prefer `useLayoutEffect` cleanup for UI that must stop when hidden by `<Activity>` (for example pausing `<video>`).
 - Use `useInsertionEffect` only for CSS-in-JS insertion libraries.
 
 ## Context And External Stores
@@ -97,6 +98,7 @@ Dependency rules:
 - Split providers by update frequency and ownership.
 - Prefer props for explicit local data flow.
 - Use `useSyncExternalStore` for subscriptions to external stores so React can read a consistent snapshot across concurrent rendering and hydration.
+- Server Components cannot create Context. On React 19.3 they can import and render a Context from a `"use client"` module. See [react-19.md](react-19.md).
 
 ## Refs
 
@@ -104,6 +106,7 @@ Dependency rules:
 - Do not read or write refs during render except for safe lazy initialization patterns.
 - In React 19, function components can receive `ref` as a prop. For public libraries or mixed-version code, check version support before removing `forwardRef`.
 - Use `useImperativeHandle` to expose a small imperative API rather than the whole DOM node.
+- In React 19.3, pass `ref` to an explicit `<Fragment>` (not `<>`) to operate on a group of DOM children without a wrapper. See [react-19.md](react-19.md).
 
 ## Performance
 
@@ -115,12 +118,14 @@ Dependency rules:
 - Use `startTransition` or `useTransition` for non-urgent state updates that should not block input.
 - Use `useDeferredValue` when a derived view can lag behind urgent input.
 - Use `Suspense` for data/code boundaries only when the framework or data layer supports it correctly.
+- Use `<Activity>` to keep hidden UI's state without keeping Effects alive. Use `<ViewTransition>` only for Transition/Suspense animations, not as a general layout library.
 
 ## Accessibility And Testing
 
 - Prefer semantic HTML and accessible names over div/button imitations.
 - Keep form labels, input names, validation messages, pending states, and error summaries explicit.
 - Do not hide focus outlines unless replacing them with an accessible visible focus indicator.
+- React does not disable `<ViewTransition>` animations for `prefers-reduced-motion`. Gate or tone down animations in CSS when using View Transitions.
 - Test user-visible behavior through roles, labels, text, and stable product test IDs rather than implementation details.
 - Wrap React updates in `act` when testing without a higher-level testing library that already does it.
 - Verify hydration and SSR surfaces in a real browser when changing markup, roots, framework boundaries, or browser-only logic.
@@ -133,6 +138,10 @@ Dependency rules:
 - State object mutated and then set to the same reference.
 - Index keys in reorderable lists.
 - Browser globals in render for a server-rendered app.
+- `typeof window` or a `mounted` Effect used only to skip SSR on React 19.3 when `use(browser())` fits.
 - `useMemo` or `useCallback` around cheap logic with no identity contract.
 - Suspense or Server Components added without framework support.
 - Canary APIs introduced into a stable app.
+- React 19.3 APIs (`<ViewTransition>`, Fragment refs, `browser()`) added to a `19.2.x` app.
+- `<ViewTransition>` wrapping urgent `setState`, or a call to the browser `startViewTransition` API beside React-managed updates.
+- `ref` on `<>...</>` instead of `<Fragment ref={...}>`.

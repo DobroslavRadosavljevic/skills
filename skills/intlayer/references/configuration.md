@@ -1,8 +1,10 @@
-# Configuration (Intlayer 9.4)
+# Configuration (Intlayer 9.5)
 
 Files: `intlayer.config.ts` | `.js` | `.mjs` | `.cjs` | `.json` | `.json5` | `.jsonc` | `.intlayerrc`.
 
 This page is the knob map. Setup defaults live in [setup-tanstack-start.md](setup-tanstack-start.md). Do not copy the giant “all options” example into an app — set only what you need.
+
+Defaults below follow `@intlayer/types@9.5.4` plus the live configuration page. When those disagree, prefer types + the live page and report it.
 
 ## `internationalization`
 
@@ -18,13 +20,15 @@ This page is the knob map. Setup defaults live in [setup-tanstack-start.md](setu
 | Field | Default | Notes |
 | --- | --- | --- |
 | `mode` | `"prefix-no-default"` | `prefix-no-default` · `prefix-all` · `no-prefix` · `search-params` |
-| `enableProxy` | `undefined` (auto) | See [routing-ssr-seo.md](routing-ssr-seo.md). Older v9 notes said `true`. |
+| `enableProxy` | `undefined` (auto) | See [routing-ssr-seo.md](routing-ssr-seo.md). v9 notes and some Vite plugin pages still say `true`. |
 | `storage` | `["cookie", "header"]` | Also `localStorage`, `sessionStorage`, or mixed array |
 | `basePath` | `""` | App URL prefix |
 | `domains` | unset | Host → locale (no path prefix; URLs become absolute) |
 | `rewrite` | unset | Locale-specific path aliases |
 
 Cookie name default remains `INTLAYER_LOCALE`; locale header default `x-intlayer-locale`.
+
+On Start, prefer rewrite helpers that exist in `intlayer/routing` for this stack. `nextjsRewrite` is Next-oriented.
 
 ## `dictionary`
 
@@ -34,7 +38,7 @@ Cookie name default remains `INTLAYER_LOCALE`; locale header default `x-intlayer
 | `fill` | `true` | AI fill strategy: boolean, path pattern, or per-locale object |
 | `location` | `"local"` | `local` · `remote` · `hybrid` · plugin label |
 | `format` | `"intlayer"` | `intlayer` · `icu` · `i18next` · `vue-i18n` · `po` — default message format |
-| `contentAutoTransformation` | `false` | e.g. Markdown → HTML |
+| `contentAutoTransformation` | `false` | Markdown → `md()`, HTML → `html()`, `{{var}}` → `insert()` |
 
 Per-file `fill` overrides this. See [content-dictionaries.md](content-dictionaries.md).
 
@@ -45,7 +49,7 @@ Per-file `fill` overrides this. See [content-dictionaries.md](content-dictionari
 | `contentDir` | `["."]` | Where `.content.*` live. Start apps: set `["src"]`. |
 | `codeDir` | `["."]` | Source for compiler / optimize |
 | `fileExtensions` | `.content.{ts,js,json,…}` | |
-| `excludedPath` | `node_modules`, `.intlayer`, … | |
+| `excludedPath` | `node_modules`, `.intlayer`, `.tanstack`, … | |
 | `watch` | true in development | Rebuild dictionaries on change |
 | `formatCommand` | unset | Formatter for generated `.content` files (`"{{file}}"` placeholder). Prefer the project's formatter via `bunx`. |
 
@@ -68,11 +72,17 @@ Requires `compiler.output` when enabling. Details: [compiler-compat.md](compiler
 | Field | Default | Notes |
 | --- | --- | --- |
 | `mode` | `"auto"` | `auto` prepares `.intlayer` during app build; `manual` needs `intlayer build` |
-| `optimize` | true in production | Master switch for import-mode rewrite, minify, purge |
-| `minify` | `false` | Ignored if `optimize` is off **or** `editor.enabled` is true |
+| `optimize` | `undefined` (auto) | Auto = on in production builds. Master switch for import-mode rewrite, minify, purge, chunk grouping, preload |
+| `minify` | `false` | Ignored if `optimize` is off. Field-renaming skipped if `editor.enabled` |
 | `purge` | `false` | Drop unused keys; ignored if `optimize` is off |
+| `chunkGrouping` | `true` | 9.5: group per-locale dynamic chunks by code-split boundary (one request per lazy route, not per dictionary). Client production only; `importMode: "dynamic"` only |
+| `dictionariesPreload` | `true` | 9.5: start the locale fetch with the chunk that needs it (hover preload / `import()`), so readers often render without Suspense. Client only; collections/variants stay on-demand |
 | `outputFormat` | `["cjs", "esm"]` | Generated dictionary modules |
 | `checkTypes` | `false` | Typecheck during Intlayer build |
+| `cache` | `true` | Dictionary compile cache |
+| `traversePattern` | JS/TS globs, skip `node_modules` | Limit optimize/purge/minify file walk |
+
+Leave `chunkGrouping` / `dictionariesPreload` at defaults unless a bundler plugin order problem appears. Disable grouping only to let the bundler chunk dictionaries itself.
 
 ## `editor` / CMS
 
@@ -84,7 +94,9 @@ Requires `compiler.output` when enabling. Details: [compiler-compat.md](compiler
 | `cmsURL` | `https://app.intlayer.org` | Self-host override |
 | `backendURL` | `https://back.intlayer.org` | API + analytics ingest |
 | `clientId` / `clientSecret` | unset | Dashboard project credentials. `clientId` also gates analytics. |
-| `liveSync` | `false` | Runtime CMS updates |
+| `liveSync` | `true` (types) | Runtime CMS updates. Confirm against the installed package if behavior disagrees. |
+| `dictionaryPriorityStrategy` | `"local_first"` | Or `"distant_first"` |
+| `liveSyncPort` / `liveSyncURL` | `4000` / localhost | Remote live-sync override |
 
 ## `analytics`
 
@@ -102,16 +114,17 @@ Used by `intlayer fill` / `doc translate` / extract.
 
 | Field | Notes |
 | --- | --- |
-| `provider` | `openai` (default), `anthropic`, `mistral`, `deepseek`, `gemini`, `ollama`, `openrouter`, `alibaba`, `fireworks`, `groq`, `huggingface`, `bedrock`, `googlevertex`, `togetherai`, `lmstudio`, `moonshotai`, … |
+| `provider` | `openai` (default), `anthropic`, `mistral`, `deepseek`, `gemini`, `ollama`, `openrouter`, `alibaba`, `fireworks`, `groq`, `huggingface`, `bedrock`, `googlevertex`, `googlegenerativeai`, `togetherai`, `lmstudio`, `moonshotai`, … |
 | `model` | Provider model id |
 | `apiKey` | From env |
 | `applicationContext` | Extra prompt context (plus per-dictionary `description`) |
 | `baseURL` | Custom endpoint |
 | `dataSerialization` | `json` (default) or `toon` (fewer tokens, less consistent) |
+| `temperature` | Optional sampling |
 
 ## `log` / `system` / `schemas` / `plugins`
 
 - `log.mode`: `default` · `verbose` · `disabled`. Prefix default `[intlayer]`.
-- `system.*`: `.intlayer/dictionary`, `types`, `unmerged_dictionary`, `main`, `config`, `cache` — leave defaults unless you own a custom layout.
-- `schemas`: optional Zod (or compatible) maps for dictionary validation.
+- `system.*`: `.intlayer/dictionary`, `types`, `unmerged_dictionary`, `remote_dictionary`, `dynamic_dictionary`, `fetch_dictionary`, `main`, `config`, `cache`, `tmp` — leave defaults unless you own a custom layout.
+- `schemas`: optional Zod (or compatible `safeParse`) maps for dictionary validation.
 - `plugins`: e.g. `syncJSON` / `loadJSON` from `@intlayer/sync-json-plugin` — see [compiler-compat.md](compiler-compat.md).

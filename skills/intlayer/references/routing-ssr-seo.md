@@ -4,7 +4,7 @@
 
 The Vite `intlayer()` plugin wires locale detection/redirect/rewrite when `routing.enableProxy` is not `false`.
 
-**9.4 `enableProxy` (configuration page):**
+**9.5 `enableProxy` (configuration types + live configuration page):**
 
 | Value | Behavior |
 | --- | --- |
@@ -12,7 +12,7 @@ The Vite `intlayer()` plugin wires locale detection/redirect/rewrite when `routi
 | `true` | Full behaviour in every environment, including storage-driven redirects in dev. |
 | `false` | No locale routing. Handle it yourself. |
 
-Older v9 notes said the default was `true`. Prefer the live configuration page (`undefined` / auto) and report a mismatch if the installed package types disagree.
+Older v9 notes and some `vite-intlayer` plugin pages still say the default is `true`. Prefer the live configuration page (`undefined` / auto) and report a mismatch if the installed package types disagree.
 
 Detection order (docs/defaults): URL prefix → cookie (default `INTLAYER_LOCALE`) → `Accept-Language` / locale header (`x-intlayer-locale`).
 
@@ -28,11 +28,25 @@ intlayer({
 
 Production proxy needs `vite-intlayer` in runtime `dependencies`.
 
-Advanced: `routing.basePath`, `routing.domains` (host → locale, no path prefix), `routing.rewrite` (locale-specific path aliases; Start has no `nextjsRewrite` requirement — only use rewrite helpers that exist in `intlayer/routing` for this stack).
+### Nitro handler (TanStack Start production)
+
+`intlayerProxy` (bundled in `intlayer()`) exposes a `.nitro` property. `nitro/vite` registers `intlayerNitroHandler` as Nitro server middleware automatically.
+
+The handler is h3 v2 Web Fetch (`event.path`, `event.url`, `event.headers`, `event.res.headers`):
+
+- Redirect → returns a Web `Response`
+- Rewrite → replaces `event.url` so `event.path` updates for downstream routes
+- Pass-through → `undefined`
+
+Do **not** add a manual `fromNodeMiddleware(createIntlayerProxyHandler(...))` file for Start. That Node adapter crashes on Bun/Deno (`event.node` is undefined). Use `createIntlayerProxyHandler` only on a plain Node/Connect server.
+
+Advanced: `routing.basePath`, `routing.domains` (host → locale, no path prefix), `routing.rewrite` (locale-specific path aliases). `getLocalizedPath` / `getCanonicalPath` / `getRewriteRules` apply those aliases. On the client, `useRewriteURL()` from `react-intlayer` pretty-prints the address bar via `history.replaceState` without a router navigation — it is not a Link wrapper.
 
 ## Locale-aware navigation (native TanStack only)
 
 **Hard rule:** Do not create, keep, or recommend wrappers around TanStack Router navigation (`LocalizedLink`, `useLocalizedNavigate`, `locacalizeTo`, etc.). Use `@tanstack/react-router` `Link` and `useNavigate` directly with typed `to` paths that include the locale slot and `params.locale` from `getPrefix`.
+
+Official Start docs and `intlayer-tanstack-start-template` still show wrappers. This skill still rejects them.
 
 In `prefix-no-default`, `getPrefix(locale).localePrefix` is `undefined` for the default locale — pass that through so the optional `{-$locale}` segment is omitted.
 
@@ -138,7 +152,7 @@ When a project already has `LocalizedLink`, `useLocalizedNavigate`, or similar:
 2. Rewrite call sites to native `Link` / `useNavigate` with full `to` + `params.locale`.
 3. Do not reintroduce wrappers “for DX” — typed route paths are the DX.
 
-## Server functions (9.4)
+## Server functions (9.4+)
 
 Prefer `getIntlayerAsync` so metadata/server payloads do not ship every locale:
 
@@ -163,12 +177,25 @@ Pattern:
 | --- | --- |
 | Client components | `useIntlayer` / `useLocale` from `react-intlayer` |
 | Client formatters | `react-intlayer/format` |
+| Client A/B | `useExperiment` / `useConversion` from `react-intlayer` |
 | Server functions / async `head` / loaders | `getIntlayerAsync` / `getLocale` from `intlayer` |
 | Sync non-React (acceptable if all locales in bundle) | `getIntlayer` |
 
-## SEO `head` (9.4)
+## SEO `head` (9.4+)
 
-`head` must be `async`. `getIntlayerAsync` is rewritten (when optimize plugins run) to the per-locale chunk.
+The Start guide documents three resolution modes. Prefer per-locale chunks (`getIntlayerAsync`) over the merged dictionary.
+
+| | Static | Dynamic | Cached dynamic |
+| --- | --- | --- | --- |
+| API | `getIntlayer` | `getIntlayerAsync` | `getIntlayerAsync` in `loader` |
+| `head` | sync | `async` | sync, reads `loaderData` |
+| Locales shipped | every locale | requested locale | requested locale |
+| Client navigations | nothing to resolve | re-entered on every match | router cache (`staleTime: Infinity`) |
+| Cost | larger chunk | few ms on cold `head` (LCP) | extra loader wiring; `loaderData` may be `undefined` |
+
+Default for this skill: **dynamic** (`async` `head` + `getIntlayerAsync`). Use **cached dynamic** when metadata LCP matters. Use **static** only for tiny dictionaries / prototypes.
+
+If one `head` reads several dictionaries, `Promise.all` them — sequential `await`s chain.
 
 ```ts
 import {
@@ -201,6 +228,23 @@ head: async ({ params }) => {
         href: getLocalizedUrl(path, defaultLocale),
       },
     ],
+  };
+},
+```
+
+Cached-dynamic sketch:
+
+```ts
+loader: async ({ params }) => {
+  const locale = params.locale ?? defaultLocale;
+  return { metaContent: await getIntlayerAsync("app", locale) };
+},
+staleTime: Infinity,
+head: ({ params, loaderData }) => {
+  const locale = params.locale ?? defaultLocale;
+  return {
+    meta: [{ title: loaderData?.metaContent.meta.title }],
+    // …same canonical / hreflang links
   };
 },
 ```
@@ -273,11 +317,12 @@ const localizedPages = localeFlatMap(({ urlPrefix }) =>
 ## Pitfalls checklist
 
 - Missing `routeFileIgnorePattern` → `.content.*` become routes.
-- Using `next-intlayer` APIs on Start.
+- Using `next-intlayer` or `react-intlayer/server` APIs on Start.
 - Adding or keeping `LocalizedLink` / `useLocalizedNavigate` (or any Link/navigate wrapper) instead of native TanStack `Link` / `useNavigate`.
 - Copying Intlayer Start template / docs navigation wrappers instead of native optional-param links.
-- Sync `getIntlayer` in `head` on 9.4+ (loads all locales). Use `getIntlayerAsync` + `async` `head`.
+- Sync `getIntlayer` in `head` on 9.4+ (loads all locales). Use `getIntlayerAsync` + `async` `head`, or the loader cache pattern.
 - `vite-intlayer` only in `devDependencies` while production SSR needs the proxy.
+- Manual `fromNodeMiddleware` proxy on Bun/Deno Nitro presets.
 - Locale slot mismatches `routing.mode`.
 - Reading cookies/headers in `beforeLoad` instead of `params.locale`.
 - Passing a fake default-locale prefix when `getPrefix` returns `localePrefix: undefined` in `prefix-no-default`.

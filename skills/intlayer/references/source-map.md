@@ -4,30 +4,33 @@ This reference captures the Intlayer docs snapshot used to create the skill.
 
 ## Snapshot
 
-- Captured: 2026-08-26
-- Target line: **Intlayer 9.4** (`latest` dist-tag)
-- Stable npm packages: `intlayer@9.4.1`, `react-intlayer@9.4.1`, `vite-intlayer@9.4.1`
-- npm `latest` dist-tag: `9.4.1` (published 2026-08-26; 9.4.1 is a same-day version-alignment fix on 9.4.0)
-- npm canary observed: `9.4.0-canary.0`
+- Captured: 2026-09-18
+- Target line: **Intlayer 9.5** (`latest` dist-tag)
+- Stable npm packages: `intlayer@9.5.4`, `react-intlayer@9.5.4`, `vite-intlayer@9.5.4`
+- npm `latest` dist-tag: `9.5.4` (published 2026-09-18)
+- Matching companions observed at `9.5.4`: `@intlayer/analytics`, `@intlayer/mcp`, `elysia-intlayer`
+- npm canary observed: `9.5.4-canary.0`
 - Official homepage: https://intlayer.org
 - Official repository: https://github.com/aymericzip/intlayer
 - Official TanStack Start template: https://github.com/aymericzip/intlayer-tanstack-start-template
-- Context7 selections used: `/websites/intlayer_doc`, `/aymericzip/intlayer` (Context7 version list may lag npm; prefer npm + intlayer.org for 9.4)
+- LLM index: https://intlayer.org/llms.txt (Start: `/doc/environment/tanstack-start.md`)
+- MCP: local `bunx @intlayer/mcp`; remote `https://mcp.intlayer.org`
+- Context7 selections used: `/websites/intlayer_doc`, `/aymericzip/intlayer` (Context7 version list may lag npm — listed `v8.12.2` at snapshot time; prefer npm + intlayer.org for 9.5)
 
-Treat canary and prerelease dist-tags as unavailable unless the project explicitly depends on them. Keep all `@intlayer/*` and `*-intlayer` packages on the **same 9.4.x**.
+Treat canary and prerelease dist-tags as unavailable unless the project explicitly depends on them. Keep all `@intlayer/*` and `*-intlayer` packages on the **same 9.5.x**.
 
-### Releases since the previous skill snapshot (`9.0.1`, 2026-07-23)
+### Releases since the previous skill snapshot (`9.4.1`, 2026-08-26)
 
 | Version | Date | Skill-relevant changes |
 | --- | --- | --- |
-| 9.0.2 | 2026-07-26 | Patch on 9.0 |
-| 9.1.0–9.1.3 | 2026-07-30 – 08-05 | `select()` content node; object `variant` absorbs former dynamic records; drop `meta` |
-| 9.2.0 | 2026-08-07 | Mid-line features |
-| 9.3.0–9.3.3 | 2026-08-10 – 08-20 | Analytics default-on when `@intlayer/analytics` is installed (9.3.3) |
-| 9.4.0 | 2026-08-26 | `getIntlayerAsync` / `getDictionaryAsync`; Start `head` loads per-locale chunks; `elysia-intlayer`; domain rewrite types; Next providers merged |
-| 9.4.1 | 2026-08-26 | Version alignment across packages |
+| 9.4.2–9.4.4 | 2026-09-02 – 09-04 | Line patches after 9.4.1 alignment |
+| 9.5.0 | 2026-09-08 | Remix 3 guide; Next `withIntlayer` starts its own content watcher (Next-only). `build.chunkGrouping` / `build.dictionariesPreload` present in 9.5 types (defaults `true`; Vite `intlayerChunk` + `intlayerPreload`) |
+| 9.5.1 | 2026-09-09 | Benchmark / docs refresh |
+| 9.5.2 | 2026-09-12 | CLI: replace `intlayer ci <cmd>` with **`--ci` flag** on the real command (`fill --ci`, `build --ci`, …) |
+| 9.5.3 | 2026-09-14 | Line patch |
+| 9.5.4 | 2026-09-18 | Version alignment. Engine: insertion handling for markdown/HTML via auto-decorate. `react-intlayer` analytics: `useExperiment`. `vite-intlayer/nitro-handler` (h3 v2) for Nitro/Start production SSR |
 
-If the installed project is still on 9.0.x, do not use `getIntlayerAsync` until packages are bumped to 9.4.x together.
+If the installed project is still on 9.4.x, do not use `--ci`, `useExperiment`, or assume `chunkGrouping` / `dictionariesPreload` until packages are bumped to 9.5.x together. `getIntlayerAsync` remains the 9.4+ server/head API.
 
 ## Refresh Procedure
 
@@ -40,11 +43,12 @@ If the installed project is still on 9.0.x, do not use `getIntlayerAsync` until 
    bun info vite-intlayer
    ```
 
-3. Prefer official docs pages and the Start guide on **intlayer.org** over GitHub `docs/docs/en` when they disagree — the published Start guide updates (for example 9.4.0 `getIntlayerAsync` in `head`) can land on the site before the raw GitHub file.
+3. Prefer official docs pages and the Start guide on **intlayer.org** over GitHub `docs/docs/en` when they disagree — published Start guide updates can land on the site before the raw GitHub file.
 4. Check the local project package versions before applying docs that require a minimum Intlayer version.
 5. Prefer the React TanStack Start guide over Next.js (`next-intlayer`) or Solid Start (`solid-intlayer`) pages unless the project uses those stacks.
-6. Ignore Intlayer docs/template samples that introduce `LocalizedLink` / `useLocalizedNavigate`. This skill requires native TanStack Router `Link` / `useNavigate` with `{-$locale}` + `params.locale` only.
-7. If configuration.md and v9 release notes disagree (notably `routing.enableProxy` default), prefer the live [configuration](https://intlayer.org/doc/concept/configuration) page and report the mismatch.
+6. Ignore Intlayer docs/template samples that introduce `LocalizedLink` / `useLocalizedNavigate`. This skill requires native TanStack Router `Link` / `useNavigate` with `{-$locale}` + `params.locale` only. The official Start template still contains those wrappers as of this snapshot.
+7. If configuration.md, v9 release notes, and `vite-intlayer` plugin docs disagree (notably `routing.enableProxy` default), prefer the live [configuration](https://intlayer.org/doc/concept/configuration) page plus `@intlayer/types` `config.d.ts` and report the mismatch.
+8. `llms.txt` still omits `/doc/releases/v9.md` (lists v6–v8 only). Do not treat that gap as “v9 unpublished”.
 
 ## Official Pages
 
@@ -53,6 +57,7 @@ If the installed project is still on 9.0.x, do not use `getIntlayerAsync` until 
 - TanStack Start guide: https://intlayer.org/doc/environment/tanstack-start
 - Vite + React: https://intlayer.org/doc/environment/vite-and-react
 - Vite plugin: https://intlayer.org/doc/packages/vite-intlayer/intlayer
+- Vite proxy: https://intlayer.org/doc/packages/vite-intlayer/intlayerProxy
 - Source doc (GitHub, may lag site): https://github.com/aymericzip/intlayer/blob/main/docs/docs/en/intlayer_with_tanstack.md
 
 ### Core
@@ -72,6 +77,7 @@ If the installed project is still on 9.0.x, do not use `getIntlayerAsync` until 
 ### Packages / APIs
 
 - `getIntlayerAsync`: https://intlayer.org/doc/packages/intlayer/getIntlayerAsync
+- `intlayer` exports: https://intlayer.org/doc/packages/intlayer/exports
 - `useIntlayer`: https://intlayer.org/doc/packages/react-intlayer/useIntlayer
 - `useLocale`: https://intlayer.org/doc/packages/react-intlayer/useLocale
 - `IntlayerProvider`: https://intlayer.org/doc/packages/react-intlayer/IntlayerProvider
@@ -87,10 +93,12 @@ If the installed project is still on 9.0.x, do not use `getIntlayerAsync` until 
 
 ## Source Files Used
 
-- Published Start guide at `/doc/environment/tanstack-start` (history 9.4.0, 2026-08-22)
+- Published Start guide at `/doc/environment/tanstack-start` (history still 9.4.0 for `getIntlayerAsync` head; page updated 2026-08-29 with static / dynamic / cached-dynamic tabs)
 - `docs/docs/en/packages/intlayer/getIntlayerAsync.md` (9.4.0)
-- `docs/docs/en/releases/v9.md` / published `/doc/releases/v9`
-- Published `/doc/concept/configuration`
-- Published `/doc/concept/cli`, `/doc/concept/analytics`, `/doc/concept/content/plural`, `/doc/formatters`
-- `docs/docs/en/dynamic_dictionaries/index.md` (9.1 object variants)
-- Official template: `aymericzip/intlayer-tanstack-start-template`
+- `docs/docs/en/releases/v9.md` / published `/doc/releases/v9` (does not list 9.5 point releases)
+- Published `/doc/concept/configuration` (includes `chunkGrouping` / `dictionariesPreload` in the example; history last entry 9.3.3)
+- `@intlayer/types@9.5.4` `config.d.ts` (authoritative knob defaults)
+- `intlayer@9.5.4` / `react-intlayer@9.5.4` / `vite-intlayer@9.5.4` package exports
+- `docs/docs/en/cli/index.md`, `build.md`, `fill.md` (9.5.2 `--ci`)
+- `docs/docs/en/packages/vite-intlayer/intlayerProxy.md` (Nitro auto-injection)
+- Official template: `aymericzip/intlayer-tanstack-start-template` (still ships `LocalizedLink`)

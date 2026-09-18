@@ -1,8 +1,12 @@
 # Migration: v2 → v3
 
-Canonical guide: https://v3.feedsmith.dev/migration/v2-to-v3
+Canonical guide: https://feedsmith.dev/migration/v2-to-v3
 
-Until 3.x is `latest`, install with an explicit tag (`feedsmith@rc` / `@beta`), not bare `feedsmith`.
+Install 3.x from `latest`:
+
+```sh
+bun add feedsmith
+```
 
 ## Checklist
 
@@ -10,14 +14,16 @@ Until 3.x is `latest`, install with an explicit tag (`feedsmith@rc` / `@beta`), 
 - [ ] Add `{ strict: true }` where you want v2-like required-field typing
 - [ ] Drop `DeepPartial` imports
 - [ ] Move types from `feedsmith/types` → `feedsmith`
-- [ ] Rename format type namespaces: `Rss` → `RssFeed`, `Atom` → `AtomFeed`, `Json` → `JsonFeed`, `Rdf` → `RdfFeed`
+- [ ] Rename format type namespaces: `Rss` → `RssFeed`, `Atom` → `AtomFeed`, `Json` → `JsonFeed`, `Rdf` → `RdfFeed` (`Rss`/`Atom`/`Json`/`Rdf` remain deprecated aliases until 4.x)
+- [ ] Replace removed generic aliases: `RssFeed<Date>` → `RssFeed.Feed<Date>`, `Opml<Date>` → `Opml.Document<Date>`
 - [ ] Atom: `title` / `subtitle` / `rights` / `summary` / `content` → `.value` objects
+- [ ] Atom xhtml: stop stripping wrapper `<div>` / `xhtml:` prefixes; render as HTML; generate inner markup only
 - [ ] RSS: `managingEditor` / `webMaster` / `authors` → `Person` objects
 - [ ] Media: `group` → `groups`
 - [ ] Podcast: `location` → `locations`, `value` → `values`, `chats` → `chat`
-- [ ] DC / DC Terms: singular → plural arrays (`creator` → `creators`, …)
+- [ ] DC / DC Terms: singular → plural arrays (`creator` → `creators`, …); `coverage` / `rights` / `created` are arrays
 - [ ] Errors: handle `DetectError`, `MalformedError`, `ParseError`, `GenerateError`
-- [ ] Optional: adopt `parseDateFn`, `AnyFeed`, `xml` namespace fields
+- [ ] Optional: adopt `parseDateFn`, `AnyFeed`, `xml` namespace fields, `DateLike`, `XmlStylesheet`
 
 ## Behavior flip: strict vs lenient
 
@@ -37,8 +43,6 @@ import type { RssFeed } from "feedsmith";
 type Feed = RssFeed.Feed<string>;
 ```
 
-Some migration prose still shows short `Rss` / `Atom` names; **current v3 references use `RssFeed` / `AtomFeed` / `JsonFeed` / `RdfFeed`**. Prefer those.
-
 ## Atom text / content
 
 ```ts
@@ -54,6 +58,8 @@ generateAtomFeed({
   entries: [{ content: { value: "<p>Hi</p>", type: "html" } }],
 });
 ```
+
+xhtml parse example: `<xhtml:div><xhtml:p>a &lt; b</xhtml:p></xhtml:div>` → `'<p>a &lt; b</p>'`. Empty wrapper `<div/>` drops `value`.
 
 ## RSS persons
 
@@ -83,15 +89,17 @@ item.podcast?.chat;
 // Dublin Core
 feed.dc?.creators;
 feed.dc?.dates;
+feed.dc?.coverage?.[0];
 ```
 
 ## New in v3 (non-breaking additions)
 
 - Dedicated parse/generate error classes
-- Exported `AnyFeed`
+- Exported `AnyFeed`, `DateLike`, `XmlStylesheet`
 - `parseDateFn` on parsers
-- `xml` namespace attributes on feeds/items
+- `xml` namespace attributes on feeds/items (`lang`, `base`, `space`, `id`)
 - Namespace type exports (`ItunesNs`, `DcNs`, …)
+- OPML `extraOutlineAttributes` on parse and generate
 
 ## Verify after upgrade
 

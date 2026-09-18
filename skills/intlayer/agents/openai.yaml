@@ -1,4 +1,4 @@
 interface:
   display_name: "Intlayer"
-  short_description: "Build Intlayer 9.4 i18n for TanStack Start (native Link)"
-  default_prompt: "Use $intlayer to build, review, configure, migrate, or debug this Intlayer 9.4 + TanStack Start internationalization work with current documentation. Use native TanStack Link/useNavigate only — no LocalizedLink or navigate wrappers. Prefer getIntlayerAsync in route head and server functions."
+  short_description: "Build Intlayer 9.5 i18n for TanStack Start (native Link)"
+  default_prompt: "Use $intlayer to build, review, configure, migrate, or debug this Intlayer 9.5 + TanStack Start internationalization work with current documentation. Use native TanStack Link/useNavigate only — no LocalizedLink or navigate wrappers. Prefer getIntlayerAsync in route head and server functions. Keep intlayer, react-intlayer, and vite-intlayer on the same 9.5.x."

@@ -30,11 +30,20 @@ const atom = generateAtomFeed({
   entries: [{ title: { value: "Hello" }, content: { value: "<p>Hi</p>", type: "html" } }],
 });
 
-const json = generateJsonFeed({ /* JsonFeed shape */ });
-const opml = generateOpml({ /* Opml shape */ });
+const json = generateJsonFeed({
+  title: "My Blog",
+  home_page_url: "https://example.com",
+  items: [{ id: "1", title: "Hello" }],
+});
+// object, version set to JSON Feed 1.1 — JSON.stringify if you need a string
+
+const opml = generateOpml({
+  head: { title: "Subscriptions" },
+  body: { outlines: [{ text: "Example", xmlUrl: "https://example.com/feed.xml" }] },
+});
 ```
 
-**No `generateRdfFeed` yet** (RDF generate planned).
+**No `generateRdfFeed`** (RDF generate planned). RDF namespace elements inside other formats still generate.
 
 ## Options
 
@@ -42,6 +51,9 @@ const opml = generateOpml({ /* Opml shape */ });
 |---|---|---|
 | `strict: true` | RSS, Atom, JSON Feed, OPML | Compile-time required fields; dates must be `Date` |
 | `stylesheets` | XML (RSS, Atom, OPML) | `xml-stylesheet` processing instructions |
+| `extraOutlineAttributes` | OPML only | Extra outline attrs to emit (must be listed) |
+
+JSON Feed has `strict` only (no stylesheets).
 
 ### Strict mode
 
@@ -58,7 +70,7 @@ generateRssFeed(
 );
 ```
 
-- Default (lenient): all fields optional; string dates allowed.
+- Default (lenient): all fields optional; string dates allowed (`DateLike` = `Date | string`).
 - Strict: TypeScript enforces `Requirable<>` fields; **runtime still does not** fully validate like a schema lib — compile-time guard.
 - Use strict when **you author** feeds; stay lenient when transforming messy external data.
 
@@ -73,7 +85,36 @@ generateRssFeed(data, {
 });
 ```
 
-Fields: `type` + `href` required; optional `title`, `media`, `charset`, `alternate`.
+Fields: `type` + `href` required; optional `title`, `media`, `charset`, `alternate`. Type: `XmlStylesheet`.
+
+### OPML extra attributes
+
+```ts
+generateOpml(data, {
+  extraOutlineAttributes: ["customIcon", "updateInterval", "isPinned"],
+});
+```
+
+Only names in that list are written onto `<outline>`. Values are strings.
+
+## Atom xhtml
+
+`type: "xhtml"` values are inner markup **without** the spec wrapper `<div>`. Generate emits a single `<div xmlns="http://www.w3.org/1999/xhtml">` wrapper. Ill-formed markup (`<br>`, bare `&`, `&nbsp;`) is emitted as escaped `type="html"` instead.
+
+## RSS guid / persons
+
+```ts
+generateRssFeed({
+  items: [
+    {
+      guid: { value: "https://example.com/hello", isPermaLink: true },
+      authors: [{ email: "a@example.com", name: "Ada" }],
+    },
+  ],
+});
+```
+
+Do not pass `guid` as a bare string. Person `link` is parse-only and is not written.
 
 ## Errors
 
@@ -100,6 +141,7 @@ const feed: RssFeed.Feed<Date> = {
     author: "Host",
     image: "https://example.com/art.jpg",
     explicit: false,
+    categories: [{ text: "Technology" }],
   },
   items: [
     {
@@ -107,7 +149,7 @@ const feed: RssFeed.Feed<Date> = {
       enclosures: [
         { url: "https://example.com/ep1.mp3", length: 12_345_678, type: "audio/mpeg" },
       ],
-      itunes: { duration: "30:15", episode: 1 },
+      itunes: { duration: 1815, episode: 1 }, // seconds, not "30:15"
     },
   ],
 };

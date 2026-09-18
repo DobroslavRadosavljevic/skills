@@ -1,6 +1,6 @@
-# Setup: Intlayer 9.4 + TanStack Start
+# Setup: Intlayer 9.5 + TanStack Start
 
-Target stack: TanStack Start (React) on Vite SSR with Intlayer **9.4.x**.
+Target stack: TanStack Start (React) on Vite SSR with Intlayer **9.5.x**.
 
 ## Packages
 
@@ -13,18 +13,20 @@ bun add intlayer react-intlayer
 bun add vite-intlayer --dev
 ```
 
-Keep **`intlayer`, `react-intlayer`, and `vite-intlayer` on the same 9.4.x**. After 9.4.0, 9.4.1 exists only to align package versions — mixed 9.4.0 / 9.4.1 trees are a known failure mode.
+Keep **`intlayer`, `react-intlayer`, and `vite-intlayer` on the same 9.5.x**. Mixed 9.4.x / 9.5.x trees fail the same way mixed 9.4.0 / 9.4.1 trees did.
 
 | Package | Role |
 | --- | --- |
-| `intlayer` | Config, `t` / `Dictionary`, CLI, `getIntlayer` / `getIntlayerAsync`, `getLocale`, `validatePrefix`, `getPrefix`, `generateSitemap`, locale mappers |
-| `react-intlayer` | `IntlayerProvider`, `useIntlayer`, `useLocale`, `useConversion` |
+| `intlayer` | Config, `t` / `Dictionary`, CLI, `getIntlayer` / `getIntlayerAsync`, `getLocale`, `validatePrefix`, `getPrefix`, `getCanonicalPath` / `getLocalizedPath`, `generateSitemap`, locale mappers |
+| `react-intlayer` | `IntlayerProvider`, `useIntlayer`, `useLocale`, `useConversion`, `useExperiment`, `useRewriteURL` |
 | `react-intlayer/format` | Locale-bound `useNumber`, `useCurrency`, `useDate`, … |
-| `vite-intlayer` | Vite plugin `intlayer()` — dictionary build, aliases, locale proxy, optional compiler |
+| `react-intlayer/analytics` | Same analytics hooks as the root export (`useExperiment`, `useConversion`, `useAnalytics`, `AnalyticsProvider`) |
+| `vite-intlayer` | Vite plugin `intlayer()` — dictionary build, aliases, locale proxy, optional compiler, chunk grouping/preload |
+| `vite-intlayer/nitro-handler` | h3 v2 Nitro middleware for production SSR (auto-registered; do not import unless you own a custom Nitro module) |
 
-Do **not** install `next-intlayer` or `solid-intlayer` for React Start.
+Do **not** install `next-intlayer` or `solid-intlayer` for React Start. Do **not** import `react-intlayer/server` (`IntlayerServerProvider`) on Start.
 
-If production SSR needs the locale proxy, move `vite-intlayer` to runtime `dependencies`.
+If production SSR needs the locale proxy, move `vite-intlayer` to runtime `dependencies`. The Nitro handler lives in that package.
 
 Optional, only when in scope:
 
@@ -52,12 +54,13 @@ const config: IntlayerConfig = {
   // routing.mode default: "prefix-no-default"
   // routing.enableProxy default: undefined (auto) — see configuration.md
   // compiler.enabled default: false
+  // build.chunkGrouping / dictionariesPreload default: true (dynamic importMode only)
 };
 
 export default config;
 ```
 
-`defineConfig` from `intlayer` is also valid. Full knobs: [configuration.md](configuration.md).
+`intlayer@9.5.4` public types do **not** export `defineConfig`. Use `export default config`. Full knobs: [configuration.md](configuration.md).
 
 Routing modes vs locale slot:
 
@@ -103,12 +106,13 @@ Plugin options:
 | `compatCallers` | Extra caller patterns for compat-adapter packages |
 | `configFile` | Custom path to `intlayer.config.*` |
 
-9.4 notes:
+9.5 notes:
 
-- `intlayer()` bundles dictionary build, env aliases, locale proxy (when `routing.enableProxy` is not `false`), and optional compiler (when `compiler.enabled` is `true` or `"build-only"` and `compiler.output` is set).
+- `intlayer()` bundles dictionary build, env aliases, locale proxy (when `routing.enableProxy` is not `false`), optional compiler (when `compiler.enabled` is `true` or `"build-only"` and `compiler.output` is set), plus production `intlayerOptimize` / `intlayerPrune` / `intlayerMinify` / `intlayerChunk` / `intlayerPreload`.
 - Standalone `intlayerProxy()` / `intlayerCompiler()` remain available for advanced plugin order; registering them with `intlayer()` is safe (deduped).
 - If registering `intlayerProxy` separately with Nitro, place the proxy **before** `nitro()`.
-- Do not keep a leftover `intlayerProxy()` call just because older docs showed it — 9.4 website configs drop it.
+- Do not keep a leftover `intlayerProxy()` call just because older docs showed it — current website Start configs drop it.
+- Production SSR: `intlayerProxy` carries a `.nitro` property. `nitro/vite` pushes `intlayerNitroHandler` into `nitroConfig.modules`. No manual `server/middleware` file. The handler uses h3 v2 Web Fetch (`event.headers`, `event.url`), not `fromNodeMiddleware`.
 
 ## Root shell + provider
 
@@ -152,7 +156,7 @@ function RootDocument({ children }: { children: ReactNode }) {
 
 `IntlayerProvider` props: `locale`, `defaultLocale`, `setLocale`, `disableEditor`, `isCookieEnabled`. Use `IntlayerProviderContent` only when you need the context without editor chrome.
 
-Do not use `IntlayerClientProvider` / `IntlayerServerProvider` (`next-intlayer`) on Start. Those Next split providers are deprecated as of 9.4 in favor of a single `IntlayerProvider`.
+Do not use `IntlayerClientProvider` / `IntlayerServerProvider` (`next-intlayer` or `react-intlayer/server`) on Start.
 
 ## Locale layout
 
@@ -209,4 +213,4 @@ project/
 
 Do **not** add `localized-link.tsx`, `useLocalizedNavigate.ts`, or any other Link/navigate wrappers. Use native TanStack Router `Link` / `useNavigate` with `{-$locale}` and `params.locale` (see [routing-ssr-seo.md](routing-ssr-seo.md)).
 
-Official template: https://github.com/aymericzip/intlayer-tanstack-start-template — treat its `LocalizedLink` / `useLocalizedNavigate` samples as outdated for this skill; strip them on adopt/migrate.
+Official template: https://github.com/aymericzip/intlayer-tanstack-start-template — treat its `LocalizedLink` / `useLocalizedNavigate` samples as outdated for this skill; strip them on adopt/migrate. Template still lists `vite-intlayer` under `devDependencies`; move it to `dependencies` when production SSR needs the proxy.

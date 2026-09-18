@@ -2,38 +2,51 @@
 
 ## Anatomy
 
-- **Queue name**: Redis key namespace for the queue.
+- **Queue name**: Redis key namespace (or Postgres queue identity) for the queue.
 - **Job name**: discriminator string (`job.name`) for routing inside a processor.
-- **`data`**: JSON-serializable payload.
-- **`jobId`**: optional custom id. Must not contain `:`; digits-only ids (for example `"123"`) are rejected. Custom ids enforce uniqueness per queue; a second add with the same id is ignored. After remove / auto-removal, the id can be reused.
+- **`data`**: JSON-serializable payload. `JSON.stringify` stores enumerable own properties only — class instances lose prototype methods when a worker reads `job.data`. Prefer plain objects or implement `toJSON()`.
+- **`jobId`**: optional custom id. Must not contain `:`; digits-only ids (for example `"123"`) are rejected (`Error: Custom Id cannot be integers`). Custom ids enforce uniqueness per queue; a second add with the same id is ignored. After remove / auto-removal, the id can be reused.
 
-Type jobs when useful:
+Type jobs when useful (`ProgressType` is optional; defaults to `number | object`):
 
 ```typescript
-import { Job, Queue, Worker } from 'bullmq';
+import { Job, Queue, Worker, RedisQueueBackend } from 'bullmq';
 
 type EmailData = { to: string; template: string };
 type EmailResult = { messageId: string };
+type EmailProgress = { pct: number };
 
 const queue = new Queue<EmailData, EmailResult, 'send'>('email', { connection });
-const worker = new Worker<EmailData, EmailResult, 'send'>(
+const worker = new Worker<
+  EmailData,
+  EmailResult,
+  'send',
+  RedisQueueBackend,
+  EmailProgress
+>(
   'email',
-  async (job: Job<EmailData, EmailResult, 'send'>) => {
+  async (job: Job<EmailData, EmailResult, 'send', EmailProgress>) => {
     return { messageId: '...' };
   },
   { connection },
 );
 ```
 
+Omit the backend/progress generics when the defaults (`RedisQueueBackend`, `JobProgress`) are enough.
+
 ## Lifecycle States
 
-Common states: `waiting`, `active`, `completed`, `failed`, `delayed`, `paused`, `waiting-children` (parent awaiting children), plus prioritized waiting variants.
+Job states: `waiting`, `active`, `completed`, `failed`, `delayed`, `waiting-children` (parent awaiting children), plus prioritized waiting.
 
-Jobs move through supported APIs only (`add`, worker completion/failure, delay/move helpers, clean/obliterate). Do not rewrite Redis keys by hand.
+**`paused` is not a job state** on BullMQ 6. Jobs in a paused queue are represented as `waiting`. `getJobCounts()` without types does not return a `paused` count. `getJobState()` returns `'completed' | 'failed' | 'delayed' | 'active' | 'waiting' | 'waiting-children' | 'unknown'`.
+
+Jobs move through supported APIs only (`add`, worker completion/failure, delay/move helpers, clean/obliterate). Do not rewrite Redis keys or Postgres rows by hand.
 
 ## Core JobsOptions
 
 Set per `queue.add` / `addBulk`, or as `defaultJobOptions` on the Queue.
+
+There is **no** `repeat` option on `Queue.add` / `addBulk` (removed in v6). There is **no** `debounce` option (use `deduplication`). `Job#discard()` is removed — throw `UnrecoverableError`.
 
 | Option | Use |
 | --- | --- |
@@ -46,8 +59,10 @@ Set per `queue.add` / `addBulk`, or as `defaultJobOptions` on the Queue.
 | `removeOnComplete` | `true`, count, or `{ age, count }` keep policy |
 | `removeOnFail` | Same shape for failed jobs |
 | `stackTraceLimit` | Cap stored stack frames |
+| `sizeLimit` | Max JSON-serialized `data` bytes |
+| `keepLogs` | Cap stored log lines |
 | `deduplication` | See [retries-scheduling-limits.md](retries-scheduling-limits.md) |
-| `repeat` / scheduler | Prefer `upsertJobScheduler` for factories |
+| Flow child opts | `failParentOnFailure`, `ignoreDependencyOnFailure`, `removeDependencyOnFailure`, `continueParentOnFailure` — see [flows.md](flows.md) |
 
 ```typescript
 await queue.add(
@@ -68,11 +83,14 @@ await queue.addBulk([
 ]);
 ```
 
+`addBulk` is OSS (many independent jobs). Worker-side `job.getBatch()` is **Pro**. Putting many ids in one job payload is a third, OSS-safe pattern when they must share one retry/completion.
+
 ## Results and Progress
 
 - Return a value from the processor → stored as `job.returnvalue` and emitted on `completed`.
-- `await job.updateProgress(number | object)` → `progress` events on Worker / QueueEvents.
+- `await job.updateProgress(number | object)` → `progress` events on Worker / QueueEvents. Progress must be JSON-serializable.
 - Failed jobs store `failedReason` and stack (subject to limits).
+- Use `job.deduplicationId` (not removed `debounceId`).
 
 ## Reading Jobs
 
@@ -82,6 +100,8 @@ Use Queue getters (`getJob`, `getJobs`, counts by state) and Job methods. Prefer
 
 Use a custom `jobId` when exactly-once enqueue for a business key matters (for example `invoice-${id}-pdf`, without `:`). Do not overload `jobId` for debounce/throttle — use `deduplication` instead. Do not invent scheduler job ids; Job Scheduler assigns special ids. Aggressive `removeOnComplete`/`removeOnFail` plus `jobId` is not a durable throttle.
 
+Flow nodes without `opts.jobId` receive **UUIDs** (not Redis incremental ids). See [flows.md](flows.md).
+
 ## Retention
 
-Unbounded `completed`/`failed` sets are a common Redis OOM cause. Prefer count or age-based keep policies on the Queue defaults and on high-volume job adds.
+Unbounded `completed`/`failed` sets are a common OOM cause. Prefer count or age-based keep policies on the Queue defaults and on high-volume job adds. Eviction is best-effort when another job finishes — there is no background timer. `{ count: 0 }` removes jobs as soon as they finalize.

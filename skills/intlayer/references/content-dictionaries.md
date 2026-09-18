@@ -56,6 +56,8 @@ Import from `intlayer`. Nesting is allowed except where noted.
 
 Prefer `plural` for grammatical pluralization (ru/pl/ar/…). Prefer `enu` for ad-hoc numeric buckets. Prefer `select` for free-form strings (never `content[runtimeKey]` — that blocks minify/purge).
 
+9.5 engine: markdown/HTML insertion can auto-decorate `{{placeholder}}` when `dictionary.contentAutoTransformation` is on (turns Markdown/HTML/`{{var}}` into `md`/`html`/`insert` nodes). Keep explicit helpers in new Start dictionaries.
+
 ```ts
 import { enu, insert, md, nest, plural, select, t, type Dictionary } from "intlayer";
 
@@ -102,7 +104,7 @@ cars(2);
 status("draft"); // not status["draft"]
 ```
 
-Composite arrays and async fetches in declarations are valid (`["Hi", " ", getName()]`, `fetch(url).then(...)`). JSX nodes are allowed in `react-intlayer` dictionaries. `dictionary.contentAutoTransformation` (default `false`) can turn Markdown into HTML at interpret time.
+Composite arrays and async fetches in declarations are valid (`["Hi", " ", getName()]`, `fetch(url).then(...)`). JSX nodes are allowed in `react-intlayer` dictionaries.
 
 Per-dictionary overrides: `format` (`intlayer` | `icu` | `i18next`), `importMode`, `locale` (per-locale file — each field is already that locale, no `t()` needed), `schema`. Without `fallback` on `select`/`cond`/`gender`, only declared cases type-check; with `fallback`, any value is accepted.
 
@@ -130,7 +132,18 @@ useIntlayer("product-copy", {
 
 Related hooks (same package): `useDictionary` (pass a dictionary object), `useDictionaryDynamic` (Suspense + key), `useDictionaryAsync` (promise map). `dictionary.importMode` rewrites `useIntlayer` toward these at build time — see [compiler-compat.md](compiler-compat.md).
 
-## Server / non-hook consumption (9.4)
+A/B in React (9.5): prefer `useExperiment` over calling `getVariant` by hand:
+
+```tsx
+import { useExperiment, useIntlayer } from "react-intlayer";
+
+const { variant, isAssigned } = useExperiment("homepage-hero", ["control", "black_friday"]);
+const content = useIntlayer("hero-banner", { variant });
+```
+
+First variant is the control until assignment resolves (SSR / analytics off). Use `isAssigned` when a control flash is unacceptable. Optional third argument is relative weights (`[9, 1]`). See [cli-cms-ai.md](cli-cms-ai.md).
+
+## Server / non-hook consumption (9.4+)
 
 ```ts
 import { getIntlayerAsync } from "intlayer";
@@ -146,6 +159,8 @@ Without `@intlayer/babel` / `@intlayer/swc` (unoptimized build), `getIntlayerAsy
 `getDictionaryAsync` is the lower-level API the plugins rewrite `getIntlayerAsync` into. Prefer `getIntlayerAsync` at call sites.
 
 Use `useIntlayer` only under `IntlayerProvider`.
+
+Official Start guide still shows `getIntlayer` inside some server-function samples. Prefer `getIntlayerAsync` there on 9.4+.
 
 ## String attributes
 
@@ -212,7 +227,7 @@ const product = useIntlayer("product-copy", {
 
 A key may declare both dimensions. Selector order: **variant → item**. `{ variant: "promo" }` returns every promo item as an array; add `{ item: 2 }` to narrow.
 
-For A/B assignment without flicker, use `@intlayer/analytics` `getVariant` — see [cli-cms-ai.md](cli-cms-ai.md).
+`dictionariesPreload` does **not** cover collections/variants — those stay on-demand.
 
 ## Per-locale files and `fill`
 
@@ -245,17 +260,18 @@ import {
 } from "react-intlayer/format";
 ```
 
-Non-React / Node: import `number`, `currency`, `date`, `percentage`, `compact`, `list`, `relativeTime`, `units`, `Intl`, plus locale helpers (`getLocaleName`, `getLocaleLang`, `getLocaleFromPath`, `getPathWithoutLocale`, `getLocalizedUrl`, `getHTMLTextDir`) from `intlayer` and pass locale explicitly.
+Non-React / Node: import `number`, `currency`, `date`, `percentage`, `compact`, `list`, `relativeTime`, `units`, `Intl`, plus locale helpers (`getLocaleName`, `getLocaleLang`, `getLocaleFromPath`, `getPathWithoutLocale`, `getLocalizedUrl`, `getLocalizedPath`, `getCanonicalPath`, `getHTMLTextDir`) from `intlayer` and pass locale explicitly.
 
 Do **not** import `next-intlayer/client/format` or `next-intlayer/server/format` in Start.
 
 ## Anti-patterns
 
 - Declaring translations only as huge shared JSON without keys tied to features (unless `syncJSON` is the explicit bridge).
-- Calling Next.js `next-intlayer/server` hooks in Start.
+- Calling Next.js `next-intlayer/server` or `react-intlayer/server` hooks in Start.
 - Using sync `getIntlayer` in route `head` on 9.4+ when `getIntlayerAsync` is available (loads every locale).
 - Passing `t()` around `plural` categories instead of `plural` inside `t`.
 - Using `meta` for dynamic records (use object `variant`).
 - Indexing content with a runtime key (`status[type]`) instead of `select(type)` / `enu(n)` / `cond(b)`.
 - Forgetting `routeFileIgnorePattern` so `.content.ts` becomes a route.
 - Enabling `compiler.enabled` without intending build-time extraction (default is off).
+- Calling `getVariant` in React when `useExperiment` is available (9.5).
