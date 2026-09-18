@@ -22,6 +22,8 @@ Benefits: correlated context, less noise, complete picture on failure paths.
 4. **Keep distinct failures** via `log.error` / `createError`; drop redundant success chatter once the wide event covers it.
 5. Trust middleware for `method`, `path`, `requestId`, `status`, `duration` when using a framework integration.
 
+Request loggers prefill `method`, `path`, `requestId` (UUID, or `cf-ray` on Cloudflare), `startTime`. Level after response: `error` if an error was recorded, `warn` if status >= 400, else `info`.
+
 ## Sealing And Background Work
 
 After emit (auto or `emit()`), or when head sampling drops (`emit()` → `null`), the logger is **sealed**. Later `set`/`error`/`info`/`warn` are ignored (console warning with dropped keys).
@@ -36,9 +38,9 @@ Where supported (Express, Fastify, NestJS, SvelteKit, React Router, Next `withEv
 - Child emits its own event with `operation: label` and `_parentRequestId`
 - Parent may emit before child finishes
 
-Not available yet on Hono / Nuxt-Nitro `useLogger(event)` the same way—watch for post-emit warnings; use alternate patterns if needed.
+**Not available:** Hono and Nitro/Nuxt `useLogger(event)` (event-bound, no fork ALS). TanStack Start uses Nitro v3, so no `fork` either—await background work inside the handler.
 
-AI streaming: supported integrations defer emit until the response body finishes so `createAILogger(log)` fields land on the same request event.
+AI streaming: supported integrations (Next, Nitro/Nuxt, SvelteKit, Hono, React Router, oRPC) defer emit until the response body finishes so `createAILogger(log)` fields land on the same request event.
 
 ## Errors That Help Agents And Humans
 
@@ -74,7 +76,9 @@ Augment module types so `log.set` autocompletes shared schema (Learn → Typed F
 
 ## Redaction
 
-Auto-scrub PII/secrets before console and drains (authorization, password, token, cards, emails, etc.). Do not log raw secrets expecting redaction as the only control—still avoid putting them in context when possible. See Learn → Redaction / Best Practices.
+Auto-scrub PII/secrets before console and drains (authorization, password, token, cards, emails, IPs, phones, JWTs, etc.). Do not log raw secrets expecting redaction as the only control—still avoid putting them in context when possible. See Learn → Redaction / Best Practices.
+
+Sensitive headers (`authorization`, `cookie`, `x-api-key`, …) are filtered from drain context.
 
 ## Anti-Patterns
 

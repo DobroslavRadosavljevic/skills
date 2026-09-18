@@ -30,7 +30,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `effect` | Build, review, debug, migrate, or plan Effect v4 TypeScript code. |
 | `elysia` | Build, review, debug, test, and deploy Elysia applications with current docs. |
 | `elysia-architecture` | Portable Elysia house style: feature modules, routes, schemas, and ownership. |
-| `evlog` | Build, review, debug, configure, or migrate evlog wide-event TypeScript logging. |
+| `evlog` | Build, review, debug, configure, or migrate evlog 2.29 wide-event TypeScript logging (CLI map, drains, AI/eve, telemetry). |
 | `feedsmith` | Feedsmith v3+ RSS/Atom/RDF/JSON Feed/OPML parse and generate for TypeScript. |
 | `grok` | Cursor IDE only: always-on lock to Grok 4.6 (`cursor-grok-4.6-*`, any reasoning effort). Skip in Codex. |
 | `handoff` | Produce or consume agent-to-agent handoff context so another session can resume work. |

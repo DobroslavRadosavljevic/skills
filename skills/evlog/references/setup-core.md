@@ -6,14 +6,14 @@
 bun add evlog
 ```
 
-Optional CLI (early, separate package):
+Optional CLI (early, separate package; Node 20+):
 
 ```sh
 bunx @evlog/cli map
-# pin in CI when gating: bun add -d @evlog/cli@<version>
+# pin in CI when gating: bun add -d @evlog/cli@0.6.3
 ```
 
-Interactive wiring: `bunx @evlog/cli init` (or `evlog init` when installed). Upstream also offers `bunx skills add https://www.evlog.dev` for their agent skills pack.
+Interactive wiring: `bunx @evlog/cli init` (or `evlog init` when installed). Agent conventions: `bunx @evlog/cli agents`. Upstream also offers `bunx skills add https://www.evlog.dev` for their agent skills pack.
 
 Requires TypeScript **5+** for best inference. Ships its own types.
 
@@ -22,17 +22,19 @@ Requires TypeScript **5+** for best inference. Ships its own types.
 | Mode | API | Emit | When |
 | --- | --- | --- | --- |
 | Simple | `log.info` / `warn` / `error` / `debug` | Immediate | One-off events, libraries steps, client |
-| Wide (manual) | `createLogger` / `createRequestLogger` | **`log.emit()`** | Scripts, jobs, queues, non-framework HTTP |
+| Wide (manual) | `createLogger` / `createRequestLogger` | **`log.emit()`** | Scripts, jobs, queues, Lambda, Astro, non-framework HTTP |
 | Wide (request) | Framework middleware + `useLogger` / `req.log` / … | Auto on response end | API routes in integrated frameworks |
 
 All share drains, redaction, sampling, pretty(dev)/JSON(prod) defaults.
+
+Simple mode: **head sampling only**. Manual and request modes: head + tail sampling.
 
 ## Simple Logging
 
 ```ts
 import { log } from 'evlog'
 
-log.info('auth', 'User logged in') // tagged
+log.info('auth', 'User logged in') // tagged — console-only in pretty mode
 log.error({ action: 'payment', error: 'card_declined' }) // structured → drains
 ```
 
@@ -96,6 +98,8 @@ const error = parseError(err)
 // message, status, why, fix, link, code
 ```
 
+Nitro v3: import `createError` from `evlog/nitro/v3` so it wraps the Nitro error handler. Nitro v2: import `createError` from `evlog`.
+
 ## Core Methods On Wide Loggers
 
 - `set(partial)` — deep-merge context (incremental)
@@ -124,3 +128,5 @@ initLogger({
   drain: pipeline(createAxiomDrain()),
 })
 ```
+
+`create*Drain()` with missing credentials logs and becomes a no-op. Direct `sendTo*` / `sendBatchTo*` throws if config is incomplete.

@@ -1,8 +1,16 @@
 # CLI, Sampling, Audit, AI, Production
 
-## `@evlog/cli map`
+## `@evlog/cli` (0.6.x)
 
-Static observability score (Lighthouse-style) for **Nuxt, Nitro, Next.js App Router, TanStack Start**.
+Requires Node 20+. Binary name: `evlog`. Human report goes to **stderr**; stdout is for `--json` only. Exit `0` ok, `1` check/`--min-score` fail, `2` usage error. Use `set -o pipefail` when piping gated runs.
+
+Commands: `init`, `agents`, `map`, `doctor`, `telemetry` (CLI’s own usage, not `@evlog/telemetry`).
+
+Global flags: `--json`, `--debug`, `--noHeader`, `--cwd <dir>`, `--help`, `--version`. `EVLOG_CLI_DEBUG=1` equals `--debug`.
+
+### `map`
+
+Static observability score (Lighthouse-style) for **Nuxt, Nitro, Next.js App Router, TanStack Start, Hono**.
 
 ```sh
 bunx @evlog/cli map
@@ -16,8 +24,13 @@ bunx @evlog/cli doctor
 - **Early days** — pin CLI version when gating CI; rule sharpening can change scores without code changes.
 - Fix **FIX FIRST** (sensitive routes first), then re-run to confirm score movement.
 - Disable noisy checks: `// evlog-map-disable-next-line wide-event, context -- reason`
+- Scan **one app** at a time (`--cwd apps/web`). Bare workspace root with no framework is an error.
 
 Map does **not** prove runtime quality—only that instrumentation shape exists. It follows imports one hop.
+
+### `agents`
+
+Writes `<!-- evlog:start -->` … `<!-- evlog:end -->` into `AGENTS.md` (and a one-line `CLAUDE.md` if missing). Optionally runs `npx skills add https://www.evlog.dev`. Safe to re-run. `--no-skills` skips the network install.
 
 ## Sampling
 
@@ -29,6 +42,8 @@ Two tiers:
 Tail runs first conceptually for rescue; unmatched events then face head rates. Errors default to 100% unless you set `error: 0`.
 
 Custom: `keep(ctx)` callback or Nuxt/Nitro `evlog:emit:keep` hook (`ctx.shouldKeep = true`). Prefer full logging in dev; sample in production overrides.
+
+Simple `log.*` calls: head sampling only.
 
 ## Audit Trails
 
@@ -42,11 +57,11 @@ import { createAILogger } from 'evlog/ai'
 const ai = createAILogger(log, {
   cost: { 'claude-sonnet-4.6': { input: 3, output: 15 } },
 })
-
-// wrap model / attach telemetry integration per AI SDK docs
 ```
 
-Captures tokens, tool calls, streaming metrics, estimated cost onto the wide event. Requires optional `ai` peer when using that stack.
+Captures tokens, tool calls, streaming metrics, estimated cost onto the wide event. Requires optional `ai` peer (`>=6.0.168 <8`) when using that stack.
+
+For **eve** agents (one wide event per turn), see [extend.md](extend.md).
 
 ## Filesystem Drain For Agents
 
@@ -56,7 +71,7 @@ import { createFsDrain } from 'evlog/fs'
 createFsDrain({ dir: '.evlog/logs', maxFiles: 14 })
 ```
 
-NDJSON local logs let agents analyze failures without cloud access. Pair with map + structured `why`/`fix`.
+NDJSON local logs let agents analyze failures without cloud access. Pair with map + structured `why`/`fix`. Replay/tail with `readFsLogs` / `tailFsLogs` (`evlog` FS reader docs).
 
 ## Client → Server
 
@@ -85,3 +100,4 @@ NDJSON local logs let agents analyze failures without cloud access. Pair with ma
 | Drain loss under load | Pipeline buffer/retry; await flush on shutdown |
 | Map false positives | Sensitivity heuristic—inspect `evlog map <file>`; disable with comment if intentional |
 | Next Edge crash on fs drain | Keep Node-only drains in Node instrumentation / route config only |
+| Map from workspace root | Run with `--cwd` on the app package |

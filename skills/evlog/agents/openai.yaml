@@ -1,4 +1,4 @@
 interface:
   display_name: "evlog"
   short_description: "Build evlog wide-event logging"
-  default_prompt: "Use $evlog to build, review, migrate, or debug this evlog logging setup with current documentation."
+  default_prompt: "Use $evlog to build, review, migrate, or debug this evlog logging setup (evlog 2.29, @evlog/cli 0.6) with current documentation."
