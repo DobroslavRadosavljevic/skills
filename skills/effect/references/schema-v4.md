@@ -2,7 +2,7 @@
 
 Use this reference for Effect Schema v4 validation, transformations, classes, errors, serialization, and JSON Schema generation. Canonical guide in-repo: `packages/effect/SCHEMA.md`. Snapshot: Effect **4.0.0-rc**.
 
-Preferred error type in new code: `Schema.TaggedError` (also `Schema.TaggedErrorClass` / `Schema.ErrorClass`). Prefer `Schema.decodeUnknownEffect` at Effect boundaries; `decodeUnknownSync` / `Exit` / `Result` variants for tests and sync parsers. JSON Schema: `Schema.toJsonSchemaDocument`. SQL dual models: `effect/unstable/schema` `Model`.
+Preferred error type in new code: `Schema.TaggedError` (`Schema.Error` for untagged errors). Prefer `Schema.decodeUnknownEffect` at Effect boundaries; `decodeUnknownSync` / `Exit` / `Result` variants for tests and sync parsers. JSON Schema: `Schema.toJsonSchemaDocument`. SQL dual models: `effect/unstable/schema` `Model`.
 
 ## Mental Model
 
@@ -187,10 +187,10 @@ Useful class helpers:
 
 Use `Schema.TaggedClass` for discriminated classes.
 
-Use `Schema.ErrorClass` and `Schema.TaggedErrorClass` for typed errors. Tagged error classes work naturally with `Effect.catchTag`.
+Use `Schema.Error` and `Schema.TaggedError` for typed errors. Tagged error classes work naturally with `Effect.catchTag`.
 
 ```ts
-class HttpError extends Schema.TaggedErrorClass<HttpError>()("HttpError", {
+class HttpError extends Schema.TaggedError<HttpError>()("HttpError", {
   status: Schema.Number,
   message: Schema.String
 }) {}

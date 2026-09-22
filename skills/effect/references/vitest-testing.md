@@ -1,6 +1,6 @@
 # Testing With `@effect/vitest`
 
-Deep guide for testing Effect **v4 RC** programs under Vitest. Snapshot: `@effect/vitest@4.0.0-rc.111` with `effect@4.0.0-rc.111`, peer `vitest@^4.1.0`.
+Deep guide for testing Effect **v4 RC** programs under Vitest. Snapshot: `@effect/vitest@4.0.0-rc.112` with `effect@4.0.0-rc.112`, peer `vitest@^4.1.0`.
 
 ## Install (Effect v4)
 
@@ -121,7 +121,7 @@ v3 → v4 utils renames:
 
 ```ts
 import { it } from "@effect/vitest"
-import { Clock, Effect } from "effect"
+import { Clock, Effect, Fiber } from "effect"
 import { TestClock } from "effect/testing"
 
 it.effect("clock starts at 0", () =>
@@ -148,7 +148,7 @@ it.effect("timeout", () =>
       Effect.forkChild
     )
     yield* TestClock.adjust("5 minutes")
-    expect(yield* fiber).toBe("done")
+    expect(yield* Fiber.join(fiber)).toBe("done")
   }))
 ```
 
@@ -258,7 +258,7 @@ For **per-test isolation**, provide inside the test:
 
 ```ts
 it.effect("isolated", () =>
-  myProgram.pipe(Effect.provide(MyService.Live)))
+  myProgram.pipe(Effect.provide(MyService.Live, { local: true })))
 ```
 
 or construct a **fresh** layer per test (avoid a single shared `MemoMap`).
@@ -270,7 +270,7 @@ or construct a **fresh** layer per test (avoid a single shared `MemoMap`).
 3. Control time with `TestClock` from `effect/testing`; fork before `adjust`.
 4. Use `it.effect` for scoped resources (already scoped).
 5. Use shared `layer()` only for expensive, preferably immutable/read-only services.
-6. Isolate mutable services with per-test `Effect.provide`.
+6. Isolate mutable services with per-test `Effect.provide(layer, { local: true })` or `Layer.fresh`.
 7. Use `it.live` only when live clock/network/time is required.
 8. Use `@effect/vitest/utils` for Option/Result/Exit assertions.
 9. Keep Vitest config normal (`vitest run` in CI); Effect runners compose with standard Vitest.
@@ -321,7 +321,7 @@ or construct a **fresh** layer per test (avoid a single shared `MemoMap`).
 ## Sources
 
 - Package README (verify against source — overview table can lag): https://github.com/Effect-TS/effect/blob/main/packages/vitest/README.md
-- Tagged: https://github.com/Effect-TS/effect/blob/effect@4.0.0-rc.111/packages/vitest/README.md
+- Tagged: https://github.com/Effect-TS/effect/blob/effect@4.0.0-rc.112/packages/vitest/README.md
 - Sources: `packages/vitest/src/index.ts`, `utils.ts`, `internal/internal.ts`
 - TestClock site docs are often v3-leaning — prefer `effect/testing` + this package for v4
 - npm: https://www.npmjs.com/package/@effect/vitest

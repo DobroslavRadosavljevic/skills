@@ -6,6 +6,8 @@ Do not use `Utils` / `Unify` / `Effectable` / `HKT` / `Types` in app code unless
 
 **Prefer (from module JSDoc):** `Stream`/`Sink` over `Channel`/`Pull`/`Take`; `Schema` over `SchemaAST`; `Effect.scoped`/`Layer` over raw `Scope`; platform `runMain` over `Runtime.makeRunMain`; `Reducer` when a fold needs an empty value (`Combiner` is merge-only); `Ref` over `MutableRef` for fiber-safe state; `Exit` when Cause/die/interrupt must be kept, `Result` for plain success/failure; SHA-256+ over SHA-1 except legacy interop.
 
+Snapshot: **4.0.0-rc.112**, checked against the official source barrels on 2026-09-22. “Stable” means outside `unstable/`; the release itself is still an RC.
+
 ## Core runtime
 
 | Module | Use when | Avoid when |
@@ -33,7 +35,7 @@ Do not use `Utils` / `Unify` / `Effectable` / `HKT` / `Types` in app code unless
 | **Tracer** | Spans, sampling, parent context | Raw OTel APIs unless integrating `@effect/opentelemetry` |
 | **Metric** | Counters, gauges, histograms, frequency | Business metrics that belong in a dedicated TSDB client only |
 | **ErrorReporter** | Forward non-interrupt Causes to Sentry/etc. | Using it as the only error channel (still prefer typed `E`) |
-| **Config** / **ConfigProvider** | Typed env/object/dotenv config | Replacing an existing validated env module without cause |
+| **Config** / **ConfigProvider** | Typed env/object/dotenv config | Duplicating framework-owned validation; adapt its validated values once |
 | **ExecutionPlan** | Ordered fallbacks with per-step layers, retries, predicates | Simple `orElse` / `retry` |
 | **Request** / **RequestResolver** | Batched/deduped remote calls (N+1) | One-off HTTP — `HttpClient` |
 | **Pool** | Bounded pool of resources | Unbounded create-per-call |
@@ -81,6 +83,7 @@ Do not use `Utils` / `Unify` / `Effectable` / `HKT` / `Types` in app code unless
 | **JsonPatch** / **JsonPointer** | RFC JSON Patch / pointers (Schema can derive differs) |
 | **Inspectable** / **Pipeable** | Library author protocols |
 | **Formatter** | Human-readable Cause/Schema issue formatting |
+| **StandardSchema** | Standard Schema interoperability contracts; derive adapters through Schema rather than duplicating validation |
 | **SchemaAST** / **SchemaGetter** / **SchemaIssue** / **SchemaParser** / **SchemaRepresentation** / **SchemaTransformation** | Schema internals / compilers — app code uses **Schema** |
 | **Schema** | All validation, domain classes, tagged errors, codecs — [schema-v4.md](schema-v4.md) |
 | **Optic** | Lenses/prisms over nested data (often derived from Schema) |

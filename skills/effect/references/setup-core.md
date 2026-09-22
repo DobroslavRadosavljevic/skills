@@ -9,7 +9,7 @@ bun add -d @effect/vitest@rc vitest
 
 Keep every `@effect/*` on the **same** `4.0.0-rc.N` as `effect`. npm `latest` is v3 (`effect@3.x`, `@effect/vitest@0.30.x`).
 
-Requirements (from Effect README, rc.111):
+Requirements (from Effect README, rc.112):
 
 - TypeScript **5.9+** (`strict: true`). TypeScript 7 recommended for Effect’s TS tooling.
 - Node.js 18+ generally; `@effect/sql-sqlite-node` needs Node **22.16+**.
@@ -106,7 +106,7 @@ Pass `AbortSignal` when bridging HTTP request cancellation.
 
 `Config<T>` is yieldable. Default provider: `ConfigProvider.fromEnv()`. Tests: `fromUnknown`, `fromEnv({ env })`, `fromDotEnvContents`. `layer` / `layerAdd`, `constantCase`, `nested`.
 
-Do not rip out a working env schema library only because Config exists.
+Use Config for application-owned configuration. Adapt existing validated framework configuration once at the boundary; avoid duplicate validation.
 
 ## Other core renames
 

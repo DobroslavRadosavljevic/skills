@@ -1,6 +1,6 @@
 # Ecosystem packages
 
-All public v4 app packages share one version (`4.0.0-rc.N`, snapshot **rc.111**). Install with `@rc`. npm `latest` is v3.
+All public v4 app packages share one version (`4.0.0-rc.N`, snapshot **rc.112**). Install with `@rc`. npm `latest` is v3.
 
 There is **no** `@effect/platform`, `@effect/sql`, or `@effect/ai` umbrella. Portable APIs live in `effect` / `effect/unstable/*`. Extra packages are **runtime implementations or vendor adapters**.
 
@@ -33,7 +33,7 @@ Do **not** install `@effect/platform-node-shared` in apps — node/bun/deno pull
 
 Typical: `program.pipe(Effect.provide(NodeServices.layer), NodeRuntime.runMain)`.
 
-## Platform (`4.0.0-rc.111`, peer `effect`)
+## Platform (`4.0.0-rc.112`, peer `effect`)
 
 | Package | When |
 | --- | --- |
@@ -68,16 +68,16 @@ Key exports are typically `*Client` + `*Migrator`.
 
 | Package | When |
 | --- | --- |
-| `@effect/ai-openai` / `ai-anthropic` / `ai-openai-compat` / `ai-openrouter` | Vendor HTTP + `LanguageModel` layers |
+| `@effect/ai-openai` / `@effect/ai-anthropic` / `@effect/ai-openai-compat` / `@effect/ai-openrouter` | Vendor HTTP + `LanguageModel` layers |
 | `@effect/atom-react` | React 19 hooks + SSR hydration |
 | `@effect/atom-solid` | Solid ≥1.9 |
 | `@effect/atom-vue` | Vue 3.5 |
 | `@effect/opentelemetry` | `NodeSdk` / `WebSdk` when you already use the OTel SDK |
 | `@effect/vitest` | `it.effect` / `it.live` / `it.layer` / `it.prop`; vitest ^4.1 |
-| `@effect/docgen` / `doctest` / `openapi-generator` | Dev tooling (`openapigen` uses `NodeRuntime.runMain`) |
+| `@effect/docgen` / `@effect/doctest` / `@effect/openapi-generator` | Dev tooling (`openapigen` uses `NodeRuntime.runMain`) |
 
 Skip private `packages/tools/*` packages at version `0.0.0` (`ai-codegen`, `bundle`, `oxc`, …).
 
 ## Version rule
 
-If `effect` is `4.0.0-rc.111`, every `@effect/*` in the app must match (or `@rc` resolving to that). Do not mix beta, rc, and v3 `latest`.
+If `effect` is `4.0.0-rc.112`, the v4 monorepo integrations in the app must match. Independently versioned tools require their own peer checks. Do not mix beta, rc, and v3 `latest`.

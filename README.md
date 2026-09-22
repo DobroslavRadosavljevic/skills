@@ -27,7 +27,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `design` | Enforce shadcn website visual design: tokens, type, color, spacing, surfaces. |
 | `design-engineer` | Diagnose UI/UX, propose multiple solutions, pick the best, and ship craft. |
 | `drizzle-orm` | Drizzle ORM 1.0 RC (not 0.x): schema, RQBv2, kit, seed, validators, and Effect drivers. |
-| `effect` | Build, review, debug, migrate, or plan Effect v4 TypeScript code. |
+| `effect` | Enforce consistent Effect v4 application code, thin framework adapters, and a complete module and package index. |
 | `elysia` | Build, review, debug, test, and deploy Elysia applications with current docs. |
 | `elysia-architecture` | Portable Elysia house style: feature modules, routes, schemas, and ownership. |
 | `evlog` | Build, review, debug, configure, or migrate evlog 2.29 wide-event TypeScript logging (CLI map, drains, AI/eve, telemetry). |
