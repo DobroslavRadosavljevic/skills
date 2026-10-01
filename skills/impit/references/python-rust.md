@@ -41,9 +41,9 @@ Shared parameters (from stubs):
 | `browser` | Impersonation profile |
 | `http3` | Enable HTTP/3 |
 | `proxy` | HTTP/HTTPS/SOCKS URL |
-| `timeout` | Default timeout |
-| `verify` | TLS verification (map to ignore-errors mindset carefully) |
-| `follow_redirects` / `max_redirects` | Redirect policy |
+| `timeout` | Default timeout in **seconds** (`None` disables it) |
+| `verify` | TLS verification (`False` ignores TLS errors) |
+| `follow_redirects` / `max_redirects` | Redirect policy (httpx-style defaults: `False` / `20`, unlike Node's `true` / `10`) |
 | `cookie_jar` / `cookies` | Persist cookies across requests |
 | `headers` | Client-wide defaults |
 | `local_address` | Bind source address |
@@ -51,7 +51,13 @@ Shared parameters (from stubs):
 
 Reuse one client for session semantics (pool + cookies + defaults).
 
-Per-request: `headers`, `timeout`, `force_http3`, body via `content`/`data` as supported.
+Per-request: `headers`, `timeout` (seconds; defaults to `USE_CLIENT_DEFAULT`), `force_http3`, body via `content` (`bytes`, `str`, or a sync/async iterable of `bytes` chunks, streamed since 0.14.0) or `data` (form dict).
+
+### Response
+
+- `status_code`, `reason_phrase`, `text`, `content`, `encoding`, `http_version`, `url`, `is_redirect`.
+- `headers` is an httpx-style `Headers` object since 0.13.2: case-insensitive lookup (`response.headers['content-type']`) and `.raw` for `(bytes, bytes)` pairs. Mutations do not persist on the response.
+- `raise_for_status()` raises `HTTPStatusError` for 4xx/5xx.
 
 Top-level helpers (e.g. `impit.get(...)`) exist for one-shot calls; prefer a client for repeated work.
 
@@ -133,8 +139,9 @@ Enable with `.with_http3()`. Negotiation uses HTTPS DNS / Alt-Svc; force per req
 
 Import from `impit::fingerprint::database`, e.g.:
 
-- Chrome: `chrome_100` … `chrome_142` (see fingerprints docs for full list)
+- Chrome: `chrome_100` … `chrome_151` (includes `chrome_133`, which has no Node/Python id)
 - Firefox: `firefox_128`, `firefox_133`, `firefox_135`, `firefox_144`
 - OkHttp: `okhttp3`, `okhttp4`, `okhttp5`
+- Safari iOS: `ios_18`
 
 Always confirm module names against the installed crate — the database grows over time.

@@ -7,6 +7,7 @@
 - [PostCSS](#postcss)
 - [Tailwind CLI](#tailwind-cli)
 - [webpack](#webpack)
+- [Turbopack](#turbopack)
 - [Framework Guides](#framework-guides)
 - [v3 To v4 Upgrade](#v3-to-v4-upgrade)
 - [Manual Migration Hazards](#manual-migration-hazards)
@@ -21,6 +22,7 @@ Start from the project that already exists:
 - PostCSS-owned framework or build: use `@tailwindcss/postcss`.
 - Simple static site or custom build: use `@tailwindcss/cli`.
 - webpack project: consider `@tailwindcss/webpack`, especially for large builds or framework paths that support webpack loaders.
+- Next.js with Turbopack: the official guide still uses `@tailwindcss/postcss`; `@tailwindcss/turbopack` is a newer dedicated loader (see [Turbopack](#turbopack)).
 - Framework with an official Tailwind guide: follow the framework guide first.
 
 Do not add multiple integration paths unless the project genuinely has multiple CSS pipelines.
@@ -102,6 +104,12 @@ bunx @tailwindcss/cli -i ./src/input.css -o ./src/output.css --watch
 
 In v4, the CLI package is `@tailwindcss/cli`, not the `tailwindcss` package.
 
+Useful CLI flags on the current v4.3 line:
+
+- `--minify` and `--optimize` for production output.
+- `--watch --poll[=ms]` when filesystem events are unreliable (Docker volumes, network mounts, some VMs). Added in v4.3.3.
+- `--silent` to suppress build output. Added in v4.3.1.
+
 ## webpack
 
 Install:
@@ -129,6 +137,30 @@ module.exports = {
 ```
 
 Use the dedicated loader when the project owns webpack configuration and the framework supports it. It avoids routing Tailwind through PostCSS solely for compilation and can materially improve large webpack builds.
+
+## Turbopack
+
+`@tailwindcss/turbopack` is a dedicated Turbopack loader (first published at `4.3.3`). It skips the PostCSS detour the same way the webpack loader does. The docs site has no install guide for it yet, so follow the package README and keep `@tailwindcss/postcss` when the project wants the documented Next.js path.
+
+```sh
+bun add tailwindcss @tailwindcss/turbopack
+```
+
+```js
+// next.config.js
+module.exports = {
+  turbopack: {
+    rules: {
+      "*.css": {
+        loaders: ["@tailwindcss/turbopack"],
+        as: "*.css",
+      },
+    },
+  },
+};
+```
+
+Loader options: `base` (scan root, defaults to `process.cwd()`) and `optimize` (defaults to `true` in production; accepts `{ minify: true }`). Remove `@tailwindcss/postcss` from the PostCSS config when switching so CSS is not compiled twice.
 
 ## Framework Guides
 
@@ -173,6 +205,7 @@ Use the dedicated integration packages:
 - `@tailwindcss/postcss` for PostCSS.
 - `@tailwindcss/cli` for CLI.
 - `@tailwindcss/webpack` for webpack.
+- `@tailwindcss/turbopack` for a Turbopack-native loader.
 
 Known v4 behavior changes:
 

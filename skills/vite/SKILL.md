@@ -7,12 +7,12 @@ description: "Build, review, debug, configure, migrate, teach, or plan Vite 8.3 
 
 Use this skill when work touches Vite: scaffolding, `vite.config`, plugins, env/modes, dep optimization, production builds, SSR/backend integration, library mode, DevTools, or upgrading to Vite 8 (Rolldown/Oxc/Lightning CSS).
 
-Snapshot: `vite@8.3.0`, `create-vite@9.2.1` (2026-09-18). Refresh from [source-map.md](references/source-map.md) if versions differ.
+Snapshot: `vite@8.3.2`, `create-vite@9.2.1` (2026-10-01). Refresh from [source-map.md](references/source-map.md) if versions differ.
 
 ## Workflow
 
 1. Inspect the local Vite surface:
-   - Package version (`vite@8.x` preferred; snapshot **8.3.0**). Node: `^20.19.0 || >=22.12.0`.
+   - Package version (`vite@8.x` preferred; snapshot **8.3.2**). Node: `^20.19.0 || >=22.12.0`.
    - Config: `vite.config.ts` / `.js`, `defineConfig`, plugins, `appType`, top-level `input`.
    - Defaults in use: **Rolldown** (bundle + optimize) + **Oxc** (transform/minify) + **Lightning CSS** (CSS minify). Vite 7- used esbuild/Rollup.
    - Scripts: `vite` / `vite build` / `vite preview`; framework plugins (`@vitejs/plugin-*`).
@@ -28,7 +28,7 @@ Snapshot: `vite@8.3.0`, `create-vite@9.2.1` (2026-09-18). Refresh from [source-m
 
 ## Core Judgment
 
-- Vite = **dev server (native ESM + HMR)** + **production bundler**. Vite 8 defaults: bundler/optimizer **Rolldown** (`rolldown@~1.2.6` in 8.3.0); JS transform/minify **Oxc**; CSS minify **Lightning CSS**. PostCSS remains the default CSS *transformer*.
+- Vite = **dev server (native ESM + HMR)** + **production bundler**. Vite 8 defaults: bundler/optimizer **Rolldown** (`rolldown@~1.2.11` in 8.3.2); JS transform/minify **Oxc**; CSS minify **Lightning CSS**. PostCSS remains the default CSS *transformer*.
 - Prefer **`bunx vite`** / **`bun create vite`** in command examples; keep narrative npm registry references when describing packages.
 - `index.html` is the app entry (not under `public/`). `public/` is copy-as-is static files. Non-HTML entries: set top-level `input` (used in dev and build).
 - Vite **does not typecheck** — run `tsc --noEmit` (or project typecheck) separately. Oxc transpiles only.

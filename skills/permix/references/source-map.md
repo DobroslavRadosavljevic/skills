@@ -4,7 +4,7 @@ Docs and package snapshot used to create this skill.
 
 ## Snapshot
 
-- Captured: **2026-09-18**
+- Captured: **2026-09-18**; re-verified **2026-10-01** (no commits or npm release after 4.3.0; open adapter PRs for React Router #62, Astro #61, Nuxt #60 are unreleased)
 - Package: **`permix@4.3.0`** (npm `latest`, published 2026-09-14)
 - Previous in this skill: `permix@4.1.2` (2026-07-02)
 - Intermediate: `permix@4.2.0` (2026-09-13)

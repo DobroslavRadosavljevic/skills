@@ -29,7 +29,7 @@ Lite (~80% smaller, no merge; no `cnMerge`):
 import { tv, createTV, cn, cx } from 'tailwind-variants/lite'
 ```
 
-On **v3.3.0+**, do not install `tailwind-merge` only for Tailwind Variants. Keep it if the app still calls `twMerge` / `extendTailwindMerge` directly.
+On **v3.3.0+** (current `3.3.1`), do not install `tailwind-merge` only for Tailwind Variants. Keep it if the app still calls `twMerge` / `extendTailwindMerge` directly.
 
 ## Minimal `tv` recipe
 

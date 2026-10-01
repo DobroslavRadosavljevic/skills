@@ -43,7 +43,7 @@ Use this checklist when reviewing or finishing a compound UI component.
 - Run the smallest relevant typecheck, lint, test, build, or story command.
 - For visual components, inspect the real story/page in a browser when feasible.
 - Exercise keyboard navigation: Tab, Shift+Tab, Enter, Space, Escape, arrows, Home/End where relevant.
-- Test `asChild` with a custom child and confirm props, handlers, class names, and refs survive.
+- Test `asChild` (Radix) or `render` (Base UI) with a custom child and confirm props, handlers, class names, and refs survive.
 - Check controlled and uncontrolled state paths if both are supported.
 - Report any verification that could not be run.
 
@@ -51,7 +51,7 @@ Use this checklist when reviewing or finishing a compound UI component.
 
 - A component claims to be composable but still takes `title`, `description`, `actions`, `icon`, and `footer` props.
 - A wrapper hides a required primitive part, making accessibility impossible to audit at the call site.
-- `asChild` is accepted but the child cannot receive props or refs.
+- `asChild` / `render` is accepted but the child cannot receive props or refs, or a Base UI part exposes both.
 - A custom trigger is not keyboard accessible.
 - Styling depends on internal DOM order instead of slots and state attributes.
 - Context is used as a prop-drilling escape hatch without a real cross-part invariant.

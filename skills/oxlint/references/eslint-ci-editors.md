@@ -28,7 +28,7 @@ export default [
 Other flat slices: `flat/all`, `flat/typescript`, `flat/react`, `flat/import`, `flat/correctness`, `flat/tree-shaking`, …  
 Legacy: `extends: ["plugin:oxlint/recommended"]`.
 
-Keep `oxlint` and `eslint-plugin-oxlint` on the **same minor** (plugin peer is `oxlint ~1.83.0` on this snapshot).
+Keep `oxlint` and `eslint-plugin-oxlint` on the **same minor** (plugin peer is `oxlint ~1.86.0` on this snapshot).
 
 `buildFromOxlintConfigFile` is flat-config only. Prefer it when an Oxlint config already exists so ESLint disable-sets match.
 
@@ -49,7 +49,7 @@ bunx @oxlint/migrate --replace-eslint-comments
 bunx @oxlint/migrate --output-file .oxlintrc.json
 ```
 
-Default output is **`.oxlintrc.json`**. Pin `@oxlint/migrate` to the same version as `oxlint`. 1.83 uses current default plugins when merging.
+Default output is **`.oxlintrc.json`**. Pin `@oxlint/migrate` to the same version as `oxlint`. Since 1.83 it uses current default plugins when merging.
 
 | Flag | Notes |
 | --- | --- |
@@ -84,6 +84,8 @@ Install local `oxlint`. LSP: `oxlint --lsp`.
 ```
 
 Prefer `options.typeAware: true` in the **root** Oxlint config. `oxc.typeAware` in editor settings overrides when set; when unset, the editor follows the config. Requires `oxlint-tsgolint`. 1.81 stops tsgolint processes from leaking in the LSP.
+
+LSP notes: `oxc.configPath: ""` counts as unset (1.84). The `run` (`onSave` / `onType`) option only affects push-model clients; pull-diagnostic clients ignore it. Vite+ mode disables nested configs regardless of editor settings (1.85).
 
 ## CI
 

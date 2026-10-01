@@ -110,13 +110,27 @@ bunx turbo gen run <generator>
 
 Keep generators under `turbo/generators/` with Plop config.
 
+## Rust, Python, and Go (experimental, 2.11+)
+
+`turbo` can discover non-JS workspaces and put them in the same task graph. Each needs a root future flag and is subject to change:
+
+| Language | Flag | Root requirements |
+| --- | --- | --- |
+| Rust | `experimentalCargoWorkspaces` | `cargo` + `rustc` on `PATH`, virtual workspace `Cargo.toml` with `[workspace.metadata].name`, `Cargo.lock` |
+| Python | `experimentalPythonWorkspaces` | `uv` on `PATH`, uv workspace `pyproject.toml` with `[tool.turbo].name`, `uv.lock` (turbo never writes it) |
+| Go | `experimentalGoWorkspaces` | Go 1.22+, root `go.work` with in-repo `use` modules, `go.mod` per member |
+
+Common tasks map to native commands (for example `build` → `cargo build` / `uv build` / `go build ./...`, `test` → `cargo test` / `uv run pytest` / `go test ./...`). Cross-toolchain edges work in `turbo.json` (`"api#test": { "dependsOn": ["rust-core#build"] }`). Custom native tasks need `experimentalTaskCommand` plus a task `command` array (runs without a shell).
+
+Guides: https://turborepo.dev/docs/guides/multi-language
+
 ## Migration playbooks
 
 ### From bare workspaces
 
 1. `bun add -D turbo`
 2. Add `turbo.jsonc` mapping existing scripts
-3. Declare package manager field
+3. Declare `devEngines.packageManager`
 4. Add outputs/`^build` incrementally
 5. Enable remote cache in CI
 
@@ -144,6 +158,7 @@ Official guide: https://turborepo.dev/docs/guides/migrating-from-nx
 | Workspaces | Root `workspaces` + `workspace:*` |
 | create-turbo / CI | `-m bun` first-class |
 | prune `--production` | Bun-aware lockfile rewrite |
+| Lockfile | `bun.lock` text lockfile, including `lockfileVersion` 2 |
 | Caveat | Pin `devEngines.packageManager`; watch lockfile format across Bun majors |
 
 ```sh
@@ -159,6 +174,20 @@ bun add -g turbo   # optional local DX / Docker prepare stage
 | npm 8+ | Stable |
 | yarn 1+ (incl. PnP) | Stable |
 | bun 1.2+ | Stable |
+| nub 0.8+ | Stable (2.10.2+; reuses npm/pnpm/Yarn/Bun lockfiles; `nub.lock`) |
+| aube 2.2+ | Stable (2.10.3+) |
+
+Declare the manager with `devEngines.packageManager` (2.10.1+, announced with 2.11). The top-level `packageManager` field is planned to stop working in a future major:
+
+```json
+{
+  "devEngines": {
+    "packageManager": { "name": "bun", "version": "1.4.2" }
+  }
+}
+```
+
+`version` accepts semver ranges. Upgrade codemod: `bunx @turbo/codemod migrate`.
 
 Workspace globs: prefer `apps/*`, `packages/*` — avoid ambiguous `**` nesting across managers.
 

@@ -32,7 +32,7 @@ Use Turbo when you have repeated `build` / `lint` / `test` / `check-types` acros
 
 ```sh
 bunx create-turbo@latest
-# flags: -m bun | pnpm | npm | yarn
+# flags: -m bun | pnpm | npm | yarn | nub | aube
 #         --example with-vitest
 #         --skip-install
 ```
@@ -118,6 +118,9 @@ bunx turbo run build          # second run should be mostly cache hits
 | Prune for Docker | `bunx turbo prune web --docker` |
 | Boundaries | `bunx turbo boundaries` |
 | Debug hashing | `bunx turbo run build --summarize` |
+| Tagged tasks (2.11.6+) | `bunx turbo run test --filter=tag:ci` |
+| Graph in browser | `bunx turbo devtools` |
+| Search docs | `bunx turbo docs "caching"` |
 
 Prefer **`turbo run`** in CI. Locally, root npm scripts that wrap `turbo run` are fine.
 
@@ -283,6 +286,10 @@ When CI is slow:
 | Typecheck misses dep source edits | Empty `check-types: {}` | Use transit nodes or `^check-types` |
 | Nested turbo invocation | Root+package both turbo | Root wraps; packages run real commands |
 | Prune missing global files | Default prune | `futureFlags.pruneIncludesGlobalFiles` or copy manually |
+| Codegen output causes stale hits | Hash computed before codegen ran | `inputs` object `{ "mode": "jit", "globs": [...] }` |
+| Unexpected `AGENTS.md` diff after running turbo | `agentGuidance` managed block (2.11.5+) | Keep it, or set root `"agentGuidance": false` |
+| Package manager not detected | Only `devEngines` or unusual manager | Upgrade to turbo 2.11; declare `devEngines.packageManager` |
+| Everything misses cache once | A `futureFlags` entry changed | Expected — global hash changed |
 
 ---
 
@@ -291,7 +298,7 @@ When CI is slow:
 When asked to “add Turborepo” or “fix the monorepo pipeline”:
 
 1. Detect package manager, workspaces, existing Nx/Lerna/turbo.
-2. Add `turbo` matching 2.x; create `turbo.jsonc` with `$schema`.
+2. Add `turbo` matching 2.x (2.10.1+ for `devEngines`; prefer latest 2.11); create `turbo.jsonc` with `$schema`.
 3. Map scripts → tasks; set `^build` / outputs / `dev` persistent.
 4. Validate with `--dry=json` / `--graph`, then a real `build`.
 5. Wire root scripts + CI remote cache + optional `--affected`.

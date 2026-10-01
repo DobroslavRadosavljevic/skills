@@ -92,9 +92,9 @@ Ask for the real production base URL; do not hardcode `localhost`.
 | Command | Purpose |
 | --- | --- |
 | `email dev --dir <path> --port <n>` | Watch + preview (default dir `./emails`, port `3000`) |
-| `email build --dir <path>` | Copy/build preview app into `.react-email` |
+| `email build --dir <path> [--packageManager <pm>]` | Copy/build preview app into `.react-email` |
 | `email start` | Run the built preview app |
-| `email export --dir <path> --outDir <path> [--pretty] [--plainText]` | Static HTML/text files |
+| `email export --dir <path> --outDir <path> [--pretty] [--plainText] [--extension <ext>]` | Static HTML/text files (default `out/`, `.html` or `.txt`; `--extension blade.php` for host templates) |
 | `email help <cmd>` | Command help |
 | `email resend setup` / `email resend reset` | Store/clear Resend API key for CLI template upload |
 
@@ -103,6 +103,24 @@ Prefer:
 ```sh
 bunx email dev --dir emails
 bun run email
+```
+
+The CLI requires **Node 20.19+** (6.10+ refuses to start on older Node). The preview toolbar has a **Props** tab for live-editing render props without touching `PreviewProps` (6.8+).
+
+### Custom esbuild plugins (6.11+)
+
+`email dev`, `email build`, and `email export` accept `--esbuild-plugins <path>`. The module's default export is an array of esbuild plugins, or a function returning one. Use it when templates need a compile-time transform (for example, a custom loader or macro).
+
+```ts
+// emails/esbuild-plugins.ts
+import type { Plugin } from 'esbuild';
+
+const plugins: Plugin[] = [/* yourPlugin() */];
+export default plugins;
+```
+
+```sh
+bunx email dev --dir emails --esbuild-plugins ./emails/esbuild-plugins.ts
 ```
 
 ### `email export` caveats

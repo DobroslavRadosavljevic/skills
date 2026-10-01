@@ -1,15 +1,15 @@
 # Migration, platform, and testing
 
-Effect v4 is a **release candidate**. Pin matching `4.0.0-rc.N`. v3 remains on npm `latest` / branch `v3`.
+Effect **4.0.0** is stable (npm `latest` since 2026-10-01) and an LTS line. v3 lives on branch `v3` (last npm `3.22.2`).
 
 ## Status
 
-- One version number across the ecosystem.
-- Former `@effect/platform`, `@effect/rpc`, `@effect/cluster`, `@effect/sql` *core* APIs live in `effect` or `effect/unstable/*`.
+- One version number across the ecosystem (`4.0.0` everywhere).
+- Former `@effect/platform`, `@effect/rpc`, `@effect/cluster`, `@effect/sql` *core* APIs live in `effect` or `effect/<area>`.
 - Drivers stay separate: `@effect/platform-*`, `@effect/sql-*`, `@effect/ai-*`, `@effect/atom-*`, `@effect/opentelemetry`, `@effect/vitest`.
-- Unstable modules may break in minor RCs. Call that out in reviews.
+- `@stability unstable` APIs may break in minor releases; `@stability experimental` APIs in patches. Call that out in reviews.
 
-`MIGRATION.md` in the Effect repo still says “beta” in places; treat **RC + `main`** as current. Full rename maps: `migration/v3-to-v4.md`.
+Full per-API map: `migration/v3-to-v4.md` (curated `v3 -> v4` lines with guidance; ~17k lines — search it, do not read it whole). Schema: `migration/schema.md`.
 
 ## Package moves (examples)
 
@@ -21,13 +21,15 @@ Effect v4 is a **release candidate**. Pin matching `4.0.0-rc.N`. v3 remains on n
 - `effect/JSONSchema` → `effect/JsonSchema`
 - STM `TRef`/`TQueue`/… → `TxRef`/`TxQueue`/…
 - `effect/TestClock` → `effect/testing/TestClock`
-- HTTP → `effect/unstable/http` (+ platform package)
-- HttpApi → `effect/unstable/httpapi`
-- SQL core → `effect/unstable/sql` + `@effect/sql-*`
-- RPC → `effect/unstable/rpc`
-- CLI → `effect/unstable/cli`
-- Cluster → `effect/unstable/cluster`
-- AI → `effect/unstable/ai` + `@effect/ai-*`
+- `effect/FastCheck` → install `fast-check` directly, or use the Schema-first `Arbitrary` module
+- HTTP → `effect/http` (+ platform package)
+- HttpApi → `effect/http-api`
+- SQL core → `effect/sql` + `@effect/sql-*`
+- RPC → `effect/rpc`
+- CLI → `effect/cli` (`@effect/cli/Options` → `Flag`, `Args` → `Argument`)
+- Cluster → `effect/cluster`
+- Workflow → `effect/workflow`
+- AI → `effect/ai` + `@effect/ai-*`
 
 ## API renames
 
@@ -35,7 +37,7 @@ Effect v4 is a **release candidate**. Pin matching `4.0.0-rc.N`. v3 remains on n
 | --- | --- |
 | `Effect.async` | `Effect.callback` |
 | `Effect.zipRight` | `Effect.andThen` |
-| `Effect.zipLeft` | `Effect.tap` (verify call site) |
+| `Effect.zipLeft` | `Effect.zip` + `Effect.map` (or `Effect.tap` when the right side is only a side effect) |
 | `Effect.either` | `Effect.result` |
 | `Effect.catchAll` | `Effect.catch` |
 | `Effect.catchAllCause` | `Effect.catchCause` |
@@ -51,6 +53,8 @@ Effect v4 is a **release candidate**. Pin matching `4.0.0-rc.N`. v3 remains on n
 | `Mailbox` | `Queue` |
 | `decodeUnknown` (Effect) | `decodeUnknownEffect` |
 | `Schema.Date` (ISO strings) | `DateFromString` |
+| `Effect.Tag` / `Effect.Service` | `Context.Service` + explicit `Layer.effect` (no `Default`, no `dependencies`) |
+| `Runtime.Runtime<R>` | `Context.Context<R>` + `Effect.run*With` |
 
 Do not blindly rewrite `catchSome`. Read whether it was Option-based (`catchFilter`) or boolean (`catchIf`).
 
@@ -66,14 +70,40 @@ See [services-layers-runtime.md](services-layers-runtime.md) and [setup-core.md]
 ## HTTP
 
 ```ts
-import { HttpClient, HttpClientRequest, HttpClientResponse } from "effect/unstable/http"
+import { HttpClient, HttpClientRequest, HttpClientResponse } from "effect/http"
 ```
 
-`yield* HttpClient.HttpClient`, `HttpClient.mapRequest`, `HttpClientRequest.schemaBodyJson`, `HttpClientResponse.schemaBodyJson`. Provide a platform client layer. Schema-first servers: `effect/unstable/httpapi` + `HttpApiTest`.
+`yield* HttpClient.HttpClient`, `HttpClient.mapRequest`, `HttpClientRequest.schemaBodyJson`, `HttpClientResponse.schemaBodyJson`. Provide a platform client layer. Schema-first servers: `effect/http-api` + `HttpApiTest`.
 
 ## Tests
 
-Install `@effect/vitest@rc`. Details: [vitest-testing.md](vitest-testing.md).
+Install `@effect/vitest` (4.x) with `vitest@^5`. Details: [vitest-testing.md](vitest-testing.md).
+
+## v4 RC / beta → 4.0.0
+
+Projects pinned to `4.0.0-rc.N` or `4.0.0-beta.N` must upgrade every `effect` / `@effect/*` package to `4.0.0` together. Breaking changes landed in `rc.113`–`4.0.0` (see `packages/effect/CHANGELOG.md`):
+
+| Area | Before (RC) | 4.0.0 |
+| --- | --- | --- |
+| Import paths | `effect/unstable/<area>` | `effect/<area>` — **no compatibility exports**. Still `@stability unstable` |
+| HttpApi path | `effect/unstable/httpapi` | `effect/http-api` (TypeIds/service keys/SSE failure event use `http-api`) |
+| Byte encodings | `effect/Encoding` | `effect/encoding/Base64`, `Base64Url`, `Hex`, `EncodingError`; `randomHex` → `Hex.random` |
+| MessagePack | `effect/unstable/encoding/Msgpack`, msgpack RPC serialization | Removed (use SchemaBinary / NDJSON) |
+| Property tests | `effect/testing/FastCheck`, `Schema.toArbitrary` | Root `Arbitrary` (`Arbitrary.schema`, `checkEffect`, `sampleEffect`, `configureGlobal`) |
+| Config | `Config.string`, `Config.int`, `Config.redacted`, `Config.url`, `Config.mapOrFail`, … | `Config.String`, `Config.Int`, `Config.Redacted`, `Config.URL`, `Config.mapEffect`, … |
+| CLI | `Flag.string`, `Flag.integer`, `Flag.choice`, `Prompt.text`, `GlobalFlag.action`, … | `Flag.String`, `Flag.Int`, `Flag.Literals`, `Prompt.String`, `GlobalFlag.Action`, … |
+| Schema checks | `isLengthBetween`, `isSizeBetween`, `isPropertiesLengthBetween`, `isStartsWith`, `isEndsWith`, `isIncludes` | `isBetweenLength`, `isBetweenSize`, `isBetweenProperties`, `isStartingWith`, `isEndingWith`, `isIncluding` |
+| Schema transformations | `SchemaGetter.transformOrFail`, `SchemaTransformation.transformOrFail` | `transformEffect` |
+| Schema brands | `Schema.brand` stored in AST, multiple keys | Type-only, one concrete identifier per call; chain `brand` / `fromBrand` for several |
+| Schema revivers | `Schema.*Reviver` | Moved to `SchemaRepresentation` |
+| AI services | `LanguageModel.Service`, `Chat["Service"]` | Same-name branded types (`LanguageModel.LanguageModel`, …); custom impls include `[TypeId]` |
+| Scope | `Scope.close(scope)` on any `Scope` | Requires `Scope.Closeable` (from `Scope.make` / `Scope.fork`) |
+| Channel | `Channel.runDone` | `Channel.runDrain` |
+| SQL Postgres | `pg`-backed `PgClient.fromPool` / `fromClient` / `makeWith` | Native client: `PgClient.make` / `makeClient`; see [ecosystem.md](ecosystem.md) |
+| Tests | `@effect/vitest` peer `vitest@^4.1` | Peer `vitest >=5 <6` |
+| Deno | `@effect/platform-deno` Deno ≥2.5 | Deno ≥2.8.3 |
+
+Scan: `rg "effect/unstable/|effect/Encoding|FastCheck|Config\.(string|number|int|boolean|redacted|url|port|duration|literal|mapOrFail)\b|transformOrFail|isLengthBetween|isStartsWith|isEndsWith|isIncludes|runDone|Msgpack"`.
 
 ## Verification
 

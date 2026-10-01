@@ -181,7 +181,7 @@ function Root() {
 }
 ```
 
-Devtools require a unique table `key`. In production builds, framework adapters default to no-op implementations unless using production entrypoints such as `@tanstack/react-table-devtools/production`.
+Devtools require a unique table `key`. Table devtools 9.2+ target the latest `@tanstack/devtools` / `@tanstack/react-devtools`; upgrade both together if the panel renders without theme or fails to mount. In production builds, framework adapters default to no-op implementations unless using production entrypoints such as `@tanstack/react-table-devtools/production`.
 
 ## Worker Row Models
 
@@ -250,4 +250,4 @@ Useful tests by risk:
 - Browser tests for sticky headers, pinned columns, virtualized rows/columns, resize handles, focus, and keyboard controls.
 - Production build/profiling for large tables, virtualized views, and `columnResizeMode: 'onChange'`.
 
-For major upgrades, include a focused smoke of the highest-value table because feature names, pinning terminology, aggregation registration, and experimental APIs may differ from earlier v9 betas.
+For major upgrades, include a focused smoke of the highest-value table because feature names, pinning terminology, aggregation registration, and experimental APIs differ from v8 and from pre-stable v9 betas. For nested or grouped data, assert `flatRows` order is parent-first (fixed across sorted, filtered, grouped, and worker row models in 9.1.1-9.2.3).

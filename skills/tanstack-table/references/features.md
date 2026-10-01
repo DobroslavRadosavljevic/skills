@@ -234,7 +234,26 @@ const table = useTable({
 })
 ```
 
-Provide `rowCount` or `pageCount` for manual pagination. If page count is unknown, `pageCount: -1` keeps `getCanNextPage()` and `getCanPreviousPage()` returning `true`.
+Provide `rowCount` or `pageCount` for manual pagination. If page count is unknown (cursor APIs), pass `pageCount: -1`: `getCanNextPage()` always returns `true`, `getCanPreviousPage()` follows `pageIndex`, and `getCanLastPage()` returns `false`. Drive the Next button from the API's own `hasNextPage` / cached-page check, keep Last disabled, and reset `pageIndex` to `0` when sorting, filtering, or page size changes.
+
+Cursor sketch with TanStack Query `useInfiniteQuery`:
+
+```tsx
+const currentPage = query.data?.pages[pagination.pageIndex]
+const canNextPage =
+  Boolean(query.data?.pages[pagination.pageIndex + 1]) ||
+  Boolean(currentPage?.hasNextPage)
+
+const table = useTable({
+  features,
+  columns,
+  data: currentPage?.rows ?? [],
+  pageCount: -1,
+  state: { pagination },
+  onPaginationChange: setPagination,
+  manualPagination: true,
+})
+```
 
 Pagination state:
 
@@ -249,17 +268,19 @@ APIs:
 
 - `table.getCanPreviousPage()`
 - `table.getCanNextPage()`
+- `table.getCanLastPage()` (9.1+; `false` when no finite last page is known)
 - `table.previousPage()`
 - `table.nextPage()`
 - `table.firstPage()`
 - `table.lastPage()`
 - `table.setPageIndex()`
-- `table.setPageSize()`
+- `table.setPageSize()` (accepts `Infinity` in 9.1+ for an "All rows" option)
 - `table.setPagination()`
+- `table.resetPageIndex()`, `table.resetPageSize()`, `table.resetPagination()`
 - `table.getPageCount()`
 - `table.getRowCount()`
 
-`pageIndex` resets to `0` when client-side row models recompute. This is automatically disabled with `manualPagination`. Use `autoResetPageIndex: false` for editable client-side tables where data changes should not jump back to the first page.
+`pageIndex` resets to `0` when client-side row models recompute. This is automatically disabled with `manualPagination`. Use `autoResetPageIndex: false` for editable client-side tables where data changes should not jump back to the first page. `autoResetAll` toggles every auto reset at once. Auto resets only fire when a registered client-side row model recomputes, so manual server-side tables must reset `pageIndex` in their own filter/sort change handlers.
 
 ## Row Selection
 

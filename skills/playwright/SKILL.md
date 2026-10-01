@@ -7,7 +7,7 @@ description: "Build, review, debug, configure, migrate, or plan Playwright brows
 
 Use this skill when work touches Playwright Test, browser automation, E2E tests, locators, fixtures, auth setup, network mocking, traces, CI, API testing alongside UI, component stories, or agent browser tooling built on Playwright.
 
-Snapshot: `@playwright/test@1.63.0` / `playwright@1.63.0` / `playwright-core@1.63.0` (2026-09-18). Refresh from [source-map.md](references/source-map.md) if versions differ.
+Snapshot: `@playwright/test@1.63.0` / `playwright@1.63.0` / `playwright-core@1.63.0` (verified current 2026-10-01). Refresh from [source-map.md](references/source-map.md) if versions differ.
 
 ## Workflow
 

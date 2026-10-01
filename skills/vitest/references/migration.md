@@ -6,7 +6,7 @@ Checklists and breaking changes. Sources: https://vitest.dev/guide/migration/ ·
 
 | Field | Value |
 |---|---|
-| Package | **`vitest@^5`** (snapshot **5.0.1**) |
+| Package | **`vitest@^5`** (snapshot **5.0.3**) |
 | Node | `^22.12 \|\| ^24 \|\| >=26` |
 | Vite peer | `^6.4 \|\| ^7 \|\| ^8` (required; Yarn must list `vite`) |
 | Align | All `@vitest/*` at the same version (WebdriverIO may lag) |
@@ -119,7 +119,7 @@ Deprecated (no new features): `@vitest/runner`, `@vitest/ws-client`. Use `expect
 
 Removed: `vitest/coverage` → `vitest/node`; `vitest/reporters` → `vitest/node`; `vitest/environments` / `vitest/snapshot` → `vitest/runtime`; `vitest/runners` / `vitest/suite` → `TestRunner` on `vitest`; `vitest/mocker` → `@vitest/mocker`; `vitest/internal/module-runner`.
 
-WebdriverIO provider is community-maintained (`@vitest/browser-webdriverio` may lag **5.0.1**). Prefer `@vitest/browser-playwright`.
+WebdriverIO provider is community-maintained (`@vitest/browser-webdriverio` may lag core — **5.0.0** while core is **5.0.3**). Prefer `@vitest/browser-playwright`.
 
 ### Checklist (4 → 5)
 

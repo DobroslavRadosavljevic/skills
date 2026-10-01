@@ -56,7 +56,7 @@ Name variants `layer`, `layerTest`, `layerMemory`, `layerLive`.
 
 ## Scopes
 
-`Effect.acquireRelease`, `Effect.scoped`, layer construction. `Scope.provide` replaces v3 `Scope.extend`. Closing a scope runs finalizers with the completing `Exit`.
+`Effect.acquireRelease`, `Effect.scoped`, layer construction. `Scope.provide` replaces v3 `Scope.extend`. Closing a scope runs finalizers with the completing `Exit`. Since 4.0, `Scope.close` / `Scope.closeUnsafe` accept only a **`Scope.Closeable`** (from `Scope.make` / `Scope.fork`); a plain `Scope.Scope` received from the environment cannot be closed directly.
 
 Dynamic per-key resources: `LayerMap.Service`.
 

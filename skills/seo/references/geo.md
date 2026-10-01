@@ -47,7 +47,7 @@ Label claims:
 
 **FACT.** Search Console includes AI feature traffic in Web performance; Google also documents a Generative AI performance report. Sources: [AI features](https://developers.google.com/search/docs/appearance/ai-features); [AI optimization guide](https://developers.google.com/search/docs/fundamentals/ai-optimization-guide).
 
-**FACT.** Preferred sources can apply to AI Overviews and AI Mode (rollout noted 2026-05-27). Source: [Updates](https://developers.google.com/search/updates).
+**FACT.** Preferred sources can apply to AI Overviews and AI Mode (rollout noted 2026-05-27). Since 2026-08-20 the docs describe a custom interactive button that guides users to set the site as a preferred source and returns them to the page. Sources: [Updates](https://developers.google.com/search/updates); [Preferred sources](https://developers.google.com/search/docs/appearance/preferred-sources).
 
 ### Speculative (do not assert as policy)
 

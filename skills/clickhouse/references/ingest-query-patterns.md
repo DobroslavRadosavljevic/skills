@@ -87,6 +87,7 @@ On Summing/Aggregating/Collapsing engines, always express merge semantics in SQL
 |---|---|---|
 | Lightweight delete | `DELETE FROM t WHERE …` | Row deletes on MergeTree family (marks rows; physical on merge) |
 | Heavy delete | `ALTER TABLE t DELETE WHERE …` | Explicit mutation rewrite |
+| Lightweight update (beta) | `UPDATE t SET col = expr WHERE …` | Small fixes (≲10% of rows); needs table settings `enable_block_number_column = 1`, `enable_block_offset_column = 1`; writes patch parts, adds read overhead, disables skip indexes on patched columns |
 | Heavy update | `ALTER TABLE t UPDATE … WHERE …` | Rare bulk fixes; **cannot** update sort key cols |
 | Soft delete (RMT) | Insert row with `is_deleted=1` + higher `ver` | Upsert pipelines |
 | Partition drop | `ALTER … DROP PARTITION` | Fastest mass retention deletes |
@@ -101,7 +102,9 @@ await client.command({
 })
 ```
 
-Docs: https://clickhouse.com/docs/guides/developer/lightweight-delete
+Docs: https://clickhouse.com/docs/guides/developer/lightweight-delete · https://clickhouse.com/docs/sql-reference/statements/update
+
+Lightweight `UPDATE` cannot change primary-key or partition-key columns. Batch lightweight updates — many tiny ones create too many patch parts.
 
 ## Query hygiene from TS
 

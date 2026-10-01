@@ -7,7 +7,7 @@ description: "Build, review, debug, configure, migrate, or plan evlog TypeScript
 
 Use this skill when work touches [evlog](https://www.evlog.dev/) — wide events, structured errors, drains, sampling, audit trails, AI SDK / eve telemetry, CLI product telemetry, client logging, plugins, or `@evlog/cli map` coverage scoring.
 
-Snapshot: `evlog@2.29.0`, `@evlog/cli@0.6.3`, `@evlog/telemetry@0.3.1` (2026-09-18). Refresh from [source-map.md](references/source-map.md) if versions differ.
+Snapshot: `evlog@2.29.0`, `@evlog/cli@0.6.3`, `@evlog/telemetry@0.3.1` (verified 2026-10-01; no newer releases). Refresh from [source-map.md](references/source-map.md) if versions differ.
 
 ## Workflow
 

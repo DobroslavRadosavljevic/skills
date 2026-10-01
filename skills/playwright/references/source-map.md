@@ -4,17 +4,17 @@ This reference captures the current Playwright docs snapshot used to create the 
 
 ## Snapshot
 
-- Captured: 2026-09-18
+- Captured: 2026-09-18; re-verified 2026-10-01 (no new stable release; 1.63.0 still `latest`)
 - Stable npm packages: `@playwright/test@1.63.0`, `playwright@1.63.0`, `playwright-core@1.63.0` (published 2026-09-04)
 - npm `latest` dist-tag: `1.63.0` (all three packages aligned)
 - npm `beta` observed: `1.63.0-beta-1789413634000`
-- npm `next` observed: `1.64.0-alpha-2026-09-18` (canary; treat as unavailable unless the project uses it)
+- npm `next` observed: `1.64.0-alpha-2026-10-01` (canary; treat as unavailable unless the project uses it)
 - Package `engines.node`: `>=20`. Docs system requirements: latest Node 22.x, 24.x, or 26.x
 - Official homepage / docs: https://playwright.dev
 - Official repository: https://github.com/microsoft/playwright
 - Context7 selection used for docs research: `/websites/playwright_dev`, cross-checked against `/microsoft/playwright`
 - Docker image family (docs): `mcr.microsoft.com/playwright:v1.63.0-noble` (pin to the project's Playwright version)
-- Related agent packages (separate cadence from Test Runner): `@playwright/mcp@0.0.81`, `@playwright/cli@0.1.20`
+- Related agent packages (separate cadence from Test Runner): `@playwright/mcp@0.0.83`, `@playwright/cli@0.1.22` (both 2026-09-28; MCP bug fixes such as `browser_find` `filename` and dialog-on-load reporting)
 - Experimental CT packages last published as `@playwright/experimental-ct-react@1.62.1` / `@playwright/experimental-ct-vue@1.62.1` (no 1.63 tarball). `@playwright/experimental-ct-svelte` last published `1.58.2`
 
 Treat canary/`next` and leftover experimental CT APIs as unavailable unless the project explicitly depends on them.

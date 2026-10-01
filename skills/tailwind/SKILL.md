@@ -1,6 +1,6 @@
 ---
 name: tailwind
-description: Build, review, debug, configure, or migrate Tailwind CSS projects using current Tailwind documentation. Use for Tailwind CSS v4 utilities, CSS-first configuration, theme variables, Vite/PostCSS/CLI setup, source detection, variants, responsive design, dark mode, Preflight, custom utilities, @apply/@reference, Prettier class sorting, and v3-to-v4 upgrades.
+description: Build, review, debug, configure, or migrate Tailwind CSS projects using current Tailwind documentation. Use for Tailwind CSS v4.3 utilities, CSS-first configuration, theme variables, Vite/PostCSS/CLI/webpack/Turbopack setup, source detection, variants, responsive design, dark mode, Preflight, custom utilities, @apply/@reference, Prettier class sorting, and v3-to-v4 upgrades.
 ---
 
 # Tailwind
@@ -11,7 +11,7 @@ Use this skill to make Tailwind CSS decisions from current docs plus the local p
 
 1. Identify the Tailwind surface:
    - Read the nearest project guidance and package manifests.
-   - Check installed versions of `tailwindcss`, `@tailwindcss/vite`, `@tailwindcss/postcss`, `@tailwindcss/cli`, `prettier-plugin-tailwindcss`, and framework packages.
+   - Check installed versions of `tailwindcss`, `@tailwindcss/vite`, `@tailwindcss/postcss`, `@tailwindcss/cli`, `@tailwindcss/webpack`, `@tailwindcss/turbopack`, `prettier-plugin-tailwindcss`, and framework packages.
    - Inspect CSS entry files, `vite.config.*`, PostCSS config, framework config, `tailwind.config.*`, and class composition helpers.
 2. Refresh docs when the user asks for latest/current behavior, when versions differ from the captured snapshot, or when touching v4 migration/configuration:
    - Use [source-map.md](references/source-map.md) for the captured latest-version snapshot and official source links.
@@ -32,7 +32,7 @@ Use this skill to make Tailwind CSS decisions from current docs plus the local p
 
 ## Tailwind Judgment
 
-- Treat Tailwind v4 as CSS-first: `@import "tailwindcss";`, theme variables in CSS, and dedicated Vite/PostCSS/CLI integration packages.
+- Treat Tailwind v4 as CSS-first: `@import "tailwindcss";`, theme variables in CSS, and dedicated Vite/PostCSS/CLI/webpack/Turbopack integration packages.
 - Use `@source` for monorepos, ignored external packages, multiple stylesheets, safelisting, and source exclusions.
 - Keep responsive styles mobile-first: unprefixed utilities target all sizes, breakpoint prefixes apply at that breakpoint and above.
 - Keep dark mode explicit: use default `prefers-color-scheme` behavior or define a project selector with `@custom-variant dark`.

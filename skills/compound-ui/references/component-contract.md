@@ -50,7 +50,7 @@ Allowed by default:
 - `className`
 - DOM or primitive part props via `React.ComponentProps<...>`
 - `ref` or `forwardRef` support as required by the local React version
-- `asChild` for leaf components that should render another element
+- `asChild` (Radix base) or `render` (Base UI base) for leaf components that should render another element
 - Controlled/uncontrolled state props such as `open`, `defaultOpen`, `onOpenChange`, `value`, `defaultValue`, and `onValueChange`
 - Accessibility props such as `aria-label`, `aria-labelledby`, `aria-describedby`, `id`, `role`, and native form props
 - Small styling variants such as `variant`, `size`, `orientation`, or `side` when they map to stable design-system decisions

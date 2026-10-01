@@ -1,14 +1,14 @@
 # visx Source Map
 
-Snapshot date: 2026-08-01.
+Snapshot date: 2026-10-01.
 
 ## Current Package Evidence
 
-visx **4.0.0** is the current stable release (published ~2026-06-11). React peers: `^18.0.0 || ^19.0.0`.
+visx **4.0.0** is the current stable release (published 2026-06-11; still npm `latest` at snapshot). React peers: `^18.0.0 || ^19.0.0`. Animation peer: `@react-spring/web` `^9.7.5 || ^10.0.0` (npm `latest` 10.1.2). Ignore the stale `next: 4.0.0-alpha.18` and older `alpha`/`prerelease` dist-tags.
 
 Repository: [airbnb/visx](https://github.com/airbnb/visx) · Docs/gallery: [visx.airbnb.tech](https://visx.airbnb.tech/) · Migration: [MIGRATION.md](https://github.com/airbnb/visx/blob/master/MIGRATION.md)
 
-Prefer sources at tag [`v4.0.0`](https://github.com/airbnb/visx/tree/v4.0.0) for published APIs. `master` may document **4.1 (coming soon)** packages that are **not on npm** yet.
+Prefer sources at tag [`v4.0.0`](https://github.com/airbnb/visx/tree/v4.0.0) for published APIs. `master` documents **4.1 (coming soon)** packages that are **not on npm** yet. Re-checked 2026-10-01: `@visx/theme`, `@visx/a11y`, `@visx/chart`, `@visx/kernel`, and `@visx/registry` still return npm 404, and `master` has had no commits since 2026-06-22 (last feature work: kernel, chart hooks, a11y, registry, Floating UI tooltip primitives in mid-June 2026).
 
 ### Published consumer packages (`4.0.0`)
 

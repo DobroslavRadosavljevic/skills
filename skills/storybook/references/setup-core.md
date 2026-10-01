@@ -29,6 +29,7 @@ Add an official addon:
 bunx storybook add @storybook/addon-docs
 bunx storybook add @storybook/addon-a11y
 bunx storybook add @storybook/addon-vitest
+bunx storybook add @storybook/addon-mcp
 ```
 
 ## Framework Packages
@@ -88,6 +89,7 @@ export default config
 | Accessibility | `@storybook/addon-a11y` |
 | Component tests in Vitest | `@storybook/addon-vitest` |
 | Visual / Chromatic | Chromatic addon / service as used by the repo |
+| Agent MCP server (`/mcp` on the dev server) | `@storybook/addon-mcp` (+ `features.componentsManifest: true` for the docs toolset) |
 
 Remove leftover `@storybook/addon-essentials`, `@storybook/addon-interactions`, `@storybook/addon-actions`, `@storybook/addon-controls`, `@storybook/addon-viewport` from `addons` and dependencies.
 

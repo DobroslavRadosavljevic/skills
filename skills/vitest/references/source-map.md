@@ -4,8 +4,8 @@ Docs and package snapshot used to create this skill.
 
 ## Snapshot
 
-- Captured: 2026-09-18
-- Package: **`vitest@5.0.1`** (npm `latest`)
+- Captured: 2026-10-01
+- Package: **`vitest@5.0.3`** (npm `latest`, 2026-09-30)
 - Previous major: dist-tag `V4` → **4.1.11** (docs: https://v4.vitest.dev/)
 - V3 line: dist-tag `V3` → **3.2.7** (docs: https://v3.vitest.dev/)
 - Pre-releases (stale vs latest): `rc` → **5.0.0-rc.4**, `beta` → **5.0.0-beta.7**
@@ -15,7 +15,7 @@ Docs and package snapshot used to create this skill.
 - Homepage: https://vitest.dev/
 - Docs ToC: https://vitest.dev/llms.txt
 - Announcement: https://vitest.dev/blog/vitest-5
-- Changelog: https://github.com/vitest-dev/vitest/releases/tag/v5.0.0 · patch https://github.com/vitest-dev/vitest/releases/tag/v5.0.1
+- Changelog: https://github.com/vitest-dev/vitest/releases/tag/v5.0.0 · patches https://github.com/vitest-dev/vitest/releases/tag/v5.0.1 · https://github.com/vitest-dev/vitest/releases/tag/v5.0.2 · https://github.com/vitest-dev/vitest/releases/tag/v5.0.3 (5.0.2/5.0.3 are bug fixes only — e.g. `toMatchObject` with asymmetric matchers, `agent` reporter respects `--silent`, cache key generators scoped per project, `test.fails` no longer retried, `toMatchScreenshot` reference on retries)
 - Repo: https://github.com/vitest-dev/vitest
 - License: MIT
 - Context7 IDs: `/vitest-dev/vitest`, `/websites/vitest_dev`, `/websites/vitest_dev_guide`
@@ -93,16 +93,16 @@ Docs and package snapshot used to create this skill.
 - clearMocks: https://vitest.dev/config/clearmocks
 - detectAsyncLeaks: https://vitest.dev/config/detectasyncleaks
 
-## Related packages (align to 5.0.1 unless noted)
+## Related packages (align to 5.0.3 unless noted)
 
-| Package | Role | npm (2026-09-18) |
+| Package | Role | npm (2026-10-01) |
 |---|---|---|
-| `@vitest/coverage-v8` | Default coverage provider | **5.0.1** |
-| `@vitest/coverage-istanbul` | Istanbul coverage (`@vitest/istanbuljs` internals) | **5.0.1** |
-| `@vitest/ui` | UI + HTML reporter | **5.0.1** |
-| `@vitest/browser-playwright` | Playwright browser provider (recommended) | **5.0.1** |
-| `@vitest/browser-preview` | Local preview provider (not for CI) | **5.0.1** |
-| `@vitest/browser` | Browser internals / `SerializedLocator` types | **5.0.1** |
+| `@vitest/coverage-v8` | Default coverage provider | **5.0.3** |
+| `@vitest/coverage-istanbul` | Istanbul coverage (`@vitest/istanbuljs` internals) | **5.0.3** |
+| `@vitest/ui` | UI + HTML reporter | **5.0.3** |
+| `@vitest/browser-playwright` | Playwright browser provider (recommended) | **5.0.3** |
+| `@vitest/browser-preview` | Local preview provider (not for CI) | **5.0.3** |
+| `@vitest/browser` | Browser internals / `SerializedLocator` types | **5.0.3** |
 | `@vitest/browser-webdriverio` | WebdriverIO provider (community-maintained; lags core) | **5.0.0** |
 | `jsdom` / `happy-dom` | Optional Node DOM environments | independent |
 

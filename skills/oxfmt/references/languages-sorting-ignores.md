@@ -28,11 +28,11 @@ YAML has been native since **0.62**. YAML-in-CSS frontmatter uses the native YAM
 | Angular | `*.component.html` |
 | Vue | `.vue` — **`<script>` is native** JS/TS |
 | Svelte | `.svelte` — set `svelte` option; install `svelte` `^5` yourself. `<script>` native |
-| Markdown / MDX | `.md`, `.markdown`, `.mdx` |
+| Markdown / MDX | `.md`, `.markdown`, `.mdx` — a native Markdown formatter is in progress upstream (crate landed in 0.69, not yet used by Oxfmt) |
 | Handlebars | `.hbs`, `.handlebars` |
 | MJML | `.mjml` — Ember templates; no `.gjs`/`.gts` yet |
 
-These need the **npm** package (Node). The standalone binary skips them.
+These need the **npm** package (Node). The standalone binary skips them. Bundled Prettier is **3.9.9** as of 0.71.
 
 ### Compatibility caveats
 

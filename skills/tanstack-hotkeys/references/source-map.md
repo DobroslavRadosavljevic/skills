@@ -1,28 +1,41 @@
 # TanStack Hotkeys Source Map
 
-Snapshot date: 2026-08-06.
+Snapshot date: 2026-10-01.
 
 ## Current Package Evidence
 
-Npm `latest` dist-tags verified on this snapshot (published 2026-04-25; unchanged since the prior 2026-07-08 skill snapshot):
+Npm `latest` dist-tags verified on this snapshot (published 2026-09-27). Only `latest` exists; there are no alpha/beta/rc dist-tags.
 
-- `@tanstack/hotkeys`: `0.8.0`
-- `@tanstack/hotkeys-devtools`: `0.9.0`
-- `@tanstack/react-hotkeys`: `0.10.0` (depends on `@tanstack/hotkeys@0.8.0`, `@tanstack/react-store@^0.11.0`)
-- `@tanstack/react-hotkeys-devtools`: `0.7.0`
-- `@tanstack/preact-hotkeys`: `0.10.0`
-- `@tanstack/preact-hotkeys-devtools`: `0.7.0`
-- `@tanstack/solid-hotkeys`: `0.10.0`
-- `@tanstack/solid-hotkeys-devtools`: `0.7.0`
-- `@tanstack/svelte-hotkeys`: `0.10.0`
-- `@tanstack/vue-hotkeys`: `0.10.0`
-- `@tanstack/vue-hotkeys-devtools`: `0.7.0`
-- `@tanstack/angular-hotkeys`: `0.10.0`
-- `@tanstack/lit-hotkeys`: `0.11.0`
+- `@tanstack/hotkeys`: `0.10.1`
+- `@tanstack/hotkeys-devtools`: `1.1.1`
+- `@tanstack/react-hotkeys`: `0.12.1` (depends on `@tanstack/hotkeys@0.10.1`, `@tanstack/react-store@^0.11.1`; peers `react` / `react-dom >=16.8`; `engines.node >=20`)
+- `@tanstack/react-hotkeys-devtools`: `0.9.1`
+- `@tanstack/preact-hotkeys`: `0.12.1`
+- `@tanstack/preact-hotkeys-devtools`: `0.9.1`
+- `@tanstack/solid-hotkeys`: `0.12.1`
+- `@tanstack/solid-hotkeys-devtools`: `0.9.1`
+- `@tanstack/svelte-hotkeys`: `0.12.1`
+- `@tanstack/vue-hotkeys`: `0.12.1`
+- `@tanstack/vue-hotkeys-devtools`: `0.9.1`
+- `@tanstack/angular-hotkeys`: `0.12.1`
+- `@tanstack/lit-hotkeys`: `0.13.1`
 
 `@tanstack/hotkeys-core` was not found on npm. The core package name is `@tanstack/hotkeys`. Framework packages re-export core APIs, so React apps usually install only `@tanstack/react-hotkeys` unless they need direct vanilla JS usage.
 
-Official overview still marks TanStack Hotkeys as **alpha**; APIs may change. Re-check docs before treating edge behavior as stable.
+The repository README still marks TanStack Hotkeys as **alpha**; minor versions can break APIs. Re-check docs before treating edge behavior as stable.
+
+Changes since the previous snapshot (core `0.8.0` / React `0.10.0`):
+
+- Core `0.9.0` / React `0.11.0` (breaking):
+  - `RawHotkey` and `ParsedHotkey` are unions with either `key` or `code`. Use type intersections instead of `interface X extends RawHotkey`.
+  - Physical bindings: bracketed codes in strings (`Mod+[KeyS]`, `[NumpadEnter]`) and `{ code: 'KeyS', mod: true }` objects.
+  - Recorders default to `recordBy: 'code'` and record physical strings such as `Mod+[KeyS]`. Set `recordBy: 'key'` for logical characters.
+  - Clearing a recording calls only `onClear`; `onRecord` is no longer called with an empty value.
+  - New: recorder `validate`, `detectConflicts`, `onReject`; `findHotkeyConflicts`; `HotkeyMeta.group`; `matchesHeldModifiers` and `useHotkeyHint`; `formatForDisplay` `parts`, split `useSymbols`, `keyLabels`, `layoutMap`; F1-F24 and more named keys; `platform` option for `parseKeyboardEvent`.
+  - Fixes: layout-aware matching, exact matches preferred over physical fallbacks, `Mod++` literal plus, no firing during IME composition or AltGraph entry, recorder keystrokes no longer trigger registered shortcuts.
+- Core `0.10.0` / React `0.12.0`: ES2022 ESM-only packages, Node.js 20 minimum, no CommonJS builds, no published `src` or source maps (inspect `dist/*.d.ts`).
+- Core `0.10.1`: macOS display orders modifiers Control, Option, Shift, Command (`Mod+Shift+S` shows `⇧ ⌘ S`) without changing normalized strings.
+- Devtools `0.9.1`: standalone `HotkeysDevtoolsPanel` renders without props (`theme` defaults to `'dark'`, `devtoolsOpen` to `true`).
 
 Context7 resolved official TanStack Hotkeys docs:
 
@@ -67,6 +80,10 @@ React references:
 - `useHeldKeys`: `https://tanstack.com/hotkeys/latest/docs/framework/react/reference/functions/useHeldKeys`
 - `useHeldKeyCodes`: `https://tanstack.com/hotkeys/latest/docs/framework/react/reference/functions/useHeldKeyCodes`
 - `useKeyHold`: `https://tanstack.com/hotkeys/latest/docs/framework/react/reference/functions/useKeyHold`
+- `useHotkeyHint`: `https://tanstack.com/hotkeys/latest/docs/framework/react/reference/functions/useHotkeyHint`
+- `useHotkeyRegistrations`: `https://tanstack.com/hotkeys/latest/docs/framework/react/reference/functions/useHotkeyRegistrations`
+- `useDefaultHotkeysOptions`: `https://tanstack.com/hotkeys/latest/docs/framework/react/reference/functions/useDefaultHotkeysOptions`
+- `useHotkeysContext`: `https://tanstack.com/hotkeys/latest/docs/framework/react/reference/functions/useHotkeysContext`
 - `UseHotkeyOptions`: `https://tanstack.com/hotkeys/latest/docs/framework/react/reference/interfaces/UseHotkeyOptions`
 - `UseHotkeySequenceOptions`: `https://tanstack.com/hotkeys/latest/docs/framework/react/reference/interfaces/UseHotkeySequenceOptions`
 
@@ -87,6 +104,9 @@ Core references:
 - `SequenceManager`: `https://tanstack.com/hotkeys/latest/docs/reference/classes/SequenceManager`
 - `KeyStateTracker`: `https://tanstack.com/hotkeys/latest/docs/reference/classes/KeyStateTracker`
 - `createSequenceMatcher`: `https://tanstack.com/hotkeys/latest/docs/reference/functions/createSequenceMatcher`
+- `findHotkeyConflicts`: `https://tanstack.com/hotkeys/latest/docs/reference/functions/findHotkeyConflicts`
+- `matchesHeldModifiers`: `https://tanstack.com/hotkeys/latest/docs/reference/functions/matchesHeldModifiers`
+- `parseKeyboardEvent`: `https://tanstack.com/hotkeys/latest/docs/reference/functions/parseKeyboardEvent`
 
 ## Raw Docs
 

@@ -20,7 +20,7 @@ bun add -D eslint-plugin-oxlint @oxlint/migrate
 
 One-off: `bunx oxlint`.
 
-Node engines: `^20.19.0 || >=22.12.0`. `oxlint-tsgolint` is an optional peer (`>=7.0.2001`).
+Node engines: `^20.19.0 || >=22.12.0`. `oxlint-tsgolint` is an optional peer (`>=7.0.2003` on 1.86).
 
 ## CLI essentials
 
@@ -47,7 +47,7 @@ bunx oxlint --debug timings
 | Ignore | `--ignore-path`, `--ignore-pattern`, `--no-ignore` |
 | Warnings | `--quiet`, `--deny-warnings`, `--max-warnings N` |
 | Type-aware | `--type-aware`, `--type-check` (experimental diagnostics) |
-| Debug | `--debug files` (list files then exit), `--debug timings` (per-rule timings; comma-separated, e.g. `--debug files,timings`) |
+| Debug | `--debug files` (list files then exit), `--debug timings` (per-rule timings, including JS plugin rules since 1.84; comma-separated, e.g. `--debug files,timings`) |
 | Other | `--silent`, `--threads N`, `--lsp`, `--rules`, `--no-error-on-unmatched-pattern` |
 | Output | `-f/--format`: `default`, `agent`, `json`, `unix`, `stylish`, `github`, `gitlab`, `junit`, `checkstyle`, `sarif` |
 | Directives | `--report-unused-disable-directives`, `--report-unused-disable-directives-severity <allow\|off\|warn\|error\|deny>` (mutually exclusive) |
@@ -74,6 +74,7 @@ Nearest of: `oxlint.config.ts`, `oxlint.config.mts`, `.oxlintrc.json`, `.oxlintr
 - Prefer **`oxlint.config.ts`** + `defineConfig` for new projects.
 - `--init` still scaffolds `.oxlintrc.json` — replace with a TS config when starting fresh, or keep JSON if that is what the repo already uses.
 - JSON shape is ESLint-v8-like; comments allowed. Schema: `./node_modules/oxlint/configuration_schema.json`.
+- Vite+ (`vp lint`): config lives in the `lint` block of `vite.config.*` (any extension since 1.84). Nested config discovery is **always off** in Vite+ mode (1.85) — use `overrides` in the root config.
 - TS configs need the Node-based `oxlint` package and a runtime that can execute TypeScript (Node v22.18+ / v24+, or Bun). Standalone binary → use `.oxlintrc.json`. CLI help still calls JS/TS config loading experimental.
 
 ```ts

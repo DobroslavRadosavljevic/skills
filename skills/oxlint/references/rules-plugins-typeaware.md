@@ -16,7 +16,7 @@ CLI: `-D all` enables all except nursery and does **not** auto-enable optional p
 
 Individual `rules` override category settings.
 
-Snapshot: **870** built-in rules; **111** on by default.
+Snapshot: **871** built-in rules; **111** on by default.
 
 ## Plugins
 
@@ -37,7 +37,7 @@ Snapshot: **870** built-in rules; **111** on by default.
 | `jest` / `vitest` | No | test plugins |
 | `vue` | No | Vue **script-tag** rules |
 
-No new native plugin names between 1.76 and 1.83. **Critical:** `"plugins": [...]` **replaces** the default set. Always re-list defaults you still want.
+No new native plugin names between 1.76 and 1.86. **Critical:** `"plugins": [...]` **replaces** the default set. Always re-list defaults you still want.
 
 Enable via config or CLI (`--import-plugin`, `--react-plugin`, `--react-perf-plugin`, …).
 
@@ -57,13 +57,15 @@ Oxlint runs React Compiler analysis in lint-only mode as per-category `react/*` 
 
 Not implemented: `config`, `gating`, `fbt`, `memoized-effect-dependencies`.
 
-1.83 updates React plugin rules for React **19.3**. Skip `node_modules` by default for compiler analysis. Opt out of compiler noise by turning specific `react/<rule>` ids off — do not re-add `react/react-compiler`.
+1.83 updates React plugin rules for React **19.3**. 1.86 treats zero-argument `new Date()` as impure (expect new `react/purity` hits) and handles recursive function expressions. Skip `node_modules` by default for compiler analysis. Opt out of compiler noise by turning specific `react/<rule>` ids off — do not re-add `react/react-compiler`.
 
 ### Notable native rules since 1.76
 
 - **1.78:** `eslint/one-var`, `jsdoc/no-blank-blocks`; `jsx-a11y/anchor-has-content` options aligned with ESLint.
 - **1.81:** `nextjs/no-typos` suggestion.
 - **1.82:** `eslint/no-unmodified-loop-condition` `checkConditionalExpressions` option; `--rules` output is plugin-qualified.
+- **1.84:** `unicorn/no-unreadable-iife` suggestion; `vitest/prefer-to-be-truthy` / `prefer-to-be-falsy` suggestions.
+- **1.86:** `typescript/no-generated-empty-object-type` (type-aware, `suspicious`; flags utility types such as `Pick<T, never>` that resolve to `{}`). `react/only-export-components` option `allowCompoundComponents` (allow `export const Tag = { Root, Label }` when every property is a component). `node/no-exports-assign` moved `style` → `suspicious`. `import/no-duplicates` distinguishes import attributes.
 - **1.77:** `eslint/prefer-promise-reject-errors` moved to `pedantic` (prefer the type-aware equivalent when `--type-aware`).
 
 List available rules:
@@ -152,7 +154,7 @@ export default defineConfig({
 });
 ```
 
-`oxlint-tsgolint` **7.0.2002** tracks TypeScript **7.0.2** (version `7.0.2` + patch `002`). 7.0.2002 is mostly diagnostics, correctness, and performance — no new type-aware rule ids.
+`oxlint-tsgolint` **7.0.2003** tracks TypeScript **7.0.2** (version `7.0.2` + patch `003`). 7.0.2003 adds the backend for `typescript/no-generated-empty-object-type`, a `no-unnecessary-condition` suggestion, and many false-positive fixes. Oxlint 1.86 requires `oxlint-tsgolint >=7.0.2003`.
 
 ### Type-aware rules of thumb
 

@@ -28,6 +28,7 @@ Verify Google by reverse/forward DNS or published IP lists — not User-Agent al
 | `Google-InspectionTool` | URL Inspection / Rich Results | Honors `Googlebot` + own token | **No ranking effect** |
 | `Google-Extended` | Gemini / Vertex **training + grounding** | Token in robots.txt | **Does not** change Search inclusion |
 | `AdsBot-Google` | Ads | Ignores `User-agent: *` — name it | [Special-case crawlers](https://developers.google.com/crawling/docs/crawlers-fetchers/google-special-case-crawlers) |
+| `Mediapartners-Google` | Ads content crawl | Name it | Preferences affect several ad products (AdSense, Ad Manager, …) — doc updated 2026-09-17 |
 | `bingbot` | Bing | Yes | `Sitemap:` widely supported |
 | `GPTBot` | OpenAI training | Honors | ≠ `OAI-SearchBot` (ChatGPT search) |
 | `OAI-SearchBot` | OpenAI search | Honors | User-fetch `ChatGPT-User` may ignore robots |

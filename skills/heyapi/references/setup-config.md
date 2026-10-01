@@ -2,7 +2,7 @@
 
 ## Install
 
-Requires Node.js 22+ (22.13+ for recent releases). Package is ESM-only.
+Requires Node.js `>= 22.18.0` (engines since v0.98). Package is ESM-only.
 
 ```sh
 bun add @hey-api/openapi-ts -D
@@ -171,5 +171,6 @@ When composing `plugins`, decide:
 1. HTTP client — default Fetch, or Axios / Ky / Next / Nuxt / OFetch / Angular
 2. SDK shape — flat tree-shakeable functions (default) vs class instance
 3. Validators — Zod or Valibot (and whether SDK `validator` / `transformer` is enabled)
-4. App integrations — TanStack Query framework package, Fastify/Nest/Angular framework plugins
-5. Entry re-exports — `includeInEntry` on plugins that should appear in `index.ts`
+4. App integrations — TanStack Query framework package, Pinia Colada (Vue), Fastify/Nest/Angular/oRPC framework plugins
+5. Test helpers — `msw` handlers and `@faker-js/faker` factories (in progress; pin and verify output)
+6. Entry re-exports — `includeInEntry` on plugins that should appear in `index.ts`

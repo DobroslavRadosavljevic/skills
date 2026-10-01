@@ -1,22 +1,34 @@
 # TanStack Form Source Map
 
-Snapshot date: 2026-08-06.
+Snapshot date: 2026-10-01.
 
 ## Current Package Evidence
 
 Npm evidence from this snapshot (`dist-tags.latest`):
 
-- `@tanstack/react-form`: `1.33.3` (published 2026-08-01)
-- `@tanstack/form-core`: `1.33.3` (dependency of react-form; also depends on `@tanstack/store` `^0.11.0`, `@tanstack/pacer-lite` `^0.1.1`)
-- `@tanstack/react-form-start`: `1.33.3`
-- `@tanstack/react-form-nextjs`: `1.33.3`
-- `@tanstack/react-form-remix`: `1.33.3`
-- `@tanstack/react-form-devtools`: `0.2.32` (depends on `@tanstack/form-devtools` `0.2.32`)
-- `@tanstack/react-devtools`: `0.10.9` (host shell for the form plugin)
-- Related framework adapters also on `1.33.3`: `@tanstack/solid-form`, `@tanstack/vue-form`, `@tanstack/angular-form`, `@tanstack/svelte-form` (`@tanstack/lit-form` latest was `1.25.3`)
+- `@tanstack/react-form`: `1.33.5` (published 2026-08-11; peer `react` `^17 || ^18 || ^19`)
+- `@tanstack/form-core`: `1.33.5` (depends on `@tanstack/store` `^0.11.0`, `@tanstack/pacer-lite` `^0.1.1`, `@tanstack/devtools-event-client` `^0.4.1`)
+- `@tanstack/react-form-start`: `1.33.5`
+- `@tanstack/react-form-nextjs`: `1.33.5`
+- `@tanstack/react-form-remix`: `1.33.5`
+- `@tanstack/react-form-devtools`: `0.2.34` (depends on `@tanstack/form-devtools` `0.2.34`)
+- `@tanstack/react-devtools`: `0.10.13` (host shell for the form plugin)
+- Related framework adapters also on `1.33.5`: `@tanstack/solid-form`, `@tanstack/vue-form`, `@tanstack/angular-form`, `@tanstack/svelte-form` (`@tanstack/lit-form` latest is `1.25.5`)
 - Legacy schema adapter packages still on npm at `0.42.1` (`@tanstack/zod-form-adapter`, `@tanstack/valibot-form-adapter`, `@tanstack/yup-form-adapter`). Current docs use Standard Schema directly on validators; prefer that over these adapters.
 
-Context7: `/websites/tanstack_form` is the strongest website-backed docs ID. `/tanstack/form` remains useful but its exposed Context7 version was still `v1.11.0` while npm `latest` was `1.33.3`. Prefer `/form/latest` pages and GitHub `main` raw docs when versions matter. Exa/raw checks on 2026-08-06 confirmed reactivity prefers `useSelector` (`useStore` deprecated alias) and Start SSR examples use `createServerFn().validator(...)`.
+Changes since the previous snapshot (`1.33.3`): `1.33.4` had no notable changes; `1.33.5` preserves sibling fields whose names share a prefix when deleting a field. No v1 API changes.
+
+## v2 Alpha
+
+- `alpha` dist-tag: `2.0.0-alpha.2` (2026-08-21) for `@tanstack/react-form`, `@tanstack/form-core`, `@tanstack/react-form-start`, `@tanstack/react-form-nextjs`, and other framework adapters; devtools packages are on `1.0.0-alpha.2`. `@tanstack/react-form-remix` has no v2 release.
+- v2 changes field render props, validator shape, error objects, arrays, composition, and server validation. See [v2-alpha.md](v2-alpha.md).
+- Primary source: `https://github.com/TanStack/form/blob/alpha/docs/migrate-from-v1.md` (raw: `https://raw.githubusercontent.com/TanStack/form/alpha/docs/migrate-from-v1.md`). The `/form/latest` site documents v1.
+
+## Docs Notes
+
+Context7: `/websites/tanstack_form` is the strongest website-backed docs ID. `/tanstack/form` remains useful but its exposed Context7 version can lag npm `latest`. Prefer `/form/latest` pages and GitHub `main` raw docs when versions matter. Raw checks on 2026-10-01 confirmed the v1 reactivity guide prefers `useSelector(form.store, selector)` (`useStore` is a deprecated alias) and Start SSR examples use `createServerFn().validator(...)` with `@tanstack/react-form-start`.
+
+The v1 SSR guide links to a TanStack Start "TanStack Form" guide (`/start/latest/docs/framework/react/guide/tanstack-form`). At this snapshot the Router-repo PR adding that page was still open, so the link may not resolve yet.
 
 ## Official Current Docs
 

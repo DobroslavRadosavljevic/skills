@@ -1,8 +1,8 @@
 # Schema v4
 
-Use this reference for Effect Schema v4 validation, transformations, classes, errors, serialization, and JSON Schema generation. Canonical guide in-repo: `packages/effect/SCHEMA.md`. Snapshot: Effect **4.0.0-rc**.
+Use this reference for Effect Schema v4 validation, transformations, classes, errors, serialization, and JSON Schema generation. Canonical guide in-repo: `packages/effect/SCHEMA.md`. Snapshot: Effect **4.0.0**.
 
-Preferred error type in new code: `Schema.TaggedError` (`Schema.Error` for untagged errors). Prefer `Schema.decodeUnknownEffect` at Effect boundaries; `decodeUnknownSync` / `Exit` / `Result` variants for tests and sync parsers. JSON Schema: `Schema.toJsonSchemaDocument`. SQL dual models: `effect/unstable/schema` `Model`.
+Preferred error type in new code: `Schema.TaggedError` (`Schema.Error` for untagged errors). Prefer `Schema.decodeUnknownEffect` at Effect boundaries; `decodeUnknownSync` / `Exit` / `Result` variants for tests and sync parsers. JSON Schema: `Schema.toJsonSchemaDocument`. SQL dual models: `effect/schema` `Model`.
 
 ## Mental Model
 
@@ -29,8 +29,23 @@ Do not assume encoded and decoded types match when transformations, defaults, cl
 | `optionalWith({ exact })` | **`optionalKey`**; defaults → **`withDecodingDefaultType*`** |
 | `ParseResult.ArrayFormatter` | **`Schema.SchemaError`** + **`SchemaIssue`** |
 | `effect/Either` in schemas | **`Result`** |
+| `Schema.toArbitrary` / `FastCheck` | Root **`Arbitrary.schema(S)`** |
 
-Decode and encode can have **separate service requirements**. SQL/JSON dual models: `effect/unstable/schema` `Model`, not extra `Schema.Data` (removed).
+Decode and encode can have **separate service requirements**. SQL/JSON dual models: `effect/schema` `Model`, not extra `Schema.Data` (removed).
+
+## RC → 4.0 renames
+
+| RC name | 4.0 name |
+| --- | --- |
+| `isLengthBetween` | `isBetweenLength` |
+| `isSizeBetween` | `isBetweenSize` |
+| `isPropertiesLengthBetween` | `isBetweenProperties` |
+| `isStartsWith` / `isEndsWith` / `isIncludes` | `isStartingWith` / `isEndingWith` / `isIncluding` |
+| `SchemaGetter.transformOrFail` / `SchemaTransformation.transformOrFail` | `transformEffect` |
+| `Schema.*Reviver` | `SchemaRepresentation.*Reviver` |
+| `Schema.Annotations.ToArbitrary.Constraint` | `…ToArbitrary.FilterConstraint` |
+
+Persisted `effect/schema/...` check IDs changed with the renames — regenerate stored representations.
 
 ## Basic Schemas
 
@@ -67,7 +82,9 @@ Schema.String.check(
 );
 ```
 
-Common built-ins include `isUUID`, `isBase64`, `isBase64Url`, numeric range checks, `isInt`, and `isInt32`.
+Common built-ins include `isUUID`, `isBase64`, `isBase64Url`, numeric range checks, `isInt`, and `isInt32`. Range checks put the subject last (`isBetweenLength(1, 64)`, `isBetweenSize`, `isBetweenProperties`). Unicode-aware length: `isMinCodePoints` / `isMaxCodePoints` / `isBetweenCodePoints` (4.0).
+
+New 4.0 schemas: `ByteSize` (+ `ByteSizeFromString` / `FromNumber` / `FromBigInt`), network addresses (`IpAddress`, `Ipv4Address`, `Ipv6Network`, `MacAddress`, `SocketAddress`, `UnixPathAddress`, each with `*FromString`), `BooleanLiterals` / `TrueLiterals` / `FalseLiterals`, and HTTP shapes moved from `effect/http` (`Cookie`, `Cookies`, `Headers`, `UrlParams`, `RecordFromCookies`, `RecordFromUrlParams`, `JsonFromUrlParamsField`).
 
 ## Structs
 
@@ -145,7 +162,7 @@ Multiple filters can run when decoding with `{ errors: "all" }`.
 
 Use `.abort()` on a filter to stop after failure.
 
-Use `Schema.refine` for type-refining schemas and `Schema.brand` for branded types.
+Use `Schema.refine` for type-refining schemas and `Schema.brand` for branded types. Since 4.0, `Schema.brand` is **type-only** (not stored in the AST or `SchemaRepresentation`) and takes **one** concrete identifier — chain `brand` / `fromBrand` for several brands; pass the enum member (not its string value) for enum brand keys. Checks added by `Schema.fromBrand` are preserved.
 
 ## Effectful Validation
 
@@ -162,7 +179,7 @@ Transformations are first-class reusable values in v4.
 - `Schema.decode(transformation)` applies a transformation where source and target schema are the same.
 - `SchemaTransformation.trim`, `toLowerCase`, `toUpperCase`, and `numberFromString` cover common cases.
 - `SchemaTransformation.transform` defines pure bidirectional transformations.
-- `SchemaTransformation.transformOrFail` defines effectful/failing bidirectional transformations.
+- `SchemaTransformation.transformEffect` defines effectful/failing bidirectional transformations (named `transformOrFail` before 4.0).
 
 Use `SchemaTransformation.passthrough`, `passthroughSubtype`, or `passthroughSupertype` when composing schemas and the encoded/type relation needs to be stated.
 
@@ -221,6 +238,10 @@ For class instances or custom types, add `toCodecJson` annotations so JSON seria
 - Attach standard metadata with `.annotate({ title, description, default, examples, readOnly, writeOnly })`.
 - For transformed schemas, annotate the encoded side with `Schema.annotateEncoded(...)` when the metadata must appear in JSON Schema output.
 - Custom types without JSON codec annotations may produce placeholder or unhelpful JSON Schema.
+
+## Decoder Compilation (experimental)
+
+`effect/schema` ships `SchemaJITCompiler` (side-effect import `effect/schema/SchemaJITCompiler/enable` before schemas are built) and `SchemaAOTCompiler` (generates static decoder modules, no `new Function`). Both install decoders into the shared `SchemaCompiler` registry; the normal `SchemaParser` / `decode*` APIs use them transparently and fall back to the interpreter. `@stability unstable` — benchmark before adopting.
 
 ## Error Formatting
 

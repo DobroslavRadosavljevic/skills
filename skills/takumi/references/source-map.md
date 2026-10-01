@@ -4,7 +4,7 @@ This reference captures the Takumi docs snapshot used to create the skill.
 
 ## Snapshot
 
-- Captured: 2026-09-18
+- Captured: 2026-09-18; re-verified 2026-10-01 (no npm release after 2.14.0 / `takumi-pdf@0.15.0`)
 - Stable npm package: `takumi-js@2.14.0`
 - Related packages (same version line): `@takumi-rs/core@2.14.0`, `@takumi-rs/wasm@2.14.0`, `@takumi-rs/helpers@2.14.0`, `@takumi-rs/image-response@2.14.0`
 - Sibling PDF package: `takumi-pdf@0.15.0` (not a `takumi-js` export)
@@ -115,7 +115,7 @@ Templates → node tree (`container` / `image` / `text`) → taffy layout → pa
 - Official **tables** page still describes equal-split columns and unimplemented `border-collapse`. Changelogs 2.12–2.14 implemented collapse, fixed layout, and content-weighted auto columns. Prefer releases over that page until it is updated.
 - Context7 library rules still say pass compiled CSS through `stylesheets`. **2.13+ uses `css`**; `stylesheets` is deprecated.
 - Context7 library rules still say `Renderer` constructor takes no arguments. Fonts stay off the constructor; **`cacheMaxBytes` is valid**.
-- WASM `signal` during encode: 2.14 checks abort around resource loading; the WASM encode itself is blocking. Unreleased changesets on `master` (`wasm-abort-signal.md`, `per-request-fetch-timeout.md`, …) are **not** in 2.14.0.
+- WASM `signal` during encode: 2.14 checks abort around resource loading; the WASM encode itself is blocking. Unreleased changesets on `master` (`wasm-abort-signal.md`, `per-request-fetch-timeout.md`, …) are **not** in 2.14.0. As of 2026-10-01 `master` also carries unreleased layout/raster fixes (blend modes, drop-shadow compositing, `pre-wrap` breaks, list-marker paint offset) and a pending release PR; re-check npm before citing anything newer than 2.14.0.
 - Satori comparison page still cites `takumi-js` **2.2.0** install/bundle sizes — treat as historical.
 - Typography docs still say there is no manual override for text *run* direction (issue #330). `direction` **does** control layout, RTL list markers, and bidi base direction (2.11).
 - `takumi-pdf` is documented on the same site but is a different npm package; do not invent `renderPdf` on `takumi-js`.

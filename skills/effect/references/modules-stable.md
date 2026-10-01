@@ -1,12 +1,12 @@
-# Stable modules
+# Root modules
 
-All modules below live in `packages/effect/src/<Name>.ts` and are re-exported from `"effect"` as `import { Name } from "effect"` or `import * as Name from "effect/Name"`. Unstable APIs are **not** here — see [modules-unstable.md](modules-unstable.md). Testing helpers: `effect/testing` (`FastCheck`, `TestClock`, `TestConsole`, `TestSchema`).
+All modules below live in `packages/effect/src/<Name>.ts` and are re-exported from `"effect"` as `import { Name } from "effect"` or `import * as Name from "effect/Name"`. Subpath areas (`effect/http`, `effect/sql`, …) are **not** here — see [modules-unstable.md](modules-unstable.md). Testing helpers: `effect/testing` (`TestClock`, `TestConsole`, `TestSchema`). `FastCheck` was removed in 4.0 — use root `Arbitrary`.
 
 Do not use `Utils` / `Unify` / `Effectable` / `HKT` / `Types` in app code unless you are writing libraries that extend Effect.
 
 **Prefer (from module JSDoc):** `Stream`/`Sink` over `Channel`/`Pull`/`Take`; `Schema` over `SchemaAST`; `Effect.scoped`/`Layer` over raw `Scope`; platform `runMain` over `Runtime.makeRunMain`; `Reducer` when a fold needs an empty value (`Combiner` is merge-only); `Ref` over `MutableRef` for fiber-safe state; `Exit` when Cause/die/interrupt must be kept, `Result` for plain success/failure; SHA-256+ over SHA-1 except legacy interop.
 
-Snapshot: **4.0.0-rc.112**, checked against the official source barrels on 2026-09-22. “Stable” means outside `unstable/`; the release itself is still an RC.
+Snapshot: **4.0.0**, checked against the official source barrels on 2026-10-01. Root modules follow strict semver except **`Arbitrary`** (`@stability unstable`) and individual APIs tagged `@stability unstable` / `experimental` in their JSDoc. 4.0 delta vs rc.112: added `Arbitrary`, `ByteSize`; removed `Encoding` (now `effect/encoding/*`).
 
 ## Core runtime
 
@@ -42,6 +42,7 @@ Snapshot: **4.0.0-rc.112**, checked against the official source barrels on 2026-
 | **Cache** | Memoize Effect lookups by key (TTL, capacity, in-flight share) | Scoped resources — `ScopedCache` |
 | **ScopedCache** | Cached values that own a Scope | Pure data cache |
 | **Redacted** / **Redactable** | Secrets that must not log/serialize | Plain strings for tokens |
+| **ByteSize** | Exact non-negative byte counts (decimal `megabytes`, binary `mebibytes`, `fromString`, `format`, arithmetic, `Config.ByteSize`, `Schema.ByteSize*`); used across the ecosystem for size limits | Raw numbers for sizes in config |
 
 ## Errors and results
 
@@ -78,13 +79,13 @@ Snapshot: **4.0.0-rc.112**, checked against the official source barrels on 2026-
 | **Newtype** | Wrap/unwrap with **no** extra runtime object |
 | **Function** | `pipe`, `flow`, `identity` (also on the root export) |
 | **Predicate** | `isString`, `isObject`, `and`/`or`/`not` — **do not** write these yourself |
-| **Encoding** | Base64 / Base64Url / hex (`Result` on decode). Structured formats → `unstable/encoding` |
+| *(moved)* Base64 / Base64Url / Hex | Now `effect/encoding/Base64` / `Base64Url` / `Hex` (stable); the root `Encoding` module is gone |
 | **JsonSchema** | JSON Schema AST/document helpers used with Schema |
 | **JsonPatch** / **JsonPointer** | RFC JSON Patch / pointers (Schema can derive differs) |
 | **Inspectable** / **Pipeable** | Library author protocols |
 | **Formatter** | Human-readable Cause/Schema issue formatting |
 | **StandardSchema** | Standard Schema interoperability contracts; derive adapters through Schema rather than duplicating validation |
-| **SchemaAST** / **SchemaGetter** / **SchemaIssue** / **SchemaParser** / **SchemaRepresentation** / **SchemaTransformation** | Schema internals / compilers — app code uses **Schema** |
+| **SchemaAST** / **SchemaGetter** / **SchemaIssue** / **SchemaParser** / **SchemaRepresentation** / **SchemaTransformation** | Schema internals, revivers (`SchemaRepresentation`), and transformations — app code uses **Schema**. In 4.0 AST/issue nodes are structural interfaces (`SchemaAST.Base` is gone; use `SchemaAST.AST` + `is*` guards). JIT/AOT compilers live in `effect/schema` |
 | **Schema** | All validation, domain classes, tagged errors, codecs — [schema-v4.md](schema-v4.md) |
 | **Optic** | Lenses/prisms over nested data (often derived from Schema) |
 | **ChannelSchema** | Schema encode/decode at Channel boundaries |
@@ -120,5 +121,17 @@ Provide live implementations via `@effect/platform-node` (or bun/deno/browser).
 | --- | --- |
 | **TestClock** | Deterministic time in `it.effect`. **Fork** sleepers, then `adjust` — otherwise they hang |
 | **TestConsole** | Capture console |
-| **FastCheck** | Property testing arbitraries (also via Schema / `it.prop`) |
-| **TestSchema** | Schema testing helpers |
+| **TestSchema** | Schema assertions (`@stability unstable`); 4.0 adds `succeedEffect`, `failEffect`, `verifyRoundTripEffect` that run with the caller's services/TestClock |
+
+## Property testing (`Arbitrary`, root, `@stability unstable`)
+
+Replaces `effect/testing/FastCheck` and `Schema.toArbitrary`. No `fast-check` dependency.
+
+| API | Use |
+| --- | --- |
+| `Arbitrary.schema(S)` | Derive a generator (with shrinking) from a Schema |
+| `Arbitrary.Constant`, `array(item, { minLength, maxLength })`, `map`, `filter`, `filterMap`, `flatMap`, `all` | Compose custom arbitraries |
+| `Arbitrary.checkEffect` / `sampleEffect` | Run a property / sample values as Effects (`runs`, `seed`, `maxShrinks`, `replay`) |
+| `Arbitrary.configureGlobal` | Default check/sample options (also used by `@effect/vitest` `it.prop`) |
+
+Schema hook: `Schema.Annotations.ToArbitrary.FilterConstraint` (renamed from `Constraint`).

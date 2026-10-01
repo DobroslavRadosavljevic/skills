@@ -1,14 +1,15 @@
 # Source Map
 
-Snapshot date: 2026-09-05.
+Snapshot date: 2026-10-01.
 
 Refresh official pages and package metadata for latest/current APIs, preset changes, experimental flags, or version mismatches.
 
 ## Research Snapshot
 
 - Official site: [https://nitro.build/](https://nitro.build/)
-- npm package: `nitro` **3.0.260903-beta** (“Build and Deploy Universal JavaScript Servers”).
-- Nitro v2 package name was `nitropack`. Do not mix import paths.
+- npm package: `nitro` **3.0.260903-beta** (`latest` dist-tag; released 2026-09-03). Nightly builds publish as `nitro-nightly` (`3.0.1-<date>-<sha>`).
+- Nitro v2 package name was `nitropack` (`latest` `2.13.4`, maintenance). Do not mix import paths.
+- `3.0.260903-beta` upgraded h3, srvx, rou3 0.9, ocache 0.3, db0 0.4, crossws 0.4.12, and dropped all peer dependencies. Release notes: https://github.com/nitrojs/nitro/releases/tag/v3.0.260903-beta
 
 ## Official Docs (current)
 
@@ -28,6 +29,12 @@ Refresh official pages and package metadata for latest/current APIs, preset chan
 - Tasks (experimental): https://nitro.build/docs/tasks
 - WebSocket: https://nitro.build/docs/websocket
 - Renderer: https://nitro.build/docs/renderer
+- Prerendering: https://nitro.build/docs/prerendering
+- Modules: https://nitro.build/docs/modules
+- CLI: https://nitro.build/docs/cli
+- Vite: https://nitro.build/docs/vite
+- Utils: https://nitro.build/docs/utils
+- TypeScript: https://nitro.build/docs/typescript
 - Migration v2→v3: https://nitro.build/docs/migration
 - Nightly: https://nitro.build/docs/nightly
 - Deploy: https://nitro.build/deploy
@@ -51,7 +58,8 @@ Refresh official pages and package metadata for latest/current APIs, preset chan
 - unstorage: https://unstorage.unjs.io/
 - db0: https://db0.unjs.io/
 - CrossWS: https://crossws.h3.dev/
-- ocache (cache engine): Nitro cache docs
+- ocache (cache engine): https://ocache.unjs.io/ (migration: https://ocache.unjs.io/docs/migration)
+- rou3 / h3 route rules: https://h3.dev/guide/rules
 - Vite plugin: `nitro/vite` — https://nitro.build/docs
 
 ## Refresh Triggers

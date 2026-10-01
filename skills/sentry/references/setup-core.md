@@ -19,10 +19,12 @@ Sentry.init({
   tracePropagationTargets: ["localhost", /^https:\/\/api\.example\.com/],
   replaysSessionSampleRate: 0.1,
   replaysOnErrorSampleRate: 1.0,
-  enableLogs: true,
+  // v11: logs need no flag — they flow once you call Sentry.logger.* or add a logging integration.
   dataCollection: {
-    // tighten in privacy-sensitive apps:
+    // v11 defaults are permissive (user info, cookies, headers, bodies, genAI I/O).
+    // Tighten in privacy-sensitive apps:
     // userInfo: false,
+    // cookies: false,
     // httpBodies: [],
   },
 });
@@ -44,31 +46,35 @@ createRoot(document.getElementById("root")!).render(
 
 ## Minimal Node / Express
 
+Requires Node **>=20.19.0** (22.x needs >=22.12) on SDK v11.
+
 ```ts
-// instrument.ts — must load before express/db imports
+// instrument.mjs — preloaded before any app code
 import * as Sentry from "@sentry/node";
 
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
   environment: process.env.NODE_ENV,
   tracesSampleRate: 0.1,
-  enableLogs: true,
 });
 ```
 
 ```ts
-// app.ts
-import "./instrument";
+// app.mjs
 import express from "express";
-import * as Sentry from "@sentry/node";
 
 const app = express();
-// routes…
-Sentry.setupExpressErrorHandler(app);
+// routes… — v11 expressIntegration captures 5xx / status-less route errors automatically
 app.listen(3000);
 ```
 
-**ESM / Node:** follow current Express/Node guide for `--import ./instrument.mjs` (or equivalent). Late `init` breaks HTTP/DB auto-instrumentation.
+```sh
+node --import ./instrument.mjs app.mjs
+```
+
+- v11 removed `--require` support; `--import` also works for CommonJS instrument files.
+- `Sentry.setupExpressErrorHandler(app)` (and the Fastify/Koa/Hapi equivalents) are deprecated in v11 — remove them. Customize capture with `Sentry.expressIntegration({ shouldHandleError })`.
+- Late `init` breaks HTTP/DB auto-instrumentation, and v11 can no longer warn about it.
 
 ## Common `Sentry.init` options
 
@@ -79,16 +85,19 @@ app.listen(3000);
 | `release` | Version string; ties to Releases + suspect commits |
 | `debug` | SDK stderr logging while installing |
 | `tracesSampleRate` / `tracesSampler` | Performance sampling |
-| `profileSessionSampleRate` / profiling integrations | Continuous profiling |
+| `profileSessionSampleRate` + `profileLifecycle` | Profiling (`'trace'` or `'manual'`; legacy `profilesSampleRate` removed in v11) |
 | `replaysSessionSampleRate` / `replaysOnErrorSampleRate` | Session Replay |
-| `enableLogs` | Structured logs product |
+| `traceLifecycle` | `'stream'` (v11 default, span streaming) or `'static'` (legacy transactions, temporary) |
+| `enableOpenTelemetrySetup` | Server SDKs: register a minimal OTel provider so `@opentelemetry/api` spans reach Sentry (replaces `skipOpenTelemetrySetup`) |
 | `integrations` | Add/override integrations |
 | `defaultIntegrations` | Set `false` to disable all defaults |
 | `tracePropagationTargets` | Which outbound URLs get trace headers |
 | `tunnel` | Proxy ingest (ad-block / first-party) |
-| `dataCollection` | PII / bodies / headers / genAI content controls (prefer over `sendDefaultPii`) |
-| `beforeSend` / `beforeSendTransaction` / `beforeSendLog` | Filter or scrub events |
+| `dataCollection` | PII / bodies / headers / genAI / DB query / queue data controls (`sendDefaultPii` removed in v11) |
+| `beforeSend` / `beforeSendSpan` / `beforeSendLog` / `beforeSendMetric` | Filter or scrub events, streamed spans, logs, metrics (`beforeSendTransaction` is a no-op in v11) |
+| `ignoreSpans` | Drop spans/segments at start (replaces `ignoreTransactions`) |
 | `ignoreErrors` / `denyUrls` / `allowUrls` | Client-side noise control |
+| `attachStacktrace` | Defaults to `true` in v11 |
 
 ## Everyday APIs
 
@@ -96,7 +105,8 @@ app.listen(3000);
 Sentry.captureException(err);
 Sentry.captureMessage("something odd", "warning");
 Sentry.setUser({ id: "42", email: "a@b.co" });
-Sentry.setTag("tenant", "acme");
+Sentry.setTag("tenant", "acme"); // errors only in v11
+Sentry.setAttribute("tenant", "acme"); // spans, logs, metrics (v11)
 Sentry.setContext("order", { id: orderId });
 Sentry.addBreadcrumb({ category: "auth", message: "login", level: "info" });
 
@@ -106,6 +116,9 @@ await Sentry.startSpan({ name: "checkout", op: "ui.action" }, async () => {
 
 Sentry.logger.info("checkout.started", { orderId });
 Sentry.logger.error("checkout.failed", { reason: "timeout" });
+
+Sentry.metrics.count("orders_created", 1, { attributes: { tier: "pro" } });
+Sentry.metrics.distribution("api_latency", 187, { unit: "millisecond" });
 ```
 
 Flush on short-lived runtimes (Lambda, scripts):
@@ -114,12 +127,12 @@ Flush on short-lived runtimes (Lambda, scripts):
 await Sentry.flush(2000);
 ```
 
-## Next.js (shape)
+## Next.js (shape, v11 — Next.js 14+)
 
 1. `bunx @sentry/wizard@latest -i nextjs` **or** manual:
-2. `sentry.client.config.ts` / `sentry.server.config.ts` / `sentry.edge.config.ts`
-3. `instrumentation.ts` with `register()` importing server/edge configs + `onRequestError = Sentry.captureRequestError`
-4. Wrap `next.config` with `withSentryConfig(…, { org, project, authToken })` for source maps
+2. `instrumentation-client.ts` (client init + `export const onRouterTransitionStart = Sentry.captureRouterTransitionStart;`), `sentry.server.config.ts`, `sentry.edge.config.ts`
+3. `instrumentation.ts` with `register()` importing server/edge configs by `NEXT_RUNTIME` + `export const onRequestError = Sentry.captureRequestError;`
+4. Wrap `next.config` with `withSentryConfig(…, { org, project, authToken })` imported from **`@sentry/nextjs/config`** (v11 moved it off the main entry)
 
 ## NestJS (shape)
 
@@ -142,11 +155,11 @@ export default Sentry.withSentry(
 
 - Bun: `@sentry/bun`, init in `instrument`, import first
 - Elysia: `@sentry/elysia` (plugin/onError patterns per guide)
-- Hono: `@sentry/hono` middleware
+- Hono: `@sentry/hono` with a runtime subpath — `@sentry/hono/node` (plus `@sentry/node`), `/cloudflare`, `/bun`, `/deno` — and `app.use(sentry(app, { dsn }))`. 11.2.0 added orchestrion auto-instrumentation (route-named spans, per-middleware spans, handler errors).
 
 ## React Router (SPA helpers vs framework package)
 
-- SPA React Router v6/v7: helpers on `@sentry/react` (`wrapCreateBrowserRouterV6`, etc.)
+- SPA React Router v6/v7/v8: v11 adds `@sentry/react/react-router` — `reactRouterBrowserTracingIntegration()` with no hook arguments (needs `react-router` resolvable). `@sentry/react` helpers (`wrapCreateBrowserRouterV6`, etc.) still work.
 - React Router **framework** mode: `@sentry/react-router`
 
 ## Sampling guidance

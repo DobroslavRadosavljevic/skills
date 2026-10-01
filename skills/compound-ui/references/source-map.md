@@ -1,6 +1,6 @@
 # Source Map
 
-Snapshot captured on 2026-07-08 for creating React compound UI components in a shadcn-like style.
+Snapshot captured on 2026-07-08 for creating React compound UI components in a shadcn-like style. shadcn base/style facts re-verified 2026-10-01 (`shadcn` CLI 4.21.1, `radix-ui` 1.6.7).
 
 ## Primary Sources Checked
 
@@ -12,6 +12,8 @@ Snapshot captured on 2026-07-08 for creating React compound UI components in a s
 - shadcn/ui official repo and docs via Context7 library `/shadcn-ui/ui`
   - Components are source-owned TypeScript + Tailwind code, not sealed package abstractions.
   - Current v4 examples use `data-slot`, `data-variant`, `data-size`, `cn`, CVA variants, Radix primitives, and named part exports.
+  - The v4 registry now has three primitive **bases** (`apps/v4/registry/bases/`): `radix` (`radix-ui`, `asChild` + `Slot.Root`), `base` (`@base-ui/react`, `render` prop), and `aria` (`react-aria-components`). `components.json` records the chosen base and style.
+  - Styles beyond `new-york-v4` live under `apps/v4/registry/styles/` (`vega`, `nova`, `maia`, `lyra`, `mira`, `luma`, `rhea`, `sera`).
   - Source: https://ui.shadcn.com and https://github.com/shadcn-ui/ui
 - Radix UI Primitives docs via Context7 library `/websites/radix-ui_primitives`
   - `asChild` composes primitive behavior onto custom elements through Slot.
@@ -37,6 +39,6 @@ Refresh docs before relying on:
 
 - React `ref` handling in a codebase moving between React 18 and 19.
 - shadcn registry structure, import paths, or generated source shape.
-- Radix `Slot`, `Slottable`, or primitive package import paths.
+- Radix `Slot`, `Slottable`, Base UI `render`, or primitive package import paths.
 - Tailwind v4-only syntax in a Tailwind v3 project.
 - Accessibility behavior for overlays, composite widgets, focus traps, roving focus, or portal layering.

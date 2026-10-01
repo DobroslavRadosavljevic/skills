@@ -115,7 +115,7 @@ Await a frame before asserting styles when the library schedules microtasks.
 |------|--------|
 | Hover color / simple opacity | CSS transition |
 | One-off keyframes, no React tree | CSS / WAAPI / `motion/mini` |
-| Screenshot-style page morph, OK if non-interruptible | `animateView` or View Transitions |
+| Screenshot-style page morph, OK if non-interruptible | `AnimateView` (React 19.3+), `animateView`, or View Transitions |
 | Enter/exit, variants, gestures in React | Motion `motion` / LazyMotion |
 | Shared element / interruptible layout | Motion `layout` / `layoutId` |
 | Drag / reorder / layout | `domMax` or full Motion |
@@ -142,7 +142,7 @@ Apply the seven-question gate in `SKILL.md` and [foundations.md](foundations.md)
 | Wrapping `AnimatePresence` in `&&` | Condition **inside** presence |
 | `key={index}` for reordering lists | Stable `id` |
 | Full `motion` under LazyMotion | Use `m` + `strict` |
-| `AnimateView` from `motion/react` in OSS | MIT `animateView` from `"motion"`; React `AnimateView` is Motion+ |
+| `AnimateView` from `motion/react` / `motion-plus` | `motion/react-animate-view` (React 19.3+, free since 13.4) or `animateView` from `"motion"` |
 | `axis="y"` always on Reorder | Auto-detect; `"xy"` for grids (13.1) |
 | Mini `{ path: arc() }` | Full `motion` / `useAnimate` |
 

@@ -2,34 +2,40 @@
 
 ## Prefetching APIs
 
-Use prefetching when data will likely be needed soon:
+Use prefetching when data will likely be needed soon. Since v5.102, prefetch with `queryClient.query` / `queryClient.infiniteQuery`:
 
 ```tsx
-await queryClient.prefetchQuery({
-  queryKey: ['todos'],
-  queryFn: fetchTodos,
-})
+import { noop } from '@tanstack/react-query'
+
+await queryClient
+  .query({
+    queryKey: ['todos'],
+    queryFn: fetchTodos,
+  })
+  // Swallow errors for non-critical data; useQuery will fetch again.
+  .catch(noop)
 ```
 
 Facts:
 
-- `prefetchQuery` and `prefetchInfiniteQuery` use the query client's default `staleTime` unless overridden.
-- Prefetch functions return `Promise<void>` and do not return data.
-- Prefetch functions do not throw errors by default.
-- Use `fetchQuery` or `fetchInfiniteQuery` when the caller needs returned data or errors.
-- Use `ensureQueryData` when cached data should be returned if available regardless of prefetch `staleTime`.
+- `query` and `infiniteQuery` use the query client's default `staleTime` unless overridden. Fresh cached data is returned without a fetch.
+- They resolve with data and throw on error. Add `.catch(noop)` for best-effort prefetches; omit it when the caller must react to failure (for example, a 404/500 response).
+- Pass `staleTime: 'static'` to return any cached data regardless of freshness (the replacement for `ensureQueryData`).
+- `prefetchQuery`, `prefetchInfiniteQuery`, `fetchQuery`, `fetchInfiniteQuery`, `ensureQueryData`, and `ensureInfiniteQueryData` are deprecated and will be removed in the next major version. They still work on v5; recognize them in existing code and migrate deliberately.
 - Prefetched queries with no observers are garbage collected after `gcTime`.
 
 Prefetch multiple infinite pages:
 
 ```tsx
-await queryClient.prefetchInfiniteQuery({
-  queryKey: ['projects'],
-  queryFn: fetchProjects,
-  initialPageParam: 0,
-  getNextPageParam: (lastPage) => lastPage.nextCursor,
-  pages: 3,
-})
+await queryClient
+  .infiniteQuery({
+    queryKey: ['projects'],
+    queryFn: fetchProjects,
+    initialPageParam: 0,
+    getNextPageParam: (lastPage) => lastPage.nextCursor,
+    pages: 3,
+  })
+  .catch(noop)
 ```
 
 ## Component And Event Prefetching
@@ -38,11 +44,13 @@ Use event handlers for likely navigation or details panels:
 
 ```tsx
 const prefetch = () => {
-  queryClient.prefetchQuery({
-    queryKey: ['details', id],
-    queryFn: () => getDetails(id),
-    staleTime: 60_000,
-  })
+  void queryClient
+    .query({
+      queryKey: ['details', id],
+      queryFn: () => getDetails(id),
+      staleTime: 60_000,
+    })
+    .catch(noop)
 }
 
 return <button onMouseEnter={prefetch} onFocus={prefetch}>Open</button>
@@ -57,6 +65,8 @@ Use:
 
 when prefetching before a Suspense boundary.
 
+The experimental render-time prefetching option (`experimental_prefetchInRender`) and the `promise` property on query results were removed in v5.102. Do not pair `useQuery(...).promise` with `React.use`; use the Suspense hooks or the prefetch hooks instead.
+
 ## Router Integration
 
 Router loaders, route preloads, and hover/focus navigation callbacks are natural places to prefetch. Keep route prefetching scoped to data that improves navigation and avoids request waterfalls.
@@ -65,16 +75,17 @@ Common choices:
 
 - Use route loaders or server functions to prefetch bootstrap data needed before rendering route chrome.
 - Use component-local `useQuery` for heavy route body data when it can load independently.
-- Use router preload hooks to call `queryClient.prefetchQuery`.
-- Use `queryClient.ensureQueryData` when the loader should synchronously return cached-or-fetched data.
+- Use router preload hooks or loaders to call `queryClient.query(...)`; add `.catch(noop)` and do not await it for secondary data.
+- `await queryClient.query(options)` in a loader when the route needs the data before render. Use `staleTime: 'static'` when any cached copy is acceptable (old `ensureQueryData` behavior).
 - Keep query keys shared between loaders and components through `queryOptions`.
+- Some router docs still show `ensureQueryData` / `fetchQuery`. They work on v5, but new code should use `query`. Router SSR-Query integration packages may require Query 5.102 or newer.
 
 ## SSR Hydration Basics
 
 Full hydration flow:
 
 1. Create a request-scoped `QueryClient` in the framework loader or server preloading phase.
-2. `await queryClient.prefetchQuery(...)` for critical queries.
+2. `await queryClient.query(...).catch(noop)` for queries to render on the server (drop `.catch(noop)` when failures must change the response status).
 3. Return `dehydrate(queryClient)` to the render tree.
 4. Wrap the client-rendered tree with `<HydrationBoundary state={dehydratedState}>`.
 5. Use the same query keys and query functions in `useQuery`.
@@ -85,6 +96,7 @@ Example:
 import {
   dehydrate,
   HydrationBoundary,
+  noop,
   QueryClient,
   useQuery,
 } from '@tanstack/react-query'
@@ -92,10 +104,12 @@ import {
 export async function loadPostsRoute() {
   const queryClient = new QueryClient()
 
-  await queryClient.prefetchQuery({
-    queryKey: ['posts'],
-    queryFn: getPosts,
-  })
+  await queryClient
+    .query({
+      queryKey: ['posts'],
+      queryFn: getPosts,
+    })
+    .catch(noop)
 
   return {
     dehydratedState: dehydrate(queryClient),

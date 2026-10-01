@@ -128,7 +128,7 @@ Sizes accept `%` / `px` / `rem` / bare numbers (flexible %). `getHandleProps` al
 | Hook | Role |
 | --- | --- |
 | `useScrollIntoView` | Imperative scroll target into view with axis/offset/easing |
-| `useScrollSpy` | Active heading/section from scroll position |
+| `useScrollSpy` | Active heading/section from scroll position; `scrollHost` accepts an element or a ref (9.5.1+) |
 | `useScroller` | Programmatic container scrolling + scroll state |
 | `useHeadroom` | Pin/hide chrome from scroll |
 | `useScrollDirection` | Up/down (and related) direction signal |

@@ -61,7 +61,7 @@ Player cards: only when you have a crawlable HTTPS player and the product needs 
 
 ## Favicon, Apple touch, theme-color (secondary)
 
-**FACT — favicon in Google Search.** One favicon per **hostname**. Home page `<link rel="icon" href="...">`. Also recognized: `shortcut icon`, `apple-touch-icon`, `apple-touch-icon-precomposed`. `href` may be relative or absolute, including CDN. Googlebot must crawl the home page; Googlebot-Image must crawl the icon. Square, **≥ 8×8**, **recommend > 48×48**. Stable URL. Inappropriate icons are replaced. Source: [Favicon in Search](https://developers.google.com/search/docs/appearance/favicon-in-search).
+**FACT — favicon in Google Search.** One favicon per **hostname**. Home page `<link rel="icon" href="...">`. Also recognized: `shortcut icon`, `apple-touch-icon`, `apple-touch-icon-precomposed`. `href` may be relative or absolute, including CDN. Googlebot must crawl the home page; Googlebot-Image must crawl the icon. Square, **≥ 8×8**, **recommend > 48×48**. Use a file format from the doc's supported list (listed inline since 2026-08-28; unchanged). Stable URL. Inappropriate icons are replaced. Source: [Favicon in Search](https://developers.google.com/search/docs/appearance/favicon-in-search).
 
 **FACT — Apple Web Clip.** PNG `apple-touch-icon.png` in the site root, or `<link rel="apple-touch-icon" href="...">`, optional `sizes`. Source: [Apple: Configuring web applications](https://developer.apple.com/library/archive/documentation/AppleApplications/Reference/SafariWebContent/ConfiguringWebApplications/ConfiguringWebApplications.html).
 
@@ -105,7 +105,7 @@ Procedure:
 
 **FACT — watch page vs embed-only.** Video features (Video mode, key moments, LIVE badge, etc.) need a page whose **main purpose** is watching **one** video (landing page, episode player, news watch page). Complementary embeds (product 360, blog with a clip, category grids) are **not** watch pages. Third-party embeds (YouTube, Vimeo) may be indexed on both your page and the host if both meet criteria. Still add structured data / video sitemap on your page. Source: [Video SEO](https://developers.google.com/search/docs/appearance/video).
 
-**FACT — VideoObject.** Influence name, description, thumbnail, upload date, duration. Required/typical: `name`, `description`, `thumbnailUrl`, `uploadDate`; recommended `duration` (ISO 8601, e.g. `PT1M54S`), `contentUrl` and/or `embedUrl`. Source: [VideoObject](https://developers.google.com/search/docs/appearance/structured-data/video).
+**FACT — VideoObject.** Influence name, description, thumbnail, upload date, duration. Required/typical: `name`, `description`, `thumbnailUrl`, `uploadDate`; recommended `duration` (ISO 8601, e.g. `PT1M54S`), `contentUrl` and/or `embedUrl`; `creator`/`author` and `interactionStatistic` (supported interaction types only) documented 2026-09-24. Source: [VideoObject](https://developers.google.com/search/docs/appearance/structured-data/video).
 
 **FACT.** Google also accepts video sitemaps and OGP video tags as discovery hints. Source: [Video SEO](https://developers.google.com/search/docs/appearance/video); [ogp.me](https://ogp.me/) (`og:video` + width/height/type).
 

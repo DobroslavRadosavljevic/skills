@@ -1,16 +1,16 @@
 ---
 name: react-email
-description: "Build, review, debug, render, migrate, or plan HTML email templates with React Email (react-email v6+). Use for react-email, create-email, @react-email/editor, @react-email/render, @react-email/ui, email templates, Tailwind email styling, pixelBasedPreset, render/toPlainText, PreviewProps, email CLI (email dev/export/build), transactional emails, newsletters, Resend/Nodemailer/SendGrid/Mailgun/Postmark/SES integrations, and upgrades from @react-email/components."
+description: "Build, review, debug, render, migrate, or plan HTML email templates with React Email (react-email v6+). Use for react-email, create-email, @react-email/editor, @react-email/render, @react-email/ui, email templates, Tailwind email styling, pixelBasedPreset, render/toPlainText, PreviewProps, email CLI (email dev/export/build, --esbuild-plugins, --extension), transactional emails, newsletters, Resend/Nodemailer/SendGrid/Mailgun/Postmark/SES integrations, and upgrades from @react-email/components."
 ---
 
 # React Email
 
-Use this skill for HTML emails built with **React Email** (`react-email` **6.x**): components, Tailwind styling, CLI preview, `render`, ESP sending, and the optional visual editor.
+Use this skill for HTML emails built with **React Email** (`react-email` **6.x**, latest `6.11.0`; editor `1.7.x`): components, Tailwind styling, CLI preview, `render`, ESP sending, and the optional visual editor.
 
 ## Workflow
 
 1. Inspect the local surface before changing code:
-   - Packages: `react-email` (components + CLI + `render`), optional `@react-email/editor`, `@react-email/ui`, peers `react` / `react-dom` 18+.
+   - Packages: `react-email` (components + CLI + `render`), optional `@react-email/editor`, `@react-email/ui`, peers `react` / `react-dom` 18+. CLI needs Node **20.19+**.
    - Legacy installs still on `@react-email/components` or `renderAsync` → treat as a **v5→v6** migration (see [setup-cli.md](references/setup-cli.md)).
    - Emails directory (default `emails/`), `static/` assets, `email` script, shared Tailwind config if any.
    - How mail is sent: `render` + ESP HTML, Resend `react:` prop, or static `email export`.

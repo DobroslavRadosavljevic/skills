@@ -77,7 +77,7 @@ function OrderPage({ orderId }) {
 
 **Smell:** Loader fetches five entities, route component spreads them as props through the tree.
 
-**Fix:** Loader `ensureQueryData` for critical keys; route passes params; leaves subscribe. Await only what must block paint or gate the route.
+**Fix:** Loader awaits `queryClient.query(...)` for critical keys; route passes params; leaves subscribe. Await only what must block paint or gate the route.
 
 ## 10. Callback and flag forests
 

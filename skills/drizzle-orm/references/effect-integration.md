@@ -2,21 +2,23 @@
 
 Two different stacks exist. **Only the native RC drivers belong with `drizzle-orm@rc`.**
 
-For Effect services, layers, and Schema v4 patterns beyond the Drizzle drivers, use current Effect v4 docs for the installed `effect@beta` version.
+For Effect services, layers, and Schema v4 patterns beyond the Drizzle drivers, use current Effect v4 docs for the installed `effect` version.
 
 ## Recommended: native `drizzle-orm/effect-*` (Effect v4)
 
 Peers (approx):
 
 - `drizzle-orm@rc`
-- `effect@beta` (≥ `4.0.0-beta.83`)
-- Matching `@effect/sql-pg` / `@effect/sql-mysql2` / `@effect/sql-pglite` / `@effect/sql-libsql` / … on the Effect v4 beta line
-- Driver peers (`pg`, etc.) as required by the SQL package
+- `effect` 4.x — **4.0.0 is stable on `latest`** (RC peer range: `>=4.0.0-beta.83 || >=4.0.0`)
+- Matching `@effect/sql-pg` / `@effect/sql-mysql2` / `@effect/sql-pglite` / `@effect/sql-libsql` / `@effect/sql-d1` / `@effect/sql-sqlite-*` 4.x
+- No separate driver install in the common case: `@effect/sql-pg` 4.0.0 ships its own Postgres protocol client (no `pg` dependency), and `@effect/sql-mysql2` / `sql-libsql` / `sql-pglite` bring their driver as a regular dependency
 
 ```sh
-bun add drizzle-orm@rc effect@beta @effect/sql-pg pg
-bun add -D drizzle-kit@rc @types/pg
+bun add drizzle-orm@rc effect @effect/sql-pg
+bun add -D drizzle-kit@rc
 ```
+
+Do not install `effect@beta` any more: that tag is frozen at an old 4.0.0-beta build. The RC drivers were built against the Effect 4 betas; after moving to 4.0.0 stable, run one Effect program end-to-end per driver before you trust it.
 
 Entrypoints include:
 
@@ -91,19 +93,20 @@ yield* db.insert(users).values({ name: "Alice" });
 
 ```sh
 # good
-bun add drizzle-orm@rc
+bun add drizzle-orm@rc effect @effect/sql-pg
 
 # bad for RC + Effect v4
 bun add drizzle-orm@effect3
 bun add @effect/sql-drizzle
+bun add effect@beta   # stale prerelease tag since 4.0.0 shipped
 ```
 
 ## Decision table
 
 | Stack | Approach |
 | --- | --- |
-| Drizzle 1.0 RC + Effect v4 | **`drizzle-orm/effect-*`** + `@effect/sql-*@beta` + `effect@beta` |
-| Effect v3 stable today | Stay on drizzle **0.x** + `@effect/sql-drizzle`, or wait for alignment |
+| Drizzle 1.0 RC + Effect v4 | **`drizzle-orm/effect-*`** + `@effect/sql-*` 4.x + `effect` 4.x |
+| Effect v3 codebase | Stay on drizzle **0.x** + `@effect/sql-drizzle`, or migrate to Effect 4 + RC drivers together |
 | Promise/async app, no Effect | Normal `drizzle-orm/<driver>` factories |
 
 ## Pitfalls

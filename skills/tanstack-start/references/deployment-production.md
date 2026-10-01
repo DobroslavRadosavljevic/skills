@@ -15,6 +15,8 @@ TanStack Start supports Vite and Rsbuild and can deploy to many hosts. Current d
 - `bun`
 - `appwrite-sites`
 
+Railway, Vercel, Node.js/Docker, and Bun (Vite builds) all follow the Nitro path in the current hosting guide; Bun uses `nitro({ preset: 'bun' })`.
+
 Always check the host-specific docs before changing adapters. Hosting details are version-sensitive and can change faster than app code.
 
 ## Cloudflare Workers
@@ -312,3 +314,14 @@ Run the repo's existing checks first. For Start-specific production changes, ver
 - SPA rewrites, server function routes, and API routes do not shadow each other.
 - Prerendered routes and CDN cache headers match freshness requirements.
 - Deployed smoke test covers at least one SSR page, one dynamic route, one server function, one server route, and one protected route.
+
+The official Production Checklist guide adds release checks that a dev server cannot prove. Run them against the production build and again through the public hostname:
+
+- Secrets: start the production server with the host's variable names and bindings; build with a harmless unique test secret and search client files, published source maps, and response bodies for it.
+- Authorization: call private server functions and server routes directly while signed out and as another account; a `beforeLoad` redirect does not protect a callable endpoint. Exercise session expiry and sign-out.
+- Writes: send malformed input and cross-origin, browser-like requests to every mutation entry point (including plain server-route forms) with an authenticated test session, and test rapid repeated submissions.
+- Cache isolation: request the same private URL as two accounts concurrently and inspect HTML plus serialized loader/query data. Use `Cache-Control: no-store` for personalized responses (`private` alone can leave one account's page in the browser cache after sign-out). Check final headers from the host/CDN, not only route code.
+- Status codes: probe 404, redirect, and error responses before following redirects; failures must not return 200 pages.
+- SEO: inspect HTML before JavaScript runs (title, description, canonical, social metadata), fetch `robots.txt` and the sitemap from the deployed hostname.
+- Operations: trigger a controlled error and confirm logs/error service receive it without secrets; run the adapter's real start command; test a deep link, static asset, server function, and server route after restart; rehearse rollback separately from database migrations.
+- Record the tested commit, runtime, hostname, commands, and results; move repeatable checks into CI.

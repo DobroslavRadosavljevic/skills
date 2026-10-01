@@ -3,13 +3,13 @@
 ## Packages
 
 ```sh
-bun add effect@rc
-bun add -d @effect/vitest@rc vitest
+bun add effect
+bun add -d @effect/vitest vitest@^5
 ```
 
-Keep every `@effect/*` on the **same** `4.0.0-rc.N` as `effect`. npm `latest` is v3 (`effect@3.x`, `@effect/vitest@0.30.x`).
+Keep every `@effect/*` monorepo package on the **same** version as `effect` (`4.0.0`). npm `latest` is v4 since 2026-10-01; v3 is `effect@3.x` (last `3.22.2`) with `@effect/vitest@0.30.x`. Effect 4.x is an LTS line.
 
-Requirements (from Effect README, rc.112):
+Requirements (from Effect README, 4.0.0):
 
 - TypeScript **5.9+** (`strict: true`). TypeScript 7 recommended for Effect’s TS tooling.
 - Node.js 18+ generally; `@effect/sql-sqlite-node` needs Node **22.16+**.
@@ -18,11 +18,11 @@ Requirements (from Effect README, rc.112):
 
 ```ts
 import { Context, Effect, Layer, Schema } from "effect"
-import { HttpClient } from "effect/unstable/http"
+import { HttpClient } from "effect/http"
 import { TestClock } from "effect/testing"
 ```
 
-Direct modules (`import * as Effect from "effect/Effect"`) are also valid. Match the repo. Unstable paths are explicit.
+Direct modules (`import * as Effect from "effect/Effect"`) are also valid. Match the repo. Area barrels (`effect/http`, `effect/sql`, `effect/ai`, …) are mostly `@stability unstable` even without an `unstable` path segment. `effect/unstable/*` imports no longer exist.
 
 ## Constructors
 
@@ -34,9 +34,9 @@ Direct modules (`import * as Effect from "effect/Effect"`) are also valid. Match
 
 Prefer typed failures for domain/boundary errors.
 
-## `Effect.gen` and `Effect.fn`
+## `Effect.gen`, `Effect.fn`, and `Effect.fnUntraced`
 
-Sequential logic:
+Inline sequential logic:
 
 ```ts
 const program = Effect.gen(function*() {
@@ -45,7 +45,7 @@ const program = Effect.gen(function*() {
 })
 ```
 
-Named functions — **`Effect.fn("sameNameAsFunction")`**, extra combinators as extra arguments, **no `.pipe` on `Effect.fn`**:
+Reusable functions that are useful tracing boundaries — **`Effect.fn("sameNameAsFunction")`**, extra combinators as extra arguments, **no `.pipe` on `Effect.fn`**:
 
 ```ts
 export const loadUser = Effect.fn("loadUser")(
@@ -57,7 +57,20 @@ export const loadUser = Effect.fn("loadUser")(
 )
 ```
 
-`return yield*` on failures so control-flow narrowing works.
+Reusable functions that are not useful tracing boundaries (library internals, hot paths) — **`Effect.fnUntraced`** (no span, no stack-frame capture):
+
+```ts
+export const validateBatchSize = Effect.fnUntraced(
+  function*(size: number): Effect.fn.Return<number, BatchError> {
+    if (!Number.isInteger(size) || size <= 0) {
+      return yield* new BatchError({ message: "Batch size must be a positive integer" })
+    }
+    return size
+  }
+)
+```
+
+Avoid plain functions that only wrap and return `Effect.gen`. `return yield*` on failures so control-flow narrowing works.
 
 Yieldable in generators: `Effect`, `Option`, `Result`, `Config`, `Context.Service` (service keys are Effects). **Not** yieldable as effects: `Ref`, `Deferred`, `Fiber` — use module functions. Do **not** pass `Option`/`Result` to `Effect.map` without converting. Migration docs mention `.asEffect()`; **confirm it exists on the installed RC** before using it.
 
@@ -106,12 +119,33 @@ Pass `AbortSignal` when bridging HTTP request cancellation.
 
 `Config<T>` is yieldable. Default provider: `ConfigProvider.fromEnv()`. Tests: `fromUnknown`, `fromEnv({ env })`, `fromDotEnvContents`. `layer` / `layerAdd`, `constantCase`, `nested`.
 
+4.0 constructors are **PascalCase** (renamed late in the RC series):
+
+| RC / v3 | 4.0 |
+| --- | --- |
+| `Config.string` / `nonEmptyString` | `Config.String` / `Config.NonEmptyString` |
+| `Config.number` / `finite` / `int` | `Config.Number` / `Config.Finite` / `Config.Int` |
+| `Config.boolean` / `literal` / `literals` | `Config.Boolean` / `Config.Literal` / `Config.Literals` |
+| `Config.duration` / `port` / `logLevel` | `Config.Duration` / `Config.Port` / `Config.LogLevel` |
+| `Config.redacted` / `url` / `date` | `Config.Redacted` / `Config.URL` / `Config.Date` |
+| `Config.mapOrFail` | `Config.mapEffect` |
+
+New: `Config.Array`, `Config.Record` (construct configs directly, path-first or pathless overloads), `Config.ByteSize`, `Config.flatMap`. Combinators keep lowercase names (`map`, `orElse`, `all`, `withDefault`, `option`, `unwrap`, `schema`, `nested`).
+
+```ts
+const Server = Config.all({
+  host: Config.String("HOST").pipe(Config.withDefault("0.0.0.0")),
+  port: Config.Port("PORT"),
+  apiKey: Config.Redacted("API_KEY")
+})
+```
+
 Use Config for application-owned configuration. Adapt existing validated framework configuration once at the boundary; avoid duplicate validation.
 
 ## Other core renames
 
 - `Effect.andThen` (old `zipRight`)
-- `Effect.tap` (old `zipLeft` in some uses)
+- `Effect.zip` + `Effect.map` (old `zipLeft`; `Effect.tap` when the right side is a side effect)
 - `Effect.result` (old `either`)
 - `Layer.effect` (old `Layer.scoped`)
 - `Layer.effectDiscard` (old `scopedDiscard`)

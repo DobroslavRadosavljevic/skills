@@ -93,8 +93,10 @@ Choose `.default()` for already-parsed fallback output. Choose `.prefault()` whe
 Since **4.6**, `safeParse()` constructs `error` lazily. Locale, global, and schema error maps run when `result.error` is first read, not at parse time. Swapping `z.config()` between parse and read uses the newer config. An error map with a side effect never runs if nothing reads the error. Throwing `.parse()` is unchanged.
 
 ```ts
+import { fr } from "zod/locales";
+
 const result = schema.safeParse(12);
-z.config(z.locales.fr());
+z.config(fr());
 result.error.issues[0].message; // French in 4.6, English in 4.5
 ```
 
@@ -117,7 +119,7 @@ Deprecated or removed Zod 3 patterns:
 
 - Regular `zod` loads the English locale automatically.
 - Zod Mini defaults to generic messages until a locale is configured.
-- Configure a locale with `z.config(z.locales.en())` or `import { en } from "zod/locales"`.
+- Prefer `import { en } from "zod/locales"` + `z.config(en())` (current docs default). `z.config(z.locales.en())` still works.
 - Dynamic locale imports can keep bundles smaller (`zod/v4/locales/${locale}.js`).
-- `import * as z from "zod"` tree-shakes unused `z.locales.*` in Rollup/Webpack. esbuild cannot — avoid `import { z } from "zod"` there.
+- `z.locales.*` tree-shakes only in Rollup/Webpack. esbuild and Turbopack bundle **every** locale whichever import form you use — import from `zod/locales` when bundling with either.
 - Locales added since 4.4.3 include `bn`, `ckb`, `hi`, `kn`, `nn`, `ptBR`, `sk`, `tk` (4.5) and `tg` (4.6.1). Full list: `ar`, `az`, `be`, `bg`, `bn`, `ca`, `ckb`, `cs`, `da`, `de`, `el`, `en`, `eo`, `es`, `fa`, `fi`, `fr`, `frCA`, `gu`, `he`, `hi`, `hr`, `hu`, `hy`, `id`, `is`, `it`, `ja`, `ka`, `km`, `kn`, `ko`, `lt`, `mk`, `ms`, `ne`, `nl`, `nn`, `no`, `ota`, `ps`, `pl`, `pt`, `ptBR`, `ro`, `ru`, `sk`, `sl`, `sv`, `ta`, `tg`, `th`, `tk`, `tr`, `uk`, `ur`, `uz`, `vi`, `zhCN`, `zhTW`, `yo`.

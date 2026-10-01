@@ -159,11 +159,43 @@ function groupOptions(id: number) {
 }
 
 useQuery(groupOptions(1))
-queryClient.prefetchQuery(groupOptions(1))
+await queryClient.query(groupOptions(1))
 queryClient.setQueryData(groupOptions(1).queryKey, newGroups)
 ```
 
 Use `infiniteQueryOptions` for reusable infinite queries.
+
+## Imperative Reads (`query` / `infiniteQuery`)
+
+Since v5.102, `queryClient.query(options)` and `queryClient.infiniteQuery(options)` are the imperative read/prefetch APIs. They fetch and cache, resolve with data (after `select`), and throw on error. Retries default to `false` here unless configured.
+
+They replace methods that are now deprecated and will be removed in the next major version:
+
+| Deprecated | Replacement |
+| --- | --- |
+| `fetchQuery(opts)` | `query(opts)` |
+| `prefetchQuery(opts)` | `query(opts).catch(noop)` (discard with `void` when not awaited) |
+| `ensureQueryData(opts)` | `query({ ...opts, staleTime: 'static' })` |
+| `fetchInfiniteQuery(opts)` | `infiniteQuery(opts)` |
+| `prefetchInfiniteQuery(opts)` | `infiniteQuery(opts).catch(noop)` |
+| `ensureInfiniteQueryData(opts)` | `infiniteQuery({ ...opts, staleTime: 'static' })` |
+
+```tsx
+import { noop } from '@tanstack/react-query'
+
+// Critical data: await and let errors throw.
+const groups = await queryClient.query(groupOptions(1))
+
+// Non-critical prefetch: swallow errors; useQuery will retry later.
+void queryClient.query(groupOptions(2)).catch(noop)
+```
+
+Notes:
+
+- `query` uses the client's default `staleTime` unless overridden; cached fresh data is returned without fetching.
+- Observer-only options (`enabled`, `refetchInterval`, `refetchOnWindowFocus`, `refetchOnMount`, `refetchOnReconnect`, `throwOnError`, `placeholderData`, and similar) are not part of its options.
+- `ensureQueryData({ revalidateIfStale: true })` has no single-option `query` equivalent. Keep that call until you choose a deliberate replacement (for example, return cached data and start a separate background `query`).
+- The old methods still work on v5, so existing code does not break. Migrate when touching the code, or when the repo's lint/type checks flag deprecations.
 
 Use `mutationOptions` for reusable, typed mutations:
 
@@ -181,7 +213,7 @@ useMutation(addTodoOptions())
 
 ## TypeScript
 
-Current `/query/latest` TypeScript docs state that TanStack Query follows the DefinitelyTyped support window and supports TypeScript versions released within the last two years. In this snapshot, that means TypeScript 5.4 or newer. Prefer the published site over older migration notes that still mention TypeScript 4.7 as the v5 floor.
+Current `/query/latest` TypeScript docs state that TanStack Query follows the DefinitelyTyped support window and supports TypeScript versions released within the last two years. In this snapshot, that means TypeScript 5.6 or newer. Prefer the published site over older migration notes that still mention TypeScript 4.7 as the v5 floor.
 
 Guidance:
 
@@ -242,4 +274,4 @@ function App() {
 }
 ```
 
-Devtools are included only in development builds by default. Since v5, they can observe mutations as well as queries.
+Devtools are included only in development builds by default. Since v5, they can observe mutations as well as queries. Since v5.103, `@tanstack/react-query-devtools` declares `@types/react` (`^18 || ^19`) as a peer dependency, so strict package managers may ask for it.

@@ -45,7 +45,7 @@ await generateText({
 });
 ```
 
-`streamText` adds `experimental_transform`, `onChunk`, `onError`, `onAbort`, `include.rawChunks`.
+`streamText` adds `experimental_transform`, `onChunk`, `onError`, `onAbort`, `include.rawChunks`, and `streamRetries` (7.0.91+).
 
 Do **not** mix `prompt` and `messages`. Convert UI chat with `await convertToModelMessages(uiMessages)`.
 
@@ -123,6 +123,8 @@ return createTextStreamResponse({
 
 Node `ServerResponse`: `pipeUIMessageStreamToResponse({ response, stream })`.
 
+Behind reverse proxies that kill idle connections, pass `keepAliveMs` (7.0.123+) to `createUIMessageStreamResponse`, `pipeUIMessageStreamToResponse`, `createAgentUIStreamResponse`, or `pipeAgentUIStreamToResponse`: it sends an SSE comment immediately and after each idle interval. Response streams are cancelled when the client disconnects (7.0.119+).
+
 `toUIMessageStream` options: `originalMessages`, `generateMessageId`, `onEnd` (`onFinish` deprecated alias), `messageMetadata`, `sendReasoning` (default **false**), `sendSources` (false), `sendFinish`/`sendStart` (true), `onError` default `"An error occurred."`, `consumeSseStream`.
 
 ### Stream parts (`result.stream` / `onChunk`)
@@ -131,7 +133,24 @@ Canonical delta types from generating-text: `start`, `start-step`, `text-start`,
 
 Some pages still say `type: 'text'` / `tool-call-delta`. Inspect `part.type` at runtime; prefer `text-delta` + `chunk.text` in `onChunk`.
 
-Network failures **throw**. Well-formed provider errors appear as `error` parts (`StreamProviderError`). Abort: `type: 'abort'` + `onAbort({ steps })`. **`onEnd` is not called on abort.**
+Network failures **throw**. Well-formed provider errors appear as `error` parts (`StreamProviderError`). Abort: `type: 'abort'` + `onAbort({ steps, callId, reason })` (call ID and abort reason since 7.0.92). **`onEnd` is not called on abort.**
+
+### Stream retries (7.0.91+)
+
+`maxRetries` only covers failures while **starting** a model call. To retry well-formed provider error events that arrive **after** streaming began, set `streamRetries`:
+
+```ts
+const result = streamText({
+  model,
+  prompt,
+  streamRetries: 2, // automatic retries of the failed step
+  onError: ({ error }) => (isTransient(error) ? { retry: true } : undefined),
+});
+```
+
+- Omit `streamRetries` to disable all stream recovery (default behavior). `streamRetries: 0` allows only one callback-directed retry via `onError` returning `{ retry: true }`.
+- Only the failed step reruns; earlier steps and tool results are not replayed. Tool calls/approvals from the failed attempt are discarded.
+- Text/reasoning already streamed from the failed attempt cannot be retracted — consumers may see repeated partial output. Final results and response messages contain only the successful attempt.
 
 ### Smooth streaming
 
@@ -311,3 +330,31 @@ Deprecated aliases still fall back if the new name is omitted. Errors **inside c
 | `include.*` | `false` |
 | `temperature` | **unset** (provider default; not 0) |
 | UI `sendReasoning` / `sendSources` | `false` |
+
+## Evaluation (experimental, 7.0.103+)
+
+`experimental_evaluate` answers named `choice` / `score` / `boolean` questions about one shared `state` (string, JSON object, or array) with an evaluation model. Use it for triage, grading, and guardrail checks instead of hand-rolled `Output.choice` prompts when an evaluation model is available. API may change in patch releases.
+
+```ts
+import { experimental_evaluate } from 'ai';
+import { openai } from '@ai-sdk/openai';
+
+const { answers } = await experimental_evaluate({
+  model: openai.evaluationModel(MODEL_ID), // or registry.evaluationModel('alias:id') or a Gateway string
+  state: { message },
+  questions: {
+    department: {
+      type: 'choice',
+      instructions: 'Which team should handle this?',
+      criteria: { billing: 'Payments and refunds', support: 'Other requests' },
+    },
+    severity: { type: 'score', instructions: 'How severe?', criteria: ['Cosmetic', 'Workaround exists', 'Blocking'] },
+    requestsRefund: { type: 'boolean', instructions: 'Is the customer asking for money back?' },
+  },
+});
+answers.department.choice; // 'billing' | 'support'
+```
+
+- Providers expose `evaluationModel(...)` (TypeSafe AI native Jev; OpenAI, Anthropic, Google via structured-output adapters that request `reasoning: 'none'` by default — override via `providerOptions`). Boolean answers carry an uncalibrated probability.
+- `customProvider({ evaluationModels })` + `createProviderRegistry` give aliases; string IDs resolve through Gateway unless an evaluation-capable default provider is configured.
+- Callbacks: `experimental_onEvaluateStart` / `End`, `experimental_onEvaluationModelCallStart` / `End`. Unsupported question types throw `Experimental_EvaluationUnsupportedQuestionTypeError`.

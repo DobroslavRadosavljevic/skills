@@ -1,18 +1,21 @@
 # Source Map
 
-Snapshot date: 2026-07-10.
+Snapshot date: 2026-10-01.
 
 This reference records the official documentation and package evidence used to create the skill. Refresh sources for latest/current questions, adapter work, experimental features, deployment changes, or version mismatches.
 
 ## Research Snapshot
 
 - Context7 library: `/elysiajs/documentation` (official documentation, high source reputation).
-- Official documentation repository commit inspected: `0b450a6962a7095a9551c6bba167b9b86e04a440`.
-- npm versions observed on 2026-07-10:
-  - `elysia`: `1.4.29`
-  - `@elysia/openapi`: `1.4.15`
-  - `@elysia/eden`: `1.4.10`
-  - `@elysia/node`: `1.4.6`
+- Official documentation repository commit inspected: `f68573703415eb3df63ff02851013148fea4748f` (main branch; still documents 1.4).
+- npm dist-tags observed on 2026-10-01:
+  - `elysia`: `latest` `1.4.30`, `next` `2.0.0-beta.20`
+  - `@elysia/openapi`: `latest` `1.4.16`, `next` `2.0.0-beta.4`
+  - `@elysia/eden`: `latest` `1.4.10`, `next` `2.0.0-beta.5`
+  - `@elysia/node`: `latest` `1.4.6`, `next` `2.0.0-beta.2`
+  - `@elysia/codemod`: `latest` `2.0.0-beta.1`
+- 1.4.x is in security-only maintenance. 1.4.30 fixes GHSA-gmm9-qwx3-2m3h (critical RCE through unescaped schema property names and string defaults, `<= 1.4.29`) plus four other advisories. 1.4.29 fixed GHSA-9643-4qgh-g8mx (quadratic multipart form-data parse).
+- `@elysia/openapi` 1.4.16 adds OpenAPI 3.1 support, regex path scopes, `withHeader` headers in the document, and type-gen stability fixes.
 
 Do not assume the packages share an identical patch version. Check peer dependencies and the application's lockfile before changing them.
 
@@ -63,6 +66,14 @@ Do not assume the packages share an identical patch version. Check peer dependen
 - JWT plugin: https://elysiajs.com/plugins/jwt
 - Official plugin overview: https://elysiajs.com/plugins/overview
 
+## Elysia 2 Beta
+
+- Release blog: https://elysiajs.com/blog/elysia-20
+- Early migration guide: https://github.com/elysiajs/elysia/pull/1873#issuecomment-4734573873
+- Source branch: https://github.com/elysiajs/elysia/tree/kiana
+- Codemod: `bunx @elysia/codemod@latest`
+- Security advisories: https://github.com/elysiajs/elysia/security/advisories
+
 ## Primary Repositories
 
 - Documentation: https://github.com/elysiajs/documentation
@@ -75,7 +86,7 @@ Do not assume the packages share an identical patch version. Check peer dependen
 Refresh the relevant official pages and package metadata when:
 
 - The user asks for latest/current behavior, a migration, or an upgrade.
-- The installed Elysia minor version differs from `1.4`.
+- The installed Elysia version is not `1.4.x`, or is a `2.0.0-beta.x` / `next` build.
 - The task touches AOT, `precompile`, `normalize`, OpenAPI type generation, macros, lazy plugins, runtime adapters, deployment, or Bun compilation.
 - The target is Cloudflare Worker or another experimental/edge adapter.
 - Bun-only APIs appear in a Node, Deno, serverless, or edge deployment.

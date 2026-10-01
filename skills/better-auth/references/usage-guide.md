@@ -1,6 +1,6 @@
 # Better Auth Usage Guide
 
-Snapshot: **`better-auth@1.7.5`** (2026-09-18). Docs: https://better-auth.com/docs · LLMs: https://better-auth.com/llms.txt
+Snapshot: **`better-auth@1.7.7`** (2026-10-01). Docs: https://better-auth.com/docs · LLMs: https://better-auth.com/llms.txt
 
 ## Install
 
@@ -12,13 +12,13 @@ bunx auth@latest secret   # → BETTER_AUTH_SECRET (≥32 chars)
 Optional (align patch with core):
 
 ```sh
-bun add @better-auth/drizzle-adapter@1.7.5   # or prisma / mongo / memory / kysely
-bun add @better-auth/passkey@1.7.5           # example scoped plugin
+bun add @better-auth/drizzle-adapter@1.7.7   # or prisma / mongo / memory / kysely
+bun add @better-auth/passkey@1.7.7           # example scoped plugin
 ```
 
 CLI is the **`auth`** package (`bunx auth@latest`), **not** lagged `@better-auth/cli@1.4.x`. The CLI requires **Node.js ≥ 22.12**.
 
-Ignore npm dist-tag `next` (stale 0.8.x). Use **`latest` (1.7.5)**. Dist-tags `rc` / `beta` are leftover 1.7.0 prereleases — not current. Maintenance line `release-1.6` is 1.6.33 only.
+Ignore npm dist-tag `next` (stale 0.8.x). Use **`latest` (1.7.7)**; it contains critical Magic Link and OAuth Proxy fixes. Dist-tags `rc` / `beta` are leftover 1.7.0 prereleases — not current. Maintenance line `release-1.6` is 1.6.33 only.
 
 From 1.6:
 

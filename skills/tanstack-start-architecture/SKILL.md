@@ -82,7 +82,7 @@ Extensions add rules; they do not replace the core tree.
 | --- | --- |
 | Generated OpenAPI / Hey-style client | [with-generated-api-client.md](references/with-generated-api-client.md) |
 | Better Auth (or session) client module | [with-better-auth-client.md](references/with-better-auth-client.md) |
-| TanStack Query + loaders / ensureQueryData | [with-tanstack-query.md](references/with-tanstack-query.md) |
+| TanStack Query + loaders / `queryClient.query` | [with-tanstack-query.md](references/with-tanstack-query.md) |
 | Pathless auth / onboarding / org gates | [with-route-gates.md](references/with-route-gates.md) |
 | TanStack Form + module/route schemas | [with-tanstack-form.md](references/with-tanstack-form.md) |
 | T3 Env / `VITE_` client keys | [with-env.md](references/with-env.md) |

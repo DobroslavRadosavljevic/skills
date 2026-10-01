@@ -1,18 +1,18 @@
 ---
 name: better-auth
-description: "Build, review, debug, configure, migrate, teach, or plan Better Auth TypeScript auth with current docs and official ecosystem packages. Use for better-auth 1.7, betterAuth, createAuthClient, auth.api, auth.handler, emailAndPassword, socialProviders, genericOAuth, organization, admin, twoFactor, passkey, magicLink, emailOTP, phoneNumber, username, anonymous, bearer, apiKey, jwt, oauth-provider, mcp, cimd, oauthDeviceAuthorization, sso, scim, stripe, drizzleAdapter, prismaAdapter, redis-storage, Expo, Electron, hydrateSession, nextCookies, trustedOrigins, validateUserInfo, and bunx auth@latest generate/migrate/upgrade/create-admin."
+description: "Build, review, debug, configure, migrate, teach, or plan Better Auth TypeScript auth with current docs and official ecosystem packages. Use for better-auth 1.7, betterAuth, createAuthClient, auth.api, auth.handler, emailAndPassword, socialProviders, genericOAuth, organization, admin, twoFactor, passkey, magicLink, emailOTP, phoneNumber, username, anonymous, bearer, apiKey, jwt, oauth-provider, mcp, cimd, oauthDeviceAuthorization, sso, scim, stripe, captcha (incl. Vercel BotID), oauthProxy, drizzleAdapter, prismaAdapter, redis-storage, Expo, Electron, hydrateSession, nextCookies, trustedOrigins, validateUserInfo, security advisories (Magic Link / OAuth Proxy takeover fixed in 1.7.7), and bunx auth@latest generate/migrate/check/upgrade/create-admin."
 ---
 
 # Better Auth
 
-Use this skill for self-hosted TypeScript authentication with **Better Auth** (`better-auth@1.7.5`): server instance, client SDK, plugins, adapters, framework mounts, and security.
+Use this skill for self-hosted TypeScript authentication with **Better Auth** (`better-auth@1.7.7`): server instance, client SDK, plugins, adapters, framework mounts, and security.
 
-Snapshot: **2026-09-18**. `latest` is **1.7.5** (stable). Do not treat 1.7 as rc/beta. Refresh from [source-map.md](references/source-map.md) if versions differ.
+Snapshot: **2026-10-01**. `latest` is **1.7.7** (stable). Do not treat 1.7 as rc/beta. **Require ≥ 1.7.7**: earlier versions (back to 1.4.0-beta.18) have a critical Magic Link account takeover (GHSA-965c-763c-88jm) and an OAuth Proxy takeover (GHSA-r4xp-prcw-77qf); no 1.6.x fix exists. Refresh from [source-map.md](references/source-map.md) if versions differ.
 
 ## Workflow
 
 1. Inspect the local surface:
-   - Core: `better-auth` (snapshot **1.7.5**). CLI: **`bunx auth@latest`** (package `auth@1.7.5`) — not stale `@better-auth/cli@1.4.x`. CLI needs **Node.js ≥ 22.12**.
+   - Core: `better-auth` (snapshot **1.7.7**). CLI: **`bunx auth@latest`** (package `auth@1.7.7`) — not stale `@better-auth/cli@1.4.x`. CLI needs **Node.js ≥ 22.12**.
    - Env: `BETTER_AUTH_SECRET` (≥32), `BETTER_AUTH_URL` / `baseURL`, `trustedOrigins`.
    - Database: Kysely/pool vs Drizzle/Prisma/Mongo adapter; secondary storage (Redis). Schema validation is **on by default**.
    - Plugins: server + matching **client** plugins; schema generated after changes.
@@ -37,6 +37,7 @@ Snapshot: **2026-09-18**. `latest` is **1.7.5** (stable). Do not treat 1.7 as rc
 - **`oidcProvider` is removed.** Use `@better-auth/oauth-provider`. Do not also register `oauthProvider()` next to `mcp()` — `mcp()` is the provider.
 - Generic OAuth uses **`signIn.social` / `linkSocial`** and `/api/auth/callback/:id`. There is no `genericOAuthClient()`.
 - Never treat middleware cookie presence as auth — validate session. Don’t disable CSRF/origin checks to “fix” CORS.
+- Upgrading to 1.7.7 is a coordinated cutover: upgrade every server sharing verification storage and every OAuth Proxy participant together; pending Magic Links and OAuth/SAML state from before the upgrade stop working.
 - Rate limit is off/weak in dev; memory storage fails on multi-instance — use Redis/DB in prod.
 - Prefer **`bun` / `bunx`** in command examples.
 
@@ -44,8 +45,8 @@ Snapshot: **2026-09-18**. `latest` is **1.7.5** (stable). Do not treat 1.7 as rc
 
 Prefer repository-owned commands. Cover the relevant subset:
 
-- `bun pm ls better-auth` and matching `@better-auth/*` versions (all 1.7.x together).
-- `bunx auth@latest info` / `secret` as needed; schema `generate`/`migrate` after plugin changes.
+- `bun pm ls better-auth` and matching `@better-auth/*` versions (all 1.7.x together, ≥ 1.7.7).
+- `bunx auth@latest info` / `secret` as needed; schema `generate`/`migrate` after plugin changes; read-only `bunx auth@latest check schema` to validate the adapter schema.
 - Smoke: mount handler, `getSession`, email or social sign-in, sign-out.
 - Plugins: client methods resolve; org/2FA/passkey/OAuth-provider/MCP flows if enabled.
 - Prod: `baseURL`, secret length, `trustedOrigins`, HTTPS cookies, rate-limit storage, schema validation not failing.

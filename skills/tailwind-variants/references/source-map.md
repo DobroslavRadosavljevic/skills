@@ -1,16 +1,16 @@
 # Tailwind Variants Source Map
 
-Snapshot date: 2026-07-31.
+Snapshot date: 2026-10-01.
 
 ## Current Package Evidence
 
 | Item | Value |
 | --- | --- |
 | Package | `tailwind-variants` |
-| Latest | `3.3.0` |
-| Dist-tags | `latest: 3.3.0`, `dev: 0.0.17-dev.1` |
-| Peer deps (npm metadata) | `tailwindcss: *`, `tailwind-merge: >=3.0.0` |
-| Docs stance (v3.3.0) | Conflict resolution is **included** in the default build; install `tailwind-merge` only if the app calls it directly |
+| Latest | `3.3.1` (2026-08-03) |
+| Dist-tags | `latest: 3.3.1`, `dev: 0.0.17-dev.1` |
+| Peer deps (npm metadata) | `tailwindcss: *` (optional), `tailwind-merge: >=3.0.0` (optional) |
+| Docs stance (v3.3.x) | Conflict resolution is **included** in the default build; install `tailwind-merge` only if the app calls it directly |
 | Tailwind pairing | TV **v3.x ↔ Tailwind CSS v4.x**; Tailwind CSS **v3.x → TV v0.x** |
 | Site | [https://www.tailwind-variants.org/](https://www.tailwind-variants.org/) |
 | Repo | `https://github.com/heroui-inc/tailwind-variants` |
@@ -20,6 +20,11 @@ Exports of note:
 - `.` — default build (`tv`, `createTV`, `cn`, `cnMerge`, `cx`, …)
 - `./lite` — no conflict resolution (~80% smaller)
 - `./utils` — shared utils entry
+
+## Release Notes Since v3.2
+
+- `3.3.0` (2026-07-26): TypeScript rewrite with stronger inference for variants, slots, and `extend`; built-in conflict resolution (no `tailwind-merge` install needed); faster recipe resolution and merging; optional `tailwindcss` peer; explicit `slots: {}` enables slot mode; extended metadata types for runtime introspection.
+- `3.3.1` (2026-08-03): fixes slot shared-state contamination from `3.3.0`. In `3.3.0`, interleaved slot recipe calls shared one slots object, so class names could leak between calls and reference-equality reactivity (for example Svelte 5 `$derived`) broke. Each parent call now returns an independent slots result.
 
 ## Research Notes
 
@@ -50,7 +55,7 @@ Exports of note:
 
 Refresh before relying on this skill when:
 
-- `tailwind-variants` moves past `3.3.0` or peer/merge packaging changes again.
+- `tailwind-variants` moves past `3.3.1` or peer/merge packaging changes again.
 - The project is on Tailwind CSS v3 while code uses TV v3 APIs (or the reverse).
 - Tasks mention `responsiveVariants`, `cnBase`, curried `cn(...)(config)`, or required `tailwind-merge`.
 - Editors stop completing classes inside `tv` / Prettier stops sorting them.

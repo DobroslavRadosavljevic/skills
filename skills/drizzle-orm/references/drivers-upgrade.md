@@ -9,20 +9,28 @@
 | Neon HTTP | `drizzle-orm/neon-http` | `@neondatabase/serverless` |
 | Neon WebSocket | `drizzle-orm/neon-serverless` | same |
 | Vercel Postgres | `drizzle-orm/vercel-postgres` | `@vercel/postgres` |
+| Netlify DB | `drizzle-orm/netlify-db` (`drizzle()` reads `NETLIFY_DB_URL`) | `@neondatabase/serverless` in rc.4 |
+| Xata HTTP | `drizzle-orm/xata-http` | `@xata.io/client` |
 | PlanetScale | `drizzle-orm/planetscale-serverless` | `@planetscale/database` |
 | mysql2 | `drizzle-orm/mysql2` | `mysql2` |
+| TiDB Cloud serverless | `drizzle-orm/tidb-serverless` | `@tidbcloud/serverless` |
 | better-sqlite3 | `drizzle-orm/better-sqlite3` | `better-sqlite3` |
 | libSQL / Turso | `drizzle-orm/libsql` (+ `/http`, `/web`, `/ws`, `/node`, `/wasm`) | `@libsql/client` |
-| Turso Database | `drizzle-orm/tursodatabase` (+ variants) | `@tursodatabase/*` |
+| Turso Database | `drizzle-orm/tursodatabase` (+ `/database`, `/wasm`, `/wasm-migrator`) | `@tursodatabase/database(-wasm)` |
+| Turso serverless / sync | `drizzle-orm/tursodatabase-serverless`, `drizzle-orm/tursodatabase-sync` | `@tursodatabase/serverless`, `@tursodatabase/sync` |
+| Node `node:sqlite` | `drizzle-orm/node-sqlite` | Node built-in |
 | Bun SQLite | `drizzle-orm/bun-sqlite` | `bun:sqlite` |
 | Bun SQL | `drizzle-orm/bun-sql` (+ `/postgres`, `/mysql`, `/sqlite`) | Bun |
 | D1 | `drizzle-orm/d1` | Workers types |
 | Durable Objects SQLite | `drizzle-orm/durable-sqlite` | |
 | PGLite | `drizzle-orm/pglite` | `@electric-sql/pglite` |
+| Expo / op-sqlite (React Native) | `drizzle-orm/expo-sqlite`, `drizzle-orm/op-sqlite` | `expo-sqlite`, `@op-engineering/op-sqlite` |
+| SQLite Cloud | `drizzle-orm/sqlite-cloud` | `@sqlitecloud/drivers` |
+| HTTP proxies | `drizzle-orm/pg-proxy`, `mysql-proxy`, `sqlite-proxy`, `singlestore-proxy` | your own HTTP endpoint |
 | AWS Data API PG | `drizzle-orm/aws-data-api/pg` | |
 | MSSQL | `drizzle-orm/node-mssql` | `mssql` |
 | Cockroach | `drizzle-orm/cockroach` | pg drivers |
-| Effect drivers | `drizzle-orm/effect-*` | Effect v4 + `@effect/sql-*` |
+| Effect drivers | `drizzle-orm/effect-*` | `effect` 4.x + `@effect/sql-*` 4.x |
 
 Each driver usually also exports `…/migrator`.
 
@@ -30,6 +38,7 @@ Each driver usually also exports `…/migrator`.
 
 - **Gel:** docs may mention `gel` / `gel-core`; verify the installed package actually exports them before recommending.
 - **DuckDB:** not a first-class RC get-started path in the published tarball — don’t assume it works without checking exports / kit dialect support.
+- Neither `gel` nor `duckdb` entrypoints are in the rc.4 `exports` map (checked 2026-10-01).
 
 Prefer Bun examples when the runtime is Bun: `drizzle-orm/bun-sqlite` or `drizzle-orm/bun-sql/postgres`.
 
@@ -69,7 +78,7 @@ Official: https://orm.drizzle.team/docs/upgrade-v1 · https://orm.drizzle.team/d
 
 10. **Retest codecs** — arrays, timestamps, JSON, and dialect-specific mappings.
 
-11. **Effect users:** leave `@effect/sql-drizzle` behind; adopt `drizzle-orm/effect-*` + Effect v4, or stay on 0.x until ready.
+11. **Effect users:** leave `@effect/sql-drizzle` behind; adopt `drizzle-orm/effect-*` + Effect 4 (`effect` 4.0 stable), or stay on 0.x until ready.
 
 12. Typecheck + run generate/migrate against a disposable database before production.
 
@@ -82,5 +91,6 @@ Official: https://orm.drizzle.team/docs/upgrade-v1 · https://orm.drizzle.team/d
 | New 1.0 work (this skill) | `drizzle-orm@rc` + `drizzle-kit@rc` |
 | Stay on stable 0.x | `latest` — **out of scope** for this skill’s defaults |
 | Old Effect beta snapshots | Never — ignore `effect` / `effect3` / `drizzle-effect` tags |
+| Next-RC commit previews | Only on explicit opt-in — `rc5` and similar `1.0.0-rc.N-<sha>` tags |
 
 When stable **1.0.0** eventually lands on `latest`, re-check dist-tags and update the skill snapshot; until then, **`@rc` is mandatory** for 1.0 APIs.

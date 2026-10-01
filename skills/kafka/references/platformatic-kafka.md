@@ -1,17 +1,17 @@
 # `@platformatic/kafka` API Reference
 
-Pure TypeScript Kafka protocol client (not a KafkaJS fork, not librdkafka). Snapshot **2.8.0**. Canonical: https://github.com/platformatic/kafka (`README.md`, `docs/`, `migration/`).
+Pure TypeScript Kafka protocol client (not a KafkaJS fork, not librdkafka). Snapshot **2.13.0**. Canonical: https://github.com/platformatic/kafka (`README.md`, `docs/`, `migration/`).
 
 ## Package facts
 
 | Field | Value |
 |---|---|
-| npm | `@platformatic/kafka@2.8.0` (`latest`) |
+| npm | `@platformatic/kafka@2.13.0` (`latest`); `v-1.x` tag = 1.x maintenance |
 | License | Apache-2.0 |
 | Module | ESM only |
 | Engines | Node `>=22.22.0 \|\| >=24.6.0` |
 | Peers | none |
-| Brokers | Kafka **3.5.0–4.2.0** |
+| Brokers | Kafka **3.5.0–4.2.0** (CI); smoke-tested on Redpanda and Azure Event Hubs |
 | Bun | Not in engines/CI — Node is the supported runtime |
 
 `next` dist-tag may lag behind `latest` — ignore for installs.
@@ -99,6 +99,7 @@ const consumer = new Consumer({
   sessionTimeout: 60_000,
   heartbeatInterval: 3_000,
   // groupInstanceId: "orders-worker-1",
+  // heartbeatStallTimeout: 30_000, // emits consumer:heartbeat:stalled (default: rebalanceTimeout)
 })
 
 const stream = await consumer.consume({
@@ -108,13 +109,14 @@ const stream = await consumer.consume({
   isolationLevel: FetchIsolationLevels.READ_COMMITTED,
   autocommit: false,
   onDeserializationError({ error }) {
-    return DeserializationErrorActions.SKIP // or FAIL
+    return DeserializationErrorActions.SKIP // or FAIL | CONTINUE (raw bytes + message.metadata.deserializationError)
   },
   // offsets: [{ topic: "my-topic", partition: 0, offset: 10n }], // MANUAL
 })
 
 for await (const message of stream) {
-  // message.offset: bigint; message.headers: Map
+  // message.offset: bigint; message.leaderEpoch: number
+  // message.headers: Map (last value wins); message.headerEntries: ordered tuples incl. duplicates
   await process(message)
   await message.commit()
 }
@@ -131,7 +133,25 @@ Each `consume()` stream has its own fetch pool — long handlers are less likely
 
 Advanced: `commit()`, `fetch()`, `listOffsets()`, `listCommittedOffsets()`, `getLag()`, lag monitoring start/stop, join/leave group.
 
-Events: `consumer:group:join|leave|rejoin|rebalance`, heartbeat, `consumer:lag`.
+Events: `consumer:group:join|leave|rejoin|rebalance`, `consumer:group:autocommit:error` (cooperative rebalance), `consumer:heartbeat:start|end|cancel|error|stalled`, `consumer:lag`.
+
+With `CONTINUE`, always check `message.metadata.deserializationError` before trusting `key` / `value` / `headers` — route those records to a DLQ.
+
+### Rebalance strategy (classic groups)
+
+```ts
+import { Consumer, COOPERATIVE_STICKY_ASSIGNOR } from "@platformatic/kafka"
+
+const consumer = new Consumer({
+  groupId: "orders",
+  bootstrapBrokers: ["localhost:9092"],
+  protocols: [{ name: COOPERATIVE_STICKY_ASSIGNOR, version: 3 }], // KIP-429, since 2.12.0
+})
+```
+
+- Default classic protocol: `roundrobin` v1 (eager, stop-the-world). Cooperative-sticky keeps ownership and moves partitions over a follow-up rebalance; roll it out to **all** members of the group.
+- Custom assigners: `partitionAssigner` (built-ins `roundRobinAssigner`, `cooperativeStickyAssigner`) + optional `partitionAssignerTopicsSelector` (2.13.0) to limit which topic metadata the leader fetches.
+- `protocols` / `partitionAssigner*` do not apply to `groupProtocol: "consumer"` (KIP-848) — there the broker assigns (`groupRemoteAssignor`).
 
 ## Admin
 
@@ -144,6 +164,12 @@ const admin = new Admin({
 })
 
 await admin.createTopics({ topics: ["my-topic"], partitions: 3, replicas: 1 })
+await admin.createTopics({
+  topics: ["small", { topic: "big", partitions: 24, replicas: 3 }], // per-topic overrides (2.10+)
+  partitions: 3,
+  replicas: 1,
+  configs: [{ name: "cleanup.policy", value: "compact" }],
+})
 await admin.listTopics()
 await admin.metadata({ topics: ["my-topic"] })
 await admin.deleteTopics({ topics: ["my-topic"] })
@@ -182,10 +208,13 @@ tls: { /* Node TLS options */ }
 
 GSSAPI exists in the enum; prefer custom `sasl.authenticate` / verify support rather than assuming first-class Kerberos.
 
+`username` / `password` / `token` may be (async) functions. Reauthentication runs at 80% of the broker session lifetime; tune with `sasl.reauthFraction`, `sasl.reauthLeadTime` (ms), or `sasl.lazyReauthentication: true` (reauth on next request) — added in 2.13.0.
+
 ## Serializers & Schema Registry
 
 - Prefer explicit `serializers` / `deserializers`.
-- Experimental: `ConfluentSchemaRegistry` (Avro / Protobuf / JSON Schema) — **non-semver**. Import from `@platformatic/kafka` main export (README subpath `@platformatic/kafka/registries` may fail under strict `exports`).
+- Experimental: `ConfluentSchemaRegistry` (Avro / Protobuf / JSON Schema) — **non-semver**. Import from `@platformatic/kafka` main export (docs show `@platformatic/kafka/registries`, but `package.json` `exports` only exposes `.`).
+- Registry client options (2.9+): `tls`, `headers` (object or async function), `timeout` (default 5000 ms), `retries` (default 3), `retryDelay` (ms or function). Consumed messages expose schema IDs in `metadata`.
 
 ## Metrics & diagnostics
 
@@ -198,6 +227,6 @@ Prefix `PLT_KFK_*`. Prefer `error.code`, `error.canRetry` (not KafkaJS `retriabl
 
 ## Good / bad
 
-**Good:** singleton clients; `ProduceAcks.ALL` for durable writes; serializers set; close streams then clients; recreate stream after fatal retries; `compatibilityPartitioner` when migrating keyed partitions; tune `highWaterMark` for large messages.
+**Good:** singleton clients; `ProduceAcks.ALL` for durable writes; serializers set; cooperative-sticky or KIP-848 for groups that rebalance often; close streams then clients; recreate stream after fatal retries; `compatibilityPartitioner` when migrating keyed partitions; tune `highWaterMark` for large messages.
 
 **Bad:** new client per request; KafkaJS `connect`/`subscribe`/`run`; assuming Bun is officially supported; leaving without `close()`; blocking CPU on the event loop in handlers; mixing serializers with registry carelessly; claiming EOS without transactions + `READ_COMMITTED`.

@@ -7,7 +7,7 @@ description: "Build, review, migrate, or debug React interfaces that use Base UI
 
 Use Base UI as an unstyled, accessible React primitive layer. Keep semantics, focus, labels, keyboard behavior, and styling hooks intact while adapting the parts to the host app's design system.
 
-Snapshot: `@base-ui/react@1.8.0` (`latest`, 2026-09-18). Refresh from [source-map.md](references/source-map.md) if the project is pinned elsewhere.
+Snapshot: `@base-ui/react@1.8.0` (`latest`, released 2026-09-04; re-verified 2026-10-01). Refresh from [source-map.md](references/source-map.md) if the project is pinned elsewhere.
 
 ## Workflow
 
@@ -16,7 +16,7 @@ Snapshot: `@base-ui/react@1.8.0` (`latest`, 2026-09-18). Refresh from [source-ma
    - [references/source-map.md](references/source-map.md): docs sources, package status, inventory, and 1.7–1.8 deltas.
    - [references/core-patterns.md](references/core-patterns.md): setup, styling, composition, state, TypeScript, animation, accessibility, and utilities.
    - [references/component-patterns.md](references/component-patterns.md): anatomy and implementation notes by component family.
-3. Fetch current official docs when exact prop names, event reasons, release behavior, or component APIs matter. Prefer Context7 library `/mui/base-ui` or the page's `.md` URL from `https://base-ui.com/llms.txt`.
+3. Fetch current official docs when exact prop names, event reasons, release behavior, or component APIs matter. Prefer the installed package's bundled docs (`node_modules/@base-ui/react/docs/index.md`, version-matched), then Context7 library `/mui/base-ui` or the page's `.md` URL from `https://base-ui.com/llms.txt`.
 4. Build from documented compound parts first, then wrap with local design-system components only through the `render` prop or thin wrappers that preserve props and refs.
 5. Verify keyboard behavior, focus return, accessible names, controlled/uncontrolled state, portal layering, animation exit behavior, and responsive/mobile behavior.
 

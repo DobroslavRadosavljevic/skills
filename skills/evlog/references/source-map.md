@@ -1,6 +1,6 @@
 # evlog Source Map
 
-Snapshot date: 2026-09-18.
+Snapshot date: 2026-10-01 (registry re-checked; versions unchanged since 2026-09-18).
 
 ## Current Package Evidence
 
@@ -19,7 +19,7 @@ MCP: `https://www.evlog.dev/mcp` (streamable HTTP)
 
 Context7: `/websites/evlog_dev`, `/evloghq/evlog`.
 
-CLI requires **Node 20+**. Core TypeScript **5+**. Optional peers exist per integration (install only what you use). Notable peers on 2.29: `ai` `>=6.0.168 <8`, `eve` `>=0.30.0`, `next` `>=16.3.4`, `nitro` `^3.0.260311-beta`, `hono` `>=4.13.7`, `elysia` `>=1.4.30`, `express` `>=5.2.1`.
+CLI requires **Node 20+**; core `evlog` declares `engines.node >=18`. Core TypeScript **5+**. Optional peers exist per integration (install only what you use). Notable peers on 2.29: `ai` `>=6.0.168 <8`, `eve` `>=0.30.0`, `next` `>=16.3.4`, `nitro` `^3.0.260311-beta`, `hono` `>=4.13.7`, `elysia` `>=1.4.30`, `express` `>=5.2.1`.
 
 ## Notable Subpath Exports
 
@@ -114,3 +114,4 @@ Refresh when:
 - Framework access patterns change (especially TanStack Start / Nitro v3 async context).
 - Map adapters add frameworks beyond Nuxt/Nitro/Next/TanStack Start/Hono.
 - Audit / AI / eve / telemetry APIs change entrypoints or required peers.
+- Unreleased on `main` as of 2026-10-01 (not in 2.29.0; verify after the next release before using): turn-scoped `enrichTurn` on `defineEvlogHook` (#731) and serialization of `Error` causes in wide events (#738).

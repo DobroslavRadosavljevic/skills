@@ -1,6 +1,6 @@
 ---
 name: nitro
-description: "Build, review, debug, configure, migrate, cache, store, and deploy Nitro v3 servers anywhere. Use for nitro, nitro.config, nitro/vite, create-nitro-app, filesystem routes, server.ts / server.node.ts entries (H3, Hono, Elysia, Express, Fastify), defineHandler, defineCachedHandler, useStorage, presets, Cloudflare, Vercel, Netlify, Node, Bun, Deno, routeRules, plugins, tasks, WebSocket, OpenAPI, renderer, and nitropack→nitro migration."
+description: "Build, review, debug, configure, migrate, cache, store, and deploy Nitro v3 servers anywhere. Use for nitro, nitro.config, nitro/vite, create-nitro-app, filesystem routes, server.ts / server.node.ts entries (H3, Hono, Elysia, Express, Fastify), defineHandler, defineCachedHandler (ocache 0.3: swr off by default, allowQuery, allowCookies), useStorage, presets, Cloudflare, Vercel, Netlify, Node, Bun, Deno, routeRules (cors, redirect, proxy, method-scoped keys), plugins, tasks, WebSocket, OpenAPI, renderer, and nitropack→nitro migration."
 ---
 
 # Nitro
@@ -12,7 +12,7 @@ Nitro compiles routes at build time (no runtime router in the bundle). Productio
 ## Workflow
 
 1. Inspect the local Nitro surface:
-   - Package: **`nitro` v3** (not `nitropack` v2). Snapshot **`3.0.260903-beta`**. Node **≥ 20**.
+   - Package: **`nitro` v3** (not `nitropack` v2, latest `2.13.4`). Snapshot **`3.0.260903-beta`** (npm `latest`). Node **`^20.19.0 || >=22.12.0`**. Nitro has no peer dependencies; builders (`vite@^7 || ^8`, `rollup@^4`, `rolldown@>=1`), preset packages, storage drivers, and DB connectors resolve from the project, and Nitro prompts to install missing ones.
    - Config: `nitro.config.ts` (`defineConfig` from `"nitro"`), and/or `nitro` key + `nitro()` from `"nitro/vite"` in `vite.config.ts`.
    - Layout: `serverDir` (`false` default; often `"server"` in Vite apps), `routes/`, `middleware/`, `plugins/`, `public/`, `assets/`, optional `server.ts` / `server.node.ts`, `renderer`.
    - Preset: explicit `preset`, `NITRO_PRESET`, or CI auto-detect. Confirm `compatibilityDate` when provider features matter.
@@ -37,11 +37,12 @@ Nitro compiles routes at build time (no runtime router in the bundle). Productio
 - Filesystem: `routes/` (and `routes/api/`). Method suffix `hello.get.ts`. Params `[id]`, catch-all `[...]` or `[...].ts`. Groups `(admin)` do not appear in the URL. Env suffixes `.dev` / `.prod` / `.prerender`.
 - **Server entry** runs as `/**` for unmatched routes (specific `routes/` win). Returning a response stops the chain; returning nothing continues to renderer. Web `fetch` apps use `server.ts`; Node `(req, res)` use `server.node.ts` (srvx). Elysia: `export default app.compile()`. Fastify: `await app.ready(); export default app.routing`.
 - **Do not** put secrets in client Vite env. Server secrets go in `runtimeConfig` and **`NITRO_`** (or custom `runtimeConfig.nitro.envPrefix`) platform env. `.env` / `.env.local` load in **`nitro dev` only**.
-- Cache: `defineCachedHandler` / `defineCachedFunction` from `"nitro/cache"`. Only GET/HEAD. Default **SWR on**. Headers dropped unless `varies`. Production cache mount defaults to **memory** — mount Redis/KV/`fs` on `storage.cache` for persistence. On edge, pass `event` first into cached functions so `waitUntil` can finish writes.
+- Cache: `defineCachedHandler` / `defineCachedFunction` from `"nitro/cache"` (ocache 0.3). Only GET/HEAD (separate entries). **`swr` defaults to `false`** since `3.0.260903-beta`; set `swr: true` for background revalidation. Handlers see only what the key covers: headers need `varies`, query params need `allowQuery`, cookies need `allowCookies`, `authorization` needs `allowAuthorization`. `Set-Cookie` responses are never stored. Always set `maxAge` (default 1 s). Production cache mount defaults to **memory** — mount Redis/KV/`fs` on `storage.cache` for persistence. On edge, pass `event` first into cached functions so `waitUntil` can finish writes.
 - Storage: `useStorage` from `"nitro/storage"`. Root mount is in-memory. Persist via `storage` / `devStorage`. Server files live under `assets:server` / `assets/server`.
-- Database (`experimental.database`) and tasks (`experimental.tasks`) are **experimental**. OpenAPI is experimental; keep production UIs off or authenticated (`openAPI.production`).
+- Route rules: `cors`, `headers`, `redirect`, `proxy`, `cache`/`swr`/`static`, `prerender`, `isr`; prefix keys with a method (`'GET /feed'`) to scope them. There is no `basicAuth`/auth rule — use `basicAuth` from `"nitro/h3"` as route or route-scoped middleware.
+- Database (`experimental.database`, db0 0.4) and tasks (`experimental.tasks`) are **experimental**. OpenAPI is experimental; keep production UIs off or authenticated (`openAPI.production`).
 - WebSocket: `features.websocket: true` + `defineWebSocketHandler`. SSE: `createEventStream` from `"nitro/h3"`.
-- Deploy: one codebase; switch with `preset` / `NITRO_PRESET`. Prefer auto-detect in CI. Cloudflare: prefer **`cloudflare_module`** over Pages unless Pages-only features are required. Node default: **`node_server`** → `node .output/server/index.mjs`. Do not treat `vite preview` as production.
+- Deploy: one codebase; switch with `preset` / `NITRO_PRESET`. Prefer auto-detect in CI. Cloudflare: prefer **`cloudflare_module`** (or `cloudflare_durable` for Durable Object state/WebSocket) over Pages unless Pages-only features are required; dev runs on Miniflare/`workerd`. Node default: **`node_server`** → `node .output/server/index.mjs`. Do not treat `vite preview` as production.
 - Plugins: `definePlugin` (not v2 `defineNitroPlugin`). Plugin **functions are sync**; hooks may be async. Prefix plugin filenames for order.
 
 ## Verification

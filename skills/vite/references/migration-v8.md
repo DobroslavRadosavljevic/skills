@@ -1,10 +1,10 @@
 # Migrate to Vite 8 (from v7 / Rolldown preview)
 
-Breaking changes and checklist. Sources: https://vite.dev/guide/migration · https://vite.dev/blog/announcing-vite8 · https://vite.dev/blog/announcing-vite8-1 · changelog 8.3.0
+Breaking changes and checklist. Sources: https://vite.dev/guide/migration · https://vite.dev/blog/announcing-vite8 · https://vite.dev/blog/announcing-vite8-1 · changelog 8.3.0–8.3.2
 
 ## Target
 
-- Package: **`vite@^8`** (snapshot **8.3.0**)
+- Package: **`vite@^8`** (snapshot **8.3.2**)
 - Node: **`^20.19.0 || >=22.12.0`** (same floor as Vite 7)
 - Architecture: **Rolldown** (bundle + optimize) + **Oxc** (transform/minify) + **Lightning CSS** (CSS minify)
 - Support: regular patches on **8.3**; important + security on 8.2 and 7.3; security on 8.1 and 6.4
@@ -19,7 +19,7 @@ Older docs: https://v7.vite.dev · https://v6.vite.dev
 ```json
 {
   "devDependencies": {
-    "vite": "^8.3.0"
+    "vite": "^8.3.2"
   }
 }
 ```
@@ -28,7 +28,7 @@ If you used `"vite": "npm:rolldown-vite@…"`, replace it with real `vite@^8`.
 
 Compatibility shims convert many old `esbuild` / `rollupOptions` / `optimizeDeps.esbuildOptions` settings — still **migrate** to the new names; shims are deprecated.
 
-Already on 8.0–8.2: bump to **8.3.0**. No extra major breaks; pick up DevTools integration, `closeServer` hooks, top-level `tsconfig`, `--profile [name]`, and the 8.1/8.2 features below.
+Already on 8.0–8.2: bump to **8.3.2** (latest 8.3 patch). No extra major breaks; pick up DevTools integration, `closeServer` hooks, top-level `tsconfig`, `--profile [name]`, and the 8.1/8.2 features below.
 
 ## Default browser target (NRV)
 

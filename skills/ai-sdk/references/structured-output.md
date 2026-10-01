@@ -16,7 +16,7 @@ Reference: https://ai-sdk.dev/docs/reference/ai-sdk-core/output.md
 | --- | --- | --- | --- |
 | `Output.text()` | `string` | n/a | Default if `output` omitted |
 | `Output.object({ schema, name?, description? })` | `OBJECT` | `partialOutputStream`: **unvalidated** `DeepPartial<OBJECT>` | Zod / JSON Schema / Valibot |
-| `Output.array({ element, name?, description? })` | `ELEMENT[]` | `elementStream`: each element complete+validated | Partial array drops incomplete last element |
+| `Output.array({ element, name?, description?, minItems?, maxItems? })` | `ELEMENT[]` | `elementStream`: each element complete+validated | Partial array drops incomplete last element. Bounds (7.0.93+) go to the provider schema and are validated on the final output |
 | `Output.choice({ options, name?, description? })` | one of `options` | — | Classification / enum |
 | `Output.json({ name?, description? })` | `JSONValue` | — | Valid JSON, **no** structure |
 

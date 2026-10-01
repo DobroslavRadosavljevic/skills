@@ -9,7 +9,7 @@ bun add -d testcontainers @testcontainers/postgresql
 # or: bun add -d testcontainers @testcontainers/redis @testcontainers/mongodb ...
 ```
 
-Core package: `testcontainers@12.x`. Modules: `@testcontainers/<name>@12.x` (keep majors aligned).
+Core package: `testcontainers@12.x` (current 12.2.0). Modules: `@testcontainers/<name>@12.x` (keep majors aligned). Since 12.1.0 the package declares `engines.node >=22.22` — older Node runtimes in CI get engine warnings or install failures.
 
 ## Modules vs GenericContainer
 
@@ -56,6 +56,17 @@ await new GenericContainer("alpine:3.20")
 ```
 
 Anti-patterns: bind mounts, fixed host ports, fixed container names/hostnames.
+
+### Pull policy
+
+```ts
+import { GenericContainer, PullPolicy } from "testcontainers";
+
+new GenericContainer("my-app:local").withPullPolicy(PullPolicy.neverPull()); // 12.2+: image must exist locally
+new GenericContainer("redis:7.4").withPullPolicy(PullPolicy.alwaysPull());   // refresh mutable tags
+```
+
+Default policy pulls only when the image is missing. Use `neverPull()` for images built earlier in the same CI job or loaded with `docker load`; startup fails fast when the image is absent.
 
 ## Started container ops
 
@@ -134,11 +145,14 @@ Mirror Hub pulls in CI with `TESTCONTAINERS_HUB_IMAGE_NAME_PREFIX`.
 | --- | --- | --- |
 | `@testcontainers/postgresql` | `PostgreSqlContainer` | `getConnectionUri()`, `withDatabase/Username/Password`, `snapshot()` / `restoreSnapshot()` |
 | `@testcontainers/redis` | `RedisContainer` | `getConnectionUrl()`, `withPassword`, `executeCliCmd` |
-| `@testcontainers/mongodb` | `MongoDBContainer` | `getConnectionString()` |
+| `@testcontainers/mongodb` | `MongoDBContainer`, `MongoDBAtlasLocalContainer` (12.1+) | `getConnectionString()`; Atlas Local adds `getDatabaseConnectionString(db?)` (Atlas Search / Vector Search locally) |
 | `@testcontainers/mysql` | `MySqlContainer` | `getConnectionUri()`, `executeQuery` |
 | `@testcontainers/kafka` | `KafkaContainer` | KRaft defaults on recent images; long startup timeout |
 | `@testcontainers/localstack` | `LocalstackContainer` | port 4566, `getConnectionUri()`, wait for `"Ready"` |
 | `@testcontainers/elasticsearch` | `ElasticsearchContainer` | `getHttpUrl()` |
+| `@testcontainers/clickhouse` | `ClickHouseContainer` | `getClientOptions()`, `getHttpUrl()`, `getConnectionUrl()` |
+| `@testcontainers/mosquitto` (12.1+) | `MosquittoContainer` | `getConnectionString()` (MQTT) |
+| `@testcontainers/influxdb` (12.2+) | `InfluxDB2Container`, `InfluxDB1Container` | `getUrl()`, `getAdminToken()` / `getOrganization()` / `getBucket()` (v2) |
 
 Postgres snapshots: do **not** use database name `postgres`.
 

@@ -4,7 +4,7 @@ This reference captures the Drizzle **1.0 RC** docs and package snapshot used to
 
 ## Snapshot
 
-- Captured: 2026-07-30
+- Captured: 2026-10-01 (`rc` still points at 1.0.0-rc.4; stable 1.0.0 not released)
 - Docs: https://orm.drizzle.team
 - Machine index: https://orm.drizzle.team/llms.txt
 - Context7: `/drizzle-team/drizzle-orm-docs`, `/websites/orm_drizzle_team`
@@ -13,8 +13,8 @@ This reference captures the Drizzle **1.0 RC** docs and package snapshot used to
 
 | Package | `latest` (avoid for new 1.0 work) | **`rc` (skill target)** |
 | --- | --- | --- |
-| `drizzle-orm` | 0.45.2 | **1.0.0-rc.4** |
-| `drizzle-kit` | 0.31.10 | **1.0.0-rc.4** |
+| `drizzle-orm` | 0.45.3 | **1.0.0-rc.4** |
+| `drizzle-kit` | 0.31.11 | **1.0.0-rc.4** |
 | `drizzle-seed` | 0.3.1 | **1.0.0-rc.4** |
 | `eslint-plugin-drizzle` | 0.2.3 | **1.0.0-rc.4** |
 
@@ -27,12 +27,14 @@ bun add -D drizzle-seed@rc          # optional
 bun add -D eslint-plugin-drizzle@rc # optional
 ```
 
-Keep ORM + Kit (+ Seed) on the **same `rc` channel**. Historical dist-tags like `effect`, `effect3`, `drizzle-effect`, `beta` are **not** the RC line — do not use them for new work.
+Keep ORM + Kit (+ Seed) on the **same `rc` channel**. Historical dist-tags like `effect`, `effect3`, `drizzle-effect`, `beta` are **not** the RC line — do not use them for new work. Tags such as `rc5` (`1.0.0-rc.5-<sha>`) are commit previews of the next RC; use them only when the user explicitly opts in to a preview.
+
+The 0.x line still gets maintenance releases (0.45.3 added `drizzle-orm/netlify-db`; kit 0.31.11 warns about silently skipped migrations in `check`). That does not change this skill's `rc` default.
 
 ### Effect peers (RC native drivers)
 
-- `effect` ≥ `4.0.0-beta.83` (prefer `effect@beta`)
-- Matching `@effect/sql-pg` / `sql-mysql2` / `sql-pglite` / `sql-libsql` / … on the Effect v4 beta line
+- RC peer range: `effect` / `@effect/sql-*` `>=4.0.0-beta.83 || >=4.0.0`
+- Effect **4.0.0 is stable on `latest`** (2026-10-01). Install `effect` and matching `@effect/sql-pg` / `sql-mysql2` / `sql-pglite` / `sql-libsql` / … 4.x without a tag. The `effect@beta` tag is frozen at an old 4.0.0-beta build — avoid it.
 - **Not** `@effect/sql-drizzle@0.51` (Effect v3 + drizzle 0.x only)
 
 ## In-skill usage guide
@@ -52,7 +54,7 @@ Keep ORM + Kit (+ Seed) on the **same `rc` channel**. Historical dist-tags like 
 
 3. Prefer https://orm.drizzle.team/docs/upgrade-v1 and dialect pages under `/docs/`. If docs and the installed RC disagree, report the mismatch.
 4. Re-check Gel / DuckDB availability in the installed package exports before recommending those drivers.
-5. For Effect work, confirm `effect@beta` and matching `@effect/sql-*` peers against current Effect docs.
+5. For Effect work, confirm `effect` 4.x and matching `@effect/sql-*` 4.x peers against current Effect docs.
 
 ## Official Pages
 
@@ -103,4 +105,5 @@ Keep ORM + Kit (+ Seed) on the **same `rc` channel**. Historical dist-tags like 
 ### Releases
 
 - https://github.com/drizzle-team/drizzle-orm/releases/tag/v1.0.0-rc.4
+- Kit agent/CI docs in the rc.4 tree: `drizzle-kit/OUTPUT_MODES.md`, `JSON_CONTRACT.md`, `HINTS.md`, `SDK.md`, `MCP.md` (https://github.com/drizzle-team/drizzle-orm/tree/v1.0.0-rc.4/drizzle-kit)
 - https://github.com/drizzle-team/drizzle-orm/releases

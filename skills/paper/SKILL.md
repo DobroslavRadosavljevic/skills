@@ -42,7 +42,7 @@ The live guides are the source of truth. If this skill and a guide disagree (mod
 
 | Area | What you can do | How |
 | --- | --- | --- |
-| Files and pages | List, open, create, and clone files. Create pages. Work on a page or background tab the user is not viewing. | `list_files`, `open_file`, `create_file`, `create_page`, `get_basic_info` |
+| Files and pages | List, open, create, and clone files. Create and rename pages. Work on a page or background tab the user is not viewing. | `list_files`, `open_file`, `create_file`, `create_page`, `rename_pages`, `get_basic_info` |
 | Read the canvas | Selection, tree summary, children, node info, screenshots, search by style or text | `get_selection`, `get_tree_summary`, `get_children`, `get_node_info`, `get_screenshot`, `find_nodes` |
 | Create | Artboards, HTML → design nodes, clones, locked or hidden layers | `create_artboard`, `write_html` (+ `<x-paper-clone>`, `data-paper-locked`, `hidden`), `duplicate_nodes` |
 | Edit | Styles (batch), text (batch), rename, move or reparent (keeps ids), delete | `update_styles`, `set_text_content`, `rename_nodes`, `move_nodes`, `delete_nodes` |

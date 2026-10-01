@@ -61,7 +61,7 @@ Or functions `(opts, format) => opts`. Docs: https://tsdown.dev/advanced/rolldow
 Experimental (may break outside SemVer). Install matching version:
 
 ```sh
-bun add -d @tsdown/css@0.22.14
+bun add -d @tsdown/css@0.23.0   # same version as tsdown
 ```
 
 ```ts
@@ -72,14 +72,15 @@ export default defineConfig({
     fileName: 'style.css',
     minify: true,
     inject: false,               // true keeps import './x.css' in JS
-    modules: true,
+    modules: true,               // or { localsConvention: (name) => … } (function form 0.23+)
   },
 })
 ```
 
 - Unbundle mode defaults CSS splitting **on**.
 - `?inline` → CSS as JS string.
-- Preprocessors: install `sass` / `less` / `stylus` as needed.
+- Preprocessors: install `sass` / `sass-embedded` / `less` / `stylus` as needed. PostCSS path peers: `postcss`, `postcss-import`, `postcss-modules`.
+- Watch mode also tracks files pulled in via CSS `@import` (0.23).
 
 Docs: https://tsdown.dev/options/css
 
@@ -121,21 +122,45 @@ Root config merges into packages. Filter by name/cwd/regex. Concurrency ignored 
 
 ## Executable (`@tsdown/exe`)
 
-Experimental Node SEA path; peer `@tsdown/exe` must match tsdown version; Node version floor is higher — confirm current docs before using.
+Experimental Node Single Executable Applications (SEA). Peer `@tsdown/exe` must match the tsdown version. Needs Node **>= 25.7.0** to build; with 0.23 engines that means Node **26+**. Not supported when running under Bun or Deno. dts defaults off when `exe` is on.
+
+```sh
+bunx tsdown src/cli.ts --exe
+```
+
+```ts
+export default defineConfig({
+  entry: ['src/cli.ts'],
+  exe: { fileName: 'my-tool' }, // no `.exe` / platform suffix — added automatically
+})
+```
+
+Docs: https://tsdown.dev/options/exe
 
 ## Programmatic API
 
 ```ts
 import { build, defineConfig, mergeConfig, version } from 'tsdown'
 
-const bundles = await build({
+// 0.23: build() returns a handle, not an array
+const { bundles, watch } = await build({
   entry: ['src/index.ts'],
   format: ['esm', 'cjs'],
   dts: true,
-  write: false, // in-memory chunks on result
-  clean: false,
+  write: false, // in-memory chunks; incompatible with watch
+  clean: false, // clean defaults to true even with write: false
 })
+
+for (const bundle of bundles) {
+  for (const output of bundle.chunks) {
+    console.log(output.fileName, output.type === 'chunk' ? output.code : output.source)
+  }
+}
 ```
+
+- `bundles` has one entry per resolved config (always an array).
+- In watch mode: `await watch.restart()` resolves to a new handle (each handle restarts once); `await watch.close()` closes all watchers.
+- `copy` / `exports` may still write files when `write: false`.
 
 Also: `enableDebug`, `globalLogger`. Docs: https://tsdown.dev/advanced/programmatic-usage
 

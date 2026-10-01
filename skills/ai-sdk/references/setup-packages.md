@@ -44,7 +44,7 @@ Do not mix `ai@7` with `@ai-sdk/openai@3` / `@ai-sdk/react@3`. Provider spec is 
 | **AI SDK UI** (`@ai-sdk/react` / vue / svelte) | `useChat`, `useCompletion`, `useObject` | React, Vue, Svelte |
 | **AI SDK Harnesses** (`@ai-sdk/harness` + adapter) | `HarnessAgent` wrapping Claude Code / Codex / Pi / … | Node + sandbox |
 | **AI SDK RSC** (`@ai-sdk/rsc`) | `streamUI` — **experimental, not for production** | RSC hosts (Next) |
-| **Workflow** (`@ai-sdk/workflow`) | Durable `WorkflowAgent` | Vercel Workflow (`workflow@beta`) |
+| **Workflow** (`@ai-sdk/workflow` 2.x) | Durable `WorkflowAgent` | Workflow DevKit (`workflow` 5.x; stable since 2026-09-30) |
 
 ## Choosing a model
 
@@ -120,7 +120,7 @@ globalThis.AI_SDK_DEFAULT_PROVIDER = openai;
 // then model: 'gpt-5.1' (no prefix)
 ```
 
-`experimental_customProvider` was **removed** in v7. Use `customProvider`.
+`experimental_customProvider` was **removed** in v7. Use `customProvider`. Since 7.0.104 `customProvider` also accepts `evaluationModels` and registries expose `registry.evaluationModel('provider:id')` for `experimental_evaluate`.
 
 ## Package map (7.x)
 
@@ -139,6 +139,7 @@ globalThis.AI_SDK_DEFAULT_PROVIDER = openai;
 | `@ai-sdk/valibot` | `valibotSchema` (not exported from `ai`) |
 | `@ai-sdk/code-mode` | Experimental QuickJS tool caller |
 | `@ai-sdk/policy-opa` | OPA `toolApproval` |
+| `@ai-sdk/typesafe-ai` | TypeSafe AI (Jev) native evaluation models for `experimental_evaluate` |
 | `@ai-sdk/harness` + `@ai-sdk/harness-*` | HarnessAgent adapters |
 | `@ai-sdk/sandbox-vercel` / `@ai-sdk/sandbox-just-bash` | Sandboxes |
 | `@ai-sdk/workflow` / `@ai-sdk/workflow-harness` | Durable agents |

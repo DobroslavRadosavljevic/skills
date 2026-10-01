@@ -242,7 +242,7 @@ Use `prettier-ignore` for many non-JS regions / Vue template & style blocks. TOM
 
 **Native (fast):** JS/TS/JSX/TSX, JSON family, CSS/SCSS/Less, GraphQL, TOML, **YAML**.
 
-**Still Prettier-backed:** HTML/Angular, Vue (scripts native), Svelte (opt-in + `svelte` package), Markdown/MDX, Handlebars, MJML.
+**Still Prettier-backed (bundled Prettier 3.9.9):** HTML/Angular, Vue (scripts native), Svelte (opt-in + `svelte` package), Markdown/MDX (native port in progress), Handlebars, MJML.
 
 **Often blocked today:** Astro (needs Prettier plugins), XML/SVG (not on the language-support table).
 
@@ -320,7 +320,7 @@ export default defineConfig({
 
 **Option C — Vite+**
 
-Put `fmt: { ... }` in `vite.config.ts`; avoid a second `oxfmt.config.ts` / `.oxfmtrc.json`. Vite+ does not apply nested package `fmt` blocks — use `fmt.overrides`. Set `oxc.fmt.disableNestedConfig` and `oxc.fmt.configPath` to that Vite config.
+Put `fmt: { ... }` in `vite.config.*`; avoid a second `oxfmt.config.ts` / `.oxfmtrc.json`. Vite+ mode never discovers nested configs (0.70+) — use `fmt.overrides`. Point `oxc.fmt.configPath` at that Vite config when the workspace root differs; `oxc.fmt.disableNestedConfig` is only needed before 0.70.
 
 Use `--disable-nested-config` when a single root config should apply everywhere for speed/consistency.
 

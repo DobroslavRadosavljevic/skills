@@ -4,7 +4,7 @@ This reference captures the T3 Env docs snapshot used to create the skill.
 
 ## Snapshot
 
-- Captured: 2026-08-22
+- Captured: 2026-08-22; re-verified 2026-10-01 (no release after 0.13.11; open fixes #408, #410, #413 noted in recipes-pitfalls.md)
 - Stable npm `latest`:
   - `@t3-oss/env-core@0.13.11`
   - `@t3-oss/env-nextjs@0.13.11` (depends on `@t3-oss/env-core@0.13.11`)

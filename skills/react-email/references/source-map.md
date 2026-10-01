@@ -1,6 +1,6 @@
 # Source Map
 
-Snapshot date: 2026-08-01.
+Snapshot date: 2026-10-01.
 
 This reference records the official documentation and package evidence used to create the skill. Refresh sources for latest/current questions, editor APIs, Tailwind email behavior, major upgrades, or version mismatches.
 
@@ -10,13 +10,26 @@ This reference records the official documentation and package evidence used to c
 - Product: https://react.email/
 - Docs index (llms): https://react.email/docs/llms.txt
 - Official agent skill in upstream repo (canary): https://github.com/resend/react-email/tree/canary/skills/react-email
-- npm versions observed on 2026-08-01:
-  - `react-email`: `6.9.1` (CLI + components + re-exports `render`)
+- npm `latest` versions observed on 2026-10-01:
+  - `react-email`: `6.11.0` (CLI + components + re-exports `render`; published 2026-09-23)
   - `@react-email/render`: `2.1.0`
-  - `@react-email/ui`: `6.9.1`
-  - `@react-email/editor`: `1.6.13`
-  - `create-email`: `1.2.5`
+  - `@react-email/ui`: `6.11.0`
+  - `@react-email/editor`: `1.7.10`
+  - `create-email`: `1.2.6`
+  - Legacy: `@react-email/components` `1.0.12`, `@react-email/preview-server` `5.2.10` (v5 line; do not add to v6 projects).
 - Peers: `react` / `react-dom` `^18` or `^19`.
+- Engines: `react-email` requires Node `>=20.19` (CLI enforces it from 6.10).
+- Ignore stale `canary` dist-tags (`react-email@6.0.0-canary.*`, `@react-email/editor@1.0.0-canary.*`); they predate `latest`.
+
+## Release Notes Since 6.9.1
+
+- `react-email@6.11.0`: `--esbuild-plugins <path>` on `email dev`, `email build`, `email export` (module default-exports an esbuild plugin array or a function returning one).
+- `react-email@6.10.0`: `chokidar` v5; CLI/dev server needs Node 20.19+ and fails fast with the installed version in the error.
+- `react-email@6.9.5`: responsive padding on `Container` / `Section` now reaches the inner `td`.
+- `@react-email/editor@1.7.x`: basic theme centers the container (1.7.0); paragraph `style`/`class` kept on Enter split (1.7.2); buttons render `box-sizing: border-box` (1.7.4); left-alignment state fixes (1.7.6); table header cells kept in send HTML (1.7.7); placeholders on empty headings (1.7.8).
+- `create-email@1.2.6`: fails on registry errors instead of writing `undefined` versions.
+
+Earlier 6.x notes still relevant: `--extension` / `-e` on `email export` (6.7), preview Props tab for live-editing props (6.8), per-module tree-shakable build (6.8), `<Tailwind>` `@media` variants with `tailwindcss@4.3.3+` fixed (6.9.1).
 
 Do not assume patch versions stay aligned forever. Check the lockfile before upgrades.
 

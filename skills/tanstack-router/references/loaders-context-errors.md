@@ -209,7 +209,7 @@ const router = createRouter({
 })
 ```
 
-Use loaders to ensure critical data is in the cache before render:
+Use loaders to ensure critical data is in the cache before render. With TanStack Query 5.102 or newer, use `queryClient.query` (it replaces the now-deprecated `ensureQueryData` / `fetchQuery` / `prefetchQuery`; older Router docs still show those, and they still work on Query v5):
 
 ```tsx
 import { queryOptions, useSuspenseQuery } from '@tanstack/react-query'
@@ -220,7 +220,9 @@ const postsQuery = queryOptions({
 })
 
 export const Route = createFileRoute('/posts')({
-  loader: ({ context }) => context.queryClient.ensureQueryData(postsQuery),
+  loader: async ({ context }) => {
+    await context.queryClient.query(postsQuery)
+  },
   component: PostsRoute,
 })
 
@@ -253,6 +255,14 @@ export function getRouter() {
 
 Use `useSuspenseQuery` for SSR/streamed data. `useQuery` does not execute on the server and fetches after hydration.
 
+Integration notes:
+
+- Current `@tanstack/react-router-ssr-query` declares peers `@tanstack/react-query >=5.102.0` and `@tanstack/react-router >=1.170.33`.
+- The integration wraps the router in `QueryClientProvider` by default; pass `wrapQueryClient: false` if the app already owns that provider. Do not add a second `QueryClient` or dehydrate the same cache manually.
+- `dehydrateOptions` / `hydrateOptions` customize the SSR payload (for example `shouldDehydrateQuery` to exclude queries, or `hydrateOptions.defaultOptions.queries.gcTime`).
+- `redirect()` thrown from queries or mutations is handled as router navigation by default; disable with `handleRedirects: false`.
+- A loader promise that is neither awaited nor returned still starts on the server and streams to the client. Add `.catch(noop)` to such fire-and-forget calls so they cannot become unhandled server rejections.
+
 ## Preloading
 
 Preloading strategies:
@@ -272,9 +282,9 @@ const router = createRouter({
 
 Defaults:
 
-- Intent delay: 50ms.
-- Unused preloaded data is removed after 30 seconds by default.
-- Preloaded loader data is considered fresh for 30 seconds by default.
+- Preload delay: 50ms for intent (hover/focus) and viewport preloading (`defaultPreloadDelay` / `preloadDelay`). Pending preloads are cancelled when hover/focus ends or the link leaves the viewport. Touch intent preloads immediately.
+- Preloaded loader data is considered fresh for 30 seconds by default (`defaultPreloadStaleTime` / `preloadStaleTime`).
+- Unused preloaded data is retained for 5 minutes by default (`defaultPreloadGcTime` / `preloadGcTime`).
 
 Override per link:
 
@@ -334,10 +344,13 @@ function PostRoute() {
 With TanStack Query, start slow work in the loader without awaiting it, then read with Query hooks inside Suspense:
 
 ```tsx
+import { noop } from '@tanstack/react-query'
+
 export const Route = createFileRoute('/posts/$postId')({
   loader: async ({ context }) => {
-    context.queryClient.prefetchQuery(slowDataOptions())
-    await context.queryClient.ensureQueryData(fastDataOptions())
+    // Not awaited: starts now, streams later, errors swallowed here.
+    void context.queryClient.query(slowDataOptions()).catch(noop)
+    await context.queryClient.query(fastDataOptions())
   },
 })
 ```
@@ -368,18 +381,25 @@ export const Route = createFileRoute('/posts')({
 })
 ```
 
+In React, boundary errors are typed as `unknown` (`ErrorComponentProps['error']`, `onCatch`). Thrown falsy values are preserved. Narrow before reading fields.
+
 For load errors, retry with `router.invalidate()` rather than only boundary `reset()`:
 
 ```tsx
-function RouteError({ error }: { error: Error }) {
+import type { ErrorComponentProps } from '@tanstack/react-router'
+
+function RouteError({ error }: ErrorComponentProps) {
   const router = useRouter()
+  const message = error instanceof Error ? error.message : String(error)
   return (
     <button onClick={() => router.invalidate()}>
-      Retry {error.message}
+      Retry ({message})
     </button>
   )
 }
 ```
+
+Do not render `<Outlet />` inside `pendingComponent`, `errorComponent`, or `notFoundComponent`; Router warns in development when this happens.
 
 With TanStack Query suspense, reset the Query error boundary in the route error component and invalidate the router on retry.
 

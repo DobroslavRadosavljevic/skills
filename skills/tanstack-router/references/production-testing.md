@@ -58,7 +58,9 @@ If the app uses TanStack Start or custom SSR, follow Start/SSR host-specific doc
 
 ## SSR
 
-TanStack Router SSR APIs are documented as experimental while TanStack Start has not reached stable 1.0 (still RC-adjacent as of this skill snapshot). Verify current docs before changing SSR code.
+TanStack Router SSR APIs are documented as experimental until TanStack Start reaches stable status (Start is still a Release Candidate as of 2026-10-01). Verify current docs before changing SSR code.
+
+On the server, Router uses a lightweight request history that holds only the request URL. It ignores `push`, `replace`, `go`, `back`, and `forward`; throw `redirect()` for HTTP redirects. Large deferred SSR payloads stream through a backpressure-aware transport (1.170.37+).
 
 For SSR, create routers via a factory:
 

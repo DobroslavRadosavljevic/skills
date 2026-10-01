@@ -4,13 +4,13 @@ This reference captures the docs snapshot used to create the skill.
 
 ## Snapshot
 
-- Captured: 2026-08-03
+- Captured: 2026-08-03; re-verified 2026-10-01 (no decimal.js release after 10.6.0)
 - Stable npm package: `decimal.js@10.6.0` (published 2025-07-06)
 - Official repository: https://github.com/MikeMcl/decimal.js
 - Official API: https://mikemcl.github.io/decimal.js/
 - Types: bundled `decimal.d.ts` (`"types": "./decimal.d.ts"`)
 - Context7 selection: `/mikemcl/decimal.js`
-- Related packages observed: `decimal.js-light@2.5.1`, `bignumber.js@11.x`, `big.js@7.x`
+- Related packages observed: `decimal.js-light@2.5.1`, `bignumber.js@11.1.5`, `big.js@7.0.1`
 
 Treat prerelease/legacy tags (`version4` → 4.0.4) as unavailable unless the project depends on them.
 

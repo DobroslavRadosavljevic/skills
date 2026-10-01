@@ -1,25 +1,27 @@
 # TanStack Store Source Map
 
-Snapshot date: 2026-08-06.
+Snapshot date: 2026-10-01.
 
 ## Current Package Evidence
 
 Npm evidence from this snapshot (`dist-tags.latest`):
 
-- `@tanstack/store`: `0.11.1`
-- `@tanstack/react-store`: `0.11.1`
-- `@tanstack/solid-store`: `0.11.1`
-- `@tanstack/vue-store`: `0.11.1`
-- `@tanstack/angular-store`: `0.11.1`
-- `@tanstack/svelte-store`: `0.12.1`
-- `@tanstack/preact-store`: `0.13.2`
-- `@tanstack/lit-store`: `0.14.1`
-- `@tanstack/octane-store`: `0.12.2`
+- `@tanstack/store`: `0.11.2` (published 2026-09-29)
+- `@tanstack/react-store`: `0.11.2`
+- `@tanstack/solid-store`: `0.11.2`
+- `@tanstack/vue-store`: `0.11.2`
+- `@tanstack/angular-store`: `0.11.2`
+- `@tanstack/svelte-store`: `0.12.2`
+- `@tanstack/preact-store`: `0.13.4`
+- `@tanstack/lit-store`: `0.14.2`
+- `@tanstack/octane-store`: `0.12.3`
 
 Package notes:
 
-- `@tanstack/store@0.11.1` (2026-08-05) is a patch that inlines reactive flag constants in generated builds for better tree-shaking (`#350`). No public API changes from `0.11.0`.
-- Adapter packages at this snapshot depend on `@tanstack/store@0.11.1`.
+- `@tanstack/store@0.11.2` (2026-09-29, `#369`): atom reads inside a subscription observer no longer become dependencies of that subscription. Before, `a.subscribe(() => b.get())` also fired when `b` changed; now it fires only for `a`. Subscribe to every source the callback must react to.
+- `@tanstack/store@0.11.1` (2026-08-05) inlined reactive flag constants for tree-shaking (`#350`). No public API changes from `0.11.0`.
+- `@tanstack/preact-store@0.13.3` recomputes selections when the selector changes (`#367`).
+- Adapter packages at this snapshot depend on `@tanstack/store@0.11.2`. TanStack Router `1.170.41` depends on `@tanstack/react-store ^0.11.2`; TanStack Form `1.33.5` depends on `@tanstack/store ^0.11.0`.
 - `@tanstack/react-store` also depends on `use-sync-external-store@^1.6.0`.
 - React peer range is React and ReactDOM `^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0`.
 - The installation docs say the React adapter is currently ReactDOM-only, not React Native.

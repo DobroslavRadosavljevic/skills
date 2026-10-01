@@ -1,6 +1,6 @@
 ---
 name: tanstack-table
-description: "Build, review, debug, migrate, or plan TanStack Table v9 React tables with current docs. Use for @tanstack/react-table, @tanstack/table-core, useTable, tableFeatures, stockFeatures, createTableHook, createColumnHelper, ColumnDef, table state, external atoms, sorting, filtering, faceting, grouping, aggregation, expanding, pagination, row selection, cell selection, cell spanning, row and column pinning, column visibility, column ordering, column sizing, column resizing, virtualization, devtools, worker row models, and v8-to-v9 migrations."
+description: "Build, review, debug, migrate, or plan TanStack Table v9 React tables with current docs. Use for @tanstack/react-table, @tanstack/table-core, useTable, tableFeatures, stockFeatures, createTableHook, createTableHookContexts, createColumnHelper, ColumnDef, table state, external atoms, Subscribe, React Compiler, sorting, filtering, faceting, grouping, aggregation, expanding, pagination (including cursor and Infinity page size), row selection, cell selection, cell spanning, row and column pinning, column visibility, column ordering, column sizing, column resizing, virtualization, devtools, worker row models, and v8-to-v9 migrations."
 ---
 
 # TanStack Table
@@ -11,12 +11,12 @@ Use this skill when work touches TanStack Table v9, especially `@tanstack/react-
 
 1. Confirm the local version and target API before changing code:
    - `@tanstack/react-table`, `@tanstack/table-core`, optional `@tanstack/react-table-devtools`, optional `@tanstack/react-store`, optional `@tanstack/react-virtual`, and React version.
-   - Whether the app is on stable v9 (`latest` is `9.x`). Older apps may still pin v8; do not mix v8 and v9 APIs.
+   - Whether the app is on stable v9 (`latest` is `9.2.x`). Older apps may still pin v8; do not mix v8 and v9 APIs.
    - Current table creation style: `useTable`, `createTableHook`, `stockFeatures`, or temporary `useLegacyTable`.
    - Which features are registered in `tableFeatures()` and which row model factories are actually needed.
 2. Refresh current docs for migrations, new feature APIs, or package mismatches. Start from [source-map.md](references/source-map.md).
 3. For installation, core setup, columns, rendering, and row models, use [setup-core.md](references/setup-core.md).
-4. For v8-to-v9 migrations, `useLegacyTable`, state ownership, external atoms, selectors, and React Compiler concerns, use [state-and-migration.md](references/state-and-migration.md).
+4. For v8-to-v9 migrations, `useLegacyTable`, state ownership, external atoms, selectors, table context, and React Compiler concerns, use [state-and-migration.md](references/state-and-migration.md).
 5. For sorting, filtering, faceting, pagination, selection, pinning, sizing, grouping, aggregation, cell selection, and spanning, use [features.md](references/features.md).
 6. For server-side patterns, TanStack Query, virtualization, devtools, worker row models, performance, accessibility, and testing, use [production-patterns.md](references/production-patterns.md).
 
@@ -30,6 +30,7 @@ Use this skill when work touches TanStack Table v9, especially `@tanstack/react-
 - Use `table.FlexRender` or the v9 `FlexRender` component for cells and headers.
 - Prefer external atoms for state that powers server queries, persistence, or cross-component UI. The classic `state` plus `onXChange` pattern remains useful for simple migration work.
 - Use `manualSorting`, `manualFiltering`, `manualPagination`, and `manualGrouping` when the server already returns processed data. Keep all table operations consistent at the same data scope.
+- v9 works with the React Compiler; drop v8 `'use no memo'` workarounds. Nested components that receive only stable `row` / `cell` / `column` / `header` objects must subscribe (`Subscribe` / `useSelector`) to the state they render.
 - Treat `useLegacyTable` as a temporary migration bridge only. It bundles all features, keeps full-state subscriptions, and does not support the main v9 composability benefits.
 - Column pinning uses logical `start` / `end` regions (not `left` / `right`). Aggregation is its own `rowAggregationFeature`, independent from `columnGroupingFeature`.
 

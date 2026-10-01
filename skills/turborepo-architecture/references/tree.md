@@ -34,9 +34,13 @@
     "packages": ["apps/*", "packages/*", "packages/<nested>/*"],
     "catalog": {}
   },
-  "packageManager": "bun@…"
+  "devEngines": {
+    "packageManager": { "name": "bun", "version": "1.4.x" }
+  }
 }
 ```
+
+Turborepo 2.11 prefers `devEngines.packageManager`; the top-level `"packageManager": "bun@…"` field still works but is slated for removal in a future turbo major.
 
 ## Package entry (internal)
 

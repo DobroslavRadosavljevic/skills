@@ -63,6 +63,7 @@ Use it only when a staged migration is necessary:
 - It subscribes to full table state, so it misses v9 fine-grained subscription benefits.
 - It cannot use `createTableHook`.
 - Custom sorting code should account for the v9 `sortFn` naming, even if built-ins are adapted.
+- Since 9.0.1, `legacyCreateColumnHelper` column defs accept built-in `filterFn`, `sortFn`, and `aggregationFn` string names.
 
 Preferred staged path:
 
@@ -127,7 +128,39 @@ Use `useTable(options, () => null)` or a constant selector when the table owner 
 </table.Subscribe>
 ```
 
-React Compiler note: nested components that call builder methods such as `row.getIsSelected()`, `column.getIsPinned()`, or `header.column.getCanSort()` can go stale if they are not subscribed to the right source. Wrap reactive islands in `table.Subscribe` or the standalone `Subscribe` component from the adapter.
+## React Compiler
+
+v9 is the first TanStack Table version compatible with the React Compiler. Remove v8-era `'use no memo'` directives from table components after migrating to `useTable`. When a component compiles, manual `useMemo` / `useCallback` that only stabilizes `data` or `columns` is optional; keep it for code that must also run without the compiler.
+
+The value returned by `useTable` changes when its selected state changes, but core `table` (via `row.table`, `cell.table`), `row`, `cell`, `column`, and `header` objects keep stable references. A compiled child whose only props are those objects can skip re-rendering and show stale method results such as `row.getIsSelected()`, `column.getIsPinned()`, `cell.getValue()`, or `header.column.getCanSort()`. Put the subscription inside that child and render from the selected value:
+
+```tsx
+import { Subscribe } from '@tanstack/react-table'
+
+function SelectionCell({ row }: { row: Row<typeof features, Person> }) {
+  return (
+    <Subscribe
+      source={row.table.atoms.rowSelection}
+      selector={(rowSelection) => rowSelection[row.id]}
+    >
+      {(isSelected) => (
+        <input
+          type="checkbox"
+          checked={!!isSelected}
+          onChange={row.getToggleSelectedHandler()}
+        />
+      )}
+    </Subscribe>
+  )
+}
+```
+
+- Use `table.Subscribe` on the React-facing table from `useTable`; use the standalone `Subscribe` with `table.store` or `table.atoms.<slice>` inside cell/header render contexts (where `table` is the core table).
+- Wrapping `<SelectionCell row={row} />` in `Subscribe` from the outside does not help if the child ignores the selected value.
+- Calling `useSelector` only to force a render is not enough; render from the selected value.
+- When several slices affect `table.getRowModel()`, subscribe to `table.store` with a selector that returns all of them.
+
+State updates are equality-guarded since 9.1.2, so auto resets no longer cause controlled-state render loops, but custom `onXChange` handlers may still be called for an apparent no-op.
 
 ## External Atoms
 
@@ -230,5 +263,9 @@ const table = useAppTable({
 ```
 
 Use the optional component registry only when the project benefits from standardized table, header, cell, or context components.
+
+When registering components, `createTableHook` also returns `useTableContext`, `useCellContext`, and `useHeaderContext`. Import them from the module that called `createTableHook` so registered component maps stay typed. `<table.AppTable>`, `<table.AppCell cell={cell}>`, and `<table.AppHeader header={header}>` / `<table.AppFooter header={footer}>` provide those contexts. Inside a cell or header component, `cell.table` / `header.table` is often enough without context.
+
+For nested tables built from different `createTableHook` setups, create isolated contexts with `createTableHookContexts<typeof features>()` and pass `tableContext`, `cellContext`, and `headerContext` into `createTableHook`. Row, cell, column, and header instances are stable context values; the React-facing `table` is not, so provide `table.store` or a specific atom when a stable handle is needed.
 
 `tableOptions()` can compose reusable option bags (features, row models, defaults) without creating a full custom hook.

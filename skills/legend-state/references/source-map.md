@@ -8,13 +8,30 @@ This skill targets Legend-State v3. Re-check the channel before every version-se
 bun info @legendapp/state
 ```
 
-Research snapshot on 2026-07-10:
+Research snapshot on 2026-10-01:
 
-- npm `latest`: `2.1.15`
-- npm `beta`: `3.0.0-beta.47`
-- v3 tag source commit: `31dac24a6e196c272b8968fff6a1debcc97c86a6`
+- npm `latest`: `2.1.15` (unchanged)
+- npm `beta`: `3.0.0-beta.48` (published 2026-07-12)
+- npm `alpha`: `3.0.0-alpha.42` (stale; do not use)
+- Other stale tags: `next` (`2.2.0-next.97`), `rc` (`1.0.0-rc.34`)
+- v3 tag: `v3.0.0-beta.48`
+- Docs still describe v3 as beta; the migration guide has no notes after beta.20.
 
-Version 3 is therefore prerelease, even though the project recommends v3 for new projects. Never infer v3 from an unqualified install command. Inspect the lockfile and installed declarations.
+Version 3 is therefore prerelease, even though the project recommends v3 for new projects. Never infer v3 from an unqualified install command (`bun add @legendapp/state` installs v2). Install v3 explicitly with `bun add @legendapp/state@beta` or an exact pin such as `@legendapp/state@3.0.0-beta.48`. Inspect the lockfile and installed declarations.
+
+Changes in beta.48 (bug fixes, no documented API changes):
+
+- React notifications triggered during another component's render are deferred, removing React's "Cannot update a component while rendering a different component" error. Still avoid render-phase writes.
+- Reactive prop hooks (`$React` / reactive components) are stabilized across renders.
+- Computed arrays clear stale children; computed values holding `Temporal` objects notify listeners.
+- Optimized object listeners are notified for key changes.
+- `syncedCrud` preserves failed creates for retry and no longer writes `null`/`undefined` keys when an item is missing its id.
+- `syncObservable` unsubscribe now runs correctly.
+- `undoRedo` with `limit` clears the redo stack on new changes.
+
+Unreleased on `main` after beta.48 (2026-08-11): `syncedCrud` compares object field values with deep equality instead of reference equality.
+
+Previous snapshot (2026-07-10) targeted `3.0.0-beta.47`.
 
 ## Primary Documentation
 
@@ -42,14 +59,14 @@ Version 3 is therefore prerelease, even though the project recommends v3 for new
 
 - [npm package](https://www.npmjs.com/package/@legendapp/state): published versions and dist-tags.
 - [GitHub repository](https://github.com/LegendApp/legend-state): source, changelog, exports, and tests.
-- [v3.0.0-beta.47 tag](https://github.com/LegendApp/legend-state/tree/v3.0.0-beta.47): exact source for the snapshot above.
-- [Core exports](https://github.com/LegendApp/legend-state/blob/v3.0.0-beta.47/index.ts): public core API.
-- [React exports](https://github.com/LegendApp/legend-state/blob/v3.0.0-beta.47/react.ts): public React API.
-- [Sync exports](https://github.com/LegendApp/legend-state/blob/v3.0.0-beta.47/sync.ts): public sync API.
-- [Package exports](https://github.com/LegendApp/legend-state/blob/v3.0.0-beta.47/package.json): supported subpath imports and peer dependencies.
-- [React tests](https://github.com/LegendApp/legend-state/blob/v3.0.0-beta.47/tests/react.test.tsx): subscription, Strict Mode, Suspense, control-flow, reactive component, and tracing behavior.
-- [Persistence tests](https://github.com/LegendApp/legend-state/blob/v3.0.0-beta.47/tests/persist.test.ts): pending writes, out-of-order completion, transforms, reset, multiple syncs, and status behavior.
-- [CRUD tests](https://github.com/LegendApp/legend-state/blob/v3.0.0-beta.47/tests/crud.test.ts): object, Map, array, paging, update, delete, timestamps, and realtime behavior.
+- [v3.0.0-beta.48 tag](https://github.com/LegendApp/legend-state/tree/v3.0.0-beta.48): exact source for the snapshot above.
+- [Core exports](https://github.com/LegendApp/legend-state/blob/v3.0.0-beta.48/index.ts): public core API.
+- [React exports](https://github.com/LegendApp/legend-state/blob/v3.0.0-beta.48/react.ts): public React API.
+- [Sync exports](https://github.com/LegendApp/legend-state/blob/v3.0.0-beta.48/sync.ts): public sync API.
+- [Package exports](https://github.com/LegendApp/legend-state/blob/v3.0.0-beta.48/package.json): supported subpath imports and peer dependencies.
+- [React tests](https://github.com/LegendApp/legend-state/blob/v3.0.0-beta.48/tests/react.test.tsx): subscription, Strict Mode, Suspense, control-flow, reactive component, and tracing behavior.
+- [Persistence tests](https://github.com/LegendApp/legend-state/blob/v3.0.0-beta.48/tests/persist.test.ts): pending writes, out-of-order completion, transforms, reset, multiple syncs, and status behavior.
+- [CRUD tests](https://github.com/LegendApp/legend-state/blob/v3.0.0-beta.48/tests/crud.test.ts): object, Map, array, paging, update, delete, timestamps, and realtime behavior.
 
 ## Source Selection Rules
 

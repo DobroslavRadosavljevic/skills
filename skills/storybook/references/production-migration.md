@@ -29,6 +29,7 @@ CI tips:
 - CSF Next preview (optional).
 - Improved tags filtering; remove obsolete `*-only` tags.
 - Prefer Vitest addon over test-runner when eligible.
+- 10.6: `storybook upgrade --features experimentalReview,experimentalDocgenServer` opts into experimental flags (`--yes` alone skips them).
 
 ### Storybook 9 Package Consolidation (Still Bites On 10)
 
@@ -58,11 +59,31 @@ Preview `globals` renamed to `initialGlobals` (story-level overrides still use `
 | Duplicate `@storybook/*` versions | Align all official packages to the same Storybook version; run doctor |
 | Community addon crashes on 10 | Remove/replace; addon must ship ESM |
 | CJS addon load errors | Addon not SB10-ready |
-| Node engine errors | Upgrade Node to 20.19+/22.12+ |
+| Node engine errors | Upgrade Node to 20.19+/22.12+ (Storybook 11 alphas require 22.12+) |
+| `storybook ai` deprecation warning | Use `storybook skills` (10.6+) |
 
 ## Addon Author Notes (When Touching Addons)
 
 Storybook 10 requires **ESM-only** addon builds. Peer `storybook: ^10.0.0`. Drop CJS exports and empty essentials/interactions/blocks dependencies. See the official addon migration guide.
+
+## AI / MCP Tooling (Preview, 10.6)
+
+Storybook's AI features are in **preview**; APIs may change.
+
+```ts
+// .storybook/main.ts — enable the components manifest for the MCP docs toolset
+const config: StorybookConfig = {
+  framework: '@storybook/react-vite',
+  stories: ['../src/**/*.mdx', '../src/**/*.stories.@(ts|tsx)'],
+  addons: ['@storybook/addon-mcp'],
+  features: { componentsManifest: true },
+};
+```
+
+- `bunx storybook add @storybook/addon-mcp` → MCP endpoint at `http://localhost:6006/mcp` while the dev server runs (port may differ).
+- Docs toolset (`docs-list`, `docs-show`, `docs-show-story`) needs the components manifest: React frameworks and `@storybook/angular-vite`; `@storybook/vue3-vite` also needs `experimentalDocgenServer`. Other frameworks still get the development and testing toolsets.
+- CLI equivalents without MCP: `bunx storybook skills [stories|write-story|setup]` prints agent instructions; `bunx storybook tools` runs the same toolsets (attaches to the running Storybook; `--port` selects an instance). `storybook ai setup` still works but is deprecated.
+- Agentic setup (React + Vite only) tags generated stories `ai-generated` — review and remove the tag after validation.
 
 ## AI / Agent Authoring Checklist
 
@@ -76,6 +97,7 @@ When generating Storybook work:
 6. Wire autodocs via tags when docs addon is present.
 7. Prefer Vitest addon scripts already in the repo over inventing test-runner.
 8. After dependency edits, suggest `storybook doctor` + build/test smoke.
+9. If `@storybook/addon-mcp` is installed, read component docs through its docs toolset before inventing props.
 
 ## Verification Matrix
 

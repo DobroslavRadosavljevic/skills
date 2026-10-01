@@ -54,7 +54,7 @@ Exclude a story from automated test runs with `tags: ['!test']` when it is docs-
 Requirements:
 
 - Vite-based Storybook framework
-- Vitest ≥ 3 (peers also allow Vitest 4)
+- Vitest ≥ 3 (peers allow Vitest 4 and, since 10.6.1, Vitest 5)
 - Playwright Chromium for browser mode (recommended)
 - Next.js: `@storybook/nextjs-vite` (not Webpack-only `@storybook/nextjs`)
 
@@ -66,7 +66,7 @@ bunx storybook add @storybook/addon-vitest
 
 This registers the addon, configures Vitest browser mode, and usually adds `.storybook/vitest.setup.ts`.
 
-Example Vitest project (shape varies by Vitest 3 vs 4; prefer what the addon writes):
+Example Vitest project (shape varies by Vitest 3 vs 4/5; prefer what the addon writes):
 
 ```ts
 import path from 'node:path'

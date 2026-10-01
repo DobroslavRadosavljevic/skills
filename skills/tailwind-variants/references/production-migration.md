@@ -54,8 +54,9 @@ Use Tailwind Variants when you need **slots**, **compound slots**, **`extend` co
 
 ## Migration map
 
-### to v3.3.0
+### to v3.3.x
 
+- Target **v3.3.1**, not v3.3.0. v3.3.0 shared slot state across interleaved calls, which leaked classes between slot results and broke reference-equality reactivity.
 - Conflict resolution ships in the default build → `bun add tailwind-variants` is enough for TV merge.
 - Remove unused `tailwind-merge` if nothing else imports it.
 - Prefer `{ extend, override }` for configs.

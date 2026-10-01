@@ -5,12 +5,12 @@
 Default Redis backend (ioredis is an **optional peer**; install it explicitly):
 
 ```bash
-bun add bullmq ioredis
+bun add bullmq ioredis@5
 ```
 
 | Peer | When |
 | --- | --- |
-| `ioredis` `>= 5.0.0` | Default Redis driver (lazy-loaded) |
+| `ioredis` `>= 5.0.0` | Default Redis driver (lazy-loaded). ioredis 6.0 (2026-07-31) defaults to RESP3 and needs Node 20+; BullMQ's own tests still pin 5.11 and an open issue (#4595) reports a `RedisOptions` → `ConnectionOptions` type mismatch with v6 — verify before adopting 6 |
 | `redis` `>= 5.0.0` | node-redis adapter (`createNodeRedisClient`) |
 | `pg` `>= 8.0.0` | PostgreSQL backend (`createPostgresBackend`) |
 | `bullmq-otel` `>= 2.0.0` | OpenTelemetry (`bullmq-otel` 2.x requires `bullmq` `>= 6`) |
@@ -121,29 +121,42 @@ import { Queue, BackendFactory } from 'bullmq';
 const queue = new Queue('email', { connection: {} }, myBackendFactory);
 ```
 
-`setDefaultBackendFactory(factory)` changes the process-wide default (pass `undefined` to reset to Redis). Classes are generic over the backend: `new Queue<MyData, MyResult, string, MyBackend>(name, opts, createMyBackend)`.
+`setDefaultBackendFactory(factory)` changes the process-wide default (pass `undefined` to reset to Redis).
+
+Classes are generic over the backend **and** (since 6.3.9) its connection options type. Type a custom factory as `BackendFactory<MyBackend, MyConnectionOptions>` so `connection` is checked. Backend and connection type parameters sit **after** the job type parameters, at a different position per class (`Queue` has six job-related slots first; `Worker` puts the backend 4th, then `ProgressType`, then the connection type). Two safe forms:
+
+```typescript
+import { Queue, withBackend } from 'bullmq';
+
+// 1. No job type args: let TypeScript infer from the factory
+const q1 = new Queue('email', opts, createMyBackend);
+
+// 2. Need job types: bind the backend once (6.3.9+)
+const My = withBackend(createMyBackend); // { Queue, Worker, QueueEvents, QueueEventsProducer, FlowProducer }
+const q2 = new My.Queue<EmailData, EmailResult>('email', opts);
+```
+
+`withBackend` returns subclasses (`instanceof Queue` still holds), requires `connection`, and does not change the process-wide default.
 
 ### PostgreSQL backend
 
 Optional OSS backend: same Queue/Worker/QueueEvents/FlowProducer API on PostgreSQL 13+ (14+ recommended). Peer `pg >= 8.0.0`, loaded lazily.
 
 ```typescript
-import {
-  Queue,
-  Worker,
-  PostgresQueueBackend,
-  createPostgresBackend,
-} from 'bullmq';
+import { Queue, Worker, createPostgresBackend, withBackend } from 'bullmq';
 
 const opts = { connection: 'postgres://user:password@localhost:5432/mydb' };
 
-const queue = new Queue<any, any, string, PostgresQueueBackend>(
-  'email',
-  opts,
-  createPostgresBackend,
-);
+// Types inferred from the factory (BackendFactory<PostgresQueueBackend, PostgresConnectionOptions>)
+const queue = new Queue('email', opts, createPostgresBackend);
 const worker = new Worker('email', async job => {}, opts, createPostgresBackend);
+
+// With job types: bind the backend instead of writing partial generics
+const Pg = withBackend(createPostgresBackend);
+const typedQueue = new Pg.Queue<EmailData, EmailResult>('email', opts);
 ```
+
+`new Queue<EmailData, EmailResult>('email', opts, createPostgresBackend)` is a type error: once you pass job type arguments, the backend/connection slots fall back to the Redis defaults. Before 6.3.9 the Postgres connection type was hidden behind casts; upgrade if `connection` typing looks wrong.
 
 Or process-wide:
 

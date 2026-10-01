@@ -7,7 +7,7 @@ description: Build, review, debug, migrate, or plan React applications and compo
 
 Use this skill to make React choices from current docs plus the local app's actual version, framework, and conventions.
 
-Snapshot: `react@19.3.0` / `react-dom@19.3.0` (2026-09-18). Refresh from [source-map.md](references/source-map.md) if versions differ.
+Snapshot: `react@19.3.0` / `react-dom@19.3.0` (released 2026-09-09; still npm `latest` on 2026-10-01). Refresh from [source-map.md](references/source-map.md) if versions differ.
 
 ## Workflow
 

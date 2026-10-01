@@ -61,7 +61,7 @@ Guidance:
 
 ## Debugging Without Devtools
 
-No Store-specific devtools package was found in npm during the 2026-08-06 snapshot. Use local debugging tools:
+No Store-specific devtools package was found in npm during the 2026-10-01 snapshot. Use local debugging tools:
 
 - Log from actions, not every render.
 - Temporarily subscribe to a store and print state transitions.

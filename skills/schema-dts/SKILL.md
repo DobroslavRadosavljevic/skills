@@ -1,6 +1,6 @@
 ---
 name: schema-dts
-description: "Build, review, debug, migrate, or plan Schema.org JSON-LD with Google schema-dts TypeScript types. Use for schema-dts, schema-dts-gen, schema-dts-lib, WithContext, Graph, IdReference, MergeLeafTypes, ProductLeaf and other *Leaf types, WithActionConstraints, JSON-LD script injection, structured data, Organization, WebSite, Product, Offer, FAQPage, Article, BreadcrumbList, react-schemaorg, and Schema.org v30 typing."
+description: "Build, review, debug, migrate, or plan Schema.org JSON-LD with Google schema-dts TypeScript types. Use for schema-dts, schema-dts-gen, schema-dts-lib, WithContext, Graph, IdReference, MergeLeafTypes, ProductLeaf and other *Leaf types, WithActionConstraints, implements PersonLeaf classes, JSON-LD script injection, structured data, Organization, WebSite, Product, Offer, FAQPage, Article, BreadcrumbList, react-schemaorg, schema-dts-gen 2.0.1 security fix, and Schema.org v30 typing."
 ---
 
 # schema-dts
@@ -11,7 +11,7 @@ Use this skill when work touches **schema-dts** TypeScript types for Schema.org 
 
 1. Inspect the local surface before changing code:
    - Packages: `schema-dts` (and optionally `schema-dts-gen`, `schema-dts-lib`, `react-schemaorg`).
-   - Version: target **v2** (`2.0.0` = Schema.org v30). Treat `1.x` as legacy.
+   - Version: target **v2** (`schema-dts@2.0.0` = Schema.org v30; `schema-dts-gen@2.0.1`). Treat `1.x` as legacy.
    - Role: type-only compile-time checking (no runtime Schema.org validation).
    - Shape: single `WithContext<T>` node vs `Graph` with `@id` stubs vs multi-`@type` via `MergeLeafTypes`.
    - Injection path: React/`react-schemaorg`, Next `Script`, Astro/`set:html`, Svelte head, or vanilla DOM.
@@ -32,6 +32,8 @@ Use this skill when work touches **schema-dts** TypeScript types for Schema.org 
 - Always use **`WithContext<T>`** (or `Graph`) for the top-level JSON-LD document so `@context` is required and locked to `https://schema.org`.
 - Prefer the **narrowest type** that matches the page (`Product`, `Article`, `FAQPage`) over typing everything as `Thing`.
 - Use **`*Leaf` + `MergeLeafTypes`** only when `@type` is genuinely an array of concrete types. Never pass union aliases like `Product` into `MergeLeafTypes`.
+- Use a **`*Leaf` interface** when a class must `implements` a Schema.org shape; union aliases cannot be implemented.
+- Run **`schema-dts-gen` 2.0.1+** for any custom or third-party ontology. `2.0.0` let `rdfs:comment` text inject code into generated output (GHSA-c4f4-pq98-f2p2).
 - Cross-link repeated entities with **`@id` + `IdReference` stubs** inside a `Graph` instead of duplicating nested objects.
 - For sitelinks search box / Action markup, wrap or cast with **`WithActionConstraints`** so `query-input` (and other `*-input` / `*-output`) type-check.
 - When injecting into HTML, **escape** `<`, `>`, `&`, `'` in the JSON string (or use `react-schemaorg`'s `JsonLd`).

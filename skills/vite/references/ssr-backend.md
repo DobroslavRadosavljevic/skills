@@ -1,6 +1,6 @@
 # SSR and Backend Integration
 
-Low-level Vite SSR, middleware mode, production dual builds, and embedding Vite behind an existing backend. Snapshot: `vite@8.3.0`.
+Low-level Vite SSR, middleware mode, production dual builds, and embedding Vite behind an existing backend. Snapshot: `vite@8.3.2`.
 
 ## When to use what
 

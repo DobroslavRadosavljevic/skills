@@ -37,6 +37,9 @@ Coverage changes frequently — re-check the catalog and language module dirs wh
 | MinIO | `minio` | `minio` | `minio` | `minio` |
 | Nginx | — | `nginx` | `nginx` | `nginx` |
 | Toxiproxy | `toxiproxy` | `toxiproxy` | — | `toxiproxy` |
+| Mosquitto (MQTT) | `mosquitto` (12.1+) | `hivemq` for MQTT | `mqtt` | `mosquitto` (v0.44+) |
+| InfluxDB | `influxdb` (12.2+) | `influxdb` | `influxdb` / `influxdb2` | `influxdb` |
+| MongoDB Atlas Local | `mongodb` → `MongoDBAtlasLocalContainer` (12.1+) | `mongodb` → `MongoDBAtlasLocalContainer` | check catalog | `mongodb/atlaslocal` |
 
 ## Broader catalog (examples)
 

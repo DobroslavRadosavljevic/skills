@@ -9,19 +9,19 @@ It does **not** execute page JavaScript or render DOM. For those needs, use a re
 
 ## Node `Browser` values
 
-From `impit` Typedoc / `index.d.ts` (refresh when upgrading):
+From `impit` Typedoc / `index.d.ts` as of npm 0.14.5 (the Python `Browser` literal matches since 0.13.2/0.14.0; refresh when upgrading):
 
 - Generic: `chrome`, `firefox`, `okhttp`
-- Chrome versions: `chrome100`, `chrome101`, `chrome104`, `chrome107`, `chrome110`, `chrome116`, `chrome124`, `chrome125`, `chrome131`, `chrome136`, `chrome142`
+- Chrome versions: `chrome100`, `chrome101`, `chrome104`, `chrome107`, `chrome110`, `chrome116`, `chrome124`, `chrome125`, `chrome131`, `chrome136`, `chrome142`, `chrome151`
 - Firefox versions: `firefox128`, `firefox133`, `firefox135`, `firefox144`
 - OkHttp versions: `okhttp3`, `okhttp4`, `okhttp5`
 - Other: `ios18`
 
-Generic `chrome` / `firefox` pick an appropriate bundled version automatically. Prefer a **versioned** id when detectors flag stale generic fingerprints.
+Generic `chrome` / `firefox` pick an appropriate bundled version automatically. Prefer a **versioned** id when detectors flag stale generic fingerprints. `chrome151` (0.14.4 JS / 0.14.0 Python) is the first id whose TLS `signature_algorithms` lead with ML-DSA codepoints, so its JA4 matches current Chrome where `chrome142` no longer does.
 
 ```ts
 new Impit({ browser: 'chrome' });
-new Impit({ browser: 'chrome131' });
+new Impit({ browser: 'chrome151' });
 new Impit({ browser: 'firefox144' });
 ```
 
@@ -34,7 +34,7 @@ new Impit({ browser: 'firefox144' });
 
 If both are needed operationally, use separate clients or disable HTTP/3 for proxied traffic.
 
-HTTP/3 DNS discovery uses system resolvers in recent releases; failures can fall back so hosts are treated as non-h3 unless Alt-Svc says otherwise.
+HTTP/3 DNS discovery uses system resolvers in recent releases; failures can fall back so hosts are treated as non-h3 unless Alt-Svc says otherwise. Cached Alt-Svc handling was fixed in JS 0.14.5 / Python 0.14.1 — upgrade before debugging stale HTTP/3 upgrades.
 
 ## Redirects
 

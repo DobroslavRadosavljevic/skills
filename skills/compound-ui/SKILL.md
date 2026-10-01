@@ -14,7 +14,8 @@ Use this skill to create source-owned React components that compose like shadcn/
    - Prefer the project's existing export, file, styling, icon, and accessibility patterns.
 2. Refresh docs when exact APIs matter:
    - Use [references/source-map.md](references/source-map.md) for current source links and captured guidance.
-   - Prefer current React, shadcn/ui, Radix UI, and local primitive docs before changing framework-sensitive code.
+   - Prefer current React, shadcn/ui, and local primitive docs (Radix UI, Base UI, or React Aria) before changing framework-sensitive code.
+   - Detect the project's primitive base first: `components.json` `style` / imports of `radix-ui`, `@base-ui/react`, or `react-aria-components`. Match its composition API instead of mixing bases.
 3. Design the public API before implementation:
    - Read [references/component-contract.md](references/component-contract.md).
    - Define the root component, named subcomponents, legal nesting, controlled/uncontrolled state, and required accessibility parts.
@@ -28,7 +29,7 @@ Use this skill to create source-owned React components that compose like shadcn/
 ## Enforcement Rules
 
 - Prefer compound parts and `children` over prop-heavy wrapper APIs. Do not create `title`, `description`, `actions`, `icon`, `isLoading`, or layout props when named subcomponents express the same structure better.
-- Keep acceptable props narrow: DOM props, `className`, `children`, `asChild`, controlled state, event handlers, accessibility props, and intentional variants such as `variant` or `size`.
+- Keep acceptable props narrow: DOM props, `className`, `children`, the element-swap prop of the project's primitive base (`asChild` for Radix, `render` for Base UI), controlled state, event handlers, accessibility props, and intentional variants such as `variant` or `size`.
 - Use existing accessible primitives for complex behavior such as dialogs, menus, popovers, tabs, selects, tooltips, comboboxes, accordions, and roving focus.
 - Preserve primitive contracts. Custom slotted children must spread incoming props and support refs according to the project's React version.
 - Add `data-slot` to every exported part, plus state/variant data attributes when useful for styling and tests.

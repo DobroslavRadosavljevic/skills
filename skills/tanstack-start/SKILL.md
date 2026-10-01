@@ -1,6 +1,6 @@
 ---
 name: tanstack-start
-description: "Build, review, debug, configure, migrate, or plan TanStack Start React applications with current docs. Use for TanStack Start, @tanstack/react-start, file-based routing, route colocation (-components/-hooks/-lib beside routes), feature modules (src/modules reusable code), pathless layouts, TanStack Router integration, Vite/Rsbuild setup, SSR, streaming, server functions, server routes, middleware, loaders, TanStack Query integration, environment variables, sessions/auth, deployment, hosting, and Next.js migrations."
+description: "Build, review, debug, configure, migrate, or plan TanStack Start React applications (RC, 1.168.x) with current docs. Use for TanStack Start, @tanstack/react-start, file-based routing, route colocation (-components/-hooks/-lib beside routes), feature modules (src/modules reusable code), pathless layouts, TanStack Router integration, Vite/Rsbuild setup, SSR, streaming, server functions, server routes, middleware, loaders, TanStack Query integration (setupRouterSsrQueryIntegration, queryClient.query), environment variables, sessions/auth, deployment, hosting, production checklists, and Next.js migrations."
 ---
 
 # TanStack Start
@@ -24,9 +24,10 @@ Use this skill when the work touches TanStack Start or `@tanstack/react-start`.
 
 - Treat TanStack Start as a full-stack React framework powered by TanStack Router. Keep Router conventions central: typed file routes, route loaders, route context, search params, and route invalidation.
 - Prefer folder + `index.tsx` for every page route (avoid flat page leaves when colocation is needed). Colocate route-only modules with hyphen-prefixed folders (`-components`, `-hooks`, `-lib`, …). Put reusable feature code in `src/modules/<feature>/` (reuse test). Never add unprefixed non-route files under `src/routes` — they become URLs. Details: [route-colocation.md](references/route-colocation.md).
-- TanStack Start remains a Release Candidate as of 2026-08-06: feature-complete with an API considered stable, but not bug-free before v1. npm `latest` is the current recommended line. React Server Components remain experimental. Verify the latest docs before depending on unstable or newly changed behavior.
+- TanStack Start remains a Release Candidate as of 2026-10-01: feature-complete with an API considered stable, but not bug-free before v1. npm `latest` is the current recommended line. React Server Components remain experimental. Verify the latest docs before depending on unstable or newly changed behavior.
 - Use server functions for same-origin app RPC. Use server routes for public or external HTTP endpoints, webhooks, form posts, and API-style `Response` handling.
 - Do not rely on route guards as the data security boundary. Authorize every server function and server route that touches private data.
+- With TanStack Query, create the `QueryClient` inside `getRouter()` (never module scope), wire `setupRouterSsrQueryIntegration`, share `queryOptions` between loader and component, and await critical data with `queryClient.query` (Query 5.102+; `ensureQueryData` is deprecated).
 - Remember that route loaders are isomorphic. Put secrets and server-only work behind server functions, server routes, server-only utilities, or `.server.*` modules.
 - If the app defines `src/start.ts`, explicitly preserve or install CSRF middleware for server functions.
 - Read server environment variables per request in edge runtimes. Use public prefixes only for intentionally client-exposed values.
@@ -40,3 +41,4 @@ Prefer the repo's existing checks. For meaningful Start changes, include at leas
 - Unit or integration tests for loaders, server functions, server routes, and middleware.
 - Browser smoke test for navigation, hydration, redirects, pending/error states, and forms.
 - Deployment or adapter smoke test when changing hosting, env, SSR mode, prerendering, or server entrypoints.
+- For releases, the production checklist in [deployment-production.md](references/deployment-production.md): secret leak scan, direct endpoint authorization, two-account cache isolation, status codes, and rollback.

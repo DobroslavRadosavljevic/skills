@@ -4,7 +4,7 @@ This reference captures the Bun docs and package snapshot used to create the ski
 
 ## Snapshot
 
-- Captured: **2026-09-18**
+- Captured: **2026-09-18** · re-verified **2026-10-01** (no stable release after 1.4.2; npm `canary` → `1.4.2-canary.20260930.1`, `bun-types` canary on 1.4.3)
 - Stable Bun: **1.4.2** (GitHub `bun-v1.4.2`, 2026-09-05; commit `744846f`)
 - Line: **1.4.0** (2026-08-20) → **1.4.1** (2026-09-04) → **1.4.2** (2026-09-05)
 - npm `bun` `latest`: **1.4.2**

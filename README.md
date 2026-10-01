@@ -9,9 +9,9 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | Skill | Purpose |
 | --- | --- |
 | `agents-md` | Create, review, or enforce AGENTS.md with commands, boundaries, and required ASD-STE100 communication. |
-| `ai-sdk` | Vercel AI SDK 7 TypeScript: Core, UI, agents, harnesses, Gateway, multimodal, and v5–v7 migrations. |
+| `ai-sdk` | Vercel AI SDK 7 TypeScript: Core, UI, agents, harnesses, tool search, batches, evaluation, Gateway, multimodal, and v5–v7 migrations. |
 | `base-ui` | Build, review, migrate, or debug React UIs with Base UI 1.8 primitives. |
-| `better-auth` | TypeScript auth with better-auth 1.7, official plugins, adapters, and security. |
+| `better-auth` | TypeScript auth with better-auth 1.7 (≥1.7.7 security baseline), official plugins, adapters, and security. |
 | `brainstorm` | Explore ideas, plans, research, and codebase questions in a read-only session. |
 | `bullmq` | Build, review, debug, operate, or migrate BullMQ 6 Redis/Postgres job queues. |
 | `bun` | Bun 1.4 runtime, package manager, test runner, bundler, bunfig, and Node compat. |
@@ -27,53 +27,53 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `design` | Enforce shadcn website visual design: tokens, type, color, spacing, surfaces. |
 | `design-engineer` | Diagnose UI/UX, propose multiple solutions, pick the best, and ship craft. |
 | `drizzle-orm` | Drizzle ORM 1.0 RC (not 0.x): schema, RQBv2, kit, seed, validators, and Effect drivers. |
-| `effect` | Enforce consistent Effect v4 application code, thin framework adapters, and a complete module and package index. |
-| `elysia` | Build, review, debug, test, and deploy Elysia applications with current docs. |
+| `effect` | Enforce consistent Effect 4.x (stable LTS) application code, thin framework adapters, RC→4.0 migration, and a complete module and package index. |
+| `elysia` | Build, review, debug, test, and deploy Elysia 1.4 apps (≥1.4.30) and plan Elysia 2 beta migrations with current docs. |
 | `elysia-architecture` | Portable Elysia house style: feature modules, routes, schemas, and ownership. |
 | `evlog` | Build, review, debug, configure, or migrate evlog 2.29 wide-event TypeScript logging (CLI map, drains, AI/eve, telemetry). |
-| `feedsmith` | Feedsmith 3.0 RSS/Atom/RDF/JSON Feed/OPML parse and generate for TypeScript. |
-| `grok` | Cursor IDE only: always-on lock to Grok 4.6 (`cursor-grok-4.6-*`, any reasoning effort). Skip in Codex. |
+| `feedsmith` | Feedsmith 3.0.x RSS/Atom/RDF/JSON Feed/OPML parse and generate for TypeScript. |
+| `grok` | Cursor IDE only: always-on lock to Grok 4.7 (`cursor-grok-4.7-*`, any reasoning effort). Skip in Codex. |
 | `handoff` | Produce or consume agent-to-agent handoff context so another session can resume work. |
 | `heyapi` | Hey API (`@hey-api/openapi-ts`): OpenAPI → TypeScript SDKs, validators, Query plugins. |
 | `improve-prompt` | Rewrite rough requests into clear, proportional, actionable prompts without doing the work. |
 | `impit` | Apify Impit: browser-impersonating HTTP (TLS/HTTP fingerprints) for Node, Python, Rust. |
-| `intlayer` | Build, review, configure, or debug Intlayer 9.5 i18n in TanStack Start React apps. |
+| `intlayer` | Build, review, configure, or debug Intlayer 9.6 i18n in TanStack Start React apps. |
 | `is-bot` | Detect self-identifying crawlers/spiders from User-Agent with isbot v5 (`isBot`, custom lists). |
 | `jsdoc` | Purposeful JSDoc for complex or non-obvious TypeScript; no type-echo or narration. |
-| `kafka` | Apache Kafka from TypeScript: prefer @platformatic/kafka, topics, and delivery semantics. |
+| `kafka` | Apache Kafka from TypeScript: prefer @platformatic/kafka 2.13 (cooperative-sticky, KIP-848), topics, and delivery semantics. |
 | `kill-legacy` | Remove legacy, deprecated, compatibility-shim, and fallback code paths. |
 | `legend-state` | Build, review, migrate, and debug Legend-State v3 observable, React, persistence, and sync systems. |
 | `loop` | Implement, review, fix, and repeat until no actionable review issues remain. |
 | `mantine-hooks` | Build, review, debug, migrate, or plan React code with `@mantine/hooks` only. |
 | `mobbin` | Enforce Mobbin MCP for real shipped-app UI/UX inspiration before designing. |
-| `motion` | Motion for React (`motion/react`) plus product UI motion design, a11y, and performance. |
-| `nitro` | Nitro v3 servers: file routes, Vite plugin, cache/storage, and deploy-anywhere presets. |
-| `oxfmt` | Full Oxfmt 0.68 usage guide plus setup, Prettier migration, and CI formatting. |
-| `oxlint` | Full Oxlint 1.83 usage guide plus setup, rules/plugins, type-aware lint, and ESLint migration. |
+| `motion` | Motion for React (motion@13.5): components, AnimatePresence, layout, gestures, scroll, free AnimateView, plus product UI motion a11y and performance. |
+| `nitro` | Nitro v3 servers (3.0.260903-beta): file routes, route rules, Vite plugin, ocache/storage, and deploy-anywhere presets. |
+| `oxfmt` | Full Oxfmt 0.71 usage guide plus setup, Prettier migration, and CI formatting. |
+| `oxlint` | Full Oxlint 1.86 usage guide plus setup, rules/plugins, type-aware lint, Vite+ lint, and ESLint migration. |
 | `paper` | Paper design canvas via Paper MCP: design, AI images, tokens, exports, and design-to-code. |
 | `permix` | Type-safe Permix 4.3 permissions: setup/check, SSR, React/Next/Nest, and server middleware. |
 | `plain-language` | Always-on ASD-STE100 hard prose (short, active, one word per idea) plus readable naming. |
 | `playwright` | Build, review, debug, configure, or plan Playwright 1.63 E2E tests and browser automation. |
 | `react` | Build, review, debug, migrate, or plan React 19.3 apps with current React docs. |
 | `react-boundaries` | Enforce leaf-owned state/queries, no prop-drill hubs; TanStack-aware composition. |
-| `react-email` | Build, render, and send HTML emails with React Email (v6 components, CLI, editor). |
+| `react-email` | React Email 6.11 templates: components, Tailwind styling, CLI preview/export, render, sending, and the editor 1.7. |
 | `reorganize` | Split oversized files and group related code into a coherent folder tree. |
 | `research` | Investigate external sources and codebase evidence before recommending next steps. |
-| `schema-dts` | Type-safe Schema.org JSON-LD with Google schema-dts (WithContext, Graph, gen). |
-| `sentry` | Sentry JS/TS SDKs: errors, tracing, replay, logs, source maps, and framework packages. |
+| `schema-dts` | Type-safe Schema.org JSON-LD with Google schema-dts v2 (WithContext, Graph, Leaf types, gen 2.0.1). |
+| `sentry` | Sentry JS SDK 11 for TS/JS: errors, span streaming, replay, logs, metrics, source maps, framework packages, and v10→v11 migration. |
 | `seo` | Complete SEO playbook: crawl/index, on-page, copywriting, linking, research, schema, GEO, i18n, local, ecommerce, audits. |
 | `setup-competitors-md` | One-time COMPETITORS.md landscape: rivals, substitutes, and differentiation. |
 | `setup-copywriting-md` | One-time COPYWRITING.md from project copy and competitor messaging patterns. |
 | `setup-icp-md` | One-time ICP.md ideal customer profile for the current project. |
 | `setup-project-md` | One-time PROJECT.md product and codebase overview from code plus user context. |
 | `simplify-layout` | Shorten file and folder names and group related modules so paths stay scannable. |
-| `storybook` | Build, review, debug, configure, migrate, or plan Storybook 10 UI workshops. |
+| `storybook` | Build, review, debug, configure, migrate, or plan Storybook 10.6 UI workshops, including addon-mcp agent tooling. |
 | `subagents` | Split harder work into safe disjoint lanes and coordinate subagent results. |
 | `t3-env` | Type-safe env vars with T3 Env: createEnv, server/client split, Standard Schema, presets. |
-| `tailwind` | Build, review, debug, configure, or migrate Tailwind CSS projects. |
+| `tailwind` | Build, review, debug, configure, or migrate Tailwind CSS v4.3 projects (Vite/PostCSS/CLI/webpack/Turbopack). |
 | `tailwind-variants` | Build, review, debug, migrate, or plan Tailwind Variants class recipes. |
 | `takumi` | JSX/HTML to OG images & animations with takumi-js 2.14 (no headless browser). |
-| `tanstack-charts` | Build, review, debug, migrate, or plan TanStack Charts visualizations. |
+| `tanstack-charts` | Build, review, debug, migrate, or plan TanStack Charts Alpha visualizations. |
 | `tanstack-form` | Build, review, debug, migrate, or plan TanStack Form React forms. |
 | `tanstack-hotkeys` | Build, review, debug, migrate, or plan TanStack Hotkeys shortcut systems. |
 | `tanstack-query` | Build, review, debug, migrate, or plan TanStack Query server-state code. |
@@ -83,8 +83,8 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `tanstack-store` | Build, review, debug, migrate, or plan TanStack Store state management. |
 | `tanstack-table` | Build, review, debug, migrate, or plan TanStack Table React tables. |
 | `testcontainers` | Build, review, debug, configure, or plan Testcontainers integration tests with real Docker dependencies. |
-| `tsdown` | Rolldown library bundler: config, dts, exports, deps, watch/unbundle, and tsup migration. |
-| `turborepo` | Full Turborepo usage guide plus tasks, caching, filters, prune/Docker CI, and monorepo integrations. |
+| `tsdown` | tsdown 0.23 Rolldown library bundler: config, dts generators, exports, deps, watch/unbundle, 0.22→0.23 upgrade, and tsup migration. |
+| `turborepo` | Turborepo 2.11 usage guide: tasks, deferred hashing, caching/eviction, filters and tags, prune/Docker CI, devEngines, and experimental Rust/Python/Go. |
 | `turborepo-architecture` | Portable monorepo house style: apps/packages layout, turbo rules, and boundaries. |
 | `ua-parser` | UAParser.js v2 User-Agent detection: OSS AGPL, PRO packages, Client Hints, bots, and extensions. |
 | `ultraplan` | Ask detailed planning questions, recommend answers, and produce a precise implementation plan before work starts. |

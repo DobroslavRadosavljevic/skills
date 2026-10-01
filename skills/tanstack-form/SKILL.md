@@ -1,11 +1,11 @@
 ---
 name: tanstack-form
-description: "Build, review, debug, migrate, or plan TanStack Form v1 React forms with current docs. Use for @tanstack/react-form, @tanstack/form-core, useForm, form.Field, createFormHook, createFormHookContexts, withForm, withFieldGroup, formOptions, form.Subscribe, useSelector, useStore, validators, Standard Schema validation, Zod, Valibot, ArkType, Effect Schema, async validation, dynamic validation, array fields, FormGroup, linked fields, listeners, SSR, TanStack Start, Next.js, Remix, devtools, UI libraries, accessibility, and production form composition."
+description: "Build, review, debug, migrate, or plan TanStack Form v1 React forms (1.33.x) with current docs, plus v2 alpha migration planning. Use for @tanstack/react-form, @tanstack/form-core, useForm, form.Field, createFormHook, createFormHookContexts, withForm, withFieldGroup, formOptions, form.Subscribe, useSelector, useStore, validators, Standard Schema validation, Zod, Valibot, ArkType, Effect Schema, async validation, dynamic validation, array fields, FormGroup, linked fields, listeners, SSR, TanStack Start, Next.js, Remix, devtools, UI libraries, accessibility, production form composition, and v1-to-v2 alpha migration (ArrayField, validator arrays with triggers, ReactFormType, defineFieldGroup)."
 ---
 
 # TanStack Form
 
-Use this skill when work touches TanStack Form v1, especially `@tanstack/react-form`, form state, validation, reusable app form hooks, SSR adapters, or migrations from ad hoc React form handling.
+Use this skill when work touches TanStack Form v1 (npm `latest`), especially `@tanstack/react-form`, form state, validation, reusable app form hooks, SSR adapters, migrations from ad hoc React form handling, or planning a move to the v2 alpha.
 
 ## Workflow
 
@@ -19,6 +19,7 @@ Use this skill when work touches TanStack Form v1, especially `@tanstack/react-f
 4. For field/form validators, Standard Schema, async validation, dynamic validation, server errors, custom errors, submit metadata, and transformed values, use [validation-state.md](references/validation-state.md).
 5. For large forms, reusable app form hooks, `withForm`, `withFieldGroup`, arrays, `FormGroup`, linked fields, and listeners, use [composition-arrays-groups.md](references/composition-arrays-groups.md).
 6. For TanStack Start, Next.js App Router, Remix, server validation, devtools, debugging, accessibility, and production checks, use [ssr-production.md](references/ssr-production.md).
+7. Only when the repo installs `2.0.0-alpha.*` or the user asks about Form v2, use [v2-alpha.md](references/v2-alpha.md). Do not apply v2 patterns to v1 code.
 
 ## Implementation Judgment
 

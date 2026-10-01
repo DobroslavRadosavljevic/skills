@@ -24,6 +24,8 @@ import { generateText, isStepCount } from 'ai';
 await generateText({ model, tools, stopWhen: isStepCount(5), prompt });
 ```
 
+`stepCountIs` is still exported from `ai` 7.0.x as a compatibility alias of `isStepCount`; write `isStepCount` in new code (codemod `rename-step-count-is`).
+
 `useChat({ maxSteps })` is gone. Loop on the server with `stopWhen`. Client auto-continue: `sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls`.
 
 ## `parameters` → `inputSchema`
@@ -240,3 +242,39 @@ Use `.nullable()`.
 ## CJS / old Node
 
 v7 is ESM-only and Node ≥22.
+
+## `experimental_startTextBatch` → `experimental_startBatch`
+
+```ts
+// Wrong (removed in 7.0.94)
+await experimental_startTextBatch({ model: 'anthropic/claude-haiku-4.5', requests: [{ id, prompt }] });
+
+// Right
+await experimental_startBatch({
+  provider: anthropic, // omit for global provider / Gateway
+  requests: [{ id, type: 'text', model: 'claude-haiku-4-5', prompt }],
+});
+```
+
+Batch requests carry `type` and their own `model`. See [providers-middleware.md](providers-middleware.md).
+
+## `createVercelSandbox` → `createVercelNetworkSandboxSession` (harness)
+
+```ts
+// Deprecated
+createVercelSandbox({ runtime: 'node24', ports: [4000] });
+
+// Right (@ai-sdk/harness 1.0.126+)
+const sandboxSession = await createVercelNetworkSandboxSession({
+  runtime: 'node24',
+  ports: [4000],
+  template: await agent.getSandboxTemplate(),
+});
+const session = await agent.createSession({ sandboxSession });
+```
+
+`prepareHarnessSandboxTemplate` / `prepareSandboxForHarness` → `agent.getSandboxTemplate()` / `createHarnessSandboxTemplate`.
+
+## `rawInput` on `output-error` tool parts
+
+Deprecated in 7.0.103. Read `part.input`, and detect failures with `isToolOutputErrorUIPart(part)`.

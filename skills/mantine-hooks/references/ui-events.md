@@ -5,13 +5,14 @@
 ```tsx
 import { useClickOutside } from '@mantine/hooks';
 
-const ref = useClickOutside(() => onClose(), ['mousedown', 'touchstart'], nodes?, enabled?);
+const ref = useClickOutside(() => onClose(), ['mousedown', 'touchstart'], nodes?, enabled?, capture?);
 ```
 
 - Default events: `mousedown`, `touchstart`.
 - Pass `events` as `null` when using the third `nodes` argument without changing events.
 - Multi-node lists must use **callback refs / `useState`**, not `useRef`, so nodes update on render.
 - Fourth arg `enabled` toggles the listener (default `true`).
+- Fifth arg `capture` (9.6.3+, default `false`) registers document listeners in the capture phase, so outside clicks still fire when inner content calls `stopPropagation()`.
 
 ## Hotkeys
 

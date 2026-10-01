@@ -1,6 +1,6 @@
 ---
 name: tailwind-variants
-description: "Build, review, debug, migrate, or plan Tailwind Variants class systems with current docs. Use for tailwind-variants, tv, createTV, cn, cnMerge, cx, VariantProps, slots, compoundVariants, compoundSlots, defaultVariants, extend composition, twMergeConfig, /lite build, class overrides, TypeScript props, Tailwind CSS v4 pairing, and upgrades from v0/v1/v2/v3.x."
+description: "Build, review, debug, migrate, or plan Tailwind Variants class systems with current docs. Use for tailwind-variants, tv, createTV, cn, cnMerge, cx, VariantProps, slots, compoundVariants, compoundSlots, defaultVariants, extend composition, twMergeConfig, /lite build, class overrides, TypeScript props, Tailwind CSS v4 pairing, and upgrades from v0/v1/v2/v3.x to v3.3.1."
 ---
 
 # Tailwind Variants
@@ -23,7 +23,7 @@ Use this skill when work touches [Tailwind Variants](https://www.tailwind-varian
 
 - Pair **TV v3.x with Tailwind CSS v4.x**. If the project is still on Tailwind CSS v3, use `tailwind-variants` **v0.x** (or upgrade Tailwind first).
 - Prefer the **default** build (`import { tv, cn } from 'tailwind-variants'`) for design-system work. Use `/lite` only when bundle size matters and merge is unnecessary.
-- On **v3.3.0+**, conflict resolution is built into the default build—do not require `tailwind-merge` solely for TV. Keep `tailwind-merge` only if the app calls it directly.
+- On **v3.3.0+**, conflict resolution is built into the default build—do not require `tailwind-merge` solely for TV. Keep `tailwind-merge` only if the app calls it directly. Pin **v3.3.1+** when using slots (v3.3.0 leaked slot state between interleaved calls).
 - Omit `slots` for a string-returning recipe. Passing `slots: {}` enables slot mode (implicit `base` slot)—avoid accidental empty-slot objects.
 - Prefer `extend` for typed composition over string-splicing `tv` results into `base` arrays.
 - Use `class` / `className` props for consumer overrides; let merge resolve conflicts when enabled.

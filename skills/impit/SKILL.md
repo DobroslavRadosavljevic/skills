@@ -1,6 +1,6 @@
 ---
 name: impit
-description: "Build, review, debug, configure, or plan Apify Impit browser-impersonating HTTP clients with current docs. Use for impit, Impit.fetch, ImpitOptions, TLS/HTTP fingerprinting, Chrome/Firefox/OkHttp/iOS fingerprints, HTTP/3, proxies, cookieJar, tough-cookie, ignoreTlsErrors, Node/Python/Rust bindings, Crawlee ImpitHttpClient, and replacing got-scraping or plain fetch/axios when bot detection blocks non-browser TLS fingerprints."
+description: "Build, review, debug, configure, or plan Apify Impit browser-impersonating HTTP clients with current docs. Use for impit 0.14 (npm 0.14.x, PyPI 0.14.x), Impit.fetch, ImpitOptions, TLS/HTTP fingerprinting, JA4, Chrome/Firefox/OkHttp/iOS fingerprints including chrome151, HTTP/3, streamed request bodies, proxies, cookieJar, tough-cookie, ignoreTlsErrors, Node/Python/Rust bindings, Crawlee ImpitHttpClient, and replacing got-scraping or plain fetch/axios when bot detection blocks non-browser TLS fingerprints."
 ---
 
 # Impit
@@ -13,7 +13,7 @@ Use this skill when work touches [Apify Impit](https://github.com/apify/impit): 
    - Language binding: Node `impit` (npm), Python `impit` (PyPI/conda), or Rust crate from git.
    - Package/native binary versions and platform (Node ≥ 20; platform-specific optional deps).
    - Client lifetime: shared `Impit` / `AsyncClient` / `Impit::<Jar>` vs one-shot clients.
-   - Fingerprint choice: generic `chrome`/`firefox` vs versioned / `okhttp` / `ios18`.
+   - Fingerprint choice: generic `chrome`/`firefox` vs versioned (`chrome151` is newest) / `okhttp` / `ios18`.
    - Session needs: cookies, proxies, HTTP/3, redirects, default headers, timeouts.
 2. Refresh docs when the user asks for latest fingerprints, option names, or binding differences. Start from [source-map.md](references/source-map.md).
 3. For Node/TypeScript install, `ImpitOptions`, `fetch`, responses, and errors, use [nodejs.md](references/nodejs.md).
@@ -33,7 +33,8 @@ Use this skill when work touches [Apify Impit](https://github.com/apify/impit): 
 - Header precedence (case-insensitive): per-request headers > instance `headers` > browser impersonation defaults. Empty-string values remove an impersonated header.
 - Generic `chrome` / `firefox` auto-pick a version; use versioned fingerprints when detection tracks outdated signatures.
 - One `Impit` instance = one user-agent identity sharing config, pool, and jar. Create separate instances for distinct identities.
-- Response bodies are single-consume (Fetch-compatible). Do not call `text()`/`json()`/`arrayBuffer()` twice.
+- Response bodies are single-consume (Fetch-compatible). Do not call `text()`/`json()`/`arrayBuffer()`/`bytes()` twice; use `clone()` first when two readers need it.
+- Bindings differ on defaults: Node `timeout` is milliseconds and redirects follow by default (max 10); Python `timeout` is seconds and `follow_redirects` defaults to `False` (max 20), httpx-style.
 - Respect site ToS, robots, rate limits, and applicable law. Use impersonation for legitimate integrations, scraping within policy, and testing — not for unauthorized access or abuse.
 
 ## Verification

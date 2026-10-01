@@ -24,19 +24,36 @@ function ShortcutBadge({ hotkey }: { hotkey: string }) {
 
 Behavior:
 
-- macOS uses symbols by default with spaces between tokens (for example `⌘ ⇧ S`).
+- macOS uses symbols by default with spaces between tokens and orders modifiers Control, Option, Shift, Command (core `0.10.1+`): `Mod+Shift+S` displays as `⇧ ⌘ S`. The normalized string is unchanged.
 - Windows/Linux use text labels joined with `+`.
 - `Mod` displays as Command on macOS and Ctrl on Windows/Linux.
+- Physical bindings get readable labels: `Mod+[KeyS]` and `Mod+S` both display `⌘ S`, `[Digit2]` displays `2`. Store the binding, not the label.
 
 Options:
 
 ```tsx
 formatForDisplay('Mod+Shift+S', {
   platform: 'mac',
-  useSymbols: false,
-  // optional: override the default platform separator
-  // separatorToken: '+',
+  useSymbols: false, // or { modifiers: false, keys: true }
+  // separatorToken: '+', // '' joins directly; null/undefined uses the platform default
 })
+```
+
+Render individual keycaps with `parts: true`:
+
+```tsx
+const parts = formatForDisplay('Mod+[KeyS]', { platform: 'mac', parts: true })
+// ['⌘', 'S']
+return parts.map((part) => <kbd key={part}>{part}</kbd>)
+```
+
+Label physical positions for a known layout with an already-resolved `layoutMap` (any object with `get(code)`, including a browser `KeyboardLayoutMap`), and override labels with `keyLabels`. Precedence is `keyLabels`, then `layoutMap`, then the fallback label. Logical bindings ignore `layoutMap`. Formatting stays synchronous; the app owns loading the map.
+
+```tsx
+formatForDisplay('Mod+[KeyQ]', {
+  platform: 'mac',
+  layoutMap: new Map([['KeyQ', 'a']]),
+}) // '⌘ A'
 ```
 
 Prefer `formatForDisplay(..., { useSymbols: false })` for text labels. `formatWithLabels` still works but is deprecated in favor of that option:
@@ -44,11 +61,11 @@ Prefer `formatForDisplay(..., { useSymbols: false })` for text labels. `formatWi
 ```tsx
 import { formatForDisplay, formatWithLabels } from '@tanstack/react-hotkeys'
 
-formatForDisplay('Mod+S', { platform: 'mac', useSymbols: false })
+formatForDisplay('Mod+S', { platform: 'mac', useSymbols: false }) // 'Cmd+S'
 formatWithLabels('Mod+S', { platform: 'windows' }) // deprecated alias
 ```
 
-For sequence badges, `formatHotkeySequence(['G', 'G'])` returns a space-separated string such as `G G`.
+For sequence badges, format each step: `sequence.map((step) => formatForDisplay(step)).join(' → ')`. `formatHotkeySequence` only joins stored strings with spaces and keeps brackets and code names, so do not show it to users.
 
 Prefer `<kbd>` for visible keyboard shortcuts.
 
@@ -71,6 +88,9 @@ if (!validation.valid) {
 }
 
 const parsed = parseHotkey('Mod+K', 'mac')
+if (parsed.code !== undefined) {
+  // physical binding; parsed.key is undefined
+}
 const normalized = normalizeHotkey('Ctrl+Shift+s', 'windows')
 const fromParsed = normalizeHotkeyFromParsed(parsed, 'mac')
 const registerable = normalizeRegisterableHotkey(
@@ -81,7 +101,7 @@ const registerable = normalizeRegisterableHotkey(
 
 `normalizeHotkey`, `normalizeHotkeyFromParsed`, and `normalizeRegisterableHotkey` produce canonical strings (often Mod-first when the platform allows `Mod`). When possible, store canonical `Hotkey` values and derive display labels at render time. To show one parsed binding under several platforms, normalize with the parse platform, then call `formatForDisplay` with each display `platform`.
 
-`validateHotkey` returns errors and warnings; warnings can include platform caveats such as Alt plus letter combinations on macOS.
+`validateHotkey` returns `valid`, `errors`, and `warnings`; warnings can include platform caveats such as Alt plus letter combinations on macOS. It does not guarantee the browser or OS will deliver the shortcut. `normalizeRegisterableHotkey` preserves the logical/physical distinction; never put a bracketed code in a logical `key` field.
 
 ## Devtools
 
@@ -104,10 +124,10 @@ function AppDevtools() {
 
 Devtools show:
 
-- Registered hotkeys.
+- Registered hotkeys and sequences, including sequence progress.
 - Held keys.
 - Programmatic trigger controls.
-- Registration details such as target, event type, and conflict behavior.
+- Registration details such as target, event type, conflict behavior, key/code labels, and `meta.group` search.
 - Enabled and disabled registrations.
 
 The devtools adapter is normally development-only. React has a production import when intentionally debugging production builds:
@@ -115,6 +135,8 @@ The devtools adapter is normally development-only. React has a production import
 ```tsx
 import { hotkeysDevtoolsPlugin } from '@tanstack/react-hotkeys-devtools/production'
 ```
+
+For a standalone panel outside the TanStack Devtools dock, render `HotkeysDevtoolsPanel` from `@tanstack/react-hotkeys-devtools`. Since `0.9.1` its props are optional: `theme` defaults to `'dark'` and `devtoolsOpen` to `true`.
 
 ## SSR And Hydration
 
@@ -167,7 +189,7 @@ Recommended coverage:
 - Focus a scoped `target` and verify shortcuts fire only inside that region.
 - Unmount components and verify callbacks no longer fire.
 - Test sequence success and timeout with fake timers.
-- Test recorder flows for record, cancel, clear, and input focus behavior.
+- Test recorder flows for record, cancel, clear (only `onClear` fires), rejection, and input focus behavior.
 - Snapshot or browser-test display labels when cross-platform formatting matters.
 
 Event examples:
@@ -178,19 +200,23 @@ fireEvent.keyDown(document, { key: 'Escape', code: 'Escape' })
 fireEvent.keyDown(input, { key: 'k', code: 'KeyK' })
 ```
 
+Always set both `key` and `code` in synthetic events. Physical bindings (`Mod+[KeyS]`, recorder output) match `code`; logical bindings match `key` with a conservative code fallback. Add recorder tests for `recordBy`, `validate` / `onReject`, and conflict rejection.
+
 When testing `Mod`, set `platform` explicitly on the hook or provider if the test environment's platform is not the scenario under test.
 
 ## Production Checklist
 
 Before calling a hotkeys change done:
 
-- Verify package versions against current docs because the library is alpha.
+- Verify package versions against current docs because the library is alpha (core `0.x`); minors can break APIs.
+- Confirm the toolchain consumes ESM-only packages (core `0.10+` has no CommonJS build; Node 20+).
+- Decide per shortcut whether it follows a logical key (`Mod+S`) or physical position (`Mod+[KeyS]`).
 - Use `Mod` for app-wide cross-platform shortcuts.
 - Make target regions focusable and browser-test focus behavior.
 - Confirm shortcuts do not break text entry, form controls, or contenteditable areas.
 - Decide whether `preventDefault` and `stopPropagation` should remain at their defaults.
 - Add `meta` for shortcuts that should appear in devtools, help, or palettes.
-- Resolve duplicate shortcut conflicts deliberately with `conflictBehavior`.
+- Resolve duplicate shortcut conflicts deliberately with `conflictBehavior`, recorder `detectConflicts`, or `findHotkeyConflicts`.
 - Ensure user-recorded shortcuts are normalized, validated, persisted, and displayed separately.
 - Keep non-keyboard alternatives available for every action.
 - Inspect devtools for duplicate registrations and stale disabled entries during development.

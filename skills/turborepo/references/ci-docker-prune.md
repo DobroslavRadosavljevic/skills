@@ -30,7 +30,7 @@ jobs:
           fetch-depth: 0 # needed for reliable --affected / git filters
       - uses: oven-sh/setup-bun@v2
       - uses: actions/setup-node@v4
-        with: { node-version: 20 }
+        with: { node-version: 24 }
       - run: bun install --frozen-lockfile
       - run: bunx turbo run build lint test --affected
 ```
@@ -38,13 +38,15 @@ jobs:
 Notes:
 
 - Official docs sometimes use `fetch-depth: 2`; prefer `0` (or blobless full history) for `--affected`.
-- PR base detection uses GitHub env when available.
+- PR base detection uses GitHub env when available. If the base branch only exists as `origin/<branch>`, enable `futureFlags.githubActionsRemoteBaseRefFallback` (or set `TURBO_SCM_BASE`).
+- For task-level PR selection, enable `futureFlags.affectedUsingTaskInputs` so README-only edits do not schedule `build`.
+- Tag-scoped CI (2.11.6+): `bunx turbo run test --affected --filter=tag:ci`.
 
 ## GitLab CI (sketch)
 
 ```yaml
 default:
-  image: oven/bun:1.2
+  image: oven/bun:1
   before_script:
     - bun install --frozen-lockfile
 
@@ -81,7 +83,7 @@ bunx turbo prune web --production
 | --- | --- |
 | (default) | `./out` full pruned monorepo + lockfile |
 | `--docker` | `out/json/` manifests + `out/full/` sources + pruned lockfile |
-| `--production` | Drop workspace packages only needed via `devDependencies` |
+| `--production` | Drop workspace packages only reachable via `devDependencies` (2.10.3+, announced with 2.11; works for all native toolchains) |
 | `--out-dir` | Custom output |
 
 Caveats:
@@ -89,19 +91,20 @@ Caveats:
 - Positional package name ( `--scope` deprecated).
 - `globalDependencies` files are **not** copied unless `futureFlags.pruneIncludesGlobalFiles: true`.
 - Bun `--production` rewrites pruned manifests/lockfile for frozen install.
+- With `futureFlags.affectedUsingTaskInputs`, prune keeps packages needed by **task** dependencies (`package#task` edges), not only manifest dependencies.
 
 vs `pnpm deploy`: prune keeps monorepo shape; deploy makes a standalone folder.
 
 ## Docker multi-stage (official pattern)
 
 ```dockerfile
-FROM oven/bun:1.2 AS base
+FROM oven/bun:1 AS base
 WORKDIR /app
 
 FROM base AS prepare
 RUN bun add -g turbo@^2
 COPY . .
-RUN turbo prune web --docker
+RUN turbo prune web --docker --production
 
 FROM base AS builder
 COPY --from=prepare /app/out/json/ .
@@ -133,7 +136,7 @@ For Next.js standalone, copy `.next/standalone`, `.next/static`, and `public` pe
 - [ ] `--affected` or tight `--filter` on PRs
 - [ ] Adequate `fetch-depth` for git filters
 - [ ] Deterministic tasks + correct `outputs` / `env`
-- [ ] Prune before Docker install to shrink context
+- [ ] Prune before Docker install to shrink context (`--production` to drop dev-only workspaces)
 - [ ] Avoid installing the entire monorepo into tiny app images
 
 ## Pitfalls

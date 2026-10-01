@@ -34,6 +34,8 @@ tasks: {
 
 CLI: `bunx nitro task list` / `bunx nitro task run db:migrate`.
 
+Dev server endpoints `/_nitro/tasks` and `/_nitro/tasks/:name` exist for local tooling and accept only local requests (since `3.0.260903-beta`).
+
 Programmatic: `runTask(name, { payload?, context? })` from `"nitro/task"`. **Authenticate** any HTTP trigger.
 
 ### Scheduled
@@ -107,9 +109,11 @@ export default defineWebSocketHandler({
 
 `upgrade` may return `headers`, `namespace`, `context`. Default namespace = pathname (so `routes/rooms/[room].ts` isolates rooms).
 
-Peer: `id`, `send`, `subscribe` / `unsubscribe`, `publish` (others only), `close` / `terminate`, `peers`, `topics`. Message: `text()`, `json()`, `uint8Array()`, etc.
+Peer: `id`, `send`, `subscribe` / `unsubscribe`, `publish` (others only), `close` / `terminate`, `peers`, `topics`, `bufferedAmount` (backpressure), `ping()`. Message: `text()`, `json()`, `uint8Array()`, etc.
 
-Confirm the **preset** actually supports WS (Node/Bun/Deno/Cloudflare Workers). Serverless-without-WS hosts will fail — do not fake it with HTTP polling unless the user asks.
+Nitro ships crossws 0.4.12: universal `idleTimeout` for half-open connections, app-level ping/pong hooks, opt-in subprotocol negotiation, and a sync backplane for pub/sub across instances ([crossws docs](https://crossws.h3.dev/guide/sync)). Hook availability (`drain`, `ping`, `pong`) depends on the adapter.
+
+Confirm the **preset** actually supports WS (Node/Bun/Deno/Cloudflare Workers; `cloudflare_durable` for Durable Object-backed WebSocket state). Serverless-without-WS hosts will fail — do not fake it with HTTP polling unless the user asks.
 
 ## SSE
 

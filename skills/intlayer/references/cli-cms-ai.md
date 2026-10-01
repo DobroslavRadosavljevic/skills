@@ -6,6 +6,7 @@ Prefer project scripts when present. Use `bunx intlayer <cmd>` (the `intlayer` p
 
 ```bash
 bunx intlayer init
+bunx intlayer upgrade --dry-run  # 9.5.8+: list/upgrade every Intlayer package together
 bunx intlayer build
 bunx intlayer build --watch
 bunx intlayer test              # alias: content test
@@ -21,7 +22,8 @@ bunx intlayer --version
 
 | Command | Role |
 | --- | --- |
-| `init` | Detect env, write config, install packages. Skip `--interactive` for agents. `init mcp` wires the MCP server. |
+| `init` | Install packages and set up the framework (config, TypeScript, Vite plugin, proxy, providers, `.gitignore`). Options: `--routing <mode>`, `--no-framework-setup`, `--no-gitignore`. Opt-in steps are sub-commands that never prompt when flags are passed: `init packages`, `init project`, `init github-actions`, `init vscode-extension`, `init lsp`, `init eslint`, `init skills`, `init mcp --transport stdio`, `init extension`, `init cms`, `init infra --mode <desktop/docker/compose>`. `--interactive` fails without a terminal (9.6) — agents must skip it. |
+| `upgrade` | 9.5.8+. Rewrite every `intlayer` / `@intlayer/*` / `*-intlayer` range in all workspace `package.json` files to the target dist-tag (`--tag`, default `latest`; `--dry-run` to preview), keep `^`/`~`, skip `workspace:` / `catalog:` / `file:` ranges, then install once |
 | `build` / `build --watch` | Transpile `.content.*` → `.intlayer/` |
 | `test` / `content test` | Missing translations (CI) |
 | `list` / `content list` | Declaration files |

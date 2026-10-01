@@ -1,6 +1,6 @@
 # API
 
-All exports are **named**. Types below match `isbot@5.2.1` `index.d.ts`.
+All exports are **named**. Types below match `isbot@5.2.2` `index.d.ts`.
 
 Prefer **New** names. **Legacy** names are aliases (`typeof` the new function) until v6.
 

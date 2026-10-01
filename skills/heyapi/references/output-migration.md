@@ -48,7 +48,7 @@ Wire codegen into CI or a prebuild script so consumers never rely on stale clien
 
 - Package is in initial development (0.x). Pin exact versions.
 - Read https://heyapi.dev/docs/openapi/typescript/migrating before upgrading across minors.
-- Node 20 support was removed in v0.96 (minimum Node 22.13).
+- Node 20 support was removed in v0.96 (minimum Node 22.13); v0.98 raised the engine to Node `>= 22.18.0`.
 - CJS `require()` entry points were removed in v0.91 (ESM-only; dynamic `import()` if needed from CJS).
 
 ## Recent migration highlights (verify against current Migrating page)
@@ -61,6 +61,9 @@ These are orientation notes from the v0.91–v0.99 window — always confirm aga
 | `runtimeConfigPath` | Resolves relative to output folder (v0.97) |
 | Error interceptors | Receive previous interceptor result when chained (v0.97) |
 | Request/response fields | Typed optional to match runtime (v0.97) |
+| Ky client | Some options move under `kyOptions`; pass `undefined` to unset (v0.97) |
+| `throwOnError: false` | Now truly respected, including request-validation failures (v0.97) |
+| Declarative configuration | Internal config/plugin API rewrite; output should be unchanged (v0.98) |
 | Validator request schemas | Separate layer exports; `requests.shouldExtract` for composites (v0.95) |
 | Duplicate plugins | Configs merge instead of last-wins (v0.99) |
 | Custom plugins | `plugin.symbols` → `plugin.imports`; Imports API (v0.99) |
@@ -88,4 +91,4 @@ Poor fit when:
 3. Adjust config for renamed options (`throwOnError` location, Query option names, Zod request exports).
 4. Regenerate and typecheck.
 5. Smoke auth, error handling, and one query + one mutation path if those plugins are enabled.
-6. Update CI Node version if still on Node 20.
+6. Update CI Node version to `>= 22.18.0`.

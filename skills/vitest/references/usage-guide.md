@@ -11,7 +11,7 @@ bun add -d @vitest/coverage-v8
 bun add -d happy-dom   # or jsdom
 ```
 
-Requires **Node `^22.12 || ^24 || >=26`** and **Vite `^6.4 || ^7 || ^8`** (required peer). Align any `@vitest/*` packages to the same version as `vitest` (snapshot **5.0.1**).
+Requires **Node `^22.12 || ^24 || >=26`** and **Vite `^6.4 || ^7 || ^8`** (required peer). Align any `@vitest/*` packages to the same version as `vitest` (snapshot **5.0.3**).
 
 Yarn does **not** auto-install peers — add `vite` explicitly. npm, pnpm, Bun, and Deno do.
 

@@ -1,6 +1,6 @@
 # @mantine/hooks Catalog
 
-Snapshot aligned with **9.5.0** exports. Doc URL pattern: `https://mantine.dev/hooks/<kebab-name>/` (LLM: `https://mantine.dev/llms/hooks-<kebab-name>.md`).
+Snapshot aligned with **9.6.3** exports (same export list as 9.5.0). Doc URL pattern: `https://mantine.dev/hooks/<kebab-name>/` (LLM: `https://mantine.dev/llms/hooks-<kebab-name>.md`).
 
 ## State
 

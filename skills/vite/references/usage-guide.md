@@ -5,7 +5,7 @@ Day-to-day Vite 8.3 workflow. Prefer this for adoption; sibling references for d
 ## 1. Requirements
 
 - Node **`^20.19.0 || >=22.12.0`**
-- Prefer current **`vite@^8`** (snapshot **8.3.0**)
+- Prefer current **`vite@^8`** (snapshot **8.3.2**)
 - Scaffold with **`create-vite@9.2.1`**
 
 ## 2. Scaffold or add Vite

@@ -409,13 +409,14 @@ export default defineConfig({
 
 ---
 
-## 10. Upgrading from 1.76.x
+## 10. Upgrading from 1.76.x–1.85.x
 
-1. Bump `oxlint` and `eslint-plugin-oxlint` together to **1.83.x**. Bump `@oxlint/migrate` to the same minor if you use it.
-2. Bump `oxlint-tsgolint` to **7.0.2002** (still TypeScript 7.0.2).
+1. Bump `oxlint` and `eslint-plugin-oxlint` together to **1.86.x**. Bump `@oxlint/migrate` to the same minor if you use it.
+2. Bump `oxlint-tsgolint` to **7.0.2003** (still TypeScript 7.0.2; Oxlint 1.86 peer is `>=7.0.2003`).
 3. Search for `react/react-compiler` and remove it. Compiler coverage is now per-category `react/*` rules (1.79).
 4. Re-run `bunx oxlint` after enabling `react` — new compiler diagnostics are expected, not a misconfigured plugin list.
 5. If JS plugins load Vue rules, 1.81 fixed plugin/Vue interaction; duplicate `jsPlugins` names now error (1.77).
+6. If you enable `suspicious`, expect `node/no-exports-assign` there now (moved from `style` in 1.86).
 
 ---
 

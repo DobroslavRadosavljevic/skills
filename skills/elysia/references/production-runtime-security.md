@@ -35,6 +35,7 @@ The official adapter is experimental. Current docs require `CloudflareAdapter`, 
 
 Framework validation is one layer, not the whole security model.
 
+- Run `elysia >= 1.4.30` on the 1.4 line. Older versions are exposed to a critical RCE (GHSA-gmm9-qwx3-2m3h) when schema property names or string `default` values come from attacker-controlled data, and `< 1.4.29` has a quadratic multipart parse DoS. Never derive schemas from user, form-builder, or database input.
 - Validate every untrusted request surface and declare response schemas where accidental exposure matters.
 - Enforce authentication and authorization in executed code. OpenAPI `security` metadata is not enforcement.
 - Configure `@elysia/cors` with explicit trusted origins, methods, headers, exposed headers, and credential behavior. Its defaults are permissive; do not ship `cors()` blindly for a credentialed API.
@@ -53,7 +54,7 @@ Framework validation is one layer, not the whole security model.
 
 - Register error and telemetry hooks before the routes/plugins they must observe and choose plugin scope deliberately.
 - Use `onAfterResponse` for post-response logging and cleanup. It cannot change the response already sent.
-- Use Elysia `trace` or `@elysia/opentelemetry` for lifecycle timing and distributed traces. `trace` is not available in dynamic `aot: false` mode according to current docs.
+- Use Elysia `trace` or `@elysia/opentelemetry` for lifecycle timing and distributed traces. `trace` is not available in dynamic `aot: false` mode according to current 1.4 docs (Elysia 2 removes `aot: false`).
 - Carry a request/correlation identifier through logs and traces.
 - Redact authorization, cookies, tokens, personal data, and raw request bodies by default.
 - Close database pools, queues, workers, and telemetry exporters on process shutdown using the repository/runtime's lifecycle facilities.

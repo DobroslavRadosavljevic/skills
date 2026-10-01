@@ -1,6 +1,6 @@
 # React Source Map
 
-Snapshot date: 2026-09-18.
+Snapshot date: 2026-10-01 (no new stable React release since the 2026-09-18 capture; only canary/experimental builds moved).
 
 Use this file to orient future React work and decide when to refresh docs. React releases and canary APIs change; verify again for high-risk migrations or when the user explicitly asks for the latest state.
 
@@ -8,12 +8,12 @@ Use this file to orient future React work and decide when to refresh docs. React
 
 - `react` npm `latest`: `19.3.0` (published 2026-09-09).
 - `react-dom` npm `latest`: `19.3.0` (published 2026-09-09).
-- `@types/react` / `@types/react-dom` npm `latest`: `19.3.0` (published 2026-09-09).
+- `@types/react` / `@types/react-dom` npm `latest`: `19.3.0` (published 2026-09-09). DefinitelyTyped publishes 19.3 types for TypeScript 5.6+; the `ts5.5` and older tags stay on `19.2.17`.
 - Both `react` and `react-dom` had these npm tags at capture time:
   - `latest`: `19.3.0`
   - `backport`: `19.0.8`
-  - `canary`: `19.3.0-canary-2b19aecd-20260916`
-  - `experimental`: `0.0.0-experimental-2b19aecd-20260916`
+  - `canary`: `19.3.0-canary-7c6ac13e-20260929`
+  - `experimental`: `0.0.0-experimental-7c6ac13e-20260929`
   - `next`: `19.3.0-canary-d5736f09-20260507`
   - `rc`: `19.0.0-rc.1`
   - `beta`: `19.0.0-beta-26f2496093-20240514`
@@ -22,7 +22,8 @@ Related tooling at capture time (not React core):
 
 - `babel-plugin-react-compiler` `latest`: `1.0.0`
 - `react-compiler-runtime` `latest`: `1.0.0` (React 17/18 compiler target)
-- `eslint-plugin-react-hooks` `latest`: `7.1.1`
+- `eslint-plugin-react-hooks` `latest`: `7.1.1` (`canary` `7.1.1-canary-7c6ac13e-20260929`)
+- `react-server-dom-webpack` (and other RSC bundler packages) `latest`: `19.3.0`
 
 The last 19.2 patch was `react@19.2.8` (2026-07-21). Default to stable `latest` (`19.3.0`) unless the repository already opts into canary or experimental.
 

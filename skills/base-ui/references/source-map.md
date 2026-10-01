@@ -2,9 +2,10 @@
 
 ## Snapshot
 
-- Fetched: 2026-09-18.
+- Fetched: 2026-10-01 (re-verified; no release after 1.8.0).
 - Package: `@base-ui/react`.
-- npm dist-tag checked on 2026-09-18: `latest` is `1.8.0` (published 2026-09-04).
+- npm dist-tag checked on 2026-10-01: `latest` is `1.8.0` (published 2026-09-04). Companion `@base-ui/utils` is `0.4.0`.
+- Peers: `react` / `react-dom` `^17 || ^18 || ^19`. Optional peers `date-fns` / `@date-fns/tz` serve an internal temporal adapter with no public component in 1.8.0; do not install them for Base UI alone.
 - Prior line in this catalog: `1.6.0` (2026-06-18). Intermediate: `1.7.0` (2026-08-04).
 - Context7 library ID: `/mui/base-ui`.
 - Official docs root: https://base-ui.com/
@@ -13,6 +14,7 @@
 - GitHub repository: https://github.com/mui/base-ui
 - GitHub changelog: https://github.com/mui/base-ui/blob/master/CHANGELOG.md
 - GitHub tag: https://github.com/mui/base-ui/releases/tag/v1.8.0
+- Bundled docs: the npm package ships version-matched Markdown docs at `node_modules/@base-ui/react/docs/index.md` (same index as `llms.txt`, relative links). Prefer these when the project pins an older version.
 
 The official docs repeatedly state that older knowledge should defer to the docs and that the old package name `@base-ui-components/react` was renamed to `@base-ui/react`. Use `@base-ui/react` in imports and installation instructions.
 
@@ -75,7 +77,7 @@ Selection and inputs:
 - Select
 - Checkbox
 - Checkbox Group
-- Radio
+- Radio Group (`@base-ui/react/radio` + `@base-ui/react/radio-group`)
 - Number Field
 - OTP Field
 - Slider
@@ -139,4 +141,4 @@ When exact API details matter:
 1. Resolve Context7 library `Base UI`; prefer `/mui/base-ui`.
 2. Query docs for the exact component or concept.
 3. If Context7 is insufficient, fetch the component Markdown page from `https://base-ui.com/llms.txt`.
-4. Cross-check the project's installed `@base-ui/react` version if it is pinned below `1.8.0`.
+4. Cross-check the project's installed `@base-ui/react` version if it is pinned below `1.8.0`; read `node_modules/@base-ui/react/docs/` for that version's exact API.

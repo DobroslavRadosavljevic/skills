@@ -1,6 +1,6 @@
 ---
 name: tanstack-router
-description: "Build, review, debug, configure, migrate, or plan TanStack Router React applications with current docs. Use for @tanstack/react-router, file-based routes, code-based routes, route trees, generated routeTree.gen files, routeFileIgnorePrefix colocation (-components/-hooks/-lib), pathless layouts, typed navigation, Link/useNavigate/redirect, params, validateSearch, loaderDeps, loaders, beforeLoad, route context, auth guards, notFound, error boundaries, pending/deferred data, preloading, TanStack Query integration, SSR, testing, and production routing rewrites."
+description: "Build, review, debug, configure, migrate, or plan TanStack Router React applications (v1, 1.170.x) with current docs. Use for @tanstack/react-router, file-based routes, code-based routes, route trees, generated routeTree.gen files, routeFileIgnorePrefix colocation (-components/-hooks/-lib), pathless layouts, typed navigation, Link/useNavigate/redirect, params, validateSearch, loaderDeps, loaders, beforeLoad, route context, auth guards, notFound, error boundaries, pending/deferred data, preloading, TanStack Query integration, SSR, testing, and production routing rewrites."
 ---
 
 # TanStack Router
@@ -29,7 +29,8 @@ Use this skill when work touches TanStack Router, especially `@tanstack/react-ro
 - Every route that reads URL search state should declare `validateSearch`; use `loaderDeps` to expose only the search fields a loader actually uses.
 - Use `beforeLoad` for route UX gates, redirects, and context enrichment. Do not treat route guards as the private-data authorization boundary.
 - Put route-shared dependencies in router context; do not call React hooks directly inside `beforeLoad` or `loader`.
-- Decide explicitly between Router's built-in SWR loader cache and an external cache such as TanStack Query. When Query owns freshness, set router preload stale time to `0` and let Query dedupe.
+- Decide explicitly between Router's built-in SWR loader cache and an external cache such as TanStack Query. When Query owns freshness, set router preload stale time to `0` and let Query dedupe. With Query 5.102+, load through `queryClient.query(...)`; `ensureQueryData` / `prefetchQuery` / `fetchQuery` are deprecated.
+- Type `errorComponent` / `onCatch` errors as `unknown` in React and narrow before reading `message`.
 - Handle not-found resources in loaders with `notFound()` so loader data stays correctly typed and UI avoids flicker.
 
 ## Verification

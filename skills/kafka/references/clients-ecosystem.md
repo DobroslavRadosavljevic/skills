@@ -11,7 +11,7 @@
 
 ### Why prefer Platformatic
 
-- Active maintenance; Kafka **4.x** / KIP-848 / transactions in scope.
+- Active maintenance (2.9 → 2.13 between Aug and Oct 2026); Kafka **4.x** / KIP-848 / KIP-429 / transactions in scope. Not yet: share groups (KIP-932).
 - Pure TypeScript wire protocol — no native addon; predictable deploys.
 - Direct `Producer` / `Consumer` / `Admin`; stream-based consume; `bigint` offsets.
 - Migration guide from KafkaJS; published benches claim wins vs KafkaJS and competitive vs rdkafka (lab numbers — verify in your workload).
@@ -24,12 +24,13 @@ For simple produce/consume, vendor rarely changes TypeScript code if the Kafka p
 
 | Offering | Notes |
 |---|---|
-| **Apache Kafka** | Reference; self-manage; KRaft-only on 4.0+ |
+| **Apache Kafka** | Reference; self-manage; KRaft-only on 4.0+; current 4.3.x |
 | **Confluent Cloud/Platform** | Kafka + Schema Registry, Connect, ksqlDB, support |
 | **Amazon MSK** | Real Apache Kafka; IAM auth; MSK Connect |
 | **Aiven** | Managed; Karapace SR common |
 | **Redpanda** | Kafka API compatible; validate edge admin/Connect |
 | **WarpStream** | Kafka protocol clients; check current matrix for compaction/txns limits |
+| **Azure Event Hubs** | Kafka endpoint on `:9093` (TLS + SASL); Platformatic runs Event Hubs smoke tests — still verify admin/txn gaps |
 
 ## Connect / Streams / ksqlDB
 

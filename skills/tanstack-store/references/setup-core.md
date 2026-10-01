@@ -128,6 +128,8 @@ Always keep and call `unsubscribe` when the subscription is tied to a component,
 
 The source implementation does not call the subscriber with an initial value on subscribe. Read `store.get()` first when an effect needs the current value immediately.
 
+Since `0.11.2`, reading another store or atom inside the subscriber does not subscribe to it. If the callback must also run when that other source changes, subscribe to it separately or subscribe to a derived store/atom that reads both.
+
 Observer form is also supported:
 
 ```ts

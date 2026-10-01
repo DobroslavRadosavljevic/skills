@@ -1,6 +1,6 @@
-# Setup: Intlayer 9.5 + TanStack Start
+# Setup: Intlayer 9.6 + TanStack Start
 
-Target stack: TanStack Start (React) on Vite SSR with Intlayer **9.5.x**.
+Target stack: TanStack Start (React) on Vite SSR with Intlayer **9.6.x** (9.5+ APIs).
 
 ## Packages
 
@@ -13,7 +13,7 @@ bun add intlayer react-intlayer
 bun add vite-intlayer --dev
 ```
 
-Keep **`intlayer`, `react-intlayer`, and `vite-intlayer` on the same 9.5.x**. Mixed 9.4.x / 9.5.x trees fail the same way mixed 9.4.0 / 9.4.1 trees did.
+Keep **`intlayer`, `react-intlayer`, and `vite-intlayer` on the same exact version**. Mixed 9.4.x / 9.5.x trees fail the same way mixed 9.4.0 / 9.4.1 trees did. `bunx intlayer upgrade` (add `--dry-run` to preview) rewrites every Intlayer range in the workspace and runs one install with the lockfile's package manager.
 
 | Package | Role |
 | --- | --- |
@@ -60,7 +60,7 @@ const config: IntlayerConfig = {
 export default config;
 ```
 
-`intlayer@9.5.4` public types do **not** export `defineConfig`. Use `export default config`. Full knobs: [configuration.md](configuration.md).
+`intlayer@9.6.0` public types do **not** export `defineConfig`. Use `export default config`. Full knobs: [configuration.md](configuration.md).
 
 Routing modes vs locale slot:
 
@@ -106,7 +106,7 @@ Plugin options:
 | `compatCallers` | Extra caller patterns for compat-adapter packages |
 | `configFile` | Custom path to `intlayer.config.*` |
 
-9.5 notes:
+9.5+ notes:
 
 - `intlayer()` bundles dictionary build, env aliases, locale proxy (when `routing.enableProxy` is not `false`), optional compiler (when `compiler.enabled` is `true` or `"build-only"` and `compiler.output` is set), plus production `intlayerOptimize` / `intlayerPrune` / `intlayerMinify` / `intlayerChunk` / `intlayerPreload`.
 - Standalone `intlayerProxy()` / `intlayerCompiler()` remain available for advanced plugin order; registering them with `intlayer()` is safe (deduped).

@@ -12,22 +12,37 @@ BYOK: attach provider credentials in the Vercel team Gateway settings. No code c
 
 Gateway helpers `getCredits`, `getSpendReport`, `getGenerationInfo` need an AI Gateway API key or OIDC — not a Vercel access token.
 
-### Experimental text batches (Gateway)
+Gateway also resolves string IDs for experimental evaluation models (`experimental_evaluate`) when no evaluation-capable default provider is configured, and its `has` provider option filters routing by capability (`reasoning`, `tool-use`, structured output, quantization).
 
-`experimental_startTextBatch`, `experimental_getBatchStatus`, `experimental_getBatchResults`. Pass a public HTTPS `webhookUrl` for `batch.completed` / `failed` / `cancelled` (status only, not results). Direct Anthropic/OpenAI batch providers warn if `webhookUrl` is set. See Vercel batch-processing docs.
+### Experimental batches
+
+Experimental; API may change in patch releases. `experimental_startTextBatch` was removed in 7.0.94 and replaced by a provider-generic set: `experimental_startBatch`, `experimental_getBatchStatus`, `experimental_getBatchResults` (async iterable), `experimental_cancelBatch`, `experimental_listBatches` (cursor-paginated). Providers: Anthropic, OpenAI (Responses API), Google (text + image), xAI (text + image), AI Gateway (global default). Cancel/list throw `UnsupportedFunctionalityError` where unsupported.
 
 ```ts
-import { experimental_startTextBatch as startTextBatch } from 'ai';
+import { anthropic } from '@ai-sdk/anthropic';
+import {
+  experimental_startBatch as startBatch,
+  experimental_getBatchResults as getBatchResults,
+} from 'ai';
 
-const batch = await startTextBatch({
-  model: 'anthropic/claude-haiku-4.5',
+const batch = await startBatch({
+  provider: anthropic, // omit for global provider / Gateway
   requests: [
-    { id: 'france', prompt: 'What is the capital of France?' },
+    { id: 'france', type: 'text', model: 'claude-haiku-4-5', prompt: 'Capital of France?' },
   ],
-  providerOptions: { gateway: { idempotencyKey: token } },
-  webhookUrl: `https://example.com/api/batch-webhook?token=${token}`,
+  // webhookUrl: 'https://example.com/api/batch-webhook', // provider-specific; others warn
 });
+// persist `batch` (serializable reference); poll getBatchStatus until status !== 'pending'
+
+for await (const item of getBatchResults({ provider: anthropic, batch })) {
+  if (item.type === 'text' && item.status === 'succeeded') console.log(item.id, item.text);
+}
 ```
+
+- Each request needs a unique `id`, `type: 'text' | 'image'`, and a per-request `model`. Results arrive out of order — join on `id`.
+- Text requests accept the usual generation settings and per-request `tools` / `toolChoice`. Client tools are **definition-only** (no `execute`, no follow-up step); pass the same `tools` to `getBatchResults` to validate calls. Provider-executed tools can run where the provider supports them.
+- Image requests take `generateImage` settings (`prompt`, `n`, `size`, `aspectRatio`, `seed`).
+- Status: `pending` | `completed` | `failed`, plus `requestCounts`, `createdAt`, `expiresAt`, `rawStatus`.
 
 ## wrapLanguageModel and built-in middleware
 
@@ -80,7 +95,7 @@ registerTelemetry(new OpenTelemetry());
 registerTelemetry(DevToolsTelemetry());
 ```
 
-Once registered, **all calls emit** unless `telemetry: { isEnabled: false }`.
+Once registered, **all calls emit** unless `telemetry: { isEnabled: false }`. Coverage includes `embed` / `embedMany` / `rerank` runtime-context attribution (7.0.98), `experimental_evaluate` (7.0.111), and `generateSpeech` / `transcribe` with provider usage (7.0.124). Tracing-channel context respects the same `include*Context` allowlists (7.0.114).
 
 ```ts
 telemetry: {
@@ -168,7 +183,9 @@ Index: https://ai-sdk.dev/docs/reference/ai-sdk-errors.md. Check with `FooError.
 | `TooManyEmbeddingValuesForCallError` | `embedMany` over limit |
 | `UIMessageStreamError` | UI stream protocol/parse |
 | `UnsupportedFunctionalityError` | Feature not supported |
-| `StreamProviderError` | Mid-stream provider error (v7.0.80+) |
+| `StreamProviderError` | Mid-stream provider error (v7.0.80+); retry with `streamRetries` (7.0.91+) |
+| `ToolChoiceViolationError` | Response ignored an enforced `toolChoice` (`'required'` / specific tool) |
+| `Experimental_EvaluationUnsupportedQuestionTypeError` | `experimental_evaluate` question type unsupported by the evaluation model |
 | `UnsupportedModelVersionError` | Provider spec too old vs `ai` major — bump `@ai-sdk/*` |
 
 streamText: errors in **`stream` as `error` parts**; `textStream` hides them. Always set `onError`. Abort does not call `onEnd`.

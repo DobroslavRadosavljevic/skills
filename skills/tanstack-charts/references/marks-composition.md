@@ -9,6 +9,7 @@
 | Compare categories | `barY` / `barX` | Zero baseline on the quantitative axis |
 | Relationship | `dot` | `r` + `rScale` (`scaleSqrt`) for bubbles; `hexbin` / `contour` when dense |
 | Interval / range | `areaY`/`rect`/`barY` with `y1`/`y2` | Candlestick = `link` + ranged `rect` |
+| Second quantitative axis | Named scale + `yScale` / `xScale` | Only when both series share the x domain and readers need both units |
 | Composition | Implicit stack or `layout: stack()` | Normalized offset; mosaic via `mosaicY` + `rect`; `waffleY` for unit charts |
 | Side-by-side groups | `layout: group()` | Default length-channel geometry stacks |
 | Distribution | `binX` → `rect`; `boxY`; `violinY`; `ridgelineY` | Prefer first-party `boxY` over hand-composed fences |
@@ -130,12 +131,49 @@ Horizontal `areaX` uses `d3AreaXCurve` from `@tanstack/charts/d3/area-x`.
 
 `fill`/`stroke` bypass the color scale. Dot `r` is pixels unless `rScale` is provided; use `scaleSqrt` for quantitative area.
 
+`lineY` / `lineX` accept `lineCap` and `lineJoin` (default `round`, `0.18.0`).
+
+Bar, rect, and cell corner radii (`0.17.0`): `radius: 6`, a physical tuple `[topLeft, topRight, bottomRight, bottomLeft]`, or semantic `radius: { end: 6 }` that follows the value endpoint (positive, negative, or reversed). Implicit stacks round only the exposed envelope by default; `radius: { end: 6, stack: 'each' }` rounds every segment. Prefer `radius` over `rect` overlays for rounded bars.
+
+### Mixed SVG and Canvas marks (`0.15.0+`)
+
+Assign `renderer: canvasChartRenderer` (from `@tanstack/charts/canvas`) to paint-heavy marks while the default SVG host keeps axes, guides, and other marks. Layers follow mark order, and focus, tooltips, SSR, and export still work:
+
+```ts
+import { canvasChartRenderer } from '@tanstack/charts/canvas'
+
+const marks = [
+  areaY(denseRange, { x: 'date', y1: 'low', y2: 'high', renderer: canvasChartRenderer }),
+  lineY(summary, { x: 'date', y: 'value' }),
+]
+```
+
 ## Polar And Geo
 
 ```ts
 import { pie, polar, radialArc, focusGroupAngle } from '@tanstack/charts/polar'
 import { geoShape } from '@tanstack/charts/geo'
 ```
+
+Since `0.16.0`, polar scales live in the polar view's own registry and the outer Cartesian entries are explicit `null`s:
+
+```ts
+defineChart({
+  marks: [
+    polar({
+      radiusRatio: 0.84,
+      scales: {
+        angle: { scale: scalePoint<string>().domain(events), wrap: true },
+        radius: { scale: scaleLinear().domain([0, 1]) },
+      },
+      marks: [radialArc(slices, { color: 'id', key: 'id', cornerRadius: 4 })],
+    }),
+  ],
+  scales: { x: null, y: null },
+})
+```
+
+Every polar view must provide both `angle` and `radius`; write `scales: { angle: null, radius: null }` when neither is used (for example a plain pie of `radialArc` slices). Root `angle` / `radius` options were removed. Custom polar length callbacks read `layout.scales.angle` / `layout.scales.radius` (not `layout.angle` / `layout.radiusScale`).
 
 Ordinary pies can keep default nearest focus (`radialArc` attaches slice geometry, including the donut hole). Multi-series radial charts: `focus: focusGroupAngle`.
 
@@ -154,7 +192,7 @@ Ordinary pies can keep default nearest focus (`radialArc` attaches slice geometr
 
 - Bars without a zero baseline when magnitude is the task
 - Lines connecting unordered categories
-- Dual unrelated quantitative axes — prefer small multiples
+- Dual unrelated quantitative axes (named scales make them easy) — prefer small multiples unless the units genuinely relate
 - Stacks when interior-layer comparison matters (`group()` or facets)
 - Essential state encoded with color alone
 - Jumping to 3D or decorative effects for analytical marks

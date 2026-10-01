@@ -1,6 +1,6 @@
 ---
 name: clickhouse
-description: "Build, review, debug, configure, migrate, teach, or plan ClickHouse analytics work from TypeScript with current docs and a full usage guide. Use for @clickhouse/client, @clickhouse/client-web, createClient, query, insert, command, exec, JSONEachRow, query_params, streaming, MergeTree family, ORDER BY/PARTITION BY, materialized views, projections, async_insert, FINAL, lightweight deletes, ClickHouse Cloud HTTPS, system.query_log, and TS schema/ingest patterns. TypeScript/Node SDKs only — not Python/Go/Java clients."
+description: "Build, review, debug, configure, migrate, teach, or plan ClickHouse analytics work from TypeScript with current docs and a full usage guide. Use for @clickhouse/client, @clickhouse/client-web, createClient, query, insert, command, exec, JSONEachRow, query_params, streaming, MergeTree family, ORDER BY/PARTITION BY, materialized views, projections, async_insert, FINAL, lightweight deletes and updates, 26.x server upgrades, ClickHouse Cloud HTTPS, system.query_log, and TS schema/ingest patterns. TypeScript/Node SDKs only — not Python/Go/Java clients."
 ---
 
 # ClickHouse (TypeScript)
@@ -10,7 +10,7 @@ Use this skill for ClickHouse OLAP work driven from TypeScript/Node: official JS
 ## Workflow
 
 1. Inspect the local surface:
-   - Packages: `@clickhouse/client` (Node) and/or `@clickhouse/client-web` (browser/Workers). Snapshot **1.23.1**. Node **`>=20`**. Server target **24.8+** for modern clients.
+   - Packages: `@clickhouse/client` (Node) and/or `@clickhouse/client-web` (browser/Workers). Snapshot **1.23.1** (1.24.0 is merged but unreleased). Node **`>=20`**. Client supports server **24.8+**; current server lines are **26.9** stable and **26.8 / 26.3 LTS**.
    - Connection: `url` (HTTPS Cloud `:8443` vs local HTTP `:8123`), auth (password vs Cloud JWT `access_token`), `database`, TLS.
    - Schema: engine (MergeTree family), `ORDER BY`, `PARTITION BY`, MVs/projections.
    - Ingest path: `insert()` batches vs `async_insert`, streams, empty-array no-op.
@@ -32,7 +32,8 @@ Use this skill for ClickHouse OLAP work driven from TypeScript/Node: official JS
 - Default to **MergeTree** + strong **`ORDER BY`**; partitions are for data management (TTL/DROP), not a substitute for the sort key.
 - Prefer **batched `insert({ format: 'JSONEachRow' })`**; tiny sync inserts → `TOO_MANY_PARTS`. Use `async_insert=1` + `wait_for_async_insert=1` when clients cannot batch.
 - Specialized engines (Replacing/Summing/Aggregating/Collapsing) need **correctness SQL** (`FINAL` or merge-aware aggregation) — merges are eventual.
-- Prefer insert-only / RMT / MVs over chatty `ALTER UPDATE`/`DELETE` mutations; lightweight `DELETE FROM` for row deletes.
+- Prefer insert-only / RMT / MVs over chatty `ALTER UPDATE`/`DELETE` mutations; lightweight `DELETE FROM` for row deletes; lightweight `UPDATE … SET` (beta, patch parts) only for small (<~10%) batched fixes.
+- Server 26.9+: the new analyzer is mandatory (`enable_analyzer` is obsolete) and default compression moved to ZSTD — retest old queries and pinned settings when upgrading.
 - Type traps: **UInt64 → string** in JSON; **Decimal as string**; Date as `'YYYY-MM-DD'`; always set `format: 'JSONEachRow'` for object rows (insert default is JSONCompactEachRow).
 - Always **consume or `close()`** ResultSets — dangling streams cause `ECONNRESET`.
 - One shared client per process; `close()` / `await using` on shutdown. Sessions → `max_open_connections: 1`.

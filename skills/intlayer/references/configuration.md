@@ -1,10 +1,10 @@
-# Configuration (Intlayer 9.5)
+# Configuration (Intlayer 9.5+ / 9.6)
 
 Files: `intlayer.config.ts` | `.js` | `.mjs` | `.cjs` | `.json` | `.json5` | `.jsonc` | `.intlayerrc`.
 
 This page is the knob map. Setup defaults live in [setup-tanstack-start.md](setup-tanstack-start.md). Do not copy the giant “all options” example into an app — set only what you need.
 
-Defaults below follow `@intlayer/types@9.5.4` plus the live configuration page. When those disagree, prefer types + the live page and report it.
+Defaults below follow `@intlayer/types@9.5.4` (unchanged in `9.6.0` except AI `model` typing, which now suggests known models per `provider`) plus the live configuration page. When those disagree, prefer types + the live page and report it.
 
 ## `internationalization`
 

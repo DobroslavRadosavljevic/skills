@@ -7,7 +7,7 @@ description: "Build, review, debug, migrate, or plan React code with @mantine/ho
 
 Use this skill for **`@mantine/hooks` only** — the standalone React hooks package. Do not pull in `@mantine/core`, `@mantine/form`, or other `@mantine/*` packages unless the user explicitly asks for them outside this skill.
 
-Prefer current docs over memory. Pin narrative to **`@mantine/hooks@9.x`** (npm `latest` snapshot: **9.5.0**, peer **`react@^19.2.0`**).
+Prefer current docs over memory. Pin narrative to **`@mantine/hooks@9.x`** (npm `latest` snapshot: **9.6.3**, peer **`react@^19.2.0`**; 9.5.1–9.6.3 added no new hook exports).
 
 ## Workflow
 
@@ -59,5 +59,5 @@ Prefer the repo's existing checks. For meaningful `@mantine/hooks` work, include
 - Typecheck against installed `@mantine/hooks` declarations and exported option/return types.
 - Confirm imports resolve only from `@mantine/hooks` (no accidental `@mantine/core` for hook-only tasks).
 - SSR/hydration: assert server HTML uses intended initial values for media/storage hooks; no flash regressions when changing `getInitialValueInEffect`.
-- Interaction tests: outside-click nodes (use state callbacks for multi-node lists), hotkey `mod` cross-platform, focus trap + merged refs, debounce `cancel`/`flush` on unmount.
+- Interaction tests: outside-click nodes (use state callbacks for multi-node lists; `capture: true` when inner handlers stop propagation), hotkey `mod` cross-platform, focus trap + merged refs, debounce `cancel`/`flush` on unmount.
 - Migration scan for removed `useFullscreen`, old mouse/observer ref patterns, and renamed types.

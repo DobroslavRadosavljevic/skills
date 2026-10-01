@@ -1,16 +1,17 @@
 # Testing With `@effect/vitest`
 
-Deep guide for testing Effect **v4 RC** programs under Vitest. Snapshot: `@effect/vitest@4.0.0-rc.112` with `effect@4.0.0-rc.112`, peer `vitest@^4.1.0`.
+Deep guide for testing Effect **4.x** programs under Vitest. Snapshot: `@effect/vitest@4.0.0` with `effect@4.0.0`, peer **`vitest >=5.0.0 <6.0.0`** (Vitest 5 needs Node `^22.12 || ^24 || >=26` and Vite 6.4+ within majors 6–8).
 
 ## Install (Effect v4)
 
 ```sh
-bun add -d effect@rc @effect/vitest@rc vitest
+bun add effect
+bun add -d @effect/vitest vitest@^5
 ```
 
-Or pin matching RC builds. Keep `effect` and `@effect/vitest` on the **same** `4.0.0-rc.N`.
+Keep `effect` and `@effect/vitest` on the **same** version (`4.0.0`). npm `latest` is v4 since 2026-10-01. `@effect/vitest@0.30.x` is the Effect v3 line; the `@rc` / `@beta` tags are frozen prereleases — do not install them.
 
-**Gotcha:** bare `bun add -d @effect/vitest` (npm `latest`) still resolves to **`0.30.x` (Effect v3)**. Never use that in an Effect v4 repo. `@beta` is the older v4 line; prefer `@rc`.
+**Gotcha:** `@effect/vitest@4.0.0` does not work with Vitest 4. Upgrading also means applying the Vitest 5 changes below.
 
 ## How it works
 
@@ -52,11 +53,10 @@ Modifiers on `it.effect` / `it.live`: `.skip`, `.skipIf`, `.runIf`, `.only`, `.e
 
 ### Stale names — do not use for Effect Scope
 
-| Name | Reality in v4 RC |
+| Name | Reality in v4 |
 |---|---|
 | `it.scoped` | **Vitest fixtures** API — not Effect Scope |
 | `it.scopedLive` | **Removed** — use `it.live` |
-| Package README overview still listing `it.scoped` | **Stale** relative to source — trust types/internals |
 
 ## Writing tests
 
@@ -199,7 +199,48 @@ Default timeout is **30 seconds**. Internals retry under a sandbox with a bounde
 
 ### Property tests
 
-`it.effect.prop` / `it.prop` / top-level `prop` use FastCheck from `effect/testing/FastCheck`. Schema→Arbitrary mapping on top-level `prop` may still be incomplete — check installed types; prefer FastCheck arbitraries when unsure.
+`it.effect.prop` / `it.prop` / top-level `prop` take **Schemas or `Arbitrary` values** (root `effect/Arbitrary`). `effect/testing/FastCheck` was removed in 4.0 — there is no `fast-check` dependency.
+
+```ts
+import { assert, it } from "@effect/vitest"
+import { Arbitrary, Effect, Schema } from "effect"
+
+it.effect.prop("sum is commutative", [Schema.Int, Schema.Int], ([a, b]) =>
+  Effect.sync(() => assert.strictEqual(a + b, b + a)))
+
+it.prop(
+  "non-empty arrays",
+  [Arbitrary.array(Arbitrary.schema(Schema.String), { minLength: 1 })],
+  ([xs]) => {
+    assert.isTrue(xs.length > 0)
+  },
+  { arbitrary: { runs: 200, seed: 42 } }
+)
+```
+
+- A property fails (and shrinks) when the callback returns `false`, throws, or the Effect fails/dies (non-interruption). Returning anything else, including `void`, passes.
+- Per-test options: `{ arbitrary: { runs, size, seed, maxShrinks, maxDiscards, replay } }` (replaces `fastCheck` options). Defaults: `Arbitrary.configureGlobal(...)`.
+- The Vitest `timeout` interrupts generation/evaluation/shrinking; finalizers run; it is reported as a timeout, not a falsification. A non-returning synchronous callback cannot be preempted.
+
+### Vitest fixtures
+
+Pass a `test.extend(...)` test to `makeMethods` to get Effect helpers that receive fixtures:
+
+```ts
+import { makeMethods, test } from "@effect/vitest"
+
+const it = makeMethods(
+  test.extend("db", { scope: "file" }, async ({}, { onCleanup }) => {
+    const db = await openDb()
+    onCleanup(() => db.close())
+    return db
+  })
+)
+
+it.effect("query", ({ db }) => Effect.promise(() => db.query("select 1")))
+```
+
+Destructure the fixtures you use (Vitest rejects `(ctx) =>` once fixtures exist). Build `makeMethods` from `test` / `test.extend`, not from the `it` a `describe` callback receives. Property tests cannot request fixtures.
 
 ## Layers in tests
 
@@ -241,8 +282,11 @@ layer(MyLive, {
   memoMap?: Layer.MemoMap
   timeout?: Duration.Input          // hook timeout
   excludeTestServices?: boolean     // default false → merge TestEnv
+  concurrent?: boolean              // 4.0: false serializes the named suite, true runs it concurrently; omit to inherit
 })
 ```
+
+In concurrent tests use the callback's `ctx.expect` so snapshots and assertion counts belong to the right test.
 
 ### Sharing vs isolation
 
@@ -265,7 +309,7 @@ or construct a **fresh** layer per test (avoid a single shared `MemoMap`).
 
 ## Good patterns
 
-1. Install **v4 RC** only: `effect@rc` + `@effect/vitest@rc` (same rc.N), never `@latest` / bare package.
+1. Install matching v4 versions: `effect@4.x` + `@effect/vitest@4.x` + `vitest@^5`.
 2. Prefer `it.effect` + in-body `expect` / `Effect.exit`.
 3. Control time with `TestClock` from `effect/testing`; fork before `adjust`.
 4. Use `it.effect` for scoped resources (already scoped).
@@ -279,7 +323,12 @@ or construct a **fresh** layer per test (avoid a single shared `MemoMap`).
 
 | Anti-pattern | Why |
 |---|---|
-| `bun add -d @effect/vitest` / `@latest` (0.30.x) | Effect **v3** package — use `@rc` / `4.0.0-rc.x` |
+| `@effect/vitest@0.30.x` in a v4 repo | Effect **v3** package — use `@effect/vitest@4` |
+| `@effect/vitest@4` with `vitest@4` | Peer mismatch — Vitest 5 required |
+| `test.sequential` / `{ sequential: true }` | Removed in Vitest 5 — use `{ concurrent: false }` |
+| Top-level `bench` import | Removed in Vitest 5 — use the `bench` test-context fixture |
+| Unawaited async assertions | Vitest 5 requires awaiting them |
+| `effect/testing/FastCheck` | Removed — use `Arbitrary` / Schemas |
 | `import { TestClock } from "effect"` | Not exported — use `effect/testing` |
 | `test.effect(...)` | Not wired — use `it.effect` |
 | `it.scoped` / `it.scopedLive` for Effect Scope | Wrong API in v4 (`scoped` is Vitest fixtures / removed) |
@@ -288,16 +337,16 @@ or construct a **fresh** layer per test (avoid a single shared `MemoMap`).
 | `adjust` without forking sleepers | Deadlock / hang |
 | Relying on `addEqualityTesters()` | Often a no-op stub — verify installed types |
 | v3 utils (`assertLeft`/`assertRight`, Exit-named `assertSuccess`) | Renamed for Result/Exit |
-| Mixing rc.N across packages | Peer mismatch |
+| Mixing `4.0.0-rc.N` / `4.0.0` across packages | Peer mismatch |
 | Using `it.flakyTest` to paper over race bugs | Hides nondeterminism instead of fixing it |
 
-## Public surface (rc)
+## Public surface (4.0.0)
 
 ### `@effect/vitest`
 
 - Re-exports Vitest (`describe`, `expect`, `it`, `vi`, hooks, …)
 - `it.effect`, `it.live`, `it.layer`, `it.flakyTest`, `it.prop` (and standalone `effect`, `live`, `layer`, `flakyTest`, `prop`)
-- `makeMethods`, `describeWrapped`
+- `makeMethods(test | test.extend(...))` (fixture-aware), `describeWrapped`
 - `addEqualityTesters` (stub)
 - `Vitest` namespace types
 
@@ -307,7 +356,7 @@ or construct a **fresh** layer per test (avoid a single shared `MemoMap`).
 
 ## Migration from `@effect/vitest` v3 (`0.30.x`)
 
-| v3 | v4 RC |
+| v3 | v4 |
 |---|---|
 | `it.effect` = TestServices, often no Scope | `it.effect` = TestClock+TestConsole + **Scope** |
 | `it.scoped` / `it.scopedLive` | Removed — use `it.effect` / `it.live` |
@@ -316,12 +365,14 @@ or construct a **fresh** layer per test (avoid a single shared `MemoMap`).
 | `addEqualityTesters` registers Equal | Empty stub |
 | Either left/right utils | Result success/failure utils |
 | Exit helpers named `assertSuccess` | `assertExitSuccess` / `assertExitFailure` |
-| Vitest peer `^3.2` | `^4.1.0` (see installed package.json) |
+| Vitest peer `^3.2` | `>=5 <6` (4.0.0; RCs used `^4.1`) |
+| `FastCheck` arbitraries | `Arbitrary` / Schemas |
 
 ## Sources
 
-- Package README (verify against source — overview table can lag): https://github.com/Effect-TS/effect/blob/main/packages/vitest/README.md
-- Tagged: https://github.com/Effect-TS/effect/blob/effect@4.0.0-rc.112/packages/vitest/README.md
+- Package README: https://github.com/Effect-TS/effect/blob/main/packages/vitest/README.md
+- Tagged: https://github.com/Effect-TS/effect/blob/effect@4.0.0/packages/vitest/README.md (includes “Migrating to Vitest 5”)
+- Vitest 5 migration: https://vitest.dev/guide/migration/
 - Sources: `packages/vitest/src/index.ts`, `utils.ts`, `internal/internal.ts`
 - TestClock site docs are often v3-leaning — prefer `effect/testing` + this package for v4
 - npm: https://www.npmjs.com/package/@effect/vitest

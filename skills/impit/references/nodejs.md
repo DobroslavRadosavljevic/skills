@@ -36,7 +36,7 @@ console.log(response.headers);
 console.log(await response.text());
 ```
 
-`impit.fetch` is designed to be API-compatible with the Fetch API `fetch`.
+`impit.fetch(resource, init)` accepts a `string`, `URL`, or `Request` and is designed to be API-compatible with the Fetch API `fetch`.
 
 ## `ImpitOptions`
 
@@ -72,7 +72,7 @@ One instance = one identity (shared config, connection pool, cookie jar).
 | --- | --- |
 | `method` | `GET` \| `POST` \| `PUT` \| `DELETE` \| `PATCH` \| `HEAD` \| `OPTIONS` \| `TRACE` |
 | `headers` | Override instance + impersonation headers |
-| `body` | string, buffers, `Blob`, `File`, `URLSearchParams`, `FormData`, `ReadableStream`, … |
+| `body` | string, `ArrayBuffer`/TypedArray/`DataView`, `Blob`, `File`, `URLSearchParams`, `FormData`, `ReadableStream` (streamed since 0.14.4; Node streams and async iterables are also streamed at runtime) |
 | `timeout` | Per-request ms override |
 | `forceHttp3` | Force HTTP/3 for this request when client supports it |
 | `signal` | `AbortSignal` |
@@ -90,9 +90,25 @@ if (manual.status === 302) {
 
 ## Response
 
-`ImpitResponse` mirrors Fetch `Response`: `status`, `statusText`, `headers`, `ok`, `url` (final after redirects), plus `text()`, `json()`, `arrayBuffer()`, streaming helpers.
+`ImpitResponse` mirrors Fetch `Response`: `status`, `statusText`, `headers` (`Headers`), `ok`, `url` (final after redirects), plus `text()`, `json()`, `arrayBuffer()`, `bytes()` (`Uint8Array`), `body` (`ReadableStream<Uint8Array>`), and `clone()`.
 
-Body can be consumed **once**.
+Body can be consumed **once**. Call `clone()` before reading if two consumers need the body; `clone()` after consumption throws a `TypeError`.
+
+## Streaming request bodies
+
+Since 0.14.4, streamed bodies are pulled by the native layer as they are produced instead of being buffered up front:
+
+```ts
+import { createReadStream } from 'node:fs';
+import { Readable } from 'node:stream';
+
+await impit.fetch('https://example.com/upload', {
+  method: 'POST',
+  body: Readable.toWeb(createReadStream('large.bin')) as ReadableStream,
+});
+```
+
+The published `RequestInit.body` type lists `ReadableStream`; passing a Node stream or async iterable works at runtime but may need a cast.
 
 ## Cookies
 
@@ -115,6 +131,7 @@ Typed hierarchy rooted at `ImpitError`, including among others:
 - Timeouts: `TimeoutError`, `ConnectTimeout`, `ReadTimeout`, `WriteTimeout`, `PoolTimeout`
 - Network: `ConnectError`, `ReadError`, `WriteError`, `CloseError`
 - Proxy: `ProxyError`, `ProxyTunnelError`, `ProxyAuthRequired`
+- Protocol: `ProtocolError`, `LocalProtocolError`, `RemoteProtocolError`
 - Request: `TooManyRedirects`, `DecodingError`, `HTTPStatusError`
 - Stream: `StreamConsumed`, `ResponseNotRead`, `RequestNotRead`, `StreamClosed`
 - Other: `InvalidURL`, `CookieConflict`, `UnsupportedProtocol`

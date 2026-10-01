@@ -95,8 +95,8 @@ Common variant groups:
 
 Recent v4.2/v4.3 utility additions to consider when the project is on the current v4 line:
 
-- Scrollbar utilities for first-party scrollbar styling.
-- Logical property utilities such as block-start/block-end spacing and logical inset utilities.
+- Scrollbar utilities: `scrollbar-auto`, `scrollbar-thin`, `scrollbar-none`, `scrollbar-thumb-*`, `scrollbar-track-*`, and `scrollbar-gutter-*` (v4.3).
+- Logical property utilities (v4.2): `pbs-*`/`pbe-*`, `mbs-*`/`mbe-*`, `border-bs-*`/`border-be-*`, `inline-*`/`block-*` sizing (plus `min-`/`max-` forms), and `inset-s-*`/`inset-e-*`/`inset-bs-*`/`inset-be-*`.
 - `font-features-*` utilities for OpenType feature settings.
 - `zoom-*` utilities.
 - `tab-*` utilities.
@@ -194,3 +194,8 @@ Watch for conflicts with third-party widgets. Override Preflight in `@layer base
 The official `prettier-plugin-tailwindcss` sorts classes in Tailwind's recommended order.
 
 Use it when the project already uses Prettier or the user asks for class sorting. Do not introduce it to a repo without checking package manager policy and approval for dependency installation.
+
+- `prettier-plugin-tailwindcss` `0.8.x` requires Prettier 3.7 or newer. Upgrade Prettier first when the plugin fails to load.
+- `0.8.0` exports the sorting API from `prettier-plugin-tailwindcss/sorter` for tools that need Tailwind class order outside Prettier.
+- For v4 projects, point the plugin at the CSS entry with the `tailwindStylesheet` option.
+- Sort classes inside helpers such as `clsx`, `cn`, or `tv` with `tailwindFunctions`, and custom attributes with `tailwindAttributes`.

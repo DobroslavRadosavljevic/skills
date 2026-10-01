@@ -4,18 +4,30 @@ This reference captures the Oxlint docs and package snapshot used to create the 
 
 ## Snapshot
 
-- Captured: 2026-09-18
+- Captured: 2026-10-01
 - Official site: https://oxc.rs/
 - Linter docs: https://oxc.rs/docs/guide/usage/linter.html
-- npm `oxlint`: **1.83.0**
-- npm `eslint-plugin-oxlint`: **1.83.0** (peer `oxlint ~1.83.0`)
-- npm `oxlint-tsgolint`: **7.0.2002** (tracks TypeScript **7.0.2** / typescript-go; patch `002`)
-- npm `@oxlint/migrate`: **1.83.0**
+- npm `oxlint`: **1.86.0** (published 2026-09-28)
+- npm `eslint-plugin-oxlint`: **1.86.0** (peer `oxlint ~1.86.0`)
+- npm `oxlint-tsgolint`: **7.0.2003** (tracks TypeScript **7.0.2** / typescript-go; patch `003`)
+- npm `@oxlint/migrate`: **1.86.0**
+- npm `@oxlint/plugins` (JS plugin authoring helpers): **1.86.0**
 - Node engines (`oxlint`): `^20.19.0 || >=22.12.0`
-- Optional peers (`oxlint`): `oxlint-tsgolint >=7.0.2001`, `vite-plus *`
-- Rules index: **870** built-in rules; **111** on by default
+- Optional peers (`oxlint`): `oxlint-tsgolint >=7.0.2003`, `vite-plus *`
+- Rules index: **871** built-in rules; **111** on by default
+- Vite+ **1.0.0** (2026-09-28) pins `oxlint` 1.85.0 + `oxlint-tsgolint` 7.0.2003 — `vp lint` users may trail npm `latest` by a minor
 - Preferred config: **`oxlint.config.ts`** + `defineConfig` (JSON `.oxlintrc.json(c)` still supported; `--init` and `@oxlint/migrate` still write JSON)
 - Context7 IDs: `/websites/oxc_rs`, `/websites/oxc_rs_guide_usage`, `/oxc-project/oxc`, `/oxc-project/website`, `/oxc-project/eslint-plugin-oxlint`, `/oxc-project/tsgolint`
+
+## 1.84.0–1.86.0 (user-facing)
+
+| Version | Date | What agents should know |
+| --- | --- | --- |
+| **1.84.0** | 2026-09-21 | `--debug timings` now reports **JS plugin** rule timings. LSP treats `configPath: ""` as unset (nested config stays on). Vite+ mode finds every `vite.config.*` variant. `unicorn/no-unreadable-iife` suggestion. Many `no-unused-vars` fix-safety fixes. |
+| **1.85.0** | 2026-09-21 | Vite+ mode **never discovers nested configs** (CLI and LSP). |
+| **1.86.0** | 2026-09-28 | New type-aware `typescript/no-generated-empty-object-type` (suspicious; needs tsgolint ≥ 7.0.2003). `react/only-export-components` `allowCompoundComponents`. `node/no-exports-assign` moved **style → suspicious**. React Compiler: `new Date()` treated as impure; recursive function expressions handled. |
+
+No breaking config changes and no new CLI flags in this range.
 
 Treat JS plugins as **alpha** (outside semver). Type-aware is feature-stable but still listed as not subject to full semver. `typeCheck` remains experimental. React Compiler lint rules are experimental (lint-only compiler analysis under `react/*`).
 
@@ -69,4 +81,4 @@ Treat JS plugins as **alpha** (outside semver). Type-aware is feature-stable but
 - React Compiler support: https://oxc.rs/blog/2026-08-18-react-compiler-support.html
 - Schema: `node_modules/oxlint/configuration_schema.json`
 - GitHub: https://github.com/oxc-project/oxc · https://github.com/oxc-project/tsgolint · https://github.com/oxc-project/eslint-plugin-oxlint · https://github.com/oxc-project/oxlint-migrate
-- Releases: https://github.com/oxc-project/oxc/releases (apps tags such as `apps_v1.83.0`)
+- Releases: https://github.com/oxc-project/oxc/releases (tags `oxlint_v1.86.0` since 1.85; combined `apps_v1.84.0` and older)

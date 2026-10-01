@@ -124,7 +124,7 @@ with DockerCompose(".", compose_file_name="compose.yml", pull=True, wait=True) a
 - Prefer `get_container_host_ip()` + mapped ports over hardcoded localhost
 - No first-class Java-style reuse flag in docs — rely on fixtures + Ryuk
 
-## Go (v0.43+)
+## Go (v0.44+)
 
 Docs: https://golang.testcontainers.org/
 
@@ -165,7 +165,7 @@ pg, err := postgres.Run(ctx, "postgres:16-alpine",
 )
 ```
 
-Postgres snapshots: avoid database name `postgres`. Kafka module is KRaft-oriented (min Confluent Local ~7.4).
+Postgres snapshots: avoid database name `postgres`. Kafka module is KRaft-oriented (min Confluent Local ~7.4). v0.44.0 added many modules (Trino, Presto, Mailpit, Nginx, S3Mock, Fake-GCS-Server, CouchDB, Solr, SFTP, QuestDB, Mosquitto, KurrentDB, …) — check `modules/` before writing a generic container. Config modifiers (`WithConfigModifier`, `WithHostConfigModifier`, `WithEndpointSettingsModifier`) now chain instead of overwriting.
 
 ### Networks / Compose
 
@@ -184,8 +184,8 @@ Postgres snapshots: avoid database name `postgres`. Kafka module is KRaft-orient
 
 | Language | Package | Docs |
 | --- | --- | --- |
-| .NET | NuGet `Testcontainers` (+ `Testcontainers.*` modules) | https://dotnet.testcontainers.org/ |
-| Rust | crates `testcontainers`, `testcontainers-modules` | https://rust.testcontainers.org/ |
+| .NET | NuGet `Testcontainers` 4.15 (+ `Testcontainers.*` modules) | https://dotnet.testcontainers.org/ |
+| Rust | crates `testcontainers` 0.28, `testcontainers-modules` | https://rust.testcontainers.org/ |
 | Ruby | gem `testcontainers` | https://github.com/testcontainers/testcontainers-ruby |
 | Elixir | Hex `testcontainers` | https://github.com/testcontainers/testcontainers-elixir |
 

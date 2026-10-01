@@ -188,6 +188,20 @@ Testing guidance:
 - For network behavior, use the repo's existing mock layer such as MSW, nock, fetch mocks, or test server.
 - For infinite queries, assert `data.pages` and trigger `fetchNextPage()`.
 
+## v5.102+ Updates Inside v5
+
+These changes landed in v5 minors. Check them when a repo upgrades from an older v5 patch:
+
+- `queryClient.query` / `queryClient.infiniteQuery` replace `fetchQuery`, `prefetchQuery`, `ensureQueryData`, and their infinite variants. The old methods are deprecated (still working) and slated for removal in the next major. `usePrefetchQuery` / `usePrefetchInfiniteQuery` now use the new methods internally.
+- `experimental_prefetchInRender` and the query result `promise` property were removed in v5.102. Replace `React.use(query.promise)` patterns with `useSuspenseQuery` or prefetch hooks.
+- Mutation `variables` are optional in `mutate()` when `undefined` is assignable to `TVariables`.
+- `useQueries` / `useSuspenseQueries` throw falsy errors to the error boundary (v5.102.6).
+- Partial query-key filters with trailing `undefined` values no longer match shorter keys (v5.103). Re-test invalidation helpers that build keys like `['todos', undefined]`.
+- `MutationCacheConfig`, `QueryCacheConfig`, `dehydrateQuery`, and the `FocusManager` / `OnlineManager` / `TimeoutManager` types are exported.
+- The ESLint plugin is TypeScript 7 compatible (v5.102).
+
+A future major (v6) has not been published for React Query at this snapshot. Treat "v6" mentions as other framework adapters (for example Svelte Query 6 or Solid Query 6 RCs) unless npm shows a React Query v6 dist-tag.
+
 ## v5 Migration Checklist
 
 Watch for these v4-to-v5 changes:
@@ -227,3 +241,4 @@ When reviewing TanStack Query code, check:
 - Infinite query data keeps `pages` and `pageParams` shapes intact.
 - SSR hydration uses matching keys and avoids cross-request leakage.
 - Tests isolate cache state and disable retries where appropriate.
+- New imperative reads use `queryClient.query` / `infiniteQuery`, not the deprecated `fetchQuery` / `prefetchQuery` / `ensureQueryData` family.

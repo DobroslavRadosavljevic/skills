@@ -7,7 +7,7 @@ Readable stacks and release health require **matching `release`**, uploaded arti
 | Bundler | Package | Factory |
 |---|---|---|
 | Vite | `@sentry/vite-plugin` **5.4.x** | `sentryVitePlugin` |
-| Webpack 5 | `@sentry/webpack-plugin` | `sentryWebpackPlugin` |
+| Webpack 5.1+ | `@sentry/webpack-plugin` | `sentryWebpackPlugin` |
 | esbuild | `@sentry/esbuild-plugin` | `sentryEsbuildPlugin` |
 | Rollup | `@sentry/rollup-plugin` | `sentryRollupPlugin` |
 
@@ -41,11 +41,19 @@ Rules:
 - If the plugin injects `release`, omit conflicting `release` in `Sentry.init` or make them identical.
 - Delete or block public `.map` files after upload.
 
-Framework helpers often wrap this (`withSentryConfig` for Next.js, Astro `sourceMapsUploadOptions`, SvelteKit kit hooks). Prefer the framework guide when present.
+The official per-bundler guides still install the standalone 5.x plugins above. SDK v11 also ships `@sentry/bundler-plugins` (`/vite`, `/webpack`, `/esbuild`, `/rollup`), versioned in lockstep with the SDK and used internally by the meta-framework SDKs; it uses the new `sentry` CLI package instead of `@sentry/cli`. The `/webpack5` entry was removed in v11.
+
+Framework helpers often wrap this. Prefer the framework guide when present. v11 build-option changes:
+
+- Next.js: `withSentryConfig` from `@sentry/nextjs/config`.
+- Astro / Nuxt / SvelteKit / React Router: `sourceMapsUploadOptions` was removed — move `org`, `project`, `authToken`, `sourcemaps`, `release` to the top level (`url`→`sentryUrl`; `enabled: false`→`sourcemaps: { disable: true }`).
+- SvelteKit `sentrySvelteKit`, React Router `sentryReactRouter`, Remix `sentryRemixVitePlugin` import from their `/vite` subpaths.
+- `unstable_sentry*PluginOptions` escape hatches are gone; `applicationKey`, `moduleMetadata`, and `sourcemaps.resolveSourceMap` are first-class build options.
+- Automatic Vercel deploys use `VERCEL_TARGET_ENV` as the environment (no `vercel-` prefix).
 
 ## Sentry CLI
 
-Package: `@sentry/cli` **3.x** (binary `sentry-cli`).
+Package: `@sentry/cli` **3.x** (binary `sentry-cli`, 3.8.0 at snapshot). A separate new `sentry` package (binary `sentry`, 0.x) powers `bunx sentry@latest init` and the v11 bundler plugins; keep using `sentry-cli` commands below for release/source map scripting until the docs move them.
 
 Common flows:
 

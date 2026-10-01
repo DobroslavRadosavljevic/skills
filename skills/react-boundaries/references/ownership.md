@@ -19,7 +19,7 @@ Derived values: compute during render from props/state. Do not mirror props into
 
 **Default:** the component that displays or mutates the data owns the subscription (`useQuery` / `useMutation` / framework equivalent).
 
-**Prefetch ≠ ownership.** A route loader or parent may `prefetchQuery` / `ensureQueryData` to warm the cache. The leaf still calls `useQuery` with the same key and owns loading/error UI for its subtree.
+**Prefetch ≠ ownership.** A route loader or parent may warm the cache with `queryClient.query(...)` (awaited for critical data, `.catch(noop)` for secondary). The leaf still calls `useQuery` with the same key and owns loading/error UI for its subtree.
 
 **Pass ids down:**
 

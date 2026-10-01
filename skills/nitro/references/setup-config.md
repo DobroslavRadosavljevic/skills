@@ -151,4 +151,26 @@ export default defineConfig({
 });
 ```
 
-Treat `experimental.*` as unstable. Prefer top-level `openAPI` for OpenAPI options once the flag is on.
+Treat `experimental.*` as unstable. Prefer top-level `openAPI` for OpenAPI options once the flag is on. `typescriptBundlerResolution` currently has no effect (bundler resolution is always on).
+
+## Builder
+
+`builder`: `"rollup"` | `"rolldown"` | `"vite"` (auto-detected). Nitro resolves the builder from the project: `vite@^7 || ^8`, `rollup@^4`, `rolldown@>=1.0.0`, and warns on an unsupported version. Tune with `rollupConfig` / `rolldownConfig`.
+
+## Tracing
+
+```ts
+export default defineConfig({
+  tracingChannel: true, // or { srvx, h3, unstorage }
+  experimental: { tracingLogger: true }, // log completed spans, no extra deps
+});
+```
+
+`tracingChannel` publishes `node:diagnostics_channel` TracingChannel events (`srvx.request`, `h3.request`, unstorage, db0) for APM tools on Node, Bun, Deno, and dev. On Vercel and Cloudflare, spans flow to the platform's native tracing.
+
+## Import files as bytes or text
+
+```ts
+import logo from "./logo.png" with { type: "bytes" }; // Uint8Array
+import readme from "./README.md" with { type: "text" }; // string
+```

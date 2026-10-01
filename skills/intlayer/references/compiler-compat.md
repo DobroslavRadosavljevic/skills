@@ -80,7 +80,7 @@ Without optimize plugins, async falls back to the sync registry. Concurrent load
 
 Drop-in APIs that keep `useTranslation` / next-intl / vue-i18n call sites but resolve through `@intlayer/core/messageFormat` (ICU `{{var}}`, `{v, number, percent}`, `plural`/`enu`/`gender`/`insert`, numbered XML tags).
 
-Packages include: `@intlayer/i18next`, `@intlayer/react-i18next`, `@intlayer/next-intl`, `@intlayer/react-intl`, `@intlayer/next-i18next`, `@intlayer/vue-i18n`, `@intlayer/lingui`.
+Packages include: `@intlayer/i18next`, `@intlayer/react-i18next`, `@intlayer/next-intl`, `@intlayer/react-intl`, `@intlayer/next-i18next`, `@intlayer/vue-i18n`, `@intlayer/lingui`, and (9.6.0+) `@intlayer/svelte-i18n`, `@intlayer/nuxtjs-i18n`, `@intlayer/ngx-translate`. Since 9.6, setup moves a replaced i18n package to `devDependencies`.
 
 **Start default remains `react-intlayer`.** Use adapters only when migrating an existing i18n library without rewriting call sites.
 

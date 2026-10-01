@@ -1,6 +1,6 @@
 ---
 name: oxlint
-description: "Build, review, debug, configure, migrate, teach, or plan Oxlint JavaScript/TypeScript linting with current Oxc docs and a full usage guide. Use for oxlint how-to, oxlint.config.ts, defineConfig, .oxlintrc.json, categories correctness suspicious pedantic style, plugins react import typescript unicorn vitest jest jsx-a11y nextjs, React Compiler react/immutability react/purity (1.79+ split from react/react-compiler), type-aware linting, oxlint-tsgolint, eslint-plugin-oxlint, @oxlint/migrate, jsPlugins alpha, ignorePatterns, oxlint-disable comments, --fix, --debug timings, CI formats, progressive adoption, and ESLint-to-Oxlint migration."
+description: "Build, review, debug, configure, migrate, teach, or plan Oxlint JavaScript/TypeScript linting with current Oxc docs and a full usage guide. Use for oxlint how-to, oxlint.config.ts, defineConfig, .oxlintrc.json, categories correctness suspicious pedantic style, plugins react import typescript unicorn vitest jest jsx-a11y nextjs, React Compiler react/immutability react/purity (1.79+ split from react/react-compiler), type-aware linting, oxlint-tsgolint, eslint-plugin-oxlint, @oxlint/migrate, jsPlugins alpha, Vite+ vp lint (lint block in vite.config), ignorePatterns, oxlint-disable comments, --fix, --debug timings, CI formats, progressive adoption, and ESLint-to-Oxlint migration."
 ---
 
 # Oxlint
@@ -29,6 +29,7 @@ Use this skill when work touches Oxlint or Oxc linting: install/config, day-to-d
 - Setting `plugins: [...]` **replaces** the default plugin set. Re-list `eslint`, `typescript`, `unicorn`, and `oxc` when you still want them.
 - Prefer **`oxlint.config.ts`** + `defineConfig` for new configs (typed, shareable via imports). Keep or use `.oxlintrc.json` only when the project already has it, or when using a standalone binary without a Node runtime. CLI help still labels JS/TS config loading as experimental; official config docs treat `oxlint.config.ts` as first-class.
 - Nested configs do **not** auto-merge with parents — use `extends` (TS: imported objects; JSON: relative paths). `-c/--config` disables nested lookup.
+- Vite+ (`vp lint`, Vite+ 1.0 pins a specific Oxlint) reads the `lint` block in `vite.config.*`; nested configs are always off in Vite+ mode (1.85+), so use root `lint.overrides`.
 - Prefer `ignorePatterns` in config over scattered ignore files for editor/CI consistency. `.gitignore` applies to walk discovery; an **explicitly named file** is still linted.
 - Prefer `oxlint-disable*` comments long-term; `eslint-disable*` still works while migrating (`respectEslintDisableDirectives` default true).
 - Type-aware linting needs `oxlint-tsgolint` + `--type-aware` / `options.typeAware`. Those options are **root-only**. Do not pass `--tsconfig` together with type-aware.

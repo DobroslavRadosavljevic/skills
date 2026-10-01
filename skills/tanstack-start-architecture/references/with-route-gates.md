@@ -22,7 +22,7 @@ routes/
 
 Typical flow:
 
-1. `ensureQueryData(sessionQueryOptions)`
+1. `await queryClient.query(sessionQueryOptions)`
 2. Optional product identity query (`getMe` / equivalent)
 3. Map missing session → sign-in; incomplete onboarding → onboarding; capability fail → safe home / 403 UI
 4. Signed-in users hitting `_auth` → redirect into the app

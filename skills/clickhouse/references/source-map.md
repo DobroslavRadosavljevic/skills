@@ -4,10 +4,11 @@ Docs and package snapshot used to create this skill. **TypeScript/JS clients onl
 
 ## Snapshot
 
-- Captured: 2026-07-31
+- Captured: 2026-10-01 (client unchanged since 1.23.1; refreshed server + ecosystem notes)
 - Official client: **`@clickhouse/client@1.23.1`** (Node), **`@clickhouse/client-web@1.23.1`**
 - Engines: Node `>=20`; TypeScript `>=4.5`
-- ClickHouse server: client 1.12+ targets **24.8+** (older best-effort)
+- ClickHouse server: client 1.12+ targets **24.8+** (older best-effort). Current releases: **26.9** stable (2026-09-21), **26.8** and **26.3** LTS
+- Unreleased client: **1.24.0** is merged on `main` (only `head` dist-tag builds): richer OTEL spans (`span_attributes` per request, `dangerously_log_query_text` client option, all `clickhouse.summary.*` keys) and an `Array(Date)` query-param binding fix. Do not recommend these APIs until 1.24.0 is on `latest`
 - Protocol: **HTTP(S)** only (8123 / 8443)
 - Repo: https://github.com/ClickHouse/clickhouse-js
 - Context7: `/clickhouse/clickhouse-js`
@@ -44,6 +45,12 @@ Docs and package snapshot used to create this skill. **TypeScript/JS clients onl
 - Keep-Alive: https://github.com/ClickHouse/clickhouse-js/blob/main/docs/howto/keep_alive_timeout.md
 - Tracing: https://github.com/ClickHouse/clickhouse-js/blob/main/docs/howto/tracing.md
 
+### Server releases
+
+- Changelog: https://clickhouse.com/docs/whats-new/changelog
+- 26.9 backward-incompatible highlights: analyzer always on (`enable_analyzer` obsolete), default network/storage compression ZSTD(3) (MergeTree picks LZ4 below ~100 MB parts), `Nullable(Tuple(...))` enabled by default, `WINDOW VIEW` and CatBoost functions removed
+- 26.9 additions apps may use: `CREATE TOKEN`, `REFRESH … APPEND INCREMENTAL` for refreshable MVs, `LIMIT … AFTER` / `LIMIT UNTIL`, `json['a']['b']` bracket access, `max_table_size_rows` / `max_table_size_bytes_*` MergeTree settings
+
 ### Product / modeling
 
 - Intro: https://clickhouse.com/docs/intro
@@ -56,6 +63,7 @@ Docs and package snapshot used to create this skill. **TypeScript/JS clients onl
 - Skipping indexes: https://clickhouse.com/docs/optimize/skipping-indexes
 - Projections: https://clickhouse.com/docs/sql-reference/statements/alter/projection
 - Lightweight delete: https://clickhouse.com/docs/guides/developer/lightweight-delete
+- Lightweight update (beta): https://clickhouse.com/docs/sql-reference/statements/update
 - Mutations: https://clickhouse.com/docs/guides/developer/mutations
 - ReplacingMergeTree guide: https://clickhouse.com/docs/guides/replacing-merge-tree
 - Joins: https://clickhouse.com/docs/guides/joining-tables
@@ -67,4 +75,4 @@ Docs and package snapshot used to create this skill. **TypeScript/JS clients onl
 ### Related TS libs (not ClickHouse-core)
 
 - `@testcontainers/clickhouse`: https://node.testcontainers.org/modules/clickhouse/
-- `clickhouse-migrations`: https://www.npmjs.com/package/clickhouse-migrations
+- `clickhouse-migrations` (1.5.0): https://www.npmjs.com/package/clickhouse-migrations

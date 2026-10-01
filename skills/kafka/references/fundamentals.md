@@ -31,6 +31,8 @@ Agent-actionable broker semantics for TypeScript apps. Prefer current Apache Kaf
 
 - **Classic / cooperative sticky** — prefer cooperative over eager stop-the-world.
 - **KIP-848** (`group.protocol=consumer`, GA Kafka 4.0): server-side assignors; incremental. Enable when client + brokers support it (`groupProtocol: "consumer"` in `@platformatic/kafka`).
+- **KIP-429** cooperative-sticky (classic protocol): incremental rebalances without broker upgrades; all members must advertise it.
+- **Share groups / Kafka Queues (KIP-932)**: production-ready since Kafka **4.2** — per-record acknowledgement, many consumers per partition, no ordering. Needs a client that implements the share-group APIs (Java client does; `@platformatic/kafka` 2.13 does not).
 - **Static membership** (`group.instance.id` / `groupInstanceId`): fewer rebalances on rolling restarts.
 
 ## Keys, partitioning, order

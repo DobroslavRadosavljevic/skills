@@ -270,6 +270,8 @@ For each type: **when**, **Google required (visible)**, **notes**. “Visible”
 
 **Visible fields.** Same title/description/date; working `contentUrl` or `embedUrl`. Thumbnails crawlable.
 
+**Also (2026-09-24).** `creator` (and `author`) are documented for the video's creator; `interactionStatistic` supports only the interaction types the doc lists — check the list before emitting counts.
+
 ### ImageObject / image metadata
 
 **When.** You need creator, credit, or license in Google Images. Source: [Image metadata](https://developers.google.com/search/docs/appearance/structured-data/image-license-metadata) (gallery: Image metadata).

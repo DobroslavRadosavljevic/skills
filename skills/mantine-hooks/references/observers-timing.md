@@ -58,6 +58,8 @@ const search = useDebouncedCallback(
 
 Pending debounced value updates cancel on unmount. Prefer `flush` when the last value must commit before navigation.
 
+`useDebouncedValue` with `leading: true` fires once per burst and no longer emits a stale trailing value (fixed in 9.5.2). Upgrade before relying on leading-edge behavior.
+
 ## Throttle
 
 Mirror of debounce:

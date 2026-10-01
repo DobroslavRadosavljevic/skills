@@ -4,11 +4,13 @@ This reference captures the Oxfmt docs and package snapshot used to create the s
 
 ## Snapshot
 
-- Captured: 2026-09-18
+- Captured: 2026-10-01
 - Official site: https://oxc.rs/
 - Formatter docs: https://oxc.rs/docs/guide/usage/formatter.html
-- npm `oxfmt`: **0.68.0** (dist-tag `latest`, published 2026-09-14; still **0.x / beta** toward 1.0 — no 1.x line)
-- Previous skill snapshot: **0.62.0** (2026-08-06)
+- npm `oxfmt`: **0.71.0** (dist-tag `latest`, published 2026-09-28; still **0.x / beta** toward 1.0 — no 1.x line)
+- Previous skill snapshots: **0.68.0** (2026-09-18), **0.62.0** (2026-08-06)
+- Bundled Prettier (for Prettier-backed languages): **3.9.9** (since 0.71.0)
+- Vite+ **1.0.0** (2026-09-28) pins `oxfmt` **0.70.0** — `vp fmt` users may trail npm `latest`
 - Node engines: `^20.19.0 || >=22.12.0`
 - Bin: `oxfmt`
 - Optional peers: `svelte` `^5.0.0`, `vite-plus` `*`
@@ -30,9 +32,17 @@ Maturity trail: alpha (2025-12) → beta (2026-02, 100% Prettier JS/TS conforman
 | **0.67.0** | 2026-09-07 | Bundled `prettier-plugin-tailwindcss` bump. JSDoc-cast layout fixes. GitHub release also lists **crate-level** parser BREAKING (`MAX_LEN`); oxfmt npm **config keys were not renamed**. |
 | **0.68.0** | 2026-09-14 | Unified suppress-comment behavior (incl. trailing enum-member comments). YAML `tabWidth: 0` clamped to `1`. TSX-in-Vue `Fill` expansion. Skip Node 24 shutdown delay on fixed Node 24 releases. |
 
-CLI flags did **not** change in this range (`--write` default, `--check`, `--list-different`, `--init`, `--migrate`, `--lsp`, `--stdin-filepath`, `-c`/`--config`, `--disable-nested-config`, `--ignore-path`, `--with-node-modules`, `--no-error-on-unmatched-pattern`, `--threads`).
+## 0.69.0–0.71.0 (user-facing)
 
-YAML is **native** (landed 0.62; language-support page lists it). HTML/Vue/Svelte/Markdown/MDX/Handlebars/MJML remain Prettier-backed.
+| Version | Date | What agents should know |
+| --- | --- | --- |
+| **0.69.0** | 2026-09-21 | Vite+ mode finds every `vite.config.*` variant (`.js`, `.mjs`, `.mts`, …), so the LSP no longer needs `configPath` for non-`.ts` Vite configs. A native Rust **Markdown formatter crate** landed upstream but is **not wired into Oxfmt yet** — Markdown stays Prettier-backed. Comment-placement fixes. |
+| **0.70.0** | 2026-09-21 | Vite+ mode **never discovers nested configs** (CLI and LSP) — editors no longer need `oxc.fmt.disableNestedConfig` for Vite+. |
+| **0.71.0** | 2026-09-28 | Bundled Prettier bumped to **3.9.9** (HTML/Markdown/Vue/… output may shift). Repeated CLI calls in one process work. JSDoc alignment closer to `prettier-plugin-jsdoc`; `/***` comments treated as JSDoc. Comments around `=` stay on their side. |
+
+CLI flags did **not** change from 0.63 through 0.71 (`--write` default, `--check`, `--list-different`, `--init`, `--migrate`, `--lsp`, `--stdin-filepath`, `-c`/`--config`, `--disable-nested-config`, `--ignore-path`, `--with-node-modules`, `--no-error-on-unmatched-pattern`, `--threads`).
+
+YAML is **native** (landed 0.62; language-support page lists it). HTML/Vue/Svelte/Markdown/MDX/Handlebars/MJML remain Prettier-backed (native Markdown is in progress; re-check the language-support page).
 
 ## Refresh Procedure
 
@@ -48,7 +58,7 @@ YAML is **native** (landed 0.62; language-support page lists it). HTML/Vue/Svelt
 3. Prefer official pages under https://oxc.rs/docs/guide/usage/formatter/. If docs and package metadata disagree, report the mismatch.
 4. Re-check [language support](https://oxc.rs/docs/guide/usage/formatter/language-support.html) when asking whether a format is native vs Prettier-backed.
 5. Cross-check changelog sources — they diverge:
-   - GitHub Releases (apps): https://github.com/oxc-project/oxc/releases
+   - GitHub Releases: https://github.com/oxc-project/oxc/releases (tags `oxfmt_v0.71.0` since 0.70; combined `apps_v1.84.0` and older)
    - `apps/oxfmt/CHANGELOG.md`
    - `npm/oxfmt/CHANGELOG.md` (thinner; often omits formatter-crate fixes)
 6. Pin `oxfmt` in lockfiles — 0.x minors move quickly.

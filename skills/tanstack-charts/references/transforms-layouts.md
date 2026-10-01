@@ -1,6 +1,6 @@
 # Transforms And Layouts
 
-Snapshot: `@tanstack/charts@0.14.0`.
+Snapshot: `@tanstack/charts@0.18.0`. No transform API changes since `0.14.0`.
 
 Transforms are eager functions: rows in, rows out. They do not rewrite mark options, cache results, or own framework reactivity.
 

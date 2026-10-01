@@ -128,6 +128,12 @@ import { vercel } from "@t3-oss/env-core/presets";
 extends: [vercel];
 ```
 
+## Known 0.13.11 preset traps (unfixed upstream)
+
+- **`skipValidation` drops `extends` keys.** It returns the raw `runtimeEnv` object. Preset keys exist only if that object already contains them (`process.env` usually does; a hand-listed `runtimeEnv` / Next `experimental__runtimeEnv` usually does not). Open fix: t3-env PR #408.
+- **Server presets read `process.env` on call.** Hosting and service presets (`vercel()`, `railway()`, `uploadthing()`, `upstashRedis()`, …) pass `runtimeEnv: process.env`; `vite()` uses `import.meta.env`. In a browser bundle with no `process` polyfill, calling one throws `ReferenceError: process is not defined`. Keep server presets in server-only env modules (or a split `env/server.ts`). Open fix: PR #410.
+- **`vite()` types `BASE_URL` / `MODE` / `DEV` / `PROD` / `SSR` as server-only.** Vite exposes them on both sides. Re-declare in `shared` if client code reads them through `env`. Open fix: PR #413.
+
 ## Do not
 
 - Read `process.env.SECRET` after defining `env` (transforms/defaults will not apply).

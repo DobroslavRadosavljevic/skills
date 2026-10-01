@@ -97,33 +97,56 @@ Auto from `middleware/`. Same `defineHandler` shape. **Do not return** unless yo
 
 Order: directory listing. Prefix `01.`, `02.` — string sort (`10` sorts after `1`; zero-pad).
 
-Global middleware runs on every request; filter with `event.url.pathname` or use `handlers` + `middleware: true` + `route`.
+Global middleware runs on every request; filter with `event.url.pathname` or use route-scoped middleware (experimental): `handlers` + `middleware: true` + `route`. Keep route-scoped handler files outside `middleware/` so scanning does not also register them globally.
 
 ## Code splitting
 
 Each route is its own chunk (lazy on first hit). `inlineDynamicImports` forces a single bundle.
 
-## Route rules (experimental)
+## Route rules
 
-Map rou3 patterns → options in `nitro.config`. Runs as middleware after static assets (see [plugins-lifecycle.md](plugins-lifecycle.md)).
+Map rou3 patterns → options in `nitro.config` (h3 route rules engine, rou3 0.9). Runs as middleware after static assets (see [plugins-lifecycle.md](plugins-lifecycle.md)). Rules merge from least to most specific; `false` disables an inherited option. `GET` routes also answer `HEAD`.
 
-Typical options (see config + cache docs):
-
-- `headers` — response headers
-- redirects / rewrites / proxy (host-specific details in [deploy.md](deploy.md))
-- `cache` — wrap matching handlers with `defineCachedHandler`
-- `swr: true | number` — shortcut for SWR cache (`number` = `maxAge` seconds)
-- `cache: false` — disable cache for a subtree
-- `isr` — platform ISR (Vercel/Netlify presets)
+| Option | Use |
+| --- | --- |
+| `headers` | Response headers |
+| `redirect` | `string` (307) or `{ to, status }`; `/**` suffix preserves the rest of the path |
+| `proxy` | `string` or `{ to, ...h3 proxy options }` |
+| `cors` | `true` (permissive) or h3 `CorsOptions`; `credentials: true` + wildcard origin fails the build. Applied by the server, not the CDN |
+| `cache` | Cache options (wraps with `defineCachedHandler`) or `false` |
+| `swr` | `true` = `cache: { swr: true }`; number = `{ swr: true, maxAge }` |
+| `static` | Static caching shortcut |
+| `prerender` | Build-time prerender (do not combine with `isr`) |
+| `isr` | Vercel ISR (`true`, seconds, or `{ expiration, allowQuery, group }`) |
 
 ```ts
 routeRules: {
   "/blog/**": { cache: { maxAge: 60 * 60 } },
-  "/api/**": { swr: 3600 },
+  "/api/**": { swr: 3600, cors: true },
+  "/api/internal/**": { cors: false },
   "/api/realtime/**": { cache: false },
+  "POST /api/**": { headers: { "x-write": "true" } }, // method-scoped
   "/**": { headers: { "x-nitro": "1" } },
 }
 ```
+
+Method-scoped keys are resolved at runtime; platform-generated static config (`_headers`, `_redirects`, Vercel `config.json`) does not split by method, so keep `headers` / `redirect` / `proxy` keys method-agnostic when the platform should emit them.
+
+There is no auth rule (`basicAuth` rules were removed). Use h3 `basicAuth` as middleware:
+
+```ts
+import { defineHandler } from "nitro";
+import { basicAuth } from "nitro/h3";
+
+export default defineHandler({
+  middleware: [basicAuth({ username: "admin", password: process.env.ADMIN_PASSWORD! })],
+  handler: (event) => `Hello, ${event.context.basicAuth?.username}!`,
+});
+```
+
+Runtime overrides: `runtimeConfig.nitro.routeRules` (env-overridable without rebuild).
+
+Types: `RouteRuleConfig` / `NormalizedRouteRules` (old `NitroRouteConfig` / `NitroRouteRules` are deprecated aliases).
 
 Route-rule cache group is `'nitro/route-rules'`.
 

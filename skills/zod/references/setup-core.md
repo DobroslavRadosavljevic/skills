@@ -4,7 +4,7 @@ Use this reference for package setup, imports, parsing, `validate`, `compile`, t
 
 ## Package And Imports
 
-- Target **Zod 4 `latest`**: `zod@4.6.5` on 2026-09-18. Stay on Zod 4. Do not use canary (`canary` was `4.5.0-canary.20260828T171753`, behind `latest`).
+- Target **Zod 4 `latest`**: `zod@4.6.5` (verified 2026-10-01). Stay on Zod 4. Do not use canary (`canary` was `4.5.0-canary.20260828T171753`, behind `latest`).
 - For application code, install and import from the package root:
 
   ```sh
@@ -134,7 +134,10 @@ type TrimmedLengthOutput = z.output<typeof TrimmedLength>; // number
 - Zod Mini does not load the English locale automatically. Configure it when human-readable errors matter:
 
   ```ts
-  z.config(z.locales.en());
+  import * as z from "zod/mini";
+  import { en } from "zod/locales";
+
+  z.config(en());
   ```
 
 - Cyclical inputs need an explicit memoizer, registered **before** schemas are defined:

@@ -7,7 +7,7 @@ description: "Build, review, debug, migrate, or plan User-Agent bot/crawler/spid
 
 Use this skill for **isbot v5** (`isbot` on npm, folder name `is-bot`): recognise self-identifying bots, crawlers, and spiders from a User-Agent string.
 
-Package: [`isbot`](https://www.npmjs.com/package/isbot). Repo: [omrilotan/isbot](https://github.com/omrilotan/isbot). Tester: [isbot.js.org](https://isbot.js.org). Snapshot **5.2.1**.
+Package: [`isbot`](https://www.npmjs.com/package/isbot). Repo: [omrilotan/isbot](https://github.com/omrilotan/isbot). Tester: [isbot.js.org](https://isbot.js.org). Snapshot **5.2.2**.
 
 ## Workflow
 

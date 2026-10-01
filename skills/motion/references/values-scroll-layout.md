@@ -75,7 +75,7 @@ const { scrollYProgress } = useScroll({
 const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30, skipInitialAnimation: true })
 ```
 
-Returns `scrollX`/`scrollY` and `*Progress` (0–1). Prefer linking to `opacity` / `transform` / `filter` / `clipPath` for GPU path. Target measurement uses layout box (**ignores CSS transforms**). `start`/`end` offsets and element tracking can hardware-accelerate. `ViewTimeline` is supported for `scroll` / `useScroll` (12.35+). `target` / `container` refs hydrate from anywhere in the tree.
+Returns `scrollX`/`scrollY` and `*Progress` (0–1). Prefer linking to `opacity` / `transform` / `filter` / `clipPath` for GPU path. Target measurement uses layout box (**ignores CSS transforms**). Progress piped directly (or via `useTransform`) to `opacity` / `transform` / `clipPath` / `filter` can hardware-accelerate via `ScrollTimeline`. 13.4–13.5 reworked scroll: JS callbacks use main-thread tracking (no `ScrollTimeline`), and from 13.5 `offset` animations run on the main thread — do not promise GPU scroll-linking for custom `offset`s. `target` / `container` refs hydrate from anywhere in the tree.
 
 ## Layout animations
 

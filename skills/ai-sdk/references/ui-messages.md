@@ -52,7 +52,7 @@ Load: `validateUIMessages` / `safeValidateUIMessages`.
 
 Access `part.input` only in `input-available` or `output-available`. Access `part.output` only in `output-available`.
 
-Helpers: `isToolUIPart(part)`, `getToolName(part)`. **`isToolOrDynamicToolUIPart` removed in v7.**
+Helpers: `isToolUIPart(part)`, `getToolName(part)`, `isToolOutputErrorUIPart(part)` (7.0.98+, narrows static and dynamic tool parts in `output-error` to `ToolOutputErrorUIPart` with `errorText`). **`isToolOrDynamicToolUIPart` removed in v7.** `rawInput` on `output-error` parts is deprecated (7.0.103) — read `input`.
 
 ```tsx
 {message.parts.map((part, i) => {

@@ -4,7 +4,7 @@ This reference captures the Testcontainers docs and package snapshot used to cre
 
 ## Snapshot
 
-- Captured: 2026-07-30
+- Captured: 2026-10-01
 - Hub: https://testcontainers.com/
 - Modules catalog: https://testcontainers.com/modules/
 - Context7 IDs used:
@@ -18,13 +18,15 @@ This reference captures the Testcontainers docs and package snapshot used to cre
 
 | Language | Package | Version |
 | --- | --- | --- |
-| Node | `testcontainers` | **12.0.4** |
-| Node modules | `@testcontainers/*` (most) | **12.0.4** |
+| Node | `testcontainers` | **12.2.0** (`engines.node >=22.22` since 12.1.0) |
+| Node modules | `@testcontainers/*` (most) | **12.2.0** |
 | Java | `org.testcontainers:testcontainers` (+ BOM) | **2.0.5** |
 | Python | `testcontainers` (PyPI) | **4.15.0** (`requires-python >=3.10`) |
-| Go | `github.com/testcontainers/testcontainers-go` | **v0.43.0** |
-| .NET | NuGet `Testcontainers` | check registry (skill noted ~4.13.x) |
-| Rust | crates `testcontainers` / `testcontainers-modules` | check crates.io |
+| Go | `github.com/testcontainers/testcontainers-go` | **v0.44.0** |
+| .NET | NuGet `Testcontainers` | **4.15.0** |
+| Rust | crate `testcontainers` (`testcontainers-modules` versions separately) | **0.28.0** |
+
+Recent Node changes worth knowing: 12.1.0 added `MongoDBAtlasLocalContainer` (in `@testcontainers/mongodb`) and `@testcontainers/mosquitto`; 12.2.0 added `@testcontainers/influxdb`, `PullPolicy.neverPull()`, kept tag+digest image references pinned, and closes Docker log streams when consumers stop reading. Go v0.44.0 added ~20 modules (Trino, Mailpit, Nginx, S3Mock, Fake-GCS-Server, CouchDB, Mosquitto, Solr, SFTP, QuestDB, …) and session-ID override.
 
 Treat prereleases and language-specific outliers (e.g. stale Node `@testcontainers/eventstoredb@10`) as unavailable unless the project already depends on them.
 
@@ -68,6 +70,7 @@ Treat prereleases and language-specific outliers (e.g. stale Node `@testcontaine
 - Configuration: https://node.testcontainers.org/configuration/
 - Runtimes: https://node.testcontainers.org/supported-container-runtimes/
 - GitHub: https://github.com/testcontainers/testcontainers-node
+- Releases: https://github.com/testcontainers/testcontainers-node/releases
 
 ### Java
 

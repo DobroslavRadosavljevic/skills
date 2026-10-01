@@ -4,13 +4,13 @@ Docs and package snapshot used to create this skill.
 
 ## Snapshot
 
-- Captured: **2026-09-18**
-- Package: **`vite@8.3.0`** (npm `latest`)
+- Captured: **2026-10-01**
+- Package: **`vite@8.3.2`** (npm `latest`, 2026-10-01; 8.3.1 on 2026-09-24)
 - Previous major tag: `previous` → **7.3.6**
-- Dist-tags: `latest` 8.3.0 · `beta` 8.3.0-beta.1 · `previous` 7.3.6
+- Dist-tags: `latest` 8.3.2 · `beta` 8.3.0-beta.1 (stale) · `previous` 7.3.6
 - Scaffold: **`create-vite@9.2.1`** (npm `latest`; 9.2.0 added nub package-manager support)
 - Engines: Node `^20.19.0 || >=22.12.0` (same floor as Vite 7/8.0)
-- Bundled toolchain (Vite 8.3.0 dependencies): **Rolldown `~1.2.6`**, **Lightning CSS `^1.33.0`**, PostCSS `^8.5.28`
+- Bundled toolchain (Vite 8.3.2 dependencies): **Rolldown `~1.2.11`** (npm `rolldown` latest 1.2.12), **Lightning CSS `^1.33.0`**, PostCSS `^8.5.28`
 - Defaults (Vite 8): bundler/optimizer **Rolldown**, transform/minify JS **Oxc**, CSS minify **Lightning CSS**; CSS transformer still **PostCSS** (`css.transformer: 'lightningcss'` is experimental)
 - Homepage: https://vite.dev/
 - Docs ToC: https://vite.dev/llms.txt
@@ -20,7 +20,7 @@ Docs and package snapshot used to create this skill.
 - Older majors: https://v7.vite.dev · https://v6.vite.dev
 - Support (https://vite.dev/releases): regular patches **`vite@8.3`**; important + security **`7.3`** and **`8.2`**; security **`6.4`** and **`8.1`**
 
-There is **no** `announcing-vite8-3` blog post. 8.3 user-facing notes live in the GitHub changelog (8.3.0 + 8.3.0-beta.0/beta.1). Architecture still comes from Vite 8.0 / 8.1 blogs.
+There is **no** `announcing-vite8-3` blog post. 8.3 user-facing notes live in the GitHub changelog (8.3.0 + 8.3.0-beta.0/beta.1; 8.3.1/8.3.2 are bug-fix patches). Architecture still comes from Vite 8.0 / 8.1 blogs.
 
 ## In-skill usage guide
 
@@ -59,6 +59,8 @@ Shipped 2026-09-10 as `v8.3.0` (features landed in 8.3.0-beta.0 / beta.1):
 | Assets | `import.meta.ROLLDOWN_FILE_URL_<referenceId>` for plugin-emitted assets (JS). `__VITE_ASSET__<id>__` in CSS/HTML. |
 | JSON | Warn on named imports from JSON modules (`json.namedExports` still defaults `true`). |
 | Build | Avoid settling seen preload deps (perf). Treat only whole `node_modules` path segments as dependencies. |
+
+Patches (no new features): **8.3.1** (2026-09-24) fixes `server.ws: false` in `mergeConfig`, `build.rolldownOptions.output.comments` merging, optimizer edge cases. **8.3.2** (2026-10-01) passes queries to `renderBuiltUrl` (and preloads CSS correctly with them), merges `build.rolldownOptions.output.minify` correctly, stops file-watcher errors from crashing the dev server, serves lazy-chunk sourcemaps in bundled dev, and caps `forwardConsole` object printing.
 
 8.2 (already in Vite 8 line): top-level **`input`**, `resolve.tsconfigPaths` no longer marked experimental.
 
@@ -122,7 +124,7 @@ Shipped 2026-09-10 as `v8.3.0` (features landed in 8.3.0-beta.0 / beta.1):
 
 Vite 8 docs no longer have a standalone “Rolldown Integration” guide — Rolldown is the default bundler. Vite 7 preview docs: https://v7.vite.dev/guide/rolldown
 
-## Related official packages (aligned 2026-09-18)
+## Related official packages (aligned 2026-10-01)
 
 | Package | npm | Role |
 |---|---|---|
@@ -133,9 +135,9 @@ Vite 8 docs no longer have a standalone “Rolldown Integration” guide — Rol
 | `@vitejs/plugin-legacy` | **8.2.3** | Legacy browsers. **No ES5 lowering** on Rolldown. Prefers Oxc minifier. |
 | `@vitejs/plugin-rsc` | **0.5.35** | RSC primitives (Environment API). Still 0.x. |
 | `@vitejs/plugin-basic-ssl` | **2.3.0** | Dev HTTPS certs |
-| `@vitejs/devtools` | **0.7.5** | Optional Vite peer (`^0.7.1`). Enable with `devtools` in **user** config. Also `@vitejs/devtools-vite` / `-rolldown` / `-oxc` (optional). |
+| `@vitejs/devtools` | **0.7.6** | Optional Vite peer (`^0.7.1`). Enable with `devtools` in **user** config. Also `@vitejs/devtools-vite` / `-rolldown` / `-oxc` (optional). |
 
-## Package exports (`vite@8.3.0`)
+## Package exports (`vite@8.3.2`)
 
 `.` (Node API), `./client` (types), `./module-runner`, `./internal`, `./dist/client/*`, `./types/*`, `./package.json`. `./types/internal/*` is `null`.
 

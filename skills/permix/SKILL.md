@@ -7,7 +7,7 @@ description: "Build, review, debug, configure, migrate, teach, or plan Permix ty
 
 Use this skill when work touches Permix permissions: definitions, `setup`/`check`, SSR hydration, UI adapters, server middleware, NestJS guards, or v3→v4 migration.
 
-Snapshot: `permix@4.3.0` (2026-09-18). Refresh from [source-map.md](references/source-map.md) if the installed version differs.
+Snapshot: `permix@4.3.0` (verified 2026-10-01). Refresh from [source-map.md](references/source-map.md) if the installed version differs.
 
 ## Workflow
 

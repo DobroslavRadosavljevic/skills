@@ -4,7 +4,7 @@ Same source → `.output/` in the format the host expects. **No adapter package*
 
 Priority: explicit `preset` > `NITRO_PRESET` > CI provider detect > `defaultPreset` > runtime (`node` / `bun` / `deno`).
 
-Providers listed at [nitro.build/deploy](https://nitro.build/deploy) include Alwaysdata, AWS Amplify, AWS Lambda, Azure, Cleavr, Cloudflare, Deno Deploy, DigitalOcean, EdgeOne, Firebase, Flightcontrol, Genezio, GitHub/GitLab Pages, Heroku, IIS, Koyeb, Netlify, Platform.sh, Render, StormKit, Vercel, Zeabur, Zephyr, Zerops, plus Node/Bun/Deno runtimes.
+Providers listed at [nitro.build/deploy](https://nitro.build/deploy) include Alwaysdata, AWS Amplify, AWS Lambda, Azure, Cleavr, Cloudflare, Deno Deploy, DigitalOcean, EdgeOne, Firebase, Flightcontrol, Genezio, GitHub/GitLab Pages, Heroku, IIS, Koyeb, Netlify, Render, StormKit, Upsun (formerly Platform.sh), Vercel, Zeabur, Zephyr, Zerops, plus Node/Bun/Deno runtimes.
 
 ## Output
 
@@ -37,7 +37,9 @@ Deno: `deno_server` / Deno Deploy provider docs. Prefer native Deno preset over 
 
 ## Cloudflare
 
-Prefer **`cloudflare_module`** (Workers). **`cloudflare_pages`** only when Pages-specific routing is required; Workers is the current recommendation.
+Prefer **`cloudflare_module`** (Workers). Use **`cloudflare_durable`** (extends `cloudflare_module`, exports a `$DurableObject` class; declare the binding and migration in wrangler config) for in-memory state or WebSocket via Durable Objects. **`cloudflare_pages`** only when Pages-specific routing is required; Workers is the current recommendation.
+
+Dev runs on Miniflare/`workerd` directly (Nitro offers to install `miniflare`; reading `wrangler.jsonc`/`.toml`/`.dev.vars` needs `wrangler`). Bindings are on `event.req.runtime.cloudflare.env` in dev and production; define them in wrangler config or inline via `cloudflare.wrangler`. Dev uses the newest compatibility date the installed Miniflare supports.
 
 Zero-config in Cloudflare CI when detected; still set preset in GitHub Actions.
 
@@ -45,7 +47,7 @@ Preview: Wrangler against the generated output (see current Cloudflare deploy pa
 
 - Extra Worker handlers: `exports.cloudflare.ts` (**no default export**) or `cloudflare.exports` in config. Hooks: `cloudflare:scheduled`, `email`, `queue`, `tail`, `trace`.
 - `scheduledTasks` → Cron Triggers in generated wrangler config.
-- Optional tracingChannel → custom spans plus Cloudflare instrumentation.
+- Optional `tracingChannel` → spans sent to Cloudflare Workers Observability without bundling the OpenTelemetry SDK.
 - Pages: generated `_routes.json`; override `cloudflare.pages.routes`.
 - Bindings (KV, D1, R2): configure via Wrangler/Nitro Cloudflare options; use matching `storage` / `database` connectors.
 
@@ -53,7 +55,7 @@ Preview: Wrangler against the generated output (see current Cloudflare deploy pa
 
 Auto-detect on those CIs. ISR/`isr` route rules and SWR map to platform primitives — do not copy Next.js-only APIs.
 
-Vercel cron from `scheduledTasks`. Netlify: `routeRules` redirects and/or `public/_redirects`.
+Vercel cron from `scheduledTasks`. `vercel.immutableStaticFiles: true` emits content-hashed static files with immutable caching. With `tracingChannel`, spans go to Vercel session traces. Netlify Edge keeps dynamic imports lazy. Netlify: `routeRules` redirects and/or `public/_redirects`.
 
 ISR revalidate patterns are host-specific (e.g. Vercel bypass token headers). Read the provider page before inventing cache busting.
 

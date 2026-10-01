@@ -53,6 +53,8 @@ Do not implement, recommend, or “hypothetically walk through” these. They vi
 
 **FACT.** Site reputation abuse is third-party content published on a host mainly because of that host’s established ranking signals. Hosting third-party content is not automatically a violation. Examples of abuse include sponsored payday-loan reviews on an education site, unexpected “best casinos” pages on a medical site, white-label coupons on a news site published to harvest reputation. Not abuse (per Google): wire/press-release services; syndicated news; UGC-first sites (forums, comments); editorial columns; advertorials whose purpose is to inform readers rather than manipulate Search; properly treated affiliate links / ad units; coupons sourced from merchants. Source: [Spam policies — Site reputation abuse](https://developers.google.com/search/docs/essentials/spam-policies).
 
+**FACT (2026-08-28).** Google adjusted its site reputation enforcement approach within the EEA. Read the [policy update post](https://developers.google.com/search/blog/2026/08/update-site-reputation-policy) before advising EEA sites; do not assume the same handling everywhere.
+
 **FACT.** If violating pages exist, Google’s manual-action guidance includes: move the content to a new domain and `nofollow` any leftover links; do not redirect old URLs to the new host (redirects can reintroduce the issue); `noindex` the violating pages and do not robots.txt-block them; or rewrite as first-party content. Source: [Manual actions report](https://support.google.com/webmasters/answer/9044175).
 
 ## Qualify outbound links

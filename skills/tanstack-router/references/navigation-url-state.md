@@ -35,6 +35,12 @@ When `from` is omitted, type-safe autocomplete is strongest for absolute paths f
 
 Prefer `<Link>` for user navigation because it renders an anchor with a real `href`.
 
+Recent Link behavior (1.170.21+):
+
+- `activeProps` / `inactiveProps` can override base element props; `class` and `style` still merge. React keeps `href`, `target`, and `disabled` controlled by routing options.
+- The undocumented Link `isTransitioning` state and `data-transitioning` attribute were removed. Use `useRouterState` / `useMatchRoute({ pending: true })` for pending navigation UI.
+- On the server, navigation is a no-op. Throw `redirect()` to issue HTTP redirects during SSR.
+
 Use `useNavigate()` for imperative client-side navigation:
 
 ```tsx
@@ -133,6 +139,10 @@ export const Route = createFileRoute('/posts/$postId')({
 ```
 
 Static routes still beat dynamic routes regardless of `params.priority`.
+
+`params.parse` results also feed server route handlers in TanStack Start (parent parsers included), so runtime params match their inferred types. `pathParamsAllowedCharacters` is initialization-only: set it in `createRouter`; changing it requires a new router instance.
+
+Splat values `0` and `false` are kept when interpolating paths; only `undefined`, `null`, and `''` omit the `_splat` segment.
 
 Prefix/suffix params use `{}` in file names, for example `post-{$postId}.tsx` or `{$fileName}[.]txt.tsx`.
 

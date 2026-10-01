@@ -4,8 +4,8 @@ This reference captures the docs snapshot used to create the skill.
 
 ## Snapshot
 
-- Captured: 2026-08-20
-- Stable npm package: `isbot@5.2.1` (published 2026-07-14)
+- Captured: 2026-08-20; re-verified 2026-10-01
+- Stable npm package: `isbot@5.2.2` (published 2026-08-27; pattern-size reduction only — types and exports identical to 5.2.1)
 - License: Unlicense
 - Engines: `node: >=18`
 - Official repository: https://github.com/omrilotan/isbot
@@ -53,7 +53,7 @@ Treat older majors (v3 default export, v4 `pattern` named export, `isbot.*` meth
 - `src/index.ts` (match helpers, naive fallback, `createIsbotFromList`)
 - `src/browser.ts` (UMD/global `isbot`)
 - `src/patterns.json` (regex fragments joined into `fullPattern`)
-- Published `index.d.ts` @ 5.2.1 (camelCase + legacy dual exports)
+- Published `index.d.ts` @ 5.2.2 (camelCase + legacy dual exports; unchanged since 5.2.1)
 
 ## Version Line Orientation
 

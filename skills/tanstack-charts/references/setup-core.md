@@ -1,6 +1,6 @@
 # Setup And Core API
 
-Snapshot: `@tanstack/charts@0.14.0` (pre-alpha). Pin and re-check when versions move.
+Snapshot: `@tanstack/charts@0.18.0` (official Alpha since `0.16.0`). Pin an exact version and re-check when versions move; minors may break APIs.
 
 ## Installation
 
@@ -42,7 +42,7 @@ There is **no** `@tanstack/charts/scales` barrel. Prefer `d3-scale` for time, UT
 
 | Import | Framework peers |
 | --- | --- |
-| `@tanstack/charts/react` | `react` / `react-dom` `^19.0.0` |
+| `@tanstack/charts/react` | React and React DOM 18 or 19 (since `0.17.0`) |
 | `@tanstack/charts/react-native` | React `^19.2.3`, RN `^0.86.0`, `react-native-svg` `>=15.15.4 <16` (experimental) |
 | `@tanstack/charts/preact` | `preact` `>=10` |
 | `@tanstack/charts/vue` | `vue` `>=3.5` |
@@ -84,18 +84,20 @@ const alphabet: readonly LetterFrequency[] = [
 
 const chart = defineChart({
   marks: [barY(alphabet, { x: 'letter', y: 'frequency' })],
-  x: { scale: () => scaleBand<string>().padding(0.18) },
-  y: {
-    scale: scaleLinear,
-    nice: true,
-    grid: true,
-    axis: { label: 'Frequency' },
+  scales: {
+    x: { scale: () => scaleBand<string>().padding(0.18) },
+    y: {
+      scale: scaleLinear,
+      nice: true,
+      grid: true,
+      axis: { label: 'Frequency' },
+    },
   },
   tooltip,
 })
 ```
 
-Both positional scales are required when marks materialize those dimensions.
+Since `0.16.0`, Cartesian scale and axis options live in the `scales` registry. Every definition must provide both reserved entries `scales.x` and `scales.y`; set one to `null` only when no mark uses that dimension (for example a `ruleY`-only chart: `scales: { x: null, y: { scale: yScale } }`). Root `x` / `y` options were removed and now fail through TypeScript or an actionable runtime error.
 
 `defineChart(existingDefinition, { tooltip, svgAnimation: true })` attaches behavior without rewriting marks.
 
@@ -104,20 +106,22 @@ Both positional scales are required when marks materialize those dimensions.
 Factory when the domain should follow channels:
 
 ```ts
-x: { scale: scaleUtc, nice: true, axis: { label: 'Date' } }
-y: { scale: scaleLinear, nice: true, grid: true }
+scales: {
+  x: { scale: scaleUtc, nice: true, axis: { label: 'Date' } },
+  y: { scale: scaleLinear, nice: true, grid: true },
+}
 ```
 
 Configured factory for options before inference:
 
 ```ts
-x: { scale: () => scaleBand<string>().padding(0.18) }
+scales: { x: { scale: () => scaleBand<string>().padding(0.18) }, y: { scale: scaleLinear } }
 ```
 
 Configured instance when the domain is application-owned:
 
 ```ts
-y: { scale: scaleLinear().domain([0, 1]) }
+scales: { x: { scale: scaleUtc }, y: { scale: scaleLinear().domain([0, 1]) } }
 ```
 
 Never assign pixel ranges to chart-owned positional scales.
@@ -127,29 +131,59 @@ Compact linear domains and band ranges require exactly two finite values. Ordina
 ### Axis options
 
 ```ts
-y: {
-  scale: scaleLinear,
-  nice: true,
-  grid: true,
-  axis: {
-    line: true,
-    label: 'Revenue',
-    ticks: {
-      count: 7,
-      format: (value) => currency.format(value),
-    },
-    tickLabels: {
-      rotate: -35,
-      thin: { minGap: 8, priority: 'ends', keep: [launchDate] },
+scales: {
+  x: { scale: scaleUtc },
+  y: {
+    scale: scaleLinear,
+    nice: true,
+    grid: { stroke: '#e5e7eb', strokeDasharray: '2 4' }, // or true
+    axis: {
+      line: { strokeWidth: 1.5 }, // or true
+      label: { text: 'Revenue', fontSize: 14, fontWeight: 500 }, // or a string
+      ticks: {
+        count: 7,
+        format: (value) => currency.format(value),
+      },
+      tickLabels: {
+        rotate: -35,
+        thin: { minGap: 8, priority: 'ends', keep: [launchDate] },
+      },
     },
   },
 }
 ```
 
+`grid` and `axis.line` accept `true` or a `ChartGuideLineStyle` (`stroke`, `strokeOpacity`, `strokeWidth`, `strokeDasharray`, `lineCap`) since `0.18.0`; authored widths join automatic margins and zero widths hide the line. `axis.label` accepts a string or `{ text, fontSize, fontWeight, fill, opacity }` (`0.18.0`). Axis `side` stays physical in right-to-left containers; tick anchors follow the inline direction.
+
+### Named scales and multiple axes (`0.15.0+`)
+
+Add a registry entry with `channel: 'x' | 'y'` and bind marks with `xScale` / `yScale`:
+
+```ts
+defineChart({
+  marks: [
+    lineY(revenue, { x: 'date', y: 'value' }),
+    lineY(conversion, { x: 'date', y: 'rate', yScale: 'conversion' }),
+  ],
+  scales: {
+    x: { scale: scaleUtc },
+    y: { scale: scaleLinear, grid: true, axis: { label: 'Revenue' } },
+    conversion: {
+      channel: 'y',
+      scale: scaleLinear,
+      side: 'right',
+      axis: { label: 'Conversion' },
+    },
+  },
+})
+```
+
+Every non-null scale draws an axis unless `axis: false`. Axes on one side stack outward. `color` is reserved and cannot name a position scale. Prefer small multiples over unrelated dual axes.
+
 | Control | Use |
 | --- | --- |
 | `axis: false` | Hide the guide; keep the scale |
-| Axis `null` | No mark uses that dimension |
+| `scales.x: null` / `scales.y: null` | No mark uses that dimension (the entry itself is still required) |
 | `grid` | Independent of axis visibility |
 | `nice` | After domain inference |
 
@@ -181,8 +215,7 @@ import { scaleOrdinal } from '@tanstack/charts/scales/ordinal'
 
 defineChart({
   marks: [lineY(rows, { x: 'date', y: 'value', z: 'region' })],
-  x: { scale: xScale },
-  y: { scale: yScale },
+  scales: { x: { scale: xScale }, y: { scale: yScale } },
   color: {
     scale: scaleOrdinal(
       ['North', 'South', 'West'],
@@ -195,6 +228,10 @@ defineChart({
 
 Interactive series toggling: `interactiveColorLegend` from `@tanstack/charts/legend`. Filter callbacks use `(value, { visible })`.
 
+Compact or styled categorical legends (`0.18.0`): pass `items: colorLegendItems({ justify, gap, rowGap, indicator: { shape, width, height, gap }, label: { fontSize, fill } })` to `colorLegend`. Indicator shapes are `dot`, `square`, `line`, and `line-dot`; `indicator.render` draws custom symbols.
+
+Gradients are declared on the definition (`gradients: [{ id, x1, y1, x2, y2, stops }]`, linear or radial since `0.18.0`) and referenced with `fill: 'url(#id)'`. Canvas supports linear fills/strokes and radial fills only.
+
 ## Static Vs Responsive Definitions
 
 ```ts
@@ -203,19 +240,21 @@ const definition = defineChart({
   tooltip,
   chart: ({ width, height, defaultTheme }) => ({
     marks: [barX(ranked, { x: 'value', y: 'product' })],
-    x: {
-      scale: scaleLinear,
-      nice: true,
-      axis: { ticks: { count: width < 480 ? 4 : 7 } },
+    scales: {
+      x: {
+        scale: scaleLinear,
+        nice: true,
+        axis: { ticks: { count: width < 480 ? 4 : 7 } },
+      },
+      y: { scale: () => scaleBand<string>().padding(0.1) },
     },
-    y: { scale: () => scaleBand<string>().padding(0.1) },
   }),
 })
 ```
 
 Builder context: `width`, `height`, `defaultTheme` (not `theme`). Memoize the complete definition against captured values.
 
-Definition-owned options (hosts do not override): `focus`, `focusRing`, `selection`, `controls`, `cursor`, `maxFocusDistance`, `spatialIndex`, `svgAnimation`, `pointer`, `keyboard`, `tooltip`, `motion`.
+Definition-owned options (hosts do not override): `focus`, `focusRing` (boolean or `{ radius, strokeWidth, fill, stroke }` since `0.18.0`; also settable as `theme.focusRing`), `selection`, `controls`, `cursor`, `maxFocusDistance`, `spatialIndex`, `svgAnimation`, `pointer`, `keyboard`, `tooltip`, `motion`.
 
 ## Tooltip Extensions
 
@@ -225,8 +264,7 @@ import { portal } from '@tanstack/charts/tooltip/portal'
 
 defineChart({
   marks,
-  x,
-  y,
+  scales,
   focus: 'group-x',
   tooltip: {
     use: tooltip,
@@ -238,7 +276,7 @@ defineChart({
 })
 ```
 
-Grouped tooltip rows default to visual mark order (`visual`). `format` / `formatGroup` receive a second `ChartTooltipContentContext` (`{ pinned, … }`).
+Grouped tooltip rows default to visual mark order (`visual`) and highlight the active series (`0.16.1`). `format` / `formatGroup` receive a second `ChartTooltipContentContext` (`{ pinned, primaryPoint, … }`); custom content can read `context.primaryPoint` and `row.active`. Pinned tooltips dismiss on an outside pointer press (`0.16.0`). Add `className` to the tooltip options to style the DOM surface.
 
 DOM vs React Native tooltip tokens are **host-branded**. Do not pass an RN tooltip definition into a DOM `Chart` (or the reverse). Environment-neutral policy lives on `@tanstack/charts/tooltip/model`.
 
@@ -298,8 +336,10 @@ import { scaleLinear } from '@tanstack/charts/scales/linear'
 
 const chart = defineChart({
   marks: [lineY([2, 5, 3])],
-  x: { scale: scaleLinear },
-  y: { scale: scaleLinear },
+  scales: {
+    x: { scale: scaleLinear },
+    y: { scale: scaleLinear },
+  },
 })
 
 const scene = createChartScene(chart, { width: 640, height: 320 })

@@ -1,6 +1,6 @@
 ---
 name: kafka
-description: "Build, review, debug, configure, migrate, teach, or plan Apache Kafka work from TypeScript with current docs. Prefer @platformatic/kafka as the TS SDK (Producer, Consumer, Admin, bootstrapBrokers, consume streams, ProduceAcks, transactions). Use for topics, partitions, consumer groups, offsets, acks, idempotence, EOS, compaction, retention, SASL/TLS, Schema Registry concepts, KRaft, Kafka 4.x, kafkajs migration, DLQ/outbox patterns, and broker ops that affect app produce/consume."
+description: "Build, review, debug, configure, migrate, teach, or plan Apache Kafka work from TypeScript with current docs. Prefer @platformatic/kafka as the TS SDK (Producer, Consumer, Admin, bootstrapBrokers, consume streams, ProduceAcks, transactions, cooperative-sticky KIP-429, KIP-848). Use for topics, partitions, consumer groups, rebalances, offsets, acks, idempotence, EOS, compaction, retention, SASL/TLS, Schema Registry concepts, KRaft, Kafka 4.x, kafkajs migration, DLQ/outbox patterns, and broker ops that affect app produce/consume."
 ---
 
 # Apache Kafka (TypeScript)
@@ -10,7 +10,7 @@ Use this skill for Kafka produce/consume/admin work driven from TypeScript/Node:
 ## Workflow
 
 1. Inspect the local surface:
-   - Package: **`@platformatic/kafka`** (snapshot **2.8.0**). Engines: Node **`>=22.22` or `>=24.6`**. Kafka brokers **3.5–4.2** (KRaft-only on Kafka **4.0+**).
+   - Package: **`@platformatic/kafka`** (snapshot **2.13.0**). Engines: Node **`>=22.22` or `>=24.6`**. Kafka brokers **3.5–4.2** CI-tested (upstream Apache Kafka is at **4.3.x**; KRaft-only on **4.0+**).
    - Clients: `Producer` / `Consumer` / `Admin` with `bootstrapBrokers` (not KafkaJS `brokers`).
    - Topics: partitions, keys, RF / `min.insync.replicas`, cleanup policy.
    - Semantics: at-least-once vs EOS; auto vs manual commit; `ProduceAcks`.
@@ -34,6 +34,8 @@ Use this skill for Kafka produce/consume/admin work driven from TypeScript/Node:
 - Poison pills: retry/DLQ then commit — never block a partition forever.
 - Platformatic: long-lived clients; lazy connect; **`close()`**; consume via **`consume()` → stream** (`for await` / `data` / concurrent `forEach`); offsets are **`bigint`**; headers on consume are a **`Map`**.
 - Pass **`serializers` / `deserializers`** (e.g. `stringSerializers`) — default expects `Buffer`.
+- Classic groups rebalance stop-the-world by default; opt in to **KIP-429 cooperative-sticky** (`protocols: [{ name: COOPERATIVE_STICKY_ASSIGNOR, version: 3 }]`, all members together) or use **KIP-848** (`groupProtocol: "consumer"`) on Kafka 4.0+. Watch `consumer:heartbeat:stalled` for stuck members.
+- Kafka share groups (KIP-932 queues, production-ready since Kafka 4.2) are **not** implemented in `@platformatic/kafka` — do not promise queue semantics from it.
 - Kafka **4.0+** is **KRaft-only** (no ZooKeeper). Local/dev: fix `advertised.listeners`.
 - Prefer **`bun` / `bunx`** in command examples; runtime must still satisfy Node engines for `@platformatic/kafka`.
 

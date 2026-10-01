@@ -1,6 +1,6 @@
 ---
 name: testcontainers
-description: "Build, review, debug, configure, migrate, or plan Testcontainers integration tests with real Docker dependencies and current docs. Use for testcontainers (Node/Java/Python/Go/.NET/Rust), GenericContainer, DockerContainer, modules (@testcontainers/*, org.testcontainers, modules/postgres), PostgreSQL MySQL Redis MongoDB Kafka LocalStack Elasticsearch, Wait strategies, Network, Docker Compose, Ryuk, reuse, TESTCONTAINERS_* env vars, Vitest Jest JUnit pytest go test fixtures, CI DinD Colima Podman OrbStack, and Testcontainers Cloud."
+description: "Build, review, debug, configure, migrate, or plan Testcontainers integration tests with real Docker dependencies and current docs. Use for testcontainers (Node/Java/Python/Go/.NET/Rust), GenericContainer, DockerContainer, modules (@testcontainers/*, org.testcontainers, modules/postgres), PostgreSQL MySQL Redis MongoDB (Atlas Local) Kafka LocalStack Elasticsearch ClickHouse InfluxDB Mosquitto, Wait strategies, PullPolicy, Network, Docker Compose, Ryuk, reuse, TESTCONTAINERS_* env vars, Vitest Jest JUnit pytest go test fixtures, CI DinD Colima Podman OrbStack, and Testcontainers Cloud."
 ---
 
 # Testcontainers
@@ -34,7 +34,7 @@ Use this skill when work touches disposable Docker containers for integration te
 - Keep Ryuk enabled in CI unless the environment cannot support it; if disabled, ensure another cleanup path.
 - Enable **reuse** only on local developer machines (`withReuse` / `TESTCONTAINERS_REUSE_ENABLE`). Do not rely on reuse in CI.
 - Reserve Testcontainers for **integration/contract** boundaries. Keep pure unit tests free of Docker.
-- Match module majors to core (Node 12.x modules with `testcontainers@12`; Java 2.x `testcontainers-*` artifacts + BOM).
+- Match module majors to core (Node 12.x modules with `testcontainers@12`, which needs Node >=22.22; Java 2.x `testcontainers-*` artifacts + BOM).
 - Throwaway credentials only. Never put production secrets in container env.
 
 ## Language defaults

@@ -4,7 +4,7 @@ This reference captures the docs snapshot used to create the skill.
 
 ## Snapshot
 
-- Captured: 2026-08-03
+- Captured: 2026-08-03; re-verified 2026-10-01 (no new stable releases: date-fns 4.4.0, @date-fns/tz 1.5.0, @date-fns/utc 2.1.1; `next` still 5.0.0-alpha.0)
 - Stable npm packages:
   - `date-fns@4.4.0`
   - `@date-fns/tz@1.5.0`

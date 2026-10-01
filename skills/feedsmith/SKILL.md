@@ -5,12 +5,12 @@ description: "Build, review, debug, configure, migrate, or plan Feedsmith v3+ Ty
 
 # Feedsmith
 
-Use this skill for **Feedsmith v3+** (`feedsmith`): parse and generate RSS, Atom, RDF, JSON Feed, and OPML with structure-preserving, typed APIs. Docs: [feedsmith.dev](https://feedsmith.dev/). Snapshot **3.0.0** (2026-09-18).
+Use this skill for **Feedsmith v3+** (`feedsmith`): parse and generate RSS, Atom, RDF, JSON Feed, and OPML with structure-preserving, typed APIs. Docs: [feedsmith.dev](https://feedsmith.dev/). Snapshot **3.0.1** (2026-10-01).
 
 ## Workflow
 
 1. Inspect the local surface:
-   - Installed `feedsmith` version (`bun pm ls feedsmith` / `bun info feedsmith`). This skill targets **3.x**; `latest` is **3.0.0**.
+   - Installed `feedsmith` version (`bun pm ls feedsmith` / `bun info feedsmith`). This skill targets **3.x**; `latest` is **3.0.1** (ESM build now ships `.mjs` files; no API changes from 3.0.0).
    - Parse vs generate vs OPML vs detect-only usage.
    - Dates: raw strings vs `parseDateFn` / `Date` on generate.
    - v2 leftovers: `feedsmith/types`, `{ lenient: true }`, flat Atom strings, string RSS persons, singular `dc.*` fields, `Rss`/`Atom`/`Json`/`Rdf` type namespaces.

@@ -4,15 +4,19 @@ This reference captures the Turborepo docs and package snapshot used to create t
 
 ## Snapshot
 
-- Captured: 2026-07-30
+- Captured: 2026-10-01
 - Canonical docs: https://turborepo.dev · https://turborepo.com (`turbo.build` redirects)
-- npm `turbo`: **2.10.7** (`canary` exists; treat as unavailable unless the project uses it)
-- npm `create-turbo`: **2.10.7**
+- npm `turbo`: **2.11.6** (published 2026-10-01; `canary` exists — treat as unavailable unless the project uses it)
+- npm `create-turbo`: **2.11.6**
+- Standalone binaries (2.11.5+): `curl -fsSL https://turborepo.dev/install | sh` · Windows `irm https://turborepo.dev/install.ps1 | iex` · GitHub release assets
+- Release posts: https://turborepo.dev/blog/2-10 (graceful shutdown, deferred hashing, `--affected` + `--filter`, cache eviction) · https://turborepo.dev/blog/2-11 (experimental Rust/Python/Go, faster startup, `devEngines.packageManager`, nub/aube, `prune --production`)
+- Releases: https://github.com/vercel/turborepo/releases (2.11.5: bundled docs in the npm package + `agentGuidance`; 2.11.6: task tags + `tag:` filters)
 - Schema: https://turborepo.dev/schema.json
 - Agent indexes: https://turborepo.dev/llms.txt · https://turborepo.dev/sitemap.md · https://turborepo.dev/agents.md
 - Context7 IDs: `/websites/turborepo_dev`, `/vercel/turborepo`
 - Support: Turbo **2.x** LTS; **1.x** EOL 2026-06-04
-- Package managers: pnpm 8+, npm 8+, yarn 1+, **bun 1.2+** (stable)
+- Package managers (stable): pnpm 8+, npm 8+, yarn 1+, **bun 1.2+**, **nub 0.8+**, **aube 2.2+**
+- Installed `turbo` npm package ships its docs (2.11.5+); the managed `AGENTS.md` block points at them
 
 ## In-skill usage guide
 
@@ -41,7 +45,7 @@ This reference captures the Turborepo docs and package snapshot used to create t
 - Installation: https://turborepo.dev/docs/getting-started/installation
 - Add to existing repo: https://turborepo.dev/docs/getting-started/add-to-existing-repository
 - Examples: https://turborepo.dev/docs/getting-started/examples
-- Support policy: https://turborepo.dev/docs/getting-started/support-policy
+- Support policy: https://turborepo.dev/docs/support-policy
 - Editor integration: https://turborepo.dev/docs/getting-started/editor-integration
 
 ### Crafting your repository
@@ -78,6 +82,9 @@ This reference captures the Turborepo docs and package snapshot used to create t
 - System environment variables: https://turborepo.dev/docs/reference/system-environment-variables
 - Options overview: https://turborepo.dev/docs/reference/options-overview
 - Query: https://turborepo.dev/docs/reference/query
+- Devtools (package graph in browser): https://turborepo.dev/docs/reference/devtools
+- Docs search CLI: https://turborepo.dev/docs/reference/docs
+- Codemods / upgrade: https://turborepo.dev/docs/reference/turbo-codemod
 - Telemetry: https://turborepo.dev/docs/telemetry
 
 ### Guides
@@ -98,6 +105,8 @@ This reference captures the Turborepo docs and package snapshot used to create t
 - Oxc (oxlint/oxfmt): https://turborepo.dev/docs/guides/tools/oxc
 - Generating code: https://turborepo.dev/docs/guides/generating-code
 - AI: https://turborepo.dev/docs/guides/ai
+- Multi-language (experimental): https://turborepo.dev/docs/guides/multi-language
+- Rust / Python / Go (experimental): https://turborepo.dev/docs/guides/tools/rust · https://turborepo.dev/docs/guides/tools/python · https://turborepo.dev/docs/guides/tools/go
 
 ### Ecosystem
 

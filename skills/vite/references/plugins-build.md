@@ -1,6 +1,6 @@
 # Plugins and Build
 
-Plugin API conventions, official plugins, production build, library mode, MPA, DevTools, and performance. Snapshot: `vite@8.3.0`.
+Plugin API conventions, official plugins, production build, library mode, MPA, DevTools, and performance. Snapshot: `vite@8.3.2`.
 
 ## Using plugins
 
@@ -54,7 +54,7 @@ Emitted assets from plugins: JS `import.meta.ROLLDOWN_FILE_URL_<referenceId>`; C
 
 `applyToEnvironment` (Environment API): 8.3 warns if the returned plugin uses unsupported hooks.
 
-## Official `@vitejs/*` plugins (2026-09-18)
+## Official `@vitejs/*` plugins (2026-10-01)
 
 | Package | npm | Role |
 |---|---|---|
@@ -65,7 +65,7 @@ Emitted assets from plugins: JS `import.meta.ROLLDOWN_FILE_URL_<referenceId>`; C
 | `@vitejs/plugin-legacy` | 8.2.3 | Legacy production builds — **ES5 lowering not supported** under Rolldown. Prefers Oxc minify. |
 | `@vitejs/plugin-rsc` | 0.5.35 | RSC via Environment API (0.x) |
 | `@vitejs/plugin-basic-ssl` | 2.3.0 | Dev HTTPS |
-| `@vitejs/devtools` | 0.7.5 | Optional Vite peer. `devtools: true` in user config (8.3+). |
+| `@vitejs/devtools` | 0.7.6 | Optional Vite peer. `devtools: true` in user config (8.3+). |
 
 Registry: https://vite.dev/plugins/ · https://registry.vite.dev · DevTools: https://devtools.vite.dev
 

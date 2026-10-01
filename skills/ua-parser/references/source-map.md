@@ -4,7 +4,7 @@ This reference captures the docs snapshot used to create the skill.
 
 ## Snapshot
 
-- Captured: 2026-08-20
+- Captured: 2026-08-20; re-verified 2026-10-01 (no new releases; `latest` 2.0.10, `legacy` 1.0.41, PRO packages 2.0.10)
 - Stable npm packages (all at **2.0.10**, published 2026-05-21 unless noted):
   - `ua-parser-js@2.0.10` — OSS, license `AGPL-3.0-or-later`
   - `@ua-parser-js/pro-personal@2.0.10` — PRO Personal

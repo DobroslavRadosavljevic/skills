@@ -70,9 +70,11 @@ export { Panel, PanelHeader, PanelTitle }
 - Use the project's existing variant helper: CVA, tailwind-variants, plain class maps, or local tokens.
 - Keep selectors targeted to slots and states. Avoid brittle DOM-depth selectors when a part can carry a slot.
 
-## `asChild` And Slot
+## Element Swapping: `asChild` (Radix) Or `render` (Base UI)
 
-Use `asChild` for leaf components when the caller needs another element to receive the component behavior and styling.
+shadcn/ui now ships three primitive bases: **Radix** (`radix-ui`, `asChild` + `Slot`), **Base UI** (`@base-ui/react`, `render` prop, no `asChild`), and **React Aria** (`react-aria-components`). Use the composition API of the base the project already uses.
+
+Radix base: use `asChild` for leaf components when the caller needs another element to receive the component behavior and styling.
 
 ```tsx
 function Action({
@@ -98,6 +100,26 @@ Rules:
 - Slotted custom children must support refs. Use React 19 `ref` props in React 19-only code; use `React.forwardRef` for React 18 or mixed-version libraries.
 - Do not use `asChild` to skip semantic work. The resulting element must still be valid for the behavior. For example, a trigger should render a `button`, `a`, or another accessible interactive component.
 - For components with more than one child around the slottable area, use the local Radix `Slottable` pattern if the installed Slot package supports it.
+
+Base UI base: wrap the primitive part and pass props through; callers swap the element with `render`, not `asChild`.
+
+```tsx
+import { Button as ButtonPrimitive } from "@base-ui/react/button"
+
+function Action({ className, ...props }: ButtonPrimitive.Props) {
+  return (
+    <ButtonPrimitive
+      data-slot="action"
+      className={cn("inline-flex items-center gap-2", className)}
+      {...props}
+    />
+  )
+}
+
+// <DialogPrimitive.Close render={<Button variant="outline" />}>Close</DialogPrimitive.Close>
+```
+
+- Do not add an `asChild` prop on top of a Base UI part; it duplicates `render` and breaks the primitive contract.
 
 ## Primitive Wrappers
 

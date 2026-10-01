@@ -4,12 +4,12 @@ This reference captures the Intlayer docs snapshot used to create the skill.
 
 ## Snapshot
 
-- Captured: 2026-09-18
-- Target line: **Intlayer 9.5** (`latest` dist-tag)
-- Stable npm packages: `intlayer@9.5.4`, `react-intlayer@9.5.4`, `vite-intlayer@9.5.4`
-- npm `latest` dist-tag: `9.5.4` (published 2026-09-18)
-- Matching companions observed at `9.5.4`: `@intlayer/analytics`, `@intlayer/mcp`, `elysia-intlayer`
-- npm canary observed: `9.5.4-canary.0`
+- Captured: 2026-10-01
+- Target line: **Intlayer 9.6** (`latest` dist-tag); APIs match the 9.5 line
+- Stable npm packages: `intlayer@9.6.0`, `react-intlayer@9.6.0`, `vite-intlayer@9.6.0`
+- npm `latest` dist-tag: `9.6.0` (published 2026-09-30)
+- Matching companions observed at `9.6.0`: `@intlayer/analytics`, `@intlayer/mcp`, `@intlayer/types`, `elysia-intlayer`, `next-intlayer`
+- npm canary observed: `9.5.9-canary.0` (older than `latest`; ignore)
 - Official homepage: https://intlayer.org
 - Official repository: https://github.com/aymericzip/intlayer
 - Official TanStack Start template: https://github.com/aymericzip/intlayer-tanstack-start-template
@@ -29,6 +29,16 @@ Treat canary and prerelease dist-tags as unavailable unless the project explicit
 | 9.5.2 | 2026-09-12 | CLI: replace `intlayer ci <cmd>` with **`--ci` flag** on the real command (`fill --ci`, `build --ci`, …) |
 | 9.5.3 | 2026-09-14 | Line patch |
 | 9.5.4 | 2026-09-18 | Version alignment. Engine: insertion handling for markdown/HTML via auto-decorate. `react-intlayer` analytics: `useExperiment`. `vite-intlayer/nitro-handler` (h3 v2) for Nitro/Start production SSR |
+
+### Releases since the 9.5.4 snapshot (2026-09-18)
+
+| Version | Date | Skill-relevant changes |
+| --- | --- | --- |
+| 9.5.5–9.5.7 | 2026-09-20 – 09-23 | Astro/Remix integration work; `vite-intlayer` web proxy handler for Astro (`vite-intlayer/web-proxy-handler`, not used on Start); `init infra` |
+| 9.5.8 | 2026-09-24 | CLI **`intlayer upgrade`** |
+| 9.5.9–9.5.11 | 2026-09-24 – 09-27 | `getConfiguration` deprecated (import `defaultLocale` / `locales` / `routing` / `editor` from `intlayer`); `scan` detects routing strategy, hreflang reciprocity, `og:locale`, sitemap indexes |
+| 9.5.12 | 2026-09-30 | `getIntlayer` / `getIntlayerAsync` with omitted locale resolve the request locale (Next.js) → stored locale → default |
+| 9.6.0 | 2026-09-30 | `init` installs packages + framework only, opt-in steps become sub-commands, `--interactive` requires a terminal; compat adapters `@intlayer/svelte-i18n`, `@intlayer/nuxtjs-i18n` (the doc page says `@intlayer/nuxt-i18n`, which is not on npm), `@intlayer/ngx-translate`; replaced i18n packages move to devDependencies; Nitro handler path fix on Windows; Vite content-watcher lock; React `IntlayerProvider` locale-change refactor and eager dictionary transform; browser (Chrome/Firefox) extension; AI `model` typed per provider. No config default changes |
 
 If the installed project is still on 9.4.x, do not use `--ci`, `useExperiment`, or assume `chunkGrouping` / `dictionariesPreload` until packages are bumped to 9.5.x together. `getIntlayerAsync` remains the 9.4+ server/head API.
 
@@ -71,6 +81,7 @@ If the installed project is still on 9.4.x, do not use `--ci`, `useExperiment`, 
 - Select: https://intlayer.org/doc/concept/content/select
 - Dynamic dictionaries: https://intlayer.org/doc/concept/dynamic-dictionaries
 - CLI: https://intlayer.org/doc/concept/cli
+- CLI upgrade: https://intlayer.org/doc/concept/cli/upgrade
 - Formatters: https://intlayer.org/doc/formatters
 - Bundle optimization: https://intlayer.org/doc/concept/bundle-optimization
 
@@ -98,7 +109,9 @@ If the installed project is still on 9.4.x, do not use `--ci`, `useExperiment`, 
 - `docs/docs/en/releases/v9.md` / published `/doc/releases/v9` (does not list 9.5 point releases)
 - Published `/doc/concept/configuration` (includes `chunkGrouping` / `dictionariesPreload` in the example; history last entry 9.3.3)
 - `@intlayer/types@9.5.4` `config.d.ts` (authoritative knob defaults)
-- `intlayer@9.5.4` / `react-intlayer@9.5.4` / `vite-intlayer@9.5.4` package exports
+- `intlayer@9.6.0` / `react-intlayer@9.6.0` / `vite-intlayer@9.6.0` package exports (9.6.0 adds `vite-intlayer/web-proxy-handler`)
+- `@intlayer/types@9.6.0` `config.d.ts` diff vs 9.5.4 (only AI model typing changed)
+- `docs/docs/en/cli/init.md`, `cli/upgrade.md`, `packages/intlayer/getIntlayer.md`, `packages/intlayer/getConfiguration.md` at tag `v9.6.0`
 - `docs/docs/en/cli/index.md`, `build.md`, `fill.md` (9.5.2 `--ci`)
 - `docs/docs/en/packages/vite-intlayer/intlayerProxy.md` (Nitro auto-injection)
 - Official template: `aymericzip/intlayer-tanstack-start-template` (still ships `LocalizedLink`)

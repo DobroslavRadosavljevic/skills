@@ -1,8 +1,22 @@
 # Source map
 
-Snapshot date: 2026-08-17. Refresh when the user asks for latest behavior, when a rich-result type looks retired, or when crawler tokens change.
+Snapshot date: 2026-10-01 (Google changelog entries checked through 2026-09-24). Refresh when the user asks for latest behavior, when a rich-result type looks retired, or when crawler tokens change.
 
 Prefer official docs over blogs. Do not treat forum posts or memory as authoritative.
+
+## Changes since the 2026-08-17 snapshot
+
+Sources: [Search docs updates](https://developers.google.com/search/updates), [Crawling changelog](https://developers.google.com/crawling/docs/changelog).
+
+- 2026-09-24 — VideoObject: `creator` (and `author`) documented; `interactionStatistic` lists the supported interaction types. See structured-data.md.
+- 2026-09-18 — Aggregator units and supplier units now support local business queries.
+- 2026-09-17 — `Mediapartners-Google` preferences affect several ad products (AdSense, Ad Manager, …), not only AdSense. See crawl-index.md.
+- 2026-09-16 — New guide: Search profile badge on your site ([Search profiles](https://developers.google.com/search/docs/appearance/search-profiles)).
+- 2026-09-08 — New page: regional differences in Search experience (aggregator units, supplier units, carousels; eligibility by country) ([Aggregator features](https://developers.google.com/search/docs/appearance/aggregator-features)).
+- 2026-08-28 — Site reputation abuse: enforcement approach adjusted within the EEA ([blog](https://developers.google.com/search/blog/2026/08/update-site-reputation-policy)). See off-page.md.
+- 2026-08-28 — Favicon doc lists supported file formats inline (formats unchanged).
+- 2026-08-20 — Preferred sources: custom interactive button that guides users to set the site as a preferred source. See geo.md.
+- 2026-09 blog — Search Console adds web multimodal Search performance reporting ([blog](https://developers.google.com/search/blog/2026/09/web-multimodal-in-sc)); read the post before describing the report.
 
 ## Google Search Central — foundations
 

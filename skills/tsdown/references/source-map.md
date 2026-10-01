@@ -4,16 +4,20 @@ Docs and package snapshot used to create this skill.
 
 ## Snapshot
 
-- Captured: 2026-07-30
-- Package: **`tsdown@0.22.14`** (npm `latest`, published 2026-07-23)
-- Beta: `0.23.0-beta.2` (`dist-tag` `beta`) — unreleased docs often at https://main.tsdown.dev
-- Engines (0.22.14): Node `^22.18.0 || >=24.11.0` (to **run** tsdown)
+- Captured: 2026-10-01
+- Package: **`tsdown@0.23.0`** (npm `latest`, published 2026-09-03)
+- Other dist-tags (stale vs latest): `rc` → 0.23.0-rc.1, `beta` → 0.23.0-beta.3
+- Last 0.22 release: **0.22.14** — the version `tsdown-migrate` installs for the first migration stage
+- Engines (0.23.0): Node `^22.18.0 || ^24.11.0 || >=26.0.0` (to **run** tsdown; Node 25 dropped)
+- Peers (optional): `typescript` `^5 || ^6 || ^7`, `@tsdown/css` / `@tsdown/exe` **exactly 0.23.0**, `publint` `^0.3.8`, `@arethetypeswrong/core` `^0.18.1`, `unplugin-unused` `>=0.5.0`, `@vitejs/devtools`, `tsx`, `unrun`
+- Release notes / migration guide: https://github.com/rolldown/tsdown/releases/tag/v0.23.0
 - Homepage: https://tsdown.dev/
 - Docs ToC: https://tsdown.dev/llms.txt
 - Repo: https://github.com/rolldown/tsdown
 - License: MIT (VoidZero Inc. & Contributors; Kevin Deng)
-- Core: Rolldown ~1.2 + Oxc; dts via `rolldown-plugin-dts`
-- Related: `create-tsdown@0.22.14`, `tsdown-migrate@0.22.14`
+- Core: Rolldown `~1.2.7` + Oxc; dts via `rolldown-plugin-dts@^0.28.5` (requires Rolldown 1.2.x)
+- Related: `create-tsdown@0.23.0`, `tsdown-migrate@0.23.0`, `@tsdown/css@0.23.0`, `@tsdown/exe@0.23.0`
+- dts generator options: https://github.com/sxzz/rolldown-plugin-dts#readme
 - Context7 IDs: `/rolldown/tsdown`, `/websites/tsdown_dev`
 
 ## In-skill usage guide
@@ -31,9 +35,9 @@ Docs and package snapshot used to create this skill.
    # or: npm view tsdown version
    ```
 
-3. Prefer https://tsdown.dev/ and https://tsdown.dev/llms.txt. If installed package is 0.23-beta, also check https://main.tsdown.dev.
+3. Prefer https://tsdown.dev/ and https://tsdown.dev/llms.txt. For unreleased changes check https://main.tsdown.dev. Some pages lag the code (for example, the lint page still says the `attw` default profile is `strict`; 0.23 code uses `esm-only`). Trust release notes and source when they disagree.
 4. Keep `@tsdown/css` / `@tsdown/exe` on the **same** version as `tsdown`.
-5. For tsup migrations, re-read https://tsdown.dev/guide/migrate-from-tsup.
+5. For tsup migrations, re-read https://tsdown.dev/guide/migrate-from-tsup. For 0.22 → 0.23, re-read the v0.23.0 release notes.
 
 ## Official Pages
 
@@ -60,6 +64,7 @@ Docs and package snapshot used to create this skill.
 - Target / platform: https://tsdown.dev/options/target · https://tsdown.dev/options/platform
 - Tree-shaking / sourcemap / minify: https://tsdown.dev/options/tree-shaking · sourcemap · minification
 - CSS / copy / exe / lint: https://tsdown.dev/options/css · copy · exe · lint
+- Root / log level: https://tsdown.dev/options/root · log-level
 - CJS default: https://tsdown.dev/options/cjs-default
 
 ### Advanced / reference

@@ -8,6 +8,16 @@ Docs: https://turborepo.dev/docs/crafting-your-repository/caching · https://tur
 - Restores declared `outputs` + task logs on hit
 - Assumes tasks are **deterministic**
 - Git worktrees share the main worktree cache unless `cacheDir` is set
+- Grows forever unless you opt into eviction (2.10+; expected default in 3.0):
+
+```jsonc
+{
+  "cacheMaxAge": "7d",   // s m h d w; env TURBO_CACHE_MAX_AGE
+  "cacheMaxSize": "10GB" // MB GB TB; env TURBO_CACHE_MAX_SIZE; runs after age eviction
+}
+```
+
+Eviction runs in a background thread at the start of each `turbo run`.
 
 ```sh
 bunx turbo run build          # miss then write
@@ -134,6 +144,10 @@ Per-package automatic env wildcards (examples):
 | Nuxt | `NUXT_*`, `NUXT_ENV_*` |
 | Expo | `EXPO_PUBLIC_*` |
 | Astro / SvelteKit | `PUBLIC_*` |
+| Gatsby | `GATSBY_*` |
+| Remix | `REMIX_*` |
+| RedwoodJS | `REDWOOD_ENV_*` |
+| Sanity | `SANITY_STUDIO_*` |
 
 Opt out: `--framework-inference=false` or negate in `env` (`"!NEXT_PUBLIC_*"`).
 
@@ -152,4 +166,6 @@ Use turbo ESLint helpers to catch env vars used in code but missing from `turbo.
 | Inline `export FOO=1 && build` | Declared after hash — put FOO in turbo env instead |
 | Secrets in logs | Redact; remember logs are cached |
 | `cache: false` forgotten on deploy | Side-effect tasks must disable cache |
-| Signature failures in CI | Align `TURBO_REMOTE_CACHE_SIGNATURE_KEY` / `remoteCache.signature` |
+| Signature failures in CI | Align `TURBO_REMOTE_CACHE_SIGNATURE_KEY` / `remoteCache.signature`; use a ≥ 32-byte key (`futureFlags.longerSignatureKey` enforces it) |
+| Remote cache silently off mid-run | 2.11.4+ disables remote cache after unrecoverable 403s — check token/team |
+| `.turbo/cache` fills the disk | Set `cacheMaxAge` / `cacheMaxSize` |

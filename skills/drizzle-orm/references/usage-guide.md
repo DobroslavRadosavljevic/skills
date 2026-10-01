@@ -124,6 +124,7 @@ bunx drizzle-kit migrate
 | Upgrade 0.x migration folders | `bunx drizzle-kit up` |
 | Studio | `bunx drizzle-kit studio` |
 | Export DDL | `bunx drizzle-kit export` |
+| Machine-readable kit run | `bunx drizzle-kit generate --output json` |
 | Runtime migrate | `migrate(db, { migrationsFolder: "./drizzle" })` |
 
 ---
@@ -148,7 +149,7 @@ Add `defineRelations`; pass `{ relations }`; use `db.query` for nested reads.
 
 ### Phase E — Effect (optional)
 
-Move to `drizzle-orm/effect-postgres` (or dialect) with `effect@beta` + `@effect/sql-*`. See [effect-integration.md](effect-integration.md).
+Move to `drizzle-orm/effect-postgres` (or dialect) with `effect` 4.x + `@effect/sql-*` 4.x (not `effect@beta`). See [effect-integration.md](effect-integration.md).
 
 ---
 
@@ -209,7 +210,8 @@ Then rewrite RQBv1 → v2, remove `drizzle({ casing })`, move validators in-tree
 | Wrong column names | Expected instance casing | Use `snakeCase.table` / explicit names |
 | Cache-like wrong timestamps/JSON | Codec changes | Retest; read v0–v1 notes |
 | Migration folder chaos | Still on journal.json | `drizzle-kit up` |
-| Effect peer errors | `@effect/sql-drizzle` + RC | Use `drizzle-orm/effect-*` + Effect v4 |
+| Effect peer errors | `@effect/sql-drizzle` + RC, or stale `effect@beta` | Use `drizzle-orm/effect-*` + `effect` 4.x |
+| Kit hangs or fails in CI | Interactive rename / data-loss prompt | `--output json` + `--hints` / `--hints-file` |
 
 ---
 

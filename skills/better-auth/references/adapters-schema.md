@@ -23,7 +23,7 @@ user: {
 
 Plugins add tables/columns (orgs, passkeys, apikey, twoFactor, jwks, oauthClient, scim*, deviceCode, …). Always regenerate after enabling plugins.
 
-**1.7.0–1.7.2 only:** those releases added a required `account.issuer` column. **1.7.3+ restored the 1.6 key** and no longer writes `issuer`. If that column exists, relax/drop it (drop the unique index **before** the column on MySQL). New 1.6→1.7.5 upgrades do not add it. See the [upgrade guide](https://better-auth.com/docs/guides/1-7-upgrade-guide#account-identity-keeps-the-provider-key).
+**1.7.0–1.7.2 only:** those releases added a required `account.issuer` column. **1.7.3+ restored the 1.6 key** and no longer writes `issuer`. If that column exists, relax/drop it (drop the unique index **before** the column on MySQL). New 1.6→1.7.3+ upgrades do not add it. See the [upgrade guide](https://better-auth.com/docs/guides/1-7-upgrade-guide#account-identity-keeps-the-provider-key).
 
 ## Adapter modes
 
@@ -51,7 +51,7 @@ advanced: { database: { joins: true } }  // not experimental.joins
 
 Regenerate Drizzle/Prisma relations after enabling joins. With Drizzle `usePlural: true`, many-to-one relation **keys are singular** — update readers of the old plural keys.
 
-PostgreSQL non-default schema (Kysely / direct PG, 1.7.5):
+PostgreSQL non-default schema (Kysely / direct PG, 1.7.5+):
 
 ```ts
 database: {
@@ -108,6 +108,7 @@ Node.js **≥ 22.12**. Discovery looks for `auth.ts` under `./`, `./lib`, `./uti
 ```sh
 bunx auth@latest generate   # Prisma/Drizzle/Kysely schema (--adapter, --dialect, --output, --yes)
 bunx auth@latest migrate    # apply — Kysely path only
+bunx auth@latest check schema  # read-only: validate the configured adapter schema (1.7.6+)
 bunx auth@latest init
 bunx auth@latest secret
 bunx auth@latest info       # diagnostics (--json); reports installed versions

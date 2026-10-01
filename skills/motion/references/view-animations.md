@@ -1,6 +1,8 @@
-# View animations (`animateView`)
+# View animations (`AnimateView` / `animateView`)
 
-Use for screenshot-style morphs built on the browser **View Transition API**. Docs: [animateView](https://motion.dev/docs/animate-view). React component [AnimateView](https://motion.dev/docs/react-animate-view) is **Motion+**.
+Use for screenshot-style morphs built on the browser **View Transition API**. Docs: [AnimateView](https://motion.dev/docs/react-animate-view) (React component) · [animateView](https://motion.dev/docs/animate-view) (imperative).
+
+Since **13.4**, `AnimateView` ships free in `motion/react-animate-view` (previously Motion+). It wraps React's `<ViewTransition>` and needs `react` / `react-dom` **19.3+**. Other Motion APIs still support React 18.
 
 ## When to use which
 
@@ -8,12 +10,12 @@ Use for screenshot-style morphs built on the browser **View Transition API**. Do
 |------|-----|
 | Interruptible layout / shared element in React tree | `layout` / `layoutId` + `AnimatePresence` |
 | Enter/exit of React children without VT | `AnimatePresence` |
-| Cross-DOM snapshot morph, springs on VT, shared names auto-assigned | **`animateView` from `"motion"`** (MIT, 12.41+) |
-| Declarative React wrapper + `startTransition` | Motion+ **`AnimateView`** — do not use in OSS unless the project already pays |
+| Declarative React VT (enter/exit/update/shared) driven by `startTransition` | **`AnimateView` from `motion/react-animate-view`** (React 19.3+) |
+| Imperative snapshot morph, springs on VT, selector-based names, React < 19.3 | **`animateView` from `"motion"`** (12.41+) |
 
 VT snapshots are less interruptible than Motion layout. Prefer layout when the user can reverse mid-flight.
 
-## Core API (MIT)
+## Imperative API (`animateView`)
 
 ```ts
 import { animateView, spring, stagger } from "motion"
@@ -40,7 +42,33 @@ await animation.finished
 - Limited to **CSS-animatable** values on VT pseudos. Custom properties via `CSS.registerProperty` + `.class()`.
 - Not a substitute for `prefers-reduced-motion`: skip or fade if the user prefers reduced motion (same as raw VT).
 
-## React (without Motion+)
+## React `AnimateView` (React 19.3+)
+
+```tsx
+import { AnimateView } from "motion/react-animate-view"
+import { startTransition, useState } from "react"
+
+function Example() {
+  const [show, setShow] = useState(true)
+  return (
+    <>
+      <button onClick={() => startTransition(() => setShow((v) => !v))}>Toggle</button>
+      {show && (
+        <AnimateView enter={{ opacity: [0, 1] }} exit={{ opacity: 0 }} transition={{ type: "spring", bounce: 0 }}>
+          <div className="box" />
+        </AnimateView>
+      )}
+    </>
+  )
+}
+```
+
+- Props: `name` (shared-element match), `enter`, `exit`, `update`, `share`, `transition`, `onAnimationStart(animation, type)`, `onAnimationComplete(type)`. Defaults fade in/out.
+- `enter` / `exit` / `update` / `share` accept a target or `(types: string[]) => target`; pair with React `addTransitionType()` for direction-aware animation.
+- Only updates inside `startTransition` (or Suspense/`useDeferredValue` reveals) animate; plain `setState` does not.
+- Not interruptible: use for page/panel-level transitions, not rapid micro-interactions.
+
+## Imperative `animateView` in React (any React version)
 
 ```tsx
 import { animateView } from "motion"
@@ -55,11 +83,7 @@ function toggle() {
 }
 ```
 
-Do not import `AnimateView` from `motion/react` — it is not the MIT React API.
-
-## Motion+ `AnimateView`
-
-If the project already has Motion+: wrap the entering node, change state with React `startTransition`, set `enter` / `exit` / `transition`. Paid surface — skip unless present.
+Do not import `AnimateView` from `motion/react` — it lives only in `motion/react-animate-view`. On React 19.3+, prefer `AnimateView` over `animateView` + `flushSync` for React-managed updates.
 
 ## vs native VT / CSS
 

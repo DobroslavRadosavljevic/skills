@@ -1,10 +1,10 @@
 # D3 Source Map
 
-Snapshot date: 2026-08-01.
+Snapshot date: 2026-10-01.
 
 ## Current Package Evidence
 
-Umbrella **`d3@7.9.0`** (docs site shows 7.9.0). Pure ESM; Node 12+. Sites: [d3js.org](https://d3js.org/), [Getting started](https://d3js.org/getting-started), [API index](https://d3js.org/api), [What is D3?](https://d3js.org/what-is-d3).
+Umbrella **`d3@7.9.0`** (npm `latest`, released 2024-03-12; docs site shows 7.9.0; still the current umbrella at snapshot). npm also carries a stale `next: 6.0.0-rc.4` tag — never install `d3@next`. Pure ESM; Node 12+. Sites: [d3js.org](https://d3js.org/), [Getting started](https://d3js.org/getting-started), [API index](https://d3js.org/api), [What is D3?](https://d3js.org/what-is-d3).
 
 Repo: [d3/d3](https://github.com/d3/d3) · Context7: `/websites/d3js` (preferred), `/d3/d3`.
 
@@ -45,6 +45,10 @@ Repo: [d3/d3](https://github.com/d3/d3) · Context7: `/websites/d3js` (preferred
 
 **Count:** 30 modules. Notable transitives: `internmap`, `delaunator`, `robust-predicates`.
 
+Only `d3-format` has shipped since the umbrella release: `3.1.1`/`3.1.2` (2026-01-14) fix `formatPrefix` parens handling, return `NaN` from `precisionFixed`/`precisionRound`/`precisionPrefix` when `step` is zero, stop the `s` format adding a suffix to `NaN`/`±Infinity`, format zero as `0` (not `0.0`) with `r`, and keep ES2019 output. Fresh installs of `d3@7.9.0` pick these up through the `d3-format@3` range.
+
+TypeScript types: `@types/d3` `7.4.3` (DefinitelyTyped; matches the v7 API).
+
 ### Install
 
 ```bash
@@ -83,7 +87,7 @@ Umbrella ~279 KB min / ~92 KB gzip (approximate). Drop first when trimming: `d3-
 | --- | --- |
 | 6.0 | Native Map/Set + iterables; `group`/`rollup`; events passed directly; `d3-delaunay` replaces voronoi |
 | 7.0 | Pure ESM; InternMap ordinal domains; `bin` ignores nulls |
-| 7.9.0 | Current stable umbrella as of skill refresh |
+| 7.9.0 | Current stable umbrella (2024-03-12); unchanged as of 2026-10-01 |
 
 ## Research Notes
 

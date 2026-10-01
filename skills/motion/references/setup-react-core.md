@@ -101,7 +101,7 @@ const item = {
 |------|-------------|
 | tween | `duration` (default ~0.3), `ease`, `times` |
 | spring (physics) | `stiffness`, `damping`, `mass`, `velocity`, `restSpeed`, `restDelta` |
-| spring (duration) | `duration` + `bounce` (0–1), or `visualDuration` |
+| spring (duration) | `duration` + `bounce` (`0`–`1`; negative to `-1` = overdamped, 13.5+), or `visualDuration` |
 | inertia | `power`, `timeConstant`, `modifyTarget`, `min`/`max` — used by `dragTransition` |
 
 Also: `delay`, `repeat` / `Infinity`, `repeatType`: `"loop" | "reverse" | "mirror"`, `repeatDelay`, `when`, `delayChildren`, `path`. Sequences support `repeatType` / `repeatDelay` (12.39+).

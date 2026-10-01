@@ -1,6 +1,6 @@
 ---
 name: elysia
-description: "Build, review, debug, test, migrate, secure, or deploy Elysia and ElysiaJS applications with current documentation. Use for Bun or Node Elysia servers, routes, schemas and validation, lifecycle hooks, plugins and scope, guards, macros, context extension, error handling, Eden Treaty, OpenAPI, WebSocket, SSE, runtime adapters, and production readiness. Reject route factories that pass db, Effect runtime, or other app singletons as arguments or via decorate; import those modules directly. Endpoint tests must use @elysia/eden treaty(app) — ban app.handle(new Request(...)) helpers."
+description: "Build, review, debug, test, migrate, secure, or deploy Elysia and ElysiaJS applications with current documentation. Use for Bun or Node Elysia servers, routes, schemas and validation, lifecycle hooks, plugins and scope, guards, macros, context extension, error handling, Eden Treaty, OpenAPI, WebSocket, SSE, runtime adapters, security advisories, production readiness, and Elysia 1.4 to Elysia 2 beta (elysia@next, @elysia/codemod) migration. Reject route factories that pass db, Effect runtime, or other app singletons as arguments or via decorate; import those modules directly. Endpoint tests must use @elysia/eden treaty(app) — ban app.handle(new Request(...)) helpers."
 ---
 
 # Elysia
@@ -10,7 +10,8 @@ Use this skill when the work touches Elysia or ElysiaJS.
 ## Workflow
 
 1. Inspect the application before proposing changes:
-   - Installed versions of `elysia` and relevant `@elysia/*` packages.
+   - Installed versions of `elysia` and relevant `@elysia/*` packages. Stable `latest` is `1.4.x` (security fixes only); `2.0.0-beta.x` is published under the `next` dist-tag and changes core APIs. Never mix 1.4 and 2.0 syntax in one app.
+   - On `1.4.x`, require `>= 1.4.30` (critical RCE advisory for schema defaults and property names in `<= 1.4.29`).
    - Runtime and adapter: Bun, `@elysia/node`, Deno, Cloudflare Worker, Vercel, Netlify, or another Web Standard host.
    - Root instance, export/listen shape, route plugins, prefixes, guards, macros, schemas, error hooks, and tests.
    - Registration order and plugin scope for every cross-cutting hook.
@@ -21,6 +22,7 @@ Use this skill when the work touches Elysia or ElysiaJS.
    - Plugins, scope, guards, macros, dependencies, and context: [plugins-context.md](references/plugins-context.md).
    - Tests, Eden, OpenAPI, WebSocket, and SSE: [testing-clients-realtime.md](references/testing-clients-realtime.md).
    - Runtimes, deployment, security, observability, and production checks: [production-runtime-security.md](references/production-runtime-security.md).
+   - Elysia 2 beta adoption, codemod, and 1.4-to-2.0 API changes: [elysia-2-migration.md](references/elysia-2-migration.md).
 4. Preserve the repository's existing architecture and commands unless the user explicitly asks for a migration.
 5. Verify behavior at the narrowest useful boundary, then verify the assembled application.
 
@@ -34,8 +36,9 @@ Use this skill when the work touches Elysia or ElysiaJS.
 - Let Elysia infer handler context. Do not pass a broad manually typed `Context` through controllers or services when destructured values or schema-derived types are sufficient.
 - Respect chain order. Interceptor hooks apply to routes and plugins registered after them, except `onRequest`, which is global to incoming requests.
 - Respect plugin encapsulation. A plugin's lifecycle hooks and schemas do not automatically protect parent routes. Choose `local`, `scoped`, or `global` deliberately and test the boundary.
-- Prefer `resolve` over `derive` when a value depends on validated request data. `derive` runs before validation; `resolve` runs after validation.
-- Return `status(code, value)` for expected HTTP outcomes when type-safe response narrowing matters. Throw only when the outcome should pass through `onError`.
+- On 1.4, prefer `resolve` over `derive` when a value depends on validated request data. `derive` runs before validation; `resolve` runs after validation. On 2.0, `resolve` is removed and `derive` runs at before-handle (the old `resolve` timing).
+- Never build schemas, property names, or `default` values from untrusted input (form builders, database-driven schemas). Elysia compiles them into generated code.
+- Return `status(code, value)` for expected HTTP outcomes when type-safe response narrowing matters. On 1.4, throw only when the outcome should pass through `onError`; on 2.0, returned and thrown errors both reach `error` hooks.
 - Use named plugins, plus `seed` when configuration changes identity, when lifecycle deduplication matters.
 - Treat OpenAPI security declarations as documentation only. Enforce authentication and authorization in guards, macros, hooks, or handlers.
 - Do not assume Bun-only APIs on other adapters. `server` and `server.requestIP` are Bun-specific; adapter and platform limitations must shape the implementation.

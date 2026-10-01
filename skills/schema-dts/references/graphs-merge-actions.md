@@ -53,8 +53,22 @@ Exact-class leaves are exported as `ThingLeaf`, `ProductLeaf`, `SoftwareApplicat
 
 Use leaves when:
 
-1. You need **exactly** that `@type` string (no subtypes), or
-2. You are feeding **`MergeLeafTypes`**.
+1. You need **exactly** that `@type` string (no subtypes),
+2. You are feeding **`MergeLeafTypes`**, or
+3. A class must `implements` a Schema.org shape. Union aliases (which also include subtypes and the `string` id-reference form) cannot be implemented; leaf interfaces can.
+
+```ts
+import type {PersonLeaf} from 'schema-dts';
+
+class Employee implements PersonLeaf {
+  readonly '@type' = 'Person';
+  name: string;
+
+  constructor(name: string) {
+    this.name = name;
+  }
+}
+```
 
 ## MergeLeafTypes
 

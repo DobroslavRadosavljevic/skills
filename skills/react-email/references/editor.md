@@ -92,7 +92,7 @@ const { html, text } = await composeReactEmail({
 });
 ```
 
-Themes resolve to inlined styles during export. `'minimal'` is a near-blank slate for custom themes.
+Themes resolve to inlined styles during export. `'minimal'` is a near-blank slate for custom themes. Since `1.7.0` the `'basic'` theme centers the email container; since `1.7.4` editor buttons export with `box-sizing: border-box` (explicit-size buttons with padding render slightly smaller than before).
 
 ## Custom Nodes
 

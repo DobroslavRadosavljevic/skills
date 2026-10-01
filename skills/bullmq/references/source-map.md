@@ -1,25 +1,33 @@
 # Source Map
 
-Snapshot date: 2026-09-18.
+Snapshot date: 2026-10-01.
 
 This reference records the official documentation and package evidence used to create the skill. Refresh sources for latest/current questions, adapter work, Pro features, Nest wrappers, PostgreSQL, or version mismatches.
 
 ## Research Snapshot
 
 - Context7 libraries: `/taskforcesh/bullmq`, `/websites/bullmq_io`, `/websites/api_bullmq_io` (high source reputation). Context7 API pages may still mix v5 URLs; prefer `https://docs.bullmq.io/api/` v6 pages.
-- npm versions observed on 2026-09-18:
-  - `bullmq` `latest`: `6.3.7` (published 2026-09-18)
+- npm versions observed on 2026-10-01:
+  - `bullmq` `latest`: `6.3.11` (published 2026-10-01)
   - `bullmq` `release-v5.x`: `5.81.5`
   - `bullmq` `release-v4.x`: `4.18.3`
   - `bullmq` `release-v3.x`: `3.16.2`
-  - Optional peers on 6.3.7: `ioredis >= 5.0.0`, `redis >= 5.0.0`, `pg >= 8.0.0`, `bullmq-otel >= 2.0.0`
+  - Optional peers on 6.3.11: `ioredis >= 5.0.0`, `redis >= 5.0.0`, `pg >= 8.0.0`, `bullmq-otel >= 2.0.0`
   - Direct deps: `cron-parser` `5.10.1`, `msgpackr` `2.1.0`, `semver` `7.8.5`, `tslib` `2.8.1`, `node-abort-controller` `3.1.1`
   - Engines: Node `>= 14.17.0`
 - Related packages when present in the app:
   - `@nestjs/bullmq` `12.0.0` (peer `bullmq` `^3 || ^4 || ^5 || ^6`)
   - `bullmq-otel` `2.0.1` (peer `bullmq >= 6.0.0`)
-  - `ioredis`, `redis`, `pg`, Bull Board (`@bull-board/*`)
+  - `ioredis` `latest` `6.0.0` (2026-07-31; RESP3 default, Node 20+; BullMQ devDependency still `5.11.1`), `redis`, `pg`
+  - Bull Board `@bull-board/api` / `@bull-board/express` `9.10.2`
   - `@valkey/valkey-glide` (Glide adapter; **not** a declared `bullmq` peer)
+
+Patch notes since 6.3.7 that change guidance:
+
+- 6.3.8: Postgres backend retries its LISTEN connection after a failed connect.
+- 6.3.9: options/classes generic over a `ConnectionOptionsType`; `createPostgresBackend` typed as `BackendFactory<PostgresQueueBackend, PostgresConnectionOptions>`; new `withBackend(factory)` helper. Fixes Postgres `connection` type errors (docs example with partial generics was wrong).
+- 6.3.10: Worker stops infinite connection-error retries during shutdown (helps `close()` when Redis is gone).
+- 6.3.11: stalled checker detached from telemetry context (trace leak fix).
 
 Do not assume Nest or UI packages share the BullMQ patch version. Check the application's lockfile before changing them.
 
@@ -101,6 +109,7 @@ BullMQ ships Python, Rust, Elixir, PHP, and .NET clients that can share Redis qu
 Refresh the relevant official pages and package metadata when:
 
 - The user asks for latest/current behavior, a migration, or an upgrade.
-- The installed `bullmq` major/minor differs from `6.x`, or the patch drifts far from `6.3.x`.
+- The installed `bullmq` major/minor differs from `6.x`, or the patch drifts far from `6.3.x` (typing helpers like `withBackend` need ≥ 6.3.9).
+- The project upgrades to ioredis 6 — re-check BullMQ issue #4595 / release notes for declared support.
 - The task touches Redis client adapters, PostgreSQL backend/migrations, dedupe modes, flows failure options, job schedulers, rate-limit APIs, Nest wrappers, Pro features, sandboxed/worker-thread processors, or production Redis/Postgres settings.
 - Observed runtime or TypeScript declarations disagree with this skill text — prefer lockfile + current docs + datastore evidence.

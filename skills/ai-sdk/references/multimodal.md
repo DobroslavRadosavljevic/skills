@@ -198,6 +198,8 @@ const { providerReference } = await uploadFile({
 
 `ProviderReference` is `Record<string, string>` (`{ openai: 'file-abc123' }`). Use as file part `data`. Switching providers mid-conversation: upload to both and **merge** references. Supported `files()`: Anthropic, Google, OpenAI, xAI. Others throw `UnsupportedFunctionalityError` if they see a foreign reference.
 
+Since 7.0.89 `uploadFile` forwards `abortSignal` / `headers`, accepts a streaming `{ type: 'stream' }` data variant on providers that support it, and returns `byteSize`, `createdAt`, `expiresAt` when the provider reports them. The provider `FilesV4` interface gained optional `getFileMetadata`, `downloadFile`, and `deleteFile`.
+
 `uploadSkill` uploads a skill bundle (Anthropic / OpenAI). Result is also a `ProviderReference`. Pass into later `generateText` via provider options / skill fields per https://ai-sdk.dev/docs/ai-sdk-core/skill-uploads.md.
 
 ## Realtime
@@ -217,3 +219,7 @@ Gateway: `gateway.experimental_realtime('openai/gpt-realtime-2')` is browser-saf
 Client (`@ai-sdk/react`): `experimental_useRealtime({ model, api: { token: '/api/realtime/setup' }, onToolCall })`.
 
 Providers in docs: OpenAI `gpt-realtime`, Google realtime models, xAI `grok-voice-latest`, Gateway `openai/gpt-realtime-2`.
+
+Since 7.0.102: OpenAI **Live** models route through the same `openai.experimental_realtime` factory (server WebSocket sessions with client delegation — your app owns agents/tools and returns context; Responses delegation and Live session updates are rejected). An optional browser-direct **WebRTC** path exists for client-delegated Live conversations. Abnormal WebSocket closes are reported through `onError`. All of this is experimental — confirm option names in the installed `ai` / `@ai-sdk/openai` types before wiring.
+
+Speech/transcription telemetry: `generateSpeech` and `transcribe` emit telemetry with provider usage since 7.0.124.

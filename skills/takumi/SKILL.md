@@ -7,7 +7,7 @@ description: "Build, review, debug, migrate, or plan OG/social image and animati
 
 Use this skill when work touches **Takumi** / **`takumi-js`**: rendering JSX, HTML, or node trees to PNG/JPEG/WebP/ICO/SVG/animations without Chromium; `ImageResponse` OG routes; fonts/images/emoji; Tailwind `tw` vs compiled `css`; WASM bundling; or migrating from `next/og` / Satori / v1.
 
-Snapshot: `takumi-js@2.14.0` with matching `@takumi-rs/core`, `@takumi-rs/wasm`, `@takumi-rs/helpers`, `@takumi-rs/image-response` (2026-09-18). Sibling PDF package is `takumi-pdf@0.15.0`. Refresh from [source-map.md](references/source-map.md) if versions differ.
+Snapshot: `takumi-js@2.14.0` with matching `@takumi-rs/core`, `@takumi-rs/wasm`, `@takumi-rs/helpers`, `@takumi-rs/image-response` (released 2026-09-15; still npm `latest` on 2026-10-01). Sibling PDF package is `takumi-pdf@0.15.0`. Refresh from [source-map.md](references/source-map.md) if versions differ.
 
 ## Workflow
 

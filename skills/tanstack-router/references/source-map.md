@@ -1,6 +1,6 @@
 # Source Map
 
-Snapshot date: 2026-08-06.
+Snapshot date: 2026-10-01.
 
 This reference records the current docs and package evidence used to create the skill. Refresh these sources whenever the user asks for latest behavior, when package versions differ, or when work touches SSR, testing, route generation, auth, search params, or data loading.
 
@@ -84,21 +84,25 @@ Official raw-doc mirrors used for spot checks:
 
 ## Package Snapshot
 
-Latest npm `latest` dist-tags observed on 2026-08-06:
+Latest npm `latest` dist-tags observed on 2026-10-01:
 
-- `@tanstack/react-router`: `1.170.20`
-- `@tanstack/router-core`: `1.171.17`
-- `@tanstack/router-plugin`: `1.168.25`
-- `@tanstack/router-cli`: `1.167.23`
-- `@tanstack/react-router-devtools`: `1.167.1`
-- `@tanstack/react-router-ssr-query`: `1.167.1`
+- `@tanstack/react-router`: `1.170.41` (engines `node >=20.19`; peers `react` / `react-dom` `>=18`)
+- `@tanstack/router-core`: `1.171.34`
+- `@tanstack/router-plugin`: `1.168.42`
+- `@tanstack/router-generator`: `1.167.40`
+- `@tanstack/router-cli`: `1.167.40`
+- `@tanstack/react-router-devtools`: `1.167.2`
+- `@tanstack/react-router-ssr-query`: `1.167.3` (peers `@tanstack/react-query` / `@tanstack/query-core` `>=5.102.0`, `@tanstack/react-router` `>=1.170.33`)
 - `@tanstack/eslint-plugin-router`: `1.162.0`
 - `@tanstack/zod-adapter`: `1.167.0`
-- `@tanstack/cli`: `0.70.1`
+- `@tanstack/react-store` (Router dependency): `^0.11.2`
+- `@tanstack/cli`: `0.71.1`
+
+Other dist-tags (`alpha` `1.132.0-alpha.25`, `beta` `0.0.1-beta.*`, `pre` `1.170.19-pre.0`) are stale prereleases. No Router v2 prerelease is published for React. `@tanstack/solid-router` / `@tanstack/solid-start` have `2.0.0-rc.*` tags (Solid 2 adapters); do not treat those as React Router v2.
 
 Related Start packages (not Router SPA deps; noted for SSR/Start adjacency):
 
-- `@tanstack/react-start`: `1.168.37` (`latest`; Start still not documented as stable 1.0)
+- `@tanstack/react-start`: `1.168.60` (`latest`; Start is still documented as a Release Candidate)
 
 ## Current Status Notes
 
@@ -107,8 +111,22 @@ Related Start packages (not Router SPA deps; noted for SSR/Start adjacency):
 - File-based routing is the preferred and recommended route configuration for most projects. Code-based routes remain fully supported.
 - Official quick start scaffolds with `@tanstack/cli create --router-only` (interactive prompts for file/code routes, TypeScript, Tailwind, toolchain, Git).
 - Router provides typed navigation, typed JSON-first search params, path/search validation, nested layouts, route loaders with SWR caching, preloading, error boundaries, route masking, custom history, and SSR support.
-- As of `@tanstack/react-router@1.170.19`, match loading uses a lane-based scheduler; documented `gcTime` / `preloadGcTime` defaults are **5 minutes** (`300_000`), matching runtime. `router.invalidate()` retires matching active preload lanes.
+- Match loading uses a lane-based scheduler (since 1.170.19). `gcTime` / `preloadGcTime` default to **5 minutes** (`300_000`); preloaded data is fresh for 30 seconds by default. `router.invalidate()` retires matching active preload lanes.
 - SSR APIs remain documented as experimental because they share underlying implementation with TanStack Start before Start reaches stable status.
+
+Behavior changes between 1.170.20 and 1.170.41 (all patch releases):
+
+- React boundary errors (`errorComponent` `error`, `onCatch`) are typed `unknown`; falsy thrown values are preserved (1.170.33).
+- Link `isTransitioning` / `data-transitioning` removed (1.170.26); `preloadDelay` applies to viewport preloading and pending preloads cancel when a link leaves the viewport.
+- Dev warning when `<Outlet />` renders inside pending, error, or not-found components (1.170.26).
+- `activeProps` / `inactiveProps` can override base element props (1.170.36).
+- `pathParamsAllowedCharacters` is initialization-only; internal `isPlainObject` / `isPlainArray` exports removed (1.170.36).
+- Server navigation is a no-op on lightweight request history; use `redirect()` for HTTP redirects. Navigation and redirect destinations are validated; ambiguous relative URLs stay on the current origin.
+- Route-scoped `useMatch` / `useSearch` / `useParams` forward `shouldThrow` and keep optional return types with `shouldThrow: false`.
+- `params.parse` values stay stable for match IDs (raw string params are used for matching); `_splat` values `0` / `false` are kept.
+- Router subscriptions moved to TanStack Store 0.11 `useSelector` internally; many Link and SSR performance improvements.
+
+TanStack Query 5.102 deprecated `ensureQueryData`, `fetchQuery`, and `prefetchQuery` in favor of `queryClient.query`. The Start Query guide uses `queryClient.query`; some Router guides (`external-data-loading`, `integrations/query`) still show the deprecated methods.
 
 ## Refresh Triggers
 

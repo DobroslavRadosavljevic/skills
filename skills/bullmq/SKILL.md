@@ -1,13 +1,13 @@
 ---
 name: bullmq
-description: "Build, review, debug, test, operate, or migrate BullMQ Node.js/TypeScript job queues with current docs. Use for bullmq 6.x, Queue, Worker, QueueEvents, FlowProducer, Job, IQueueBackend, RedisQueueBackend, PostgresQueueBackend, getBackend, createRedisBackend, createPostgresBackend, setDefaultBackendFactory, ioredis/redis/pg optional peers, createNodeRedisClient, createBunRedisClient, createValkeyGlideClient, shared connections, prefixes, Redis Cluster hash tags, JobsOptions, priorities, delay, jobId, attempts, backoff, UnrecoverableError, DelayedError, RateLimitError, WaitingChildrenError, stalled jobs, lockDuration, concurrency, sandboxed processors, worker threads, AbortSignal cancelJob, delayed jobs, upsertJobScheduler, job schedulers, rate limiting, queue.rateLimit, setGlobalConcurrency, setGlobalRateLimit, deduplication debounce throttle keepLastIfActive, parent-child flows, getChildrenValues, failParentOnFailure, ignoreDependencyOnFailure, removeDependencyOnFailure, continueParentOnFailure, removeOnComplete/removeOnFail, graceful shutdown, NestJS @nestjs/bullmq, Bull Board, BullMQ Pro vs OSS, v5-to-v6 migration (removed repeat/debounce/Job.discard), PostgreSQL backend, and production Redis/Postgres queue ops or worker testing."
+description: "Build, review, debug, test, operate, or migrate BullMQ Node.js/TypeScript job queues with current docs. Use for bullmq 6.x Queue, Worker, QueueEvents, FlowProducer, Job, JobsOptions, IQueueBackend, RedisQueueBackend, PostgresQueueBackend, createPostgresBackend, setDefaultBackendFactory, withBackend, getBackend, ioredis 5/6, node-redis/Bun/Valkey Glide adapters, prefixes and Redis Cluster hash tags, priorities, delay, jobId, attempts, backoff, UnrecoverableError, DelayedError, RateLimitError, WaitingChildrenError, stalled jobs, lockDuration, concurrency, sandboxed processors, cancelJob, upsertJobScheduler, rate limiting, setGlobalConcurrency, setGlobalRateLimit, deduplication (debounce/throttle), parent-child flows and failure options, removeOnComplete/removeOnFail, graceful shutdown, NestJS @nestjs/bullmq, Bull Board, BullMQ Pro vs OSS, v5-to-v6 migration, PostgreSQL backend, and production queue ops or worker testing."
 ---
 
 # BullMQ
 
 Use this skill when work touches BullMQ queues, workers, flows, retries/scheduling, NestJS BullMQ, PostgreSQL vs Redis backends, or Pro-vs-OSS decisions.
 
-Snapshot: `bullmq@6.3.7` (2026-09-18). Refresh from [source-map.md](references/source-map.md) if the installed major/minor differs.
+Snapshot: `bullmq@6.3.11` (2026-10-01). Refresh from [source-map.md](references/source-map.md) if the installed major/minor differs.
 
 ## Workflow
 
@@ -30,7 +30,8 @@ Snapshot: `bullmq@6.3.7` (2026-09-18). Refresh from [source-map.md](references/s
 ## Core Judgment
 
 - Treat the datastore as shared infrastructure. Reuse connection options or factories deliberately. Workers and QueueEvents still duplicate connections for blocking wait; Redis clients/adapters must support `duplicate()`.
-- Default Redis path requires the optional `ioredis` peer (`bun add bullmq ioredis`). Do not assume `bullmq` still bundles ioredis.
+- Default Redis path requires the optional `ioredis` peer. Do not assume `bullmq` still bundles ioredis. ioredis **6.0** (RESP3 by default, Node 20+) satisfies the `>=5.0.0` peer range, but BullMQ still tests against ioredis 5.11 and an open issue reports ioredis 6 `RedisOptions` not assignable to `ConnectionOptions`. Prefer `bun add bullmq ioredis@5` unless the project already runs ioredis 6 and its typecheck + integration tests pass.
+- Non-Redis backends (Postgres or custom): pass the factory last and let TypeScript infer backend + connection types, or bind once with `withBackend(createPostgresBackend)` (6.3.9+) when you also need job type arguments. Never write partial generics like `Queue<Data, Result, string, PostgresQueueBackend>` — the 4th `Queue` slot is not the backend.
 - High-level classes are datastore-agnostic. Do not use removed `Queue#client`, `Queue#redisVersion`, `Queue#databaseType`, `Worker#blockingClient`, or `FlowProducer#client`. Reach Redis via `queue.getBackend().client` (typed as `RedisQueueBackend`) only as an escape hatch.
 - `waitUntilReady()` resolves to `void`. Do not treat its return as a Redis client. `await worker.resume()`.
 - Attach `error` listeners on `Queue`, `Worker`, `QueueEvents`, and `FlowProducer`. Unhandled connection errors crash Node.

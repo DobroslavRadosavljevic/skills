@@ -32,7 +32,8 @@ Supported validators (shipping vs voted may change — verify docs):
 
 - Valibot — https://heyapi.dev/docs/openapi/typescript/plugins/valibot
 - Zod — https://heyapi.dev/docs/openapi/typescript/plugins/zod
-- Ajv, Arktype, Joi, TypeBox, Yup — may be vote / incomplete
+- Arktype — plugin name ships in 0.99.0 but docs still mark it planned; verify output
+- Ajv, Joi, Superstruct, TypeBox, Yup — vote-only
 
 ### Zod
 
@@ -143,6 +144,32 @@ mutate({
 Customize naming/casing via plugin `.name` / `.case` options. Attach `meta` with a function on `queryOptions.meta`.
 
 Older option names (`queryOptionsNameBuilder`, etc.) were renamed around v0.75 — use current option names when editing configs.
+
+## Pinia Colada (Vue)
+
+Add `'@pinia/colada'` to `plugins` to generate query/mutation functions and query keys in `colada.gen.ts`:
+
+```ts
+const query = useQuery(getPetByIdQuery, () => ({ path: { petId: 1 } }))
+```
+
+In Nuxt apps, prefer the OFetch client for universal use; the Nuxt client targets Nuxt composables.
+
+## Testing plugins (in progress)
+
+Shipped in 0.99.0 but marked in progress in the docs. Pin the version and review generated output.
+
+- `msw` (MSW v2) — `msw.gen.ts` exports `<operationId>Mock` handler creators with a wildcard base URL plus `getAllMocks`. Pass `{ result }` (status defaults to the main success code) or `{ status, result }`; wrong result types fail typecheck.
+- `@faker-js/faker` (Faker v9/v10) — `faker.gen.ts` exports `fake<Schema>` factories for definitions, requests, and responses. Respects constraints and formats; accepts a custom faker instance (locale, seed) through options.
+
+```ts
+import { setupServer } from 'msw/node'
+import { getPetByIdMock } from './client/msw.gen'
+
+const server = setupServer(getPetByIdMock({ result: { id: 1, name: 'Fido' } }))
+```
+
+Other testing libraries (Chance, Falso, Nock, Playwright, Supertest) are vote-only.
 
 ## Web framework plugins
 

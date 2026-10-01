@@ -1,8 +1,10 @@
 # Motion Source Map
 
-Snapshot: **2026-08-17** · Target line: **`motion@13.1.0`**. Prefer [motion.dev React docs](https://motion.dev/docs/react) and Context7 `/websites/motion_dev`. Changelog: https://motion.dev/changelog · https://github.com/motiondivision/motion/blob/main/CHANGELOG.md
+Snapshot: **2026-10-01** · Target line: **`motion@13.5.0`** (npm `latest`; `framer-motion` / `motion-dom` share the version). Prefer [motion.dev React docs](https://motion.dev/docs/react) and Context7 `/websites/motion_dev`. Changelog: https://motion.dev/changelog · https://github.com/motiondivision/motion/blob/main/CHANGELOG.md
 
 **Skill scope:** React / React-based frameworks only. Vue, vanilla-only Motion, and React Native are out of scope. Exception: `animateView` is imported from `"motion"` (JS API used from React when needed).
+
+**npm tags (2026-10-01):** `latest` `13.5.0`. Ignore stale `canary` (`13.1.1-alpha.0`), `alpha`, `rc`, `beta` tags — they predate `latest`.
 
 ## Package matrix (React)
 
@@ -12,9 +14,11 @@ Snapshot: **2026-08-17** · Target line: **`motion@13.1.0`**. Prefer [motion.dev
 | `motion/react-client` | RSC / Next App Router client entry (smaller client JS) |
 | `motion/react-m` | Slim `m` components for `LazyMotion` |
 | `motion/react-mini` | Mini React `useAnimate` (~2.3kb) — no independent `x`/`y`; no `arc()` |
+| `motion/react-animate-view` | `AnimateView` — React 19.3+ View Transitions on React's `<ViewTransition>` (free since 13.4) |
 | `motion/debug` | Debug utilities |
 | `motion` | JS engine (`animate`, `animateView`, `spring`, `stagger`, `arc`) |
 | `framer-motion` | Legacy package name; still published; **do not use for new imports** |
+| `motion/three`, `motion/vgpu` | `threeEffect` / `vgpuEffect` for `animate` on Three.js / vgpu objects (13.2+) — outside this skill's DOM UI scope |
 | `motion-plus` / `@motionplus/*` | **Paid** Motion+ (private registry) |
 
 Root `"motion/mini"` is vanilla mini — **do not use** for React UI in this skill; prefer `motion/react*` or CSS/WAAPI.
@@ -40,6 +44,7 @@ bun remove framer-motion && bun add motion
 | `framer-motion/m` | `motion/react-m` |
 | `framer-motion/mini` | `motion/react-mini` |
 | `framer-motion/debug` | `motion/debug` |
+| `framer-motion/animate-view` | `motion/react-animate-view` |
 
 ## Context7 / docs hubs
 
@@ -79,13 +84,17 @@ bun remove framer-motion && bun add motion
 | stagger | https://motion.dev/docs/stagger |
 | arc | https://motion.dev/docs/arc |
 | animateView | https://motion.dev/docs/animate-view |
-| AnimateView (Motion+) | https://motion.dev/docs/react-animate-view |
+| AnimateView (React 19.3+) | https://motion.dev/docs/react-animate-view |
 | Motion+ | https://motion.dev/docs/motion-plus-installation |
 
 ## Version notes (agent)
 
 | Line | What to remember |
 |------|------------------|
+| **13.5** | `spring` / `transition` `bounce` accepts negatives (`0` to `-1`) for overdamped springs; `m` ~20% smaller; `scroll`/`useScroll` run `offset` animations on the main thread |
+| **13.4** | `AnimateView` (`motion/react-animate-view`) free, built on React 19.3 `<ViewTransition>`; 13.4.x: `scroll` 44% / `useScroll` 33% smaller, `ScrollTimeline` dropped for JS callbacks, `AnimatePresence` `mode="wait"`/re-entry fixes, Suspense-revealed memoized content replays animations |
+| **13.3** | `animate` smaller/faster startup; `useSpring` retargeting ~80% cheaper |
+| **13.2** | `animate.addEffect()`, `createEffect` `test`/`read`/`step`; `motion/three`, `motion/vgpu` effects |
 | **13.1** | Reorder: auto axis, `"xy"` grids, RTL |
 | **13.0** | No bundled `@emotion/is-prop-valid` — inject `isValidProp` or reverse styled/`motion.create` composition |
 | **12.41+** | `animateView` is MIT core (was Motion+ EA) |

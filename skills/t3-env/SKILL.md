@@ -5,7 +5,7 @@ description: "Build, review, debug, configure, migrate, or plan type-safe enviro
 
 # T3 Env
 
-Use this skill for **T3 Env** type-safe env validation: `createEnv`, server/client split, Standard Schema validators, platform presets, and framework packages. Snapshot **0.13.11** (2026-03-22). Docs: [env.t3.gg](https://env.t3.gg/docs/introduction).
+Use this skill for **T3 Env** type-safe env validation: `createEnv`, server/client split, Standard Schema validators, platform presets, and framework packages. Snapshot **0.13.11** (published 2026-03-22, still `latest` on 2026-10-01). Docs: [env.t3.gg](https://env.t3.gg/docs/introduction).
 
 ## Workflow
 
@@ -49,7 +49,7 @@ Anything else (Vite, Astro, TanStack Start, Node, Bun, …)?
 - Put secrets in `server`. Put browser-exposed keys in `client` with the required prefix (type-checked and runtime-checked). Put unprefixed both-sides keys (`NODE_ENV`) in `shared`.
 - Default to **one schema file**. Split server/client files only when leaking **server variable names** in the client bundle is unacceptable.
 - Set **`emptyStringAsUndefined: true`** on new schemas so `PORT=` and `DOMAIN=` do not skip defaults or fail number/url checks.
-- Use **`skipValidation` only** for lint, Docker image builds, or similar stages that lack real env. It desyncs types from runtime values; it also skips extended presets (0.13.9+).
+- Use **`skipValidation` only** for lint, Docker image builds, or similar stages that lack real env. It desyncs types from runtime values; it also skips extended presets (0.13.9+), so preset keys come only from the raw `runtimeEnv`.
 - Match preset imports to the validator: `presets-zod`, `presets-valibot`, or `presets-arktype`. Do not import the removed `/presets` path. Call presets as functions: `extends: [vercel()]`.
 - Validation is **synchronous**. Do not use async Standard Schema validators.
 - Do not use `z.coerce.boolean()` for env flags (every non-empty string is `true`). Prefer `z.stringbool()` on Zod 4, or an explicit string transform. See [recipes-pitfalls.md](references/recipes-pitfalls.md).

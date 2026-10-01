@@ -7,8 +7,19 @@
 3. **`trustedOrigins`**: every web origin, preview URL, and mobile scheme. Support wildcards carefully (`https://*.example.com`). Never leave loose localhost entries in prod.
 4. HTTPS → Secure cookies; default `SameSite=Lax`, `httpOnly`.
 5. Rate-limit **storage**: memory breaks on multi-instance/serverless — use Redis (`@better-auth/redis-storage`) or database.
-6. Keep **`better-auth` and all `@better-auth/*`** patched together (advisories hit scoped packages too).
+6. Keep **`better-auth` and all `@better-auth/*`** patched together (advisories hit scoped packages too). Minimum **1.7.7** — see the advisory section below.
 7. Leave schema validation on unless you have a documented reason to set `advanced.database.validateSchema: false`.
+
+## Advisories fixed in 1.7.7 (2026-09-30)
+
+| Advisory | Affected | Trigger |
+|---|---|---|
+| GHSA-965c-763c-88jm (critical) | `>= 1.4.0-beta.18, < 1.7.7` | Magic Link (default `storeToken: "plain"`, or hashed with global hashed `verification.storeIdentifier`) + any social/Generic OAuth provider + database/secondary-storage OAuth state (default). Attacker signs in as any email without mailbox access |
+| GHSA-r4xp-prcw-77qf (high) | `>= 1.5.0-beta.12, < 1.7.7` | OAuth Proxy without a dedicated `secret` (or equal to the global secret) + cookie state + implicit account linking |
+
+Upgrade procedure: move every server that shares verification storage, and every OAuth Proxy participant (production, preview, dev), to 1.7.7 in one cutover. Pending Magic Links and OAuth/SAML state created before the upgrade are rejected; users must request new links. No schema migration. Update custom `verification.storeIdentifier.overrides` or storage code that inspects identifiers to the `magic-link:` / `auth-state:` prefixes; custom hashers must keep the prefix.
+
+Workarounds only when upgrade is blocked: Magic Link `storeToken: "hashed"` with global `verification.storeIdentifier` unset/`"plain"`; or disable Magic Link or social sign-in; for OAuth Proxy, a dedicated proxy `secret` across environments. `disableSignUp` on Magic Link is **not** a fix.
 
 ## CSRF / origin
 
@@ -102,6 +113,7 @@ Server-side OAuth token/JWKS requests **do not follow redirects**.
 - Disabling CSRF/origin checks.
 - Shipping `testUtils()` in production config.
 - Using `@better-auth/cli@1.4` or npm `next` tag.
+- Running Magic Link or OAuth Proxy on anything older than 1.7.7.
 - Treating 1.7 as beta/rc, or mixing 1.6 scoped packages with 1.7 core.
 - Importing MCP from `better-auth/plugins` or keeping `oidcProvider`.
 - Claiming EOS/JWT sessions incorrectly; mixing bearer + cookie mental models without care.

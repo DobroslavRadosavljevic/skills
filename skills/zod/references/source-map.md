@@ -4,7 +4,7 @@ This reference captures the current Zod docs snapshot used to create the skill.
 
 ## Snapshot
 
-- Captured: 2026-09-18
+- Captured: 2026-10-01 (re-verified; no npm release after 4.6.5)
 - Stable npm package: `zod@4.6.5` (published 2026-09-13)
 - npm `latest` dist-tag: `4.6.5`
 - npm `canary` observed: `4.5.0-canary.20260828T171753` (behind `latest`; do not use unless the project already depends on it)
@@ -13,6 +13,7 @@ This reference captures the current Zod docs snapshot used to create the skill.
 - Official repository: https://github.com/colinhacks/zod
 - Official docs source snapshot: https://github.com/colinhacks/zod/tree/v4.6.5/packages/docs/content
 - LLM index: https://zod.dev/llms.txt
+- Repo `main` briefly carried `4.6.7` / `4.6.8` version commits on 2026-09-21; they were reverted (#6620) and never reached npm. Treat any `4.6.6`–`4.6.8` reference as invalid until a real release appears on npm.
 - Context7 selection used for docs research: `/websites/zod_dev` (redirected from `/websites/zod_dev_v4`), cross-checked against `/colinhacks/zod`
 
 Treat canary and prerelease dist-tags (`next`, `alpha`, `beta`, `canary`) as unavailable unless the project explicitly depends on them.

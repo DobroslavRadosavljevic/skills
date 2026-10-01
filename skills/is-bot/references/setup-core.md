@@ -19,7 +19,7 @@ Package `"sideEffects": false` — tree-shaking named imports is safe.
 | npm name | `isbot` (not `is-bot`) |
 | Skill folder | `is-bot` |
 | Preferred import | `{ isBot }` from `"isbot"` |
-| Current major | **5** (snapshot **5.2.1**) |
+| Current major | **5** (snapshot **5.2.2**) |
 
 ## Imports
 
@@ -73,7 +73,7 @@ UMD (global **`isbot`**, legacy name — `src/browser.ts` defines `globalThis.is
 
 Pin a major (`@5`) or exact version in production CDNs.
 
-## Package exports (5.2.1)
+## Package exports (5.2.2)
 
 | Condition | File |
 | --- | --- |

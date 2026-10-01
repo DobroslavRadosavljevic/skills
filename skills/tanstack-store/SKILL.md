@@ -1,6 +1,6 @@
 ---
 name: tanstack-store
-description: "Build, review, debug, migrate, or plan TanStack Store state management with current docs. Use for @tanstack/store, @tanstack/react-store, createStore, Store, ReadonlyStore, setState, subscribe, batch, flush, shallow, derived stores, createAtom, createAsyncAtom, useSelector, useStore migrations, useAtom, useCreateStore, useCreateAtom, createStoreContext, selector compare functions, immutable updates, actions factories, SSR-safe store lifetime, framework adapters, testing, and production state patterns."
+description: "Build, review, debug, migrate, or plan TanStack Store (0.11.x, alpha) state management with current docs. Use for @tanstack/store, @tanstack/react-store, createStore, Store, ReadonlyStore, setState, subscribe, batch, flush, shallow, derived stores, createAtom, createAsyncAtom, useSelector, useStore migrations, useAtom, useCreateStore, useCreateAtom, createStoreContext, selector compare functions, immutable updates, actions factories, SSR-safe store lifetime, framework adapters, testing, and production state patterns."
 ---
 
 # TanStack Store
@@ -29,7 +29,7 @@ Use this skill when work touches TanStack Store, especially `@tanstack/react-sto
 - Use `batch` when multiple store or atom updates should notify subscribers once with final state.
 - Use action factories when a store owns domain operations; keep UI components from hand-rolling repeated update logic.
 - Avoid module-scope user/session stores in SSR unless the state is truly global and public. Create request- or component-scoped stores for per-user data.
-- Use `subscribe` for side effects like persistence or logging, and always keep the `unsubscribe` cleanup.
+- Use `subscribe` for side effects like persistence or logging, and always keep the `unsubscribe` cleanup. Since 0.11.2, reads of other stores inside a subscriber are untracked; subscribe to every source that should trigger the effect.
 - Check current docs before relying on adapter details. Store remains alpha/v0, and adapter APIs are still evolving.
 
 ## Verification

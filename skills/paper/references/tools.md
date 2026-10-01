@@ -21,7 +21,8 @@ Positions: `worldX` / `worldY` / `width` / `height` are `null` when a size depen
 | `list_files` | `limit?` (1–200, default 50) | Open files first, then recent files in the active team, newest first. |
 | `open_file` | `fileId` (id, `/file/<id>` path, or URL), `pageId?` | `pageId` applies only if the file was not open. Returns `get_basic_info`. |
 | `create_file` | `name?`, `cloneFileId?` | Returns the new id. Call `open_file` next. |
-| `create_page` | `fileId`, `name?` | Returns `pageId`. |
+| `create_page` | `fileId`, `name?` | Returns `pageId`. Default name is "Page N". |
+| `rename_pages` | `fileId`, `updates` [{ `pageId`, `name` }] | Batch-renames pages in the page list. Does not switch the user's page. Get page ids from `get_basic_info`. |
 | `get_basic_info` | `fileId?`, `pageId?` | File, page, `rootNodeId`, artboards (id, name, size, position), `pages` with `isActive`, font families, compact token list. |
 
 ## Read the canvas

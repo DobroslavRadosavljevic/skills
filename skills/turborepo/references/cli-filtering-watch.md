@@ -29,6 +29,8 @@ Prefer `turbo run` in CI so task names never collide with future CLI subcommands
 | `--continue` | Failure policy (`never` / `dependencies-successful` / `always`) |
 | `--verbosity` / `-v` | `1` info … `3` trace |
 | `--profile` | Chrome + Markdown profile |
+| `--json` | NDJSON to stdout (`timestamp`, `source`, `level`, `text`); forces stream UI (experimental) |
+| `--log-file[=path]` | Structured JSON log file, default `.turbo/logs/<timestamp>.json` (experimental; `TURBO_LOG_FILE`) |
 
 Deprecated mindset: `--parallel` discards useful DAG behavior — prefer `concurrency` + `with` for multi-dev.
 
@@ -55,19 +57,31 @@ bunx turbo run build --cache=local:r,remote:r     # was --no-cache (no writes)
 | `^...web` / `web...^` | Omit self where `^` applies with `...` |
 | `[HEAD^1]` / `[main...HEAD]` | Git range |
 | `web#lint` | Specific package#task entrypoint |
+| `tag:ci` / `!tag:slow` | Tasks with that task tag, or all tasks in packages with that package tag (2.11.6+, exact match) |
+| `...tag:ci` / `tag:ci...` | Tag selection plus task-graph dependents / dependencies |
 
 ```sh
 bunx turbo run build --filter=web --filter=!docs
 bunx turbo run test --filter=./packages/*
 bunx turbo run build --filter=...[origin/main]
 bunx turbo run build --affected
+bunx turbo run test --filter=tag:ci --filter='!tag:slow'
+bunx turbo run test --affected --filter=tag:ci
 ```
+
+Tag filters keep required dependencies and `with` tasks even when they lack the tag. Quote labels with selector characters as JSON: `--filter='tag:"ci..."'`.
 
 ### `--affected` caveats
 
 - Needs enough git history (shallow `fetch-depth: 1` often breaks it). Prefer full history or `fetch-depth: 0`.
 - On GitHub Actions, base ref detection uses PR metadata when available.
-- Combine with `--filter` to further restrict.
+- Combine with `--filter` to further restrict (2.10+; the two intersect): `--affected --filter=web`, `--affected --filter=!docs`.
+- Package level by default; `futureFlags.affectedUsingTaskInputs` narrows to tasks whose `inputs` match.
+- Detached `actions/checkout` without a local base branch: `futureFlags.githubActionsRemoteBaseRefFallback` or set `TURBO_SCM_BASE`.
+
+### Shutdown
+
+`Ctrl+C` / `SIGINT` / `SIGTERM` are forwarded to tasks and `turbo` waits for them to exit (2.10+), so task cleanup handlers run. Press `Ctrl+C` again to force exit.
 
 ## Watch
 
@@ -107,7 +121,10 @@ bunx turbo gen workspace --copy https://github.com/vercel/turborepo/tree/main/ex
 | `turbo boundaries` | Import / tag rule checks (experimental) |
 | `turbo query …` | Graph/affected queries |
 | `turbo ls` / `info` | Inventory |
+| `turbo devtools [--port 9876]` | Package graph visualization in the browser |
+| `turbo docs "<query>"` | Search Turborepo docs from the CLI |
 | `turbo telemetry status\|enable\|disable` | Anonymous telemetry |
+| `turbo scan` | **Deprecated** — prints a warning and exits |
 
 ## Passing args through
 

@@ -125,6 +125,10 @@ export async function POST(req: Request) {
 
 **Do not** use `result.toUIMessageStreamResponse()` in new code (deprecated in 7). Nuxt getting-started still shows it — treat as stale.
 
+Proxies/load balancers that drop idle SSE: `createUIMessageStreamResponse({ stream, keepAliveMs: 15_000 })` (7.0.123+; also on `pipeUIMessageStreamToResponse` and the agent UI stream helpers). Agent UI stream helpers (`createAgentUIStream`, `createAgentUIStreamResponse`, `pipeAgentUIStreamToResponse`) accept `convertDataPart` since 7.0.125.
+
+Client errors: since 7.0.100 chat transports and completion helpers throw typed AI SDK errors instead of plain `Error`s — `APICallError` (HTTP; request body kept out of metadata), `EmptyResponseBodyError`, `InvalidArgumentError`, `UnsupportedFunctionalityError`, `UIMessageStreamError`. Narrow with `XError.isInstance(error)` in `onError` / `error` handling. Default reconnect URLs encode chat IDs (7.0.122) — custom `prepareReconnectToStreamRequest` URLs are untouched.
+
 Next App Router: `export const maxDuration = 30` as needed.
 
 ### Custom UI stream (data parts, persistence)

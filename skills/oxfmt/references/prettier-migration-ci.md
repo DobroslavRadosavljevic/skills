@@ -171,7 +171,7 @@ Optional editor knobs:
 | Setting | When |
 | --- | --- |
 | `oxc.fmt.configPath` | Non-root / Vite+ `fmt` config; monorepo path to `oxfmt.config.ts` or `vite.config.ts` |
-| `oxc.fmt.disableNestedConfig` | Force a single fmt config (required for Vite+ root `fmt`) |
+| `oxc.fmt.disableNestedConfig` | Force a single fmt config (Vite+ mode does this automatically on 0.70+) |
 | `oxc.configPath` / `oxc.disableNestedConfig` | Same for Oxlint |
 | `oxc.fixKind` | Widen/narrow which fixes `source.fixAll.oxc` applies (`safe_fix` default family) |
 | `oxc.typeAware` | Type-aware lint in the editor (needs `oxlint-tsgolint`) |

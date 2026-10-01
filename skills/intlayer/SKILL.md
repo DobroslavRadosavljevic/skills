@@ -1,15 +1,15 @@
 ---
 name: intlayer
-description: "Build, review, debug, configure, migrate, or plan Intlayer 9.5 internationalization in TanStack Start React apps with current docs. Use for intlayer@9.5, react-intlayer, vite-intlayer, intlayer.config.ts, .content.ts dictionaries, t/plural/enu/cond/gender/select/insert/nest/md/html/file, collections, variants, getIntlayerAsync, useIntlayer, useLocale, useExperiment, useRewriteURL, IntlayerProvider, getLocale, validatePrefix, getPrefix, locale routing with {-$locale}, native TanStack Link/useNavigate (no LocalizedLink wrappers), locale switchers, Vite locale proxy, vite-intlayer/nitro-handler, SSR cookies/headers, SEO head/sitemap, CLI build/fill --ci/push/pull/test/scan/extract, compiler, analytics, CMS/editor, chunkGrouping, dictionariesPreload, compat adapters, syncJSON, and Next.js next-intlayer avoidance on Start."
+description: "Build, review, debug, configure, migrate, or plan Intlayer 9.6 internationalization in TanStack Start React apps with current docs. Use for intlayer@9.6 (9.5+ APIs), react-intlayer, vite-intlayer, intlayer.config.ts, .content.ts dictionaries, t/plural/enu/cond/gender/select/insert/nest/md/html/file, collections, variants, getIntlayerAsync, useIntlayer, useLocale, useExperiment, useRewriteURL, IntlayerProvider, getLocale, validatePrefix, getPrefix, locale routing with {-$locale}, native TanStack Link/useNavigate (no LocalizedLink wrappers), locale switchers, Vite locale proxy, vite-intlayer/nitro-handler, SSR cookies/headers, SEO head/sitemap, CLI init/upgrade/build/fill --ci/push/pull/test/scan/extract, compiler, analytics, CMS/editor, chunkGrouping, dictionariesPreload, compat adapters, syncJSON, and Next.js next-intlayer avoidance on Start."
 ---
 
 # Intlayer
 
-Use this skill when work touches Intlayer i18n, especially **Intlayer 9.5** (`intlayer@9.5.4` line) with TanStack Start (`@tanstack/react-start`) via `intlayer` + `react-intlayer` + `vite-intlayer`.
+Use this skill when work touches Intlayer i18n, especially **Intlayer 9.6** (`intlayer@9.6.0`; same APIs as the 9.5 line) with TanStack Start (`@tanstack/react-start`) via `intlayer` + `react-intlayer` + `vite-intlayer`.
 
-Pin **`intlayer` / `react-intlayer` / `vite-intlayer` to the same 9.5.x**. Do not mix 9.0–9.4 docs or packages with 9.5 APIs (`useExperiment`, `build.chunkGrouping`, `build.dictionariesPreload`, CLI `--ci`, `vite-intlayer/nitro-handler`).
+Pin **`intlayer` / `react-intlayer` / `vite-intlayer` (and every `@intlayer/*` / `*-intlayer` package) to the same exact version** (9.6.0 at snapshot). Do not mix 9.0–9.4 docs or packages with 9.5+ APIs (`useExperiment`, `build.chunkGrouping`, `build.dictionariesPreload`, CLI `--ci`, `vite-intlayer/nitro-handler`). Upgrade them together with `bunx intlayer upgrade` (9.5.8+).
 
-Snapshot: 2026-09-18. Refresh from [source-map.md](references/source-map.md) if versions differ.
+Snapshot: 2026-10-01. Refresh from [source-map.md](references/source-map.md) if versions differ.
 
 ## Workflow
 
@@ -38,7 +38,7 @@ Snapshot: 2026-09-18. Refresh from [source-map.md](references/source-map.md) if 
 - **No Link/navigate wrappers.** Do not create, keep, or recommend `LocalizedLink`, `useLocalizedNavigate`, or any component/hook that wraps TanStack `Link` / `useNavigate` to inject locale. Use native `Link` and `useNavigate` with full `to` paths (`/{-$locale}/...`) and `params.locale` from `getPrefix(locale).localePrefix`. On review/migrate, delete existing wrappers and rewrite call sites. Official Start docs and the Start template still ship wrappers — ignore those samples.
 - Always set `routeFileIgnorePattern` for `.content.*` so content files are not treated as routes.
 - Match the locale route slot to `routing.mode`: `{-$locale}` for `prefix-no-default`; prefer `$locale` for `prefix-all`; remove the slot for `no-prefix` / `search-params`.
-- Client UI: `useIntlayer` / `useLocale` from `react-intlayer`. Locale-aware formatters: `react-intlayer/format`. A/B: `useExperiment` from `react-intlayer` (or `react-intlayer/analytics`). Server functions, `head`, loaders, and non-React code: `getIntlayerAsync` / `getLocale` from `intlayer`. Use sync `getIntlayer` only when a merged all-locales dictionary is acceptable.
+- Client UI: `useIntlayer` / `useLocale` from `react-intlayer`. Locale-aware formatters: `react-intlayer/format`. A/B: `useExperiment` from `react-intlayer` (or `react-intlayer/analytics`). Server functions, `head`, loaders, and non-React code: `getIntlayerAsync` / `getLocale` from `intlayer`. Use sync `getIntlayer` only when a merged all-locales dictionary is acceptable. Always pass the locale explicitly on Start: since 9.5.12 an omitted locale resolves to the request locale (Next.js headers/cookies only), then the stored locale, then the default, which can mismatch SSR and hydration outside a provider.
 - Route `head` has three resolution modes (see routing reference). Prefer **`getIntlayerAsync`**. For LCP-sensitive metadata, resolve in `loader` with `staleTime: Infinity` and read `loaderData` from a **synchronous** `head`. Do not use sync `getIntlayer` in `head` on 9.4+ unless the dictionary is tiny.
 - In `beforeLoad`, validate locale from **`params.locale`** via `validatePrefix` — not from cookies/headers (the proxy already handled request locale).
 - Co-locate `.content.*` with features. Set `content.contentDir` explicitly for Start apps under `src` (config default is `["."]`, not a Next-style `./app`).
@@ -48,7 +48,8 @@ Snapshot: 2026-09-18. Refresh from [source-map.md](references/source-map.md) if 
 - Collections share `key` + `item`. Variants use `variant: string | object` (9.1 merged former dynamic records into object variants). Selectors: `{ locale, item, variant }`. Resolution order: **variant → item**.
 - Do not enable `build.minify` while `editor.enabled` is true (field-renaming skipped). `importMode` / minify / purge / chunkGrouping / dictionariesPreload require `build.optimize` (default `undefined` = production only).
 - `dictionary.importMode: "dynamic"` is viable on Start in 9.5 because `chunkGrouping` (default true) and `dictionariesPreload` (default true) collapse per-dictionary waterfalls. Collections/variants still load on demand.
-- CLI: `intlayer ci <cmd>` is gone as of 9.5.2. Use `bunx intlayer <cmd> --ci` with `INTLAYER_PROJECT_CREDENTIALS`.
+- CLI: `intlayer ci <cmd>` is gone as of 9.5.2. Use `bunx intlayer <cmd> --ci` with `INTLAYER_PROJECT_CREDENTIALS`. From agents/CI use `bunx intlayer init` plus non-interactive sub-commands (`init skills`, `init mcp`, …); `--interactive` fails without a terminal (9.6).
+- Read config values with direct imports (`import { defaultLocale, locales } from "intlayer"`); `getConfiguration()` is deprecated (9.5.9).
 
 ## Verification
 

@@ -4,7 +4,7 @@ Agents are LLMs that use tools in a loop. Guides: https://ai-sdk.dev/docs/agents
 
 | | **ToolLoopAgent** | **WorkflowAgent** | **HarnessAgent** |
 | --- | --- | --- | --- |
-| Package | `ai` | `@ai-sdk/workflow` (+ `workflow@beta`) | `@ai-sdk/harness` + adapter + sandbox |
+| Package | `ai` | `@ai-sdk/workflow` 2.x (+ `workflow` ≥5) | `@ai-sdk/harness` + adapter + sandbox |
 | Runtime | In-process | Workflow DevKit (`'use workflow'` / `'use step'`) | Prebuilt harness (Claude Code, Codex, Pi, …) |
 | Crash | Lost | Checkpointed | Resume via opaque `resumeFrom` |
 | Methods | `generate()` + `stream()` | **`stream()` only** | `generate()` / `stream()` **need a session** |
@@ -129,9 +129,13 @@ Durable ToolLoopAgent analogue. Serializable context only (no live clients/fns).
 
 Client reconnect: `WorkflowChatTransport` from `@ai-sdk/workflow`. POST must send `x-workflow-run-id`; GET `{api}/{runId}/stream?startIndex=`.
 
-Replaces older `DurableAgent`. `maxSteps` → `stopWhen: isStepCount(n)`. `experimental_output` → `output`. `experimental_context` → `runtimeContext`+`toolsContext`. `experimental_toolApprovalSecret` **unsupported**. Persist `UIMessage[]`; inbound `convertToModelMessages`.
+Replaces older `DurableAgent`. `maxSteps` → `stopWhen: isStepCount(n)`. `experimental_output` → `output`. `experimental_context` → `runtimeContext`+`toolsContext`. Persist `UIMessage[]`; inbound `convertToModelMessages`.
 
-Docs mix `onStart` vs `experimental_onStart` — confirm against `@ai-sdk/workflow` types.
+Signed approvals: since 7.0.86, `experimental_toolApprovalSecret` is supported on `WorkflowAgent` (constructor or `agent.stream()`) together with `needsApproval`; keep old secrets available while approvals signed with them are pending.
+
+Callbacks: `onStart` / `onStepStart` are stable on `WorkflowAgent`; `experimental_onStart` / `experimental_onStepStart` are deprecated aliases. `toolSearch()` works with direct tool calling (not code mode).
+
+Install: `@ai-sdk/workflow` peers on `workflow ^5.0.0-beta.42`. `workflow@5.0.0` went stable on 2026-09-30 (`latest`); the AI SDK docs still say `workflow@beta` — either satisfies the peer range.
 
 ## Terminal UI
 

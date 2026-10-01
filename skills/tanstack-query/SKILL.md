@@ -1,6 +1,6 @@
 ---
 name: tanstack-query
-description: "Build, review, debug, migrate, or plan TanStack Query v5 React server-state code with current docs. Use for @tanstack/react-query, QueryClient, QueryClientProvider, useQuery, useMutation, useInfiniteQuery, useQueries, queryOptions, mutationOptions, query keys, cache defaults, staleTime, gcTime, invalidation, optimistic updates, SSR, hydration, prefetching, router integration, suspense, persistence, devtools, ESLint rules, testing, TypeScript, and v4-to-v5 migrations."
+description: "Build, review, debug, migrate, or plan TanStack Query v5 (5.104.x) React server-state code with current docs. Use for @tanstack/react-query, QueryClient, QueryClientProvider, useQuery, useMutation, useInfiniteQuery, useQueries, queryOptions, mutationOptions, queryClient.query, queryClient.infiniteQuery, deprecated fetchQuery/prefetchQuery/ensureQueryData, query keys, cache defaults, staleTime, gcTime, invalidation, optimistic updates, SSR, hydration, prefetching, router integration, suspense, persistence, devtools, ESLint rules, testing, TypeScript, and v4-to-v5 migrations."
 ---
 
 # TanStack Query
@@ -27,6 +27,7 @@ Use this skill when work touches TanStack Query v5, especially `@tanstack/react-
 - Query keys are cache identity. Include every changing variable used by the query function, and keep keys serializable.
 - Prefer object syntax everywhere in v5. Do not reintroduce positional v3/v4 signatures.
 - Prefer typed `queryOptions` and `mutationOptions` helpers for reusable queries and mutations.
+- For imperative reads and prefetches, use `queryClient.query` / `queryClient.infiniteQuery` (v5.102+). `fetchQuery`, `prefetchQuery`, `ensureQueryData`, and their infinite variants are deprecated; keep them working in old code, but do not add new calls.
 - Set `staleTime` deliberately. Default stale data refetches on mount, window focus, and reconnect can be correct, but noisy when misunderstood.
 - Use targeted invalidation as the default after mutations. Use immutable `setQueryData` when the mutation response already contains the exact updated object.
 - For optimistic updates, prefer UI-level `variables` when only one surface needs the pending state; use cache-level `onMutate` rollback when multiple surfaces must react.

@@ -1,6 +1,6 @@
 # Config, CLI, and Env
 
-Shared config, CLI flags, environment/modes, assets, CSS, HMR, and dep optimization. Snapshot: `vite@8.3.0`.
+Shared config, CLI flags, environment/modes, assets, CSS, HMR, and dep optimization. Snapshot: `vite@8.3.2`.
 
 ## Config files
 

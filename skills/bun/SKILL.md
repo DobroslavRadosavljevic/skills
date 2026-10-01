@@ -7,7 +7,7 @@ description: "Build, review, debug, configure, migrate, teach, or plan Bun JavaS
 
 Use this skill when work touches the Bun runtime, package manager, test runner, bundler, `bunfig.toml`, Node compatibility, or migrating installs/scripts to Bun.
 
-Snapshot: `bun@1.4.2`, `@types/bun@1.4.2` / `bun-types@1.4.2` (2026-09-18). Refresh from [source-map.md](references/source-map.md) if versions differ.
+Snapshot: `bun@1.4.2`, `@types/bun@1.4.2` / `bun-types@1.4.2` (captured 2026-09-18, re-verified 2026-10-01 — still latest stable). Refresh from [source-map.md](references/source-map.md) if versions differ.
 
 ## Workflow
 

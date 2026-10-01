@@ -292,32 +292,63 @@ function SaveButton() {
 
 ## TanStack Query Integration
 
-When the app uses TanStack Query, prefer loader prefetching plus component cache reads:
+When the app uses TanStack Query, install `@tanstack/react-query` and `@tanstack/react-router-ssr-query` (current versions need Query 5.102 or newer). Create the `QueryClient` inside `getRouter()`, never at module scope, so each SSR request gets its own cache:
 
 ```tsx
-import { queryOptions, useQuery } from '@tanstack/react-query'
+// src/router.tsx
+import { QueryClient } from '@tanstack/react-query'
+import { createRouter } from '@tanstack/react-router'
+import { setupRouterSsrQueryIntegration } from '@tanstack/react-router-ssr-query'
+import { routeTree } from './routeTree.gen'
+
+export function getRouter() {
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { staleTime: 30_000 } },
+  })
+  const router = createRouter({
+    routeTree,
+    context: { queryClient },
+    defaultPreload: 'intent',
+    defaultPreloadStaleTime: 0,
+  })
+  setupRouterSsrQueryIntegration({ router, queryClient })
+  return router
+}
+```
+
+Declare `queryClient: QueryClient` in the root route's `createRootRouteWithContext` type. The integration provides `QueryClientProvider` and handles dehydration, hydration, and streaming; do not add a second client or dehydrate manually (use `wrapQueryClient: false` only if the app owns the provider).
+
+Share one `queryOptions` object between the loader and the component. Await critical data with `queryClient.query` (it replaces the deprecated `ensureQueryData` / `fetchQuery` / `prefetchQuery`), and read it with `useSuspenseQuery`:
+
+```tsx
+import { queryOptions, useSuspenseQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 
 const postsQueryOptions = () =>
   queryOptions({
     queryKey: ['posts'],
-    queryFn: () => getPosts(),
+    queryFn: () => getPosts(), // a server function for privileged reads
   })
 
 export const Route = createFileRoute('/posts')({
-  loader: ({ context }) => {
-    return context.queryClient.ensureQueryData(postsQueryOptions())
+  loader: async ({ context }) => {
+    await context.queryClient.query(postsQueryOptions())
   },
   component: PostsRoute,
 })
 
 function PostsRoute() {
-  const postsQuery = useQuery(postsQueryOptions())
-  return <PostList posts={postsQuery.data ?? []} />
+  const { data: posts } = useSuspenseQuery(postsQueryOptions())
+  return <PostList posts={posts} />
 }
 ```
 
-Keep query keys stable and include route params/search values in the key when they change the fetched data.
+Rules:
+
+- Keep query keys stable and include route params/search values in the key (and in `loaderDeps`) when they change the fetched data. Keep secrets out of keys and serialized data.
+- For secondary data, start the query without awaiting it (`void queryClient.query(opts).catch(noop)`) and render it inside a Suspense boundary. Handle the promise rejection so it cannot become an unhandled server rejection.
+- A plain `useQuery` without a loader prefetch does not run on the server; its data will not be in the SSR HTML.
+- After a server-function mutation, invalidate the cache that owns the data: `queryClient.invalidateQueries` for Query data, `router.invalidate()` for loader data and route context.
 
 ## Migration Notes
 

@@ -7,7 +7,7 @@ description: "Build, review, debug, migrate, or plan Zod v4 validation and TypeS
 
 Use this skill when work touches Zod validation, schema design, type inference, error handling, JSON Schema, AOT compilation, Zod Mini, Zod Core, or Zod 3 to Zod 4 migration.
 
-Snapshot: `zod@4.6.5` / `@zod/mini@4.6.5` (2026-09-18). Stay on Zod 4 `latest`. Do not use canary. Refresh from [source-map.md](references/source-map.md) if versions differ.
+Snapshot: `zod@4.6.5` / `@zod/mini@4.6.5` (verified 2026-10-01). Stay on Zod 4 `latest`. Do not use canary. Refresh from [source-map.md](references/source-map.md) if versions differ.
 
 ## Workflow
 

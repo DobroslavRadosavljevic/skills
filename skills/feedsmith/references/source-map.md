@@ -1,15 +1,15 @@
 # Source Map
 
-Research snapshot: **2026-09-18**.
+Research snapshot: **2026-10-01**.
 
 ## Versions / dist-tags
 
 | Tag | Version (npm) | Notes |
 |---|---|---|
-| `latest` | **3.0.0** | Stable 3.x — this skill’s target (published 2026-09-18) |
+| `latest` | **3.0.1** | Stable 3.x — this skill’s target (published 2026-09-25) |
 | `rc` | **3.0.0-rc.3** | Historical prerelease; do not prefer over `latest` |
 | `beta` | **3.0.0-beta.5** | Older than rc |
-| `next` | **3.0.0-next.6** | Older prerelease line |
+| `next` | **3.0.0** | Points at the 3.0.0 stable release; `latest` is newer |
 | (untagged) | **2.9.6** | Last 2.x; contrast only |
 
 Install:
@@ -18,9 +18,13 @@ Install:
 bun add feedsmith
 ```
 
-`latest` is 3.0.0. Do **not** install `feedsmith@rc` / `@beta` / `@next` unless the user explicitly wants a prerelease.
+`latest` is 3.0.1. Do **not** install `feedsmith@rc` / `@beta` / `@next` unless the user explicitly wants a prerelease.
 
-Package exports: main `feedsmith` only — **`feedsmith/types` removed**. Dual ESM/CJS. Docs claim Node.js 14+ and modern browsers.
+Package exports: main `feedsmith` only — **`feedsmith/types` removed**. Dual ESM/CJS: `import` resolves `dist/index.mjs` + `index.d.mts`, `require` resolves `dist/index.cjs` + `index.d.cts`. `engines.node` is `>=14`; docs also claim modern browsers.
+
+## Release notes since 3.0.0
+
+- **3.0.1** (2026-09-25): ESM output is emitted as `.mjs` so vendored/copied modules load without Node syntax detection. No API or type changes.
 
 ```sh
 bun info feedsmith
@@ -48,7 +52,7 @@ v3 is now the main site. Canonical URLs are `https://feedsmith.dev/…` (canonic
 15. https://github.com/macieklamberski/feedsmith
 16. 2.x contrast only: https://v2.feedsmith.dev/
 
-Context7 library id: `/macieklamberski/feedsmith` (lags: still shows `feedsmith@beta` and v2 `{ lenient: true }` generate). Prefer the site + GitHub `v3.0.0` tag.
+Context7 library id: `/macieklamberski/feedsmith` (as of 2026-10-01 it indexes the v3 `docs/` from `main`, including strict mode and the v2→v3 guide; older snippets may still show v2 `{ lenient: true }` — check the source path). Prefer the site + GitHub `v3.0.1` tag.
 
 ## Refresh
 
@@ -59,7 +63,7 @@ npm view feedsmith version dist-tags
 
 ## Stale-doc traps
 
-- Installing `feedsmith@rc` / `@beta` / `@next` now that `latest` is 3.0.0.
+- Installing `feedsmith@rc` / `@beta` / `@next` now that `latest` is 3.0.1 (`next` is pinned to 3.0.0, `rc`/`beta` are older prereleases).
 - Treating https://feedsmith.dev/ as 2.x — 2.x moved to https://v2.feedsmith.dev/.
 - Treating https://v3.feedsmith.dev/ as a separate prerelease site — it mirrors 3.0 and canonicalizes to feedsmith.dev.
 - Quick Start / parsing overview still showing `rssFeed.dc?.creator` (singular). Types are plural: `dc?.creators`.

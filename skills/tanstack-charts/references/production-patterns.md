@@ -1,10 +1,22 @@
 # Production Patterns
 
-## Pre-Alpha Caution
+## Alpha Caution
 
-`@tanstack/charts@0.14.0` is pre-alpha. Official docs state it is not ready for production use. Pin versions. Re-check signatures before shipping public APIs or large migrations.
+`@tanstack/charts@0.18.0` is official **Alpha** (since `0.16.0`): ready for evaluation and early application integration, not a stable API promise. All public packages release together. Patch releases do not intentionally break APIs; **minor releases may break** while the major is `0`, each with a changeset, changelog entry, and migration notes. Pin an exact version in production and test upgrades before moving the pin.
 
 ## Breaking Migration Notes
+
+### Scale registry (`0.15.0` added, `0.16.0` required)
+
+| Before (pre-Alpha) | Alpha |
+| --- | --- |
+| Root `x: {...}`, `y: {...}` | `scales: { x: {...}, y: {...} }` (both entries required; `null` when unused) |
+| Polar root `angle`, `radius` | `polar({ scales: { angle, radius } })` (both required; `null` when unused) |
+| `ChartMarkX` / `ChartMarkY` | `ChartMarkPointX` / `ChartMarkPointY` from `@tanstack/charts/mark/scale-values` |
+| Polar callback `layout.angle` / `layout.radiusScale` | `layout.scales.angle` / `layout.scales.radius` |
+| Second axis via overlay chart | Named scale (`channel`, `side`) + mark `xScale` / `yScale` |
+
+`0.15.0` kept root scales working with development warnings; `0.16.0` removed them. Fresh built-in mark option literals now reject unsupported properties, so typos surface as type errors.
 
 ### Package unification (`0.9.0+`)
 
@@ -55,13 +67,13 @@ Tooltip tokens are host-branded (`dom` vs React Native). Compact linear domains 
 1. State the analytical question in one sentence.
 2. Identify field semantic types (quantitative, temporal, ordinal, identifier).
 3. Choose the smallest mark composition (and stack/group/transform ownership).
-4. Compact scales first; nest guides under `axis`.
+4. Compact scales first in the `scales` registry; nest guides under `axis`.
 5. Decide TanStack transform vs D3 vs SQL vs server.
 6. Add `ariaLabel` and the `tooltip` extension (plus focus mode if multi-series).
 7. Verify a static scene before animation or rich interaction.
 8. Extend only at documented boundaries (`createMark`, `decorative`, `compositeMark`, focus strategy, spatial index, `motion()`, `/interaction/*`, custom renderer).
 
-Generated code must include exact imports/subpaths, datum interfaces, scale construction, complete definition, adapter usage, `ariaLabel`, tooltip imports when interactive, and stable identity. Do not invent undeclared variables, casts, private source imports, unreleased `main`-only APIs, archived `react-charts`, or `animate` / `window` / `@tanstack/react-charts` in **new** code.
+Generated code must include exact imports/subpaths, datum interfaces, scale construction inside `scales`, complete definition, adapter usage, `ariaLabel`, tooltip imports when interactive, and stable identity. Do not invent undeclared variables, casts, private source imports, unreleased `main`-only APIs, archived `react-charts`, or `animate` / `window` / `@tanstack/react-charts` in **new** code.
 
 Request template:
 
@@ -104,7 +116,7 @@ import { Chart as RendererChart } from '@tanstack/charts/react/core'
 import { motion } from '@tanstack/charts/motion'
 ```
 
-Canvas: no server pixel paint. Gradients: definition-declared; SVG needs `renderChartSvgWithResources` when serializing resources.
+Canvas: no server pixel paint. Per-mark Canvas: `renderer: canvasChartRenderer` on selected marks inside an SVG host (`0.15.0+`). Custom marks pass a renderer as the third `createMark` argument. Gradients (linear and radial): definition-declared; SVG needs `renderChartSvgWithResources` when serializing resources. Canvas rejects radial strokes.
 
 ## Custom Marks And Interaction Ownership
 
@@ -135,12 +147,13 @@ Reject any solution that reintroduces the archived option object into `@tanstack
 - Import only needed marks, transforms, and D3 modules.
 - Root imports for ordinary apps; exact subpaths for isolation (required for RN/Metro).
 - Keep polar/geo/Canvas/export/motion/spatial/hierarchy/network/tooltip-portal off the critical path until required.
-- Official comparison (workspace `91e2eef`, baseline `2026-08-15`): TanStack **37.60–43.56 KiB** gzip vs Chart.js ~44.7–58.2, Plot ~83–92, Recharts/ECharts ~153–173. Re-measure the app's actual charts.
+- Official comparison (workspace `8bab934`, baseline `2026-09-10`): TanStack **41.56–47.68 KiB** gzip vs Chart.js ~44.7–58.2, Plot ~83–92, Recharts/ECharts ~153–173. Re-measure the app's actual charts.
 
 ## Production Checklist
 
-- `@tanstack/charts` on a coherent `0.14.x` line; new code uses package subpaths
-- No stale names: `animate`, `window`, `tooltip: true`, `groupScale`, `/portable`, `behaviors`, `color.type`, `difference` reducer, archived `react-charts`
+- `@tanstack/charts` pinned to an exact `0.18.x` version; new code uses package subpaths
+- Every definition has `scales.x` / `scales.y` (and polar `scales.angle` / `scales.radius`), with `null` for unused dimensions
+- No stale names: root `x` / `y` scale options, `ChartMarkX` / `ChartMarkY`, `animate`, `window`, `tooltip: true`, `groupScale`, `/portable`, `behaviors`, `color.type`, `difference` reducer, archived `react-charts`
 - Question, encodings, scales, transform/layout ownership are explicit
 - Accessors use `(datum, { index, data })`
 - Definition memoization matches captured values

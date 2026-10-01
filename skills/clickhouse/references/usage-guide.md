@@ -19,7 +19,7 @@ bun add @clickhouse/client
 bun add @clickhouse/client-web
 ```
 
-Node **`>=20`**. Pin with server **24.8+** when possible.
+Node **`>=20`**. Client supports server **24.8+**; for new work target a maintained line (26.8 LTS or 26.9 stable as of 2026-10).
 
 ## 3. Connect
 

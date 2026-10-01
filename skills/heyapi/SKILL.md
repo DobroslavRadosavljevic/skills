@@ -1,6 +1,6 @@
 ---
 name: heyapi
-description: "Build, configure, review, debug, migrate, or plan Hey API (@hey-api/openapi-ts) OpenAPI-to-TypeScript codegen with current docs. Use for openapi-ts, defineConfig, generated SDKs, types, Fetch/Axios/Next/Nuxt/Ky clients, Zod/Valibot validators, TanStack Query plugins, vite-plugin, client.setConfig, auth, interceptors, throwOnError, registry inputs, and regenerating clients from OpenAPI specs."
+description: "Build, configure, review, debug, migrate, or plan Hey API (@hey-api/openapi-ts) OpenAPI-to-TypeScript codegen with current docs. Use for openapi-ts, defineConfig, generated SDKs, types, Fetch/Axios/Next/Nuxt/Ky/OFetch/Angular clients, Zod/Valibot validators, TanStack Query and Pinia Colada plugins, MSW/Faker mock plugins, vite-plugin, client.setConfig, auth, interceptors, throwOnError, registry inputs, and regenerating clients from OpenAPI specs."
 ---
 
 # Hey API
@@ -10,7 +10,7 @@ Use this skill when work touches Hey API / `@hey-api/openapi-ts`: generating Typ
 ## Workflow
 
 1. Inspect the local Hey API surface before changing code:
-   - Package versions for `@hey-api/openapi-ts`, `@hey-api/vite-plugin`, client packages, validators (`zod` / `valibot`), and TanStack Query.
+   - Package versions for `@hey-api/openapi-ts` (latest stable `0.99.0`; ignore `next` snapshot builds), `@hey-api/vite-plugin`, client packages, validators (`zod` / `valibot`), and TanStack Query.
    - Config file: `openapi-ts.config.ts` (or `.js` / `.mjs` / `.cjs`) and any Vite plugin integration.
    - Spec input: local path, remote URL, registry shorthand (`hey-api/...`, `scalar:...`, `readme:...`), or inline object.
    - Output folder contents (`*.gen.ts`, `client/`, `core/`) and whether consumers import from `index.ts` or specific generated files.
@@ -35,7 +35,7 @@ Use this skill when work touches Hey API / `@hey-api/openapi-ts`: generating Typ
 - Enable SDK `validator` / `transformer` only when runtime validation or transformation is intentional; it has a cost and pulls in the validator plugin.
 - For React Query, prefer spreading generated `*Options()` / `*Mutation()` helpers into `useQuery` / `useMutation` rather than re-wrapping SDK calls by hand.
 - Watch mode supports remote URL inputs; do not assume local-file watch works.
-- Requires Node.js 22+ (22.13+ for recent releases). Package is ESM-only since v0.91.
+- Requires Node.js `>= 22.18.0` (since v0.98; v0.96–v0.97 needed `>= 22.13.0`). Package is ESM-only since v0.91.
 - Python codegen is not production-ready yet; keep this skill focused on TypeScript `@hey-api/openapi-ts`.
 
 ## Verification

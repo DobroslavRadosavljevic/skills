@@ -9,7 +9,7 @@ Stack assumption: TanStack Query + Router (and often Start), Form, and optionall
 ```tsx
 // Route / loader: warm cache only
 loader: async ({ context: { queryClient }, params }) => {
-  await queryClient.ensureQueryData(orderOptions(params.orderId))
+  await queryClient.query(orderOptions(params.orderId))
 }
 
 // Leaf: owns observe + UI states
@@ -24,8 +24,8 @@ Rules:
 - Share **`queryOptions` / query keys** between loaders and components—never fork keys.
 - Pass **`id` / params** into leaves; do not lift `data` into React state “to pass down.”
 - Colocate `useMutation` with the control; on success `invalidateQueries` (or set query data) for the keys leaves already observe.
-- Mix critical `await prefetchQuery` (block route) with non-blocking `prefetchQuery` for below-the-fold leaves.
-- To prefetch from a parent without subscribing to updates, use prefetch helpers or `notifyOnChangeProps: []`—still let the child `useQuery`.
+- Mix critical `await queryClient.query(opts)` (block route) with non-blocking `void queryClient.query(opts).catch(noop)` for below-the-fold leaves. `fetchQuery` / `prefetchQuery` / `ensureQueryData` are deprecated since Query 5.102.
+- To prefetch from a parent without subscribing to updates, use `queryClient.query(...)` or `notifyOnChangeProps: []`—still let the child `useQuery`.
 
 Anti-pattern: page `useQuery` → pass `data` through five layout components → leaf renders. Prefer page passes `id`; each leaf queries (cache dedupes).
 
@@ -78,13 +78,13 @@ function CreateOrderForm({ onSuccess }: { onSuccess: (id: string) => void }) {
 
 Use TanStack Store (or similar) for **client** cross-tree state that is not server state.
 
-- Prefer **narrow selectors** so subscribers re-render only on the slice they need.
+- Prefer **narrow selectors** (`useSelector`; `useStore` is a deprecated alias) so subscribers re-render only on the slice they need.
 - Do not put server entities in a store when Query already owns them.
 - Do not invent a global store to avoid passing a single `id` prop.
 
 ```tsx
 // Good: leaf selects a boolean/flag
-const isPanelOpen = useStore(uiStore, (s) => s.orderPanelOpen)
+const isPanelOpen = useSelector(uiStore, (s) => s.orderPanelOpen)
 
 // Bad: store holds full order DTO duplicated from Query
 ```

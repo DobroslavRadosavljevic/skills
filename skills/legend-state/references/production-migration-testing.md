@@ -21,6 +21,8 @@ Legend-State v3 remains a beta release in the current snapshot. Before implement
 4. Inspect installed `.d.ts` exports for any API used in production-sensitive code.
 5. Pin the exact beta version unless the project intentionally accepts prerelease drift.
 
+The current beta is `3.0.0-beta.48` (2026-07-12). Upgrading from beta.47 is bug-fix only (render-phase notification deferral, computed array and Temporal listener fixes, `syncedCrud` failed-create retry, `syncObservable` unsubscribe, `undoRedo` limit). Re-run CRUD retry and React render tests after upgrading because timing of notifications during render changed.
+
 Do not upgrade v2 to v3 as an incidental refactor. Treat it as a state, persistence, and runtime migration with rollback planning.
 
 ## V2 To V3 Migration

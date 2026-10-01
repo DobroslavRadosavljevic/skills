@@ -16,8 +16,10 @@ Docs: https://orm.drizzle.team/docs/kit-overview · https://orm.drizzle.team/doc
 | `check` | Commutativity / race checks across branches |
 | `up` | Upgrade 0.x migration folders → v3 |
 | `export` | Print DDL for external migrators |
+| `mcp` | MCP server over stdio exposing generate/push/check/export/up/pull as tools |
+| `skills` | Installs Drizzle Kit's bundled agent skills into the project |
 
-**Removed:** `drizzle-kit drop` (and `meta/_journal.json`).
+**Removed:** `drizzle-kit drop` (now prints "remove the migration folder manually") and `meta/_journal.json`. Dialect-suffixed legacy commands (`generate:pg`, `check:sqlite`, …) only print the new name.
 
 ```sh
 bunx drizzle-kit generate
@@ -31,9 +33,29 @@ bunx drizzle-kit studio
 bunx drizzle-kit export
 ```
 
-`--strict` was removed from push — prompting is default; use `--force` to skip.
+`--strict` was removed from push — prompting is default; use `--force` to skip. `generate` also takes `--ignore-conflicts` to skip the commutativity check (avoid unless you ran `check` yourself).
 
-Optional RC extras (when present in the installed kit): `drizzle-kit skills`, `drizzle-kit mcp`.
+## Non-interactive runs (CI, scripts, agents)
+
+Since rc.4, `generate`, `push`, `pull`, `up`, `export`, and `check` accept `--output text|json`.
+
+- `--output json` emits one typed JSON envelope (status, errors, payload) and never prompts.
+- `--output text` with a non-TTY stdin is also non-interactive.
+- Unresolved renames and destructive changes come back as a `missing_hints` envelope (or a missing-decisions report in text mode). Re-run with the decisions supplied up front: `--hints '<json array>'` or `--hints-file ./hints.json`.
+
+```sh
+bunx drizzle-kit generate --output json
+bunx drizzle-kit push --output json --hints-file ./drizzle-hints.json
+```
+
+Programmatic SDK (same contract as the JSON CLI):
+
+```ts
+import { generate, push, check } from "drizzle-kit/cli";
+// also: pull, up, exportSql; types GenerateOptions, PushOptions, Hint, MissingHint, …
+```
+
+Contract docs live next to the kit source: `OUTPUT_MODES.md`, `JSON_CONTRACT.md`, `HINTS.md`, `SDK.md`, `MCP.md` (see [source-map.md](source-map.md)). Never answer a `confirm_data_loss` hint for a production database without explicit user approval.
 
 ## `defineConfig`
 
@@ -110,6 +132,6 @@ Opens the hosted Studio UI against a local proxy. Not open source. Gateway (remo
 ## Teams / CI tips
 
 - Commit generated SQL; run `migrate` in deploy pipelines.
-- Run `check` on PRs that touch migrations.
+- Run `check` on PRs that touch migrations (use `--output json` when CI parses the result).
 - Never `push --force` in production pipelines.
 - Keep Kit + ORM versions locked together in the lockfile.

@@ -165,6 +165,6 @@ Sorting / JSDoc / Svelte field details: [languages-sorting-ignores.md](languages
 
 ## Vite+
 
-Prefer `fmt: { ... }` inside `vite.config.ts` instead of a separate `oxfmt.config.ts` / `.oxfmtrc.json`. Vite+ does not apply nested package `fmt` blocks — use `fmt.overrides` on the root config.
+Prefer `fmt: { ... }` inside `vite.config.*` (any extension since 0.69) instead of a separate `oxfmt.config.ts` / `.oxfmtrc.json`. Vite+ mode never discovers nested configs (0.70+) — use `fmt.overrides` on the root config. Vite+ 1.0 pins its own Oxfmt version.
 
-Point the editor at that file (`oxc.fmt.configPath`) and set `oxc.fmt.disableNestedConfig: true` so format-on-save uses the root `fmt` block. See https://viteplus.dev/guide/fmt.
+On Oxfmt 0.70+ the LSP disables nested configs in Vite+ mode by itself; set `oxc.fmt.configPath` only when the editor workspace root is not the Vite config directory. On older versions also set `oxc.fmt.disableNestedConfig: true`. See https://viteplus.dev/guide/fmt.

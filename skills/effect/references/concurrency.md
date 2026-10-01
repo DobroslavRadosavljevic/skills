@@ -17,7 +17,7 @@
 | Fair per-key in-flight | **PartitionedSemaphore** | Round-robin by key so one tenant cannot starve others |
 | STM permits / RW lock | **TxSemaphore** / **TxReentrantLock** | Compose with other `Effect.tx` state |
 
-`Stream.fromQueue` / `Stream.fromPubSub` connect messaging to streams. For NDJSON/msgpack use `Stream.pipeThroughChannel` + `effect/unstable/encoding`.
+`Stream.fromQueue` / `Stream.fromPubSub` connect messaging to streams. For NDJSON / SchemaBinary use `Stream.pipeThroughChannel` + `effect/encoding` (MessagePack was removed in 4.0). `Queue.flush` / `Queue.shutdownUnsafe` (4.0) release pending takers / discard buffered messages from callbacks; `Stream.catchDefect` recovers defects without catching typed failures.
 
 ## Mutable state
 

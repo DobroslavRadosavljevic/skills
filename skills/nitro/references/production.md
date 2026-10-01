@@ -23,7 +23,7 @@ Use this before calling a Nitro change “done.” Match the **actual preset**, 
 
 - [ ] `storage` mounts are durable on the target (not memory) if data must persist
 - [ ] `cache` mount is shared across instances if SWR/ISR must be consistent
-- [ ] Cached handlers: GET-only, `varies` for Host/auth variance, edge `event` first arg
+- [ ] Cached handlers: GET/HEAD only, explicit `maxAge`, `swr` chosen deliberately (default `false`), `allowQuery` / `allowCookies` / `varies` match what the handler reads, no per-user data under a shared key, edge `event` first arg
 - [ ] Database connector matches the platform (D1 vs SQLite file vs Postgres)
 - [ ] `devDatabase` / `devStorage` not accidentally used in production config
 
@@ -33,6 +33,8 @@ Use this before calling a Nitro change “done.” Match the **actual preset**, 
 - [ ] Cron: `scheduledTasks` generated for CF/Vercel; `CRON_SECRET` on Vercel
 - [ ] WebSocket enabled only where the host supports it
 - [ ] OpenAPI production endpoints authenticated or disabled
+- [ ] No leftover `basicAuth` route rules (removed); auth lives in middleware
+- [ ] `cors` route rules use an origin allowlist for credentialed APIs
 - [ ] Tasks HTTP triggers authenticated
 - [ ] Graceful shutdown env on Node
 - [ ] Compatibility date set if relying on new provider behavior

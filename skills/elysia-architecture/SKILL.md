@@ -33,6 +33,7 @@ conflicts, **repo wins** unless the user asks to migrate toward this skill.
 | --- | --- |
 | Runtime | Bun (Node/adapters OK if the app already uses them) |
 | HTTP | Elysia feature plugins under `src/modules/<feature>/` |
+| Version | Elysia 1.4 at **≥ 1.4.30** (security floor; never build route schemas from untrusted input). Elysia 2 is beta — keep house-style code on 1.4 until it ships stable |
 | Module layout | `routes/` + `schema/` + domain logic folder |
 | Tests | Vitest under `tests/` (unit / integration projects) when the repo uses Vitest |
 

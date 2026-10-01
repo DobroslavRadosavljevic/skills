@@ -114,6 +114,9 @@ await db.delete(users).where(eq(users.id, 1));
 
 await db.select({ n: sql<number>`count(*)` }).from(users);
 
+// typed sql keeps nullability; .nullable() adds `| null` after mapWith
+const maybeTotal = sql`sum(${posts.id})`.mapWith(Number).nullable(); // number | null
+
 const q = db
   .select()
   .from(users)

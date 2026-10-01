@@ -46,6 +46,7 @@ export const weatherTool = tool({
 | `onInputStart` | Always before `onInputAvailable`, including `generateText`. |
 | `onInputDelta` | Streaming only. |
 | `inputExamples` | Anthropic native; others ignore. |
+| `deferLoading` | `true` hides the definition until `toolSearch()` finds it (7.0.104+). |
 
 `execute` second arg (`ToolExecutionOptions`): `toolCallId`, `messages`, `abortSignal`, `experimental_sandbox`, `context` (that tool’s bag, **not** the full `toolsContext` map).
 
@@ -183,6 +184,8 @@ import { Experimental_StdioMCPTransport } from '@ai-sdk/mcp/mcp-stdio';
 
 Elicitation: `capabilities: { elicitation: {} }` + `mcpClient.onElicitationRequest(...)`.
 
+Recent `@ai-sdk/mcp` 2.0.x: server tool annotations are surfaced in tool metadata (2.0.45); results with only `structuredContent` are accepted (serialized as text); OAuth discovery hardened against SSRF and uses the untrusted-URL fetcher (2.0.49–2.0.59).
+
 Rug pull: `fingerprintTools` / `detectToolDrift` from `'ai'`.
 
 ### MCP Apps
@@ -196,9 +199,37 @@ import { experimental_MCPAppRenderer as MCPAppRenderer } from '@ai-sdk/react';
 
 Pass **only** `modelVisible` tools to the model. Never give app-only tools to the model. Renderer is experimental. React only.
 
+## Tool search (7.0.104+)
+
+`toolSearch()` from `ai` lets the model discover tools on demand instead of loading every definition up front. Mark tools with `deferLoading: true`; search matches names and descriptions (up to five per query) and exposes matches on the **next step**, so raise `stopWhen`. Works with `generateText`, `streamText`, `ToolLoopAgent`, and `WorkflowAgent` (direct calling only). MCP tools work too: set `deferLoading: true` on the tools from `client.tools()`.
+
+```ts
+import { generateText, isStepCount, tool, toolSearch } from 'ai';
+
+const weather = tool({
+  deferLoading: true,
+  description: 'Get the weather forecast for a city.',
+  inputSchema: z.object({ city: z.string() }),
+  execute: async ({ city }) => ({ city, forecast: 'Rain tomorrow.' }),
+});
+
+await generateText({
+  model,
+  tools: { search: toolSearch(), weather },
+  stopWhen: isStepCount(5),
+  prompt: 'Will it rain in Bangalore tomorrow?',
+});
+```
+
+Direct calling changes the provider tool list after each search and can invalidate prompt caches. For cache-stable discovery, route search through code mode with `codeModeTool({ toolDiscovery: 'conversation' })` (below).
+
+## Tool choice enforcement
+
+Since 7.0.88 / 7.0.94, `toolChoice: 'required'` or `{ type: 'tool', toolName }` is enforced: `generateText` rejects and `streamText` does not execute calls that violate it, raising `ToolChoiceViolationError` (`toolChoice`, `finishReason`).
+
 ## Code mode
 
-Package `@ai-sdk/code-mode`. Experimental. Node ≥22. Not browser/edge. Model writes JS that calls tools inside QuickJS.
+Package `@ai-sdk/code-mode`. Experimental. Node ≥22. Not browser/edge. Model writes JS that calls tools inside QuickJS. Since 7.0.103 code mode supports mid-conversation tool discovery/updates: `codeModeTool({ toolDiscovery: 'conversation' })` + `toolSearch()` announces discovered tools in user messages while the provider-visible tool list stays unchanged.
 
 ```ts
 import { DIRECT_TOOL_CALL, experimental_codeModeTool as codeModeTool } from '@ai-sdk/code-mode';

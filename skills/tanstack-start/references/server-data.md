@@ -137,7 +137,7 @@ export const Route = createFileRoute('/api/hello')({
 Server route handler context includes:
 
 - `request`: standard Web `Request`.
-- `params`: typed route params such as `{ id: string }`.
+- `params`: typed route params such as `{ id: string }`. Since `@tanstack/react-start` 1.168.59, route `params.parse` functions (parents first) run before the handler, so runtime values match inferred types. Parse errors are thrown inside the handler wrapper, so server-route middleware can catch them and choose the response.
 - `context`: values passed by middleware.
 
 Dynamic and splat params follow Router file conventions:

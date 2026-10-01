@@ -11,7 +11,7 @@ Prefer `@effect/vitest` when asserting Effects/Layers. Plain `vitest` is fine fo
 1. Import test APIs from `@effect/vitest` for Effect cases.
 2. Provide test Layers explicitly; use `layer(Live, { excludeTestServices: true, timeout })` (or repo equivalent) for integration against real infra.
 3. Keep mocked Layers in **unit**; real DB/Redis Layers in **integration**.
-4. Align `@effect/vitest` with the repo’s Effect version pin.
+4. Align `@effect/vitest` with the repo’s Effect version pin. `@effect/vitest` 4.x (Effect 4.0 stable) requires `vitest >=5 <6`.
 
 ## MUST NOT
 

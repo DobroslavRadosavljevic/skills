@@ -22,18 +22,37 @@ bun add ai zod @ai-sdk/harness @ai-sdk/harness-claude-code @ai-sdk/sandbox-verce
 | `@ai-sdk/harness-deepagents` | Deep Agents |
 | `@ai-sdk/harness-cline` | Cline; host process |
 | `@ai-sdk/harness-grok-build` | Grok Build via ACP |
-| `@ai-sdk/sandbox-vercel` | Network sandbox (`@vercel/sandbox`). Auth `VERCEL_OIDC_TOKEN`. Failures: `HarnessSandboxAuthenticationError` |
+| `@ai-sdk/sandbox-vercel` | Network sandbox (`@vercel/sandbox`): `createVercelNetworkSandboxSession`, `resumeVercelNetworkSandboxSession`, `createVercelSandboxSessionFromNativeSandbox`. Auth `VERCEL_OIDC_TOKEN`. Failures: `HarnessSandboxAuthenticationError` |
 | `@ai-sdk/sandbox-just-bash` | Local emulation; OK for **host-runtime** harnesses (Pi, Cline), not Claude Code/Codex |
 | `@ai-sdk/workflow-harness` | Durable runners around HarnessAgent |
 | `@ai-sdk/tui` | Wrap HarnessAgent to inject one session, then `runAgentTUI` |
 
-Bridge harnesses (Claude Code, Codex, OpenCode, Deep Agents): `createVercelSandbox({ runtime: 'node24', ports: [4000] })`. Host harnesses: ports optional.
+Since `@ai-sdk/harness` 1.0.126 the sandbox APIs were refactored: create the sandbox session yourself from the agent's template and pass it in. `createVercelSandbox(...)` is deprecated.
+
+```ts
+import { createVercelNetworkSandboxSession } from '@ai-sdk/sandbox-vercel';
+
+const sandboxSession = await createVercelNetworkSandboxSession({
+  runtime: 'node24',
+  ports: [4000], // bridge harnesses (Claude Code, Codex, OpenCode, Deep Agents); optional for host harnesses
+  template: await agent.getSandboxTemplate(),
+});
+const session = await agent.createSession({ sandboxSession });
+try {
+  await agent.generate({ session, prompt: 'Inspect this repository.' });
+} finally {
+  await session.destroy();
+  await sandboxSession.destroy();
+}
+```
 
 Peers: `zod ^3.25.76 || ^4.1.8`, `ws ^8.21.0` (harness).
 
 ## Session is mandatory
 
-Construct the agent at module scope (config only). Live state is `HarnessAgentSession`. Always `createSession()`, then `destroy()` / `detach()` / `stop()`.
+Construct the agent at module scope (config only). Live state is `HarnessAgentSession`. Always `createSession({ sandboxSession })`, then `destroy()` / `detach()` / `stop()`; destroy the sandbox session separately.
+
+`session.readHistory({ since? })` (1.0.133+) returns normalized history `{ messages, cursor }` for adapters that implement it; otherwise it throws `HarnessCapabilityUnsupportedError`.
 
 Passing `messages` uses only the **latest user message** as the turn input. Trailing tool-result / approval messages continue an unfinished turn. Persist `session.detach()` / `session.stop()` resume state — do **not** replay full UI history.
 
@@ -74,15 +93,18 @@ Three surfaces:
 
 Filter with **either** `activeTools` **or** `inactiveTools`, never both. Host tools get `experimental_sandbox` (restricted session). Client tools omit `execute`; turn pauses until `continueStream({ toolResultContinuations })` or UI `addToolOutput`.
 
-`permissionMode` for built-ins (`allow-all` default, `allow-edits`, `allow-reads`). `toolApproval` for host tools (`not-applicable` | `approved` | `user-approval` | `denied`).
+`permissionMode` for built-ins (`allow-all` default, `allow-edits`, `allow-reads`). `toolApproval` for host tools (`not-applicable` | `approved` | `user-approval` | `denied`). Host tool inputs are validated against their schemas at execution (1.0.124+), and validated `toolsContext` reaches host-executed tools like in `ToolLoopAgent`.
+
+`HarnessAgent` also accepts `ToolLoopAgent`-style lifecycle callbacks, `instructions` as a `SystemModelMessage`, and `headers` for inference requests. The deprecated adapter `model` / `modelId` settings were removed — set `model` on `HarnessAgent`.
 
 ## Sandbox lifecycle
 
-- `sandboxConfig.workDir` — relative to sandbox default
-- `onBootstrap` + `bootstrapHash` — expensive setup baked into reusable snapshots
-- `onSession` — per-session files after workdir exists (including resumes)
-- `prepareHarnessSandboxTemplate()` / `prepareSandboxForHarness()` for pre-warming
-- Caller-supplied `sandboxSession` is **not** stopped/destroyed by the agent
+- `sandboxConfig.workDir` — relative to sandbox default (`'.'` = default working directory, 1.0.129+)
+- `sandboxConfig.onBootstrap` + `bootstrapHash` — expensive setup baked into reusable snapshots; change the hash when the recipe changes
+- `sandboxConfig.onSession({ session, sessionWorkDir, abortSignal })` — per-session files after workdir exists (including resumes); not part of the template
+- Pre-warming: `agent.getSandboxTemplate()` for one harness, `createHarnessSandboxTemplate({ harnesses, sandboxConfig })` from `@ai-sdk/harness/agent` for several. `prepareHarnessSandboxTemplate()` / `prepareSandboxForHarness()` are deprecated
+- Harness state (bootstrap recipes, run state) lives under `~/.ai-sdk-harness` in the sandbox HOME, never in the workspace (1.0.123; older sandboxes re-bootstrap once)
+- The caller owns `sandboxSession` — the agent does **not** stop/destroy it
 
 ## UI consumption
 

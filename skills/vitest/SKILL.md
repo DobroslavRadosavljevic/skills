@@ -7,12 +7,12 @@ description: "Build, review, debug, configure, migrate, teach, or plan Vitest te
 
 Use this skill when work touches Vitest: writing/running tests, config, mocks/snapshots, coverage, browser mode, projects/pools, reporters, or migrating from Jest / Vitest 3 / Vitest 4.
 
-Snapshot: `vitest@5.0.1` (2026-09-18). Refresh from [source-map.md](references/source-map.md) if versions differ.
+Snapshot: `vitest@5.0.3` (2026-10-01). Refresh from [source-map.md](references/source-map.md) if versions differ.
 
 ## Workflow
 
 1. Inspect the local Vitest surface:
-   - Package versions: `vitest` and aligned `@vitest/*` (snapshot **5.0.1**). Node `^22.12 || ^24 || >=26`. Vite peer `^6.4 || ^7 || ^8` (required; Yarn must list `vite` explicitly).
+   - Package versions: `vitest` and aligned `@vitest/*` (snapshot **5.0.3**). Node `^22.12 || ^24 || >=26`. Vite peer `^6.4 || ^7 || ^8` (required; Yarn must list `vite` explicitly).
    - Config: dedicated `vitest.config.*` (overrides `vite.config` entirely) vs `test: {}` inside Vite config. Config is **not** looked up from parent directories.
    - Scripts: prefer `vitest run` for CI; do **not** use `bun test` (Bun’s runner) when the project uses Vitest — use `bun run test` / `bunx vitest`.
    - Environment: `node` (default) vs `jsdom` / `happy-dom` vs Browser Mode projects.

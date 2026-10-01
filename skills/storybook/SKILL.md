@@ -1,11 +1,11 @@
 ---
 name: storybook
-description: "Build, review, debug, configure, migrate, or plan Storybook 10 UI workshops with current docs. Use for storybook, create storybook, CSF3, CSF Next, Meta, StoryObj, definePreview, preview.meta, args, argTypes, decorators, parameters, tags, autodocs, play functions, storybook/test, @storybook/react-vite, @storybook/nextjs-vite, @storybook/addon-docs, @storybook/addon-a11y, @storybook/addon-vitest, portable stories, composeStories, main.ts, preview.ts, ESM config, Chromatic, and upgrades from Storybook 8/9."
+description: "Build, review, debug, configure, migrate, or plan Storybook 10 UI workshops with current docs. Use for storybook, create storybook, CSF3, CSF Next, Meta, StoryObj, definePreview, preview.meta, args, argTypes, decorators, parameters, tags, autodocs, play functions, storybook/test, @storybook/react-vite, @storybook/nextjs-vite, @storybook/addon-docs, @storybook/addon-a11y, @storybook/addon-vitest, portable stories, composeStories, main.ts, preview.ts, ESM config, Chromatic, @storybook/addon-mcp, componentsManifest, storybook skills/tools agent CLI, and upgrades from Storybook 8/9 (10.6.x current)."
 ---
 
 # Storybook
 
-Use this skill when work touches Storybook 10 (or upgrades into it): stories, CSF, config, docs, interaction/a11y/visual tests, Vitest addon, portable stories, framework packages, or migrations from 8.x/9.x.
+Use this skill when work touches Storybook 10 (or upgrades into it): stories, CSF, config, docs, interaction/a11y/visual tests, Vitest addon, portable stories, framework packages, agent/MCP tooling, or migrations from 8.x/9.x.
 
 ## Workflow
 
@@ -18,7 +18,7 @@ Use this skill when work touches Storybook 10 (or upgrades into it): stories, CS
 3. For install, frameworks, `main`/`preview`, core features vs addons, and CLI, use [setup-core.md](references/setup-core.md).
 4. For CSF3/CSF Next, args, render, decorators, parameters, tags, and docs, use [writing-stories.md](references/writing-stories.md).
 5. For `play`, `storybook/test`, Vitest addon, portable stories, and a11y, use [testing.md](references/testing.md).
-6. For builds, CI, doctor/upgrade, 8→9→10 package moves, and common failures, use [production-migration.md](references/production-migration.md).
+6. For builds, CI, doctor/upgrade, 8→9→10 package moves, AI/MCP tooling, and common failures, use [production-migration.md](references/production-migration.md).
 
 ## Implementation Judgment
 
@@ -29,6 +29,8 @@ Use this skill when work touches Storybook 10 (or upgrades into it): stories, CS
 - Prefer `@storybook/addon-vitest` over `@storybook/test-runner` for Vite React/Vue/Svelte projects. Next.js needs `@storybook/nextjs-vite` for the Vitest addon.
 - Keep stories colocated with components. Prefer `args` + Controls over story-local React state; use `play` for interactions and assertions.
 - Use tags deliberately (`autodocs`, `!autodocs`, `!test`, custom filters). Titles/`component` on meta must be statically analyzable.
+- AI tooling (`@storybook/addon-mcp`, `storybook skills` / `storybook tools`) is preview-only in 10.6. Add it only on request; the docs toolset needs `features.componentsManifest: true`.
+- Storybook 11 is alpha (`next`); stay on 10.x unless the repo opts in.
 - `.storybook/main.*` must be valid ESM (no `require` / `__dirname`). Use `import.meta.url` for path math.
 
 ## Verification

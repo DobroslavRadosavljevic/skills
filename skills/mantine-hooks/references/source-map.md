@@ -1,16 +1,24 @@
 # @mantine/hooks Source Map
 
-Snapshot date: 2026-08-01.
+Snapshot date: 2026-10-01.
 
 ## Current Package Evidence
 
 Npm `latest` from this snapshot:
 
-- `@mantine/hooks`: **9.5.0**
+- `@mantine/hooks`: **9.6.3** (dist-tags: `latest` 9.6.3, `next` 9.5.1-alpha.1 (stale), `legacy` 7.17.8)
 - Peer dependency: **`react@^19.2.0`**
 - Runtime dependencies: none beyond React peer
 - Package entry: single export `.` (`cjs` / `esm` / types)
 - License: MIT
+
+Hook changes since 9.5.0 (no new or removed exports; `src/index.ts` export list is identical):
+
+- 9.5.1: `useScrollSpy` `scrollHost` accepts a ref.
+- 9.5.2: `useDebouncedValue` `leading: true` no longer fires multiple times per burst or emits a stale value.
+- 9.6.1: `useInterval` no longer restarts when `fn` changes; `useCollapse` transition state is correct inside React `<Activity>`.
+- 9.6.2: `useMask` mixed static values fix; `useScrollSpy` no longer uses stale nodes.
+- 9.6.3: `useClickOutside` fifth `capture` argument; `useIntersection` uses the last batched entry; `useMediaQuery` catches `matchMedia` errors on synchronous initial read; `useHotkeys` applies `preventDefault` when other options are set; `useThrottledCallback` recovers after `clearTimeout`; `useRovingIndex` skips disabled items with ArrowLeft/ArrowRight in grid mode; `useMask` applies `transform` to the initial value.
 
 Package purpose (from docs): 70+ React hooks for state and UI management. Used internally by other `@mantine/*` packages, but **standalone** — usable without Mantine components.
 
@@ -42,6 +50,7 @@ Examples:
 Changelogs touching hooks:
 
 - v9.0.0: `https://mantine.dev/changelog/9-0-0/`
+- Patch notes: `https://github.com/mantinedev/mantine/releases` (filter for `[@mantine/hooks]`)
 - Migration guide (8 → 9): `https://mantine.dev/guides/eight-to-nine/`
 
 Source:
@@ -52,7 +61,7 @@ Source:
 ## npm
 
 - `https://www.npmjs.com/package/@mantine/hooks`
-- Install: `bun add @mantine/hooks` (or `npm` / `yarn` / `pnpm`)
+- Install: `bun add @mantine/hooks`
 
 ## Scope Reminder
 

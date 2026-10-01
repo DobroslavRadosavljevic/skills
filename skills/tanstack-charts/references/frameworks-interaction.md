@@ -27,12 +27,14 @@ export function LetterFrequencyChart({
             fill: accent,
           }),
         ],
-        x: { scale: () => scaleBand().padding(0.18) },
-        y: {
-          scale: scaleLinear,
-          nice: true,
-          grid: true,
-          axis: { label: 'Frequency' },
+        scales: {
+          x: { scale: () => scaleBand().padding(0.18) },
+          y: {
+            scale: scaleLinear,
+            nice: true,
+            grid: true,
+            axis: { label: 'Frequency' },
+          },
         },
         svgAnimation: true,
         tooltip,
@@ -51,6 +53,8 @@ export function LetterFrequencyChart({
 ```
 
 Keep fixed definitions at module scope. Do not add component generics or casts.
+
+Peers: React and React DOM 18 or 19 (`0.17.0+`); SSR no longer emits layout-effect warnings.
 
 Required props: `definition`, `ariaLabel`. Common: `height` (default `320`), `width`, `aspectRatio`, `initialWidth` (default `640` for SSR), `ariaDescription`, `className`, `style`, `tabIndex`, `onFocusChange`, `onFocusGroupChange`, `onSelect`, `onRender`, `idPrefix`.
 
@@ -100,7 +104,7 @@ Focus modes:
 
 Default pointer focus resolves against **painted** primitives (containment, then affinity). Facet-local primary markers stay bound to the primary point; `whenFocused(..., { match: 'x' \| 'y' })` for synchronized cursors without extra selected points.
 
-Keep the built-in primary focus ring unless authored geometry replaces it (`focusRing: false`).
+Keep the built-in primary focus ring unless authored geometry replaces it (`focusRing: false`). Style it with `focusRing: { radius, strokeWidth, fill, stroke }` (defaults `5`, `2.5`, `var(--ts-chart-focus-fill, Canvas)`, series color) or a theme-level `theme.focusRing` (`0.18.0`).
 
 ### Crosshair
 
@@ -115,8 +119,10 @@ defineChart({
   focus: 'nearest-x',
   maxFocusDistance: Number.POSITIVE_INFINITY,
   tooltip,
-  x: { scale: () => scalePoint<string>().padding(0.2) },
-  y: { scale: scaleLinear, grid: true },
+  scales: {
+    x: { scale: () => scalePoint<string>().padding(0.2) },
+    y: { scale: scaleLinear, grid: true },
+  },
 })
 ```
 
@@ -162,6 +168,8 @@ import { controlledSignal } from '@tanstack/charts/interaction/signal'
 import { keyedSelection, whenSelected } from '@tanstack/charts/selection'
 ```
 
+`zoomX({ wheelActivation })` (`0.18.0`): `'focus'` (default, wheel captured only while the plot control is focused), `'modifier'` (Control/Command+wheel under the pointer), or `'always'`. Keep the default unless the chart owns page scrolling.
+
 Definition `cursor` binds an application-owned controller (focus-snapped or free). Add `crosshair(...)` when that cursor needs a visual. `controls` (not `behaviors`) resolve after final scales.
 
 Change callbacks use a context object: `(value, { reason })`, `key(datum, { point })`, `format(value, { point })`.
@@ -187,8 +195,7 @@ Default SVG:
 ```ts
 defineChart({
   marks,
-  x,
-  y,
+  scales,
   svgAnimation: true,
   // or { duration: 280, easing: 'ease-out', respectReducedMotion: true, resize: false }
 })
@@ -216,8 +223,7 @@ const definition = defineChart({
       motion: { transition: { type: 'spring', mass: 1.25 } },
     }),
   ],
-  x: { scale: xScale },
-  y: { scale: yScale },
+  scales: { x: { scale: xScale }, y: { scale: yScale } },
 })
 
 <Chart

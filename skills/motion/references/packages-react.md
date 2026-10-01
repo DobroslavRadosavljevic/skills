@@ -18,6 +18,7 @@ bun remove framer-motion && bun add motion
 | `motion/react-client` | Next App Router / RSC-friendly client surface |
 | `motion/react-m` | Slim `m` for `LazyMotion` |
 | `motion/react-mini` | Mini `useAnimate` (~2.3kb WAAPI) — no independent `x`/`y` |
+| `motion/react-animate-view` | `AnimateView` — View Transitions on React 19.3+ `<ViewTransition>` |
 | `motion/debug` | Debug utilities |
 
 Import map and full matrix: [source-map.md](source-map.md).
@@ -54,7 +55,7 @@ Prefer CSS transitions for simple cases — see [web-implementation.md](web-impl
 | Path | Approx |
 |------|--------|
 | Full `motion` from `motion/react` | ~34kb |
-| `m` + LazyMotion shell | ~4.6kb |
+| `m` + LazyMotion shell | ~4.6kb (≈20% smaller again in 13.5) |
 | + `domAnimation` | +~15kb (animate, variants, exit, hover/tap/focus) |
 | + `domMax` | +~25kb (adds pan/drag/layout) |
 | `motion/react-mini` `useAnimate` | ~2.3kb |
@@ -90,12 +91,13 @@ Styled Components 6: transient props / `shouldForwardProp`.
 4. Scan for: `exitBeforeEnter`, `AnimateSharedLayout`, `positionTransition`/`layoutTransition`, `motion.custom`, `useViewportScroll`, `useCycle`.
 5. Add root `MotionConfig reducedMotion="user"` if missing.
 6. Reorder lists: `axis` is optional (auto-detect); use `axis="xy"` for grids.
+7. Motion+ `AnimateView` users on React 19.3+: import `AnimateView` from `motion/react-animate-view` instead of the paid package.
 
 ## Motion+ (paid)
 
 Docs: [Motion+](https://motion.dev/plus) · [install](https://motion.dev/docs/motion-plus-installation)
 
-Private registry `@motionplus/*` / `motion-plus`. Premium components (`AnimateView`, Carousel, Cursor, …) — **do not** assume in OSS apps. Core path: MIT `motion` + `motion/react*` + `animateView` from `"motion"`.
+Private registry `@motionplus/*` / `motion-plus`. Premium components (Carousel, Cursor, …) — **do not** assume in OSS apps. `AnimateView` is **no longer** Motion+ (free in `motion/react-animate-view` since 13.4). Core path: MIT `motion` + `motion/react*` + `animateView` from `"motion"`.
 
 ## Out of scope
 
@@ -114,4 +116,5 @@ Private registry `@motionplus/*` / `motion-plus`. Premium components (`AnimateVi
 | Tiny imperative in a component | `motion/react-mini` `useAnimate` (if props fit) |
 | Springs / `x` / layout / drag | Full `motion/react` or LazyMotion `domMax` |
 | Simple hover color | CSS — [web-implementation.md](web-implementation.md) |
-| View Transition morph (MIT) | `animateView` from `"motion"` — [view-animations.md](view-animations.md) |
+| View Transition (React 19.3+) | `AnimateView` from `motion/react-animate-view` — [view-animations.md](view-animations.md) |
+| View Transition morph (React < 19.3 / imperative) | `animateView` from `"motion"` — [view-animations.md](view-animations.md) |

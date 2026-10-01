@@ -1,6 +1,6 @@
 # Kafka Usage Guide (TypeScript)
 
-Day-to-day produce/consume/admin with **`@platformatic/kafka`** (snapshot **2.8.0**). Canonical docs: GitHub README + `docs/` (no separate docs site).
+Day-to-day produce/consume/admin with **`@platformatic/kafka`** (snapshot **2.13.0**). Canonical docs: GitHub README + `docs/` (no separate docs site).
 
 ## Install
 
@@ -104,7 +104,7 @@ Other consume styles: `stream.on("data", ...)`, or concurrent `forEach` from `hw
 - Manual commit after successful processing = at-least-once.
 - Keep handlers fast relative to session/heartbeat; raise timeouts carefully rather than blocking forever.
 - `highWaterMark` default is aggressive (1024) — lower for large payloads.
-- Optional `groupProtocol: "consumer"` for KIP-848 (Kafka 4.0+); `"classic"` otherwise. Static membership: `groupInstanceId`.
+- Optional `groupProtocol: "consumer"` for KIP-848 (Kafka 4.0+); `"classic"` otherwise. On classic groups prefer cooperative-sticky (`protocols: [{ name: COOPERATIVE_STICKY_ASSIGNOR, version: 3 }]`, 2.12+) over the default eager round-robin. Static membership: `groupInstanceId`.
 
 ## Admin
 

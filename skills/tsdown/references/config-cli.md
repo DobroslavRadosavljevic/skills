@@ -60,7 +60,11 @@ CLI positional files override/set entries. Default: `src/index.ts` when present.
 | `treeshake` | Default true |
 | `unbundle` | Default false — file-preserving mode |
 | `hash` | Chunk filename hashes (default true) |
-| `report` | Size report (default true) |
+| `report` | Size report (default true); `report: { summary: true }` skips per-file lines (0.23) |
+| `outExtensions` | Custom output extensions (tsup `outExtension` removed in 0.23) |
+| `nodeProtocol` | `false` (default) \| `'strip'` \| `true` (add `node:`); replaces removed `removeNodeProtocol` |
+| `root` | Input root (like `rootDir`); default = common base dir of entries |
+| `logLevel` / `failOnWarn` | Logger level and warning policy |
 | `shims` | CJS/ESM shims (default false) |
 | `cjsDefault` | Default true for entry default-export interop |
 | `write` | Default true; `false` = in-memory (no watch) |
@@ -83,6 +87,10 @@ bunx tsdown -c ./tsdown.config.ts
 bunx tsdown --no-config
 bunx tsdown --format esm --format cjs
 bunx tsdown -d dist
+bunx tsdown --root src
+bunx tsdown -l warn                     # log level
+bunx tsdown --tsconfig tsconfig.build.json
+bunx tsdown --deps.never-bundle react
 bunx tsdown --dts --sourcemap
 bunx tsdown --minify
 bunx tsdown --target node20
@@ -95,15 +103,17 @@ bunx tsdown -W -F my-pkg                # workspace (experimental)
 bunx tsdown --concurrency 4
 bunx tsdown --fail-on-warn
 bunx tsdown --from-vite                 # experimental
+bunx tsdown --no-write                  # in-memory build
+bunx tsdown --on-success "node dist/index.mjs"
 ```
 
-Flag rules: `--foo` → true, `--no-foo` → false, `--foo.bar` → nested; camelCase ≡ kebab-case.
+Flag rules: `--foo` → true, `--no-foo` → false, `--foo.bar` → nested; camelCase ≡ kebab-case (0.23 also camel-cases nested keys, so `--deps.never-bundle` → `deps.neverBundle`).
 
 Docs: https://tsdown.dev/reference/cli
 
 ## Default vs tsup mental model
 
-| | tsup (typical) | tsdown (0.22) |
+| | tsup (typical) | tsdown (0.23) |
 |---|---|---|
 | Default format | cjs | **esm** |
 | clean | often false | **true** |
@@ -117,6 +127,6 @@ Compile-time env via `--env.*`, `--env-file`, `--env-prefix` (file vars default 
 
 ## CI tips
 
-- Build on Node ≥ 22.18 even if the published package supports older runtimes.
+- Build on Node `^22.18.0 || ^24.11.0 || >=26.0.0` (not Node 25) even if the published package supports older runtimes.
 - Consider `failOnWarn: 'ci-only'` in config.
 - Docs: https://tsdown.dev/advanced/ci

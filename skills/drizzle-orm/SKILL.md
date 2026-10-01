@@ -1,13 +1,13 @@
 ---
 name: drizzle-orm
-description: "Build, review, debug, configure, migrate, teach, or plan Drizzle ORM 1.0 RC (not 0.x) with kit, seed, validators, and Effect drivers. Use for drizzle-orm@rc, drizzle-kit@rc, drizzle-seed@rc, defineRelations RQBv2, pgTable/mysqlTable/sqliteTable, generate migrate push pull studio, drizzle-orm/zod|valibot|typebox|arktype|effect-schema, drizzle-orm/effect-postgres and other effect-* drivers, codecs, snakeCase, InferSelectModel, and 0.x-to-1.0 upgrades."
+description: "Build, review, debug, configure, migrate, teach, or plan Drizzle ORM 1.0 RC (not 0.x) with kit, seed, validators, and Effect drivers. Use for drizzle-orm@rc, drizzle-kit@rc, drizzle-seed@rc, defineRelations RQBv2, pgTable/mysqlTable/sqliteTable, generate migrate push pull studio, drizzle-orm/zod|valibot|typebox|arktype|effect-schema, drizzle-orm/effect-postgres and other effect-* drivers on Effect 4, kit --output json/--hints/drizzle-kit/cli SDK, codecs, snakeCase, InferSelectModel, and 0.x-to-1.0 upgrades."
 ---
 
 # Drizzle ORM (1.0 RC)
 
 Use this skill for Drizzle **1.0 release candidates** (`drizzle-orm@rc`, currently **1.0.0-rc.4**), plus **drizzle-kit**, **drizzle-seed**, in-tree validators, Studio, and official **Effect** drivers.
 
-Do **not** treat npm `latest` (`0.45.x`) as current for new work. Pin the `rc` channel for ORM + Kit + Seed together.
+Do **not** treat npm `latest` (`0.45.x` / kit `0.31.x`) as current for new work. Pin the `rc` channel for ORM + Kit + Seed together. Stable 1.0.0 has not shipped yet; `rc5`-style dist-tags are commit previews, not the RC line.
 
 ## Workflow
 
@@ -15,7 +15,7 @@ Do **not** treat npm `latest` (`0.45.x`) as current for new work. Pin the `rc` c
    - Exact versions / dist-tags for `drizzle-orm`, `drizzle-kit`, `drizzle-seed`, `eslint-plugin-drizzle`.
    - Dialect + driver entrypoints (`postgres-js`, `neon-http`, `bun-sql`, `libsql`, `effect-postgres`, …).
    - Schema files, `defineRelations`, `drizzle.config.ts`, migrations folder shape (v3 folders vs legacy journal).
-   - Whether Effect (`effect@beta` + `drizzle-orm/effect-*`) or Promise drivers are in use.
+   - Whether Effect (`effect` 4.x + `drizzle-orm/effect-*`) or Promise drivers are in use.
 2. For install, day-to-day usage, baselines, and troubleshooting, follow [usage-guide.md](references/usage-guide.md) first.
 3. Refresh docs when versions drift or the task touches RQBv2, kit v3 migrations, codecs, or Effect. Start from [source-map.md](references/source-map.md).
 4. Route deeper detail:
@@ -37,7 +37,8 @@ Do **not** treat npm `latest` (`0.45.x`) as current for new work. Pin the `rc` c
 - Production schema changes: **generate → migrate**. Use **push** only for local prototyping (`--explain` first).
 - After leaving 0.x: run `bunx drizzle-kit up` once to convert migration folders to v3 (no `journal.json`).
 - Validators live **in-tree**: `drizzle-orm/zod`, `…/valibot`, `…/typebox`, `…/arktype`, `…/effect-schema`. Avoid standalone `drizzle-zod@0.x` with RC.
-- Effect on RC: use **`drizzle-orm/effect-*` + Effect v4 beta** (`effect@beta`, matching `@effect/sql-*`). Do **not** pair RC with `@effect/sql-drizzle` (Effect v3 / drizzle `<0.50` only).
+- Effect on RC: use **`drizzle-orm/effect-*` + Effect v4** (`effect` 4.0 stable on `latest`, matching `@effect/sql-*` 4.x). The `effect@beta` tag is now an old prerelease — do not install it. Do **not** pair RC with `@effect/sql-drizzle` (Effect v3 / drizzle `<0.50` only).
+- Non-interactive / CI / agent runs of Kit: use `--output json` and pass rename/data-loss decisions via `--hints` / `--hints-file` instead of answering prompts; for code, call the `drizzle-kit/cli` SDK.
 - Prefer `$inferSelect` / `$inferInsert` (aliases: `InferSelectModel` / `InferInsertModel`).
 
 ## Verification

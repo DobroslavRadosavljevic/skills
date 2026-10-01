@@ -10,13 +10,13 @@ Library (not an ORM): Docker ClickHouse for Vitest/Jest/etc.
 bun add -d @testcontainers/clickhouse testcontainers
 ```
 
-Snapshot aligned with ecosystem: **`@testcontainers/clickhouse@12.0.4`**.
+Snapshot aligned with ecosystem: **`@testcontainers/clickhouse@12.2.0`** (needs Node `>=22.22`, the `testcontainers` 12.1+ engine floor).
 
 ```ts
 import { createClient } from '@clickhouse/client'
 import { ClickHouseContainer } from '@testcontainers/clickhouse'
 
-const container = await new ClickHouseContainer('clickhouse/clickhouse-server:24.8')
+const container = await new ClickHouseContainer('clickhouse/clickhouse-server:26.8')
   .withUsername('test')
   .withPassword('test')
   .start()
@@ -41,6 +41,7 @@ Notes:
 
 - Exposes **8123** (HTTP — use this) and **9000** (native — ignore for `@clickhouse/client`).
 - Prefer `getClientOptions()` / `getHttpUrl()`.
+- Pin the image to the server line you run in production (LTS such as `26.8` or `26.3`); 24.8 LTS is out of support.
 - Docs: https://node.testcontainers.org/modules/clickhouse/
 
 ## Schema migrations — raw SQL
@@ -64,7 +65,7 @@ Track applied versions in a `_migrations` table yourself if needed.
 bun add -d clickhouse-migrations
 ```
 
-- Version **1.4.0** depends on `@clickhouse/client@^1.23.1`.
+- Version **1.5.0** depends on `@clickhouse/client@^1.23.1`; 1.4.0 added opt-in `${VAR}` env substitution in migration SQL, 1.5.0 widened the SQL syntax the file parser accepts.
 - Numbered files `N_name.sql`; tracks `_migrations`.
 - npm: https://www.npmjs.com/package/clickhouse-migrations
 

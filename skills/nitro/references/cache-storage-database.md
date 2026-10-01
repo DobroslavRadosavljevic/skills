@@ -2,7 +2,7 @@
 
 ## Cache (`nitro/cache`)
 
-Powered by ocache on the **`cache` storage mount**.
+Powered by ocache 0.3 on the **`cache` storage mount**. Defaults changed in `3.0.260903-beta`; see [migration.md](migration.md).
 
 - Production default: **memory** (lost on restart / per-isolate).
 - Development: filesystem under `.nitro/cache`.
@@ -24,13 +24,18 @@ export default defineCachedHandler(
 
 ### Handler behavior
 
-- Only **GET** and **HEAD** are cached; other methods hit the handler.
-- Concurrent same-key requests share one invocation.
-- Auto headers: weak `ETag`, `Last-Modified`, `Cache-Control` from `swr` / `maxAge` / `staleMaxAge`.
+- Only **GET** and **HEAD** are cached, under separate entries; other methods and `Range` requests hit the handler.
+- Concurrent same-key requests share one invocation, bounded by `maxResolveTime` (default 30 s; `event.req.signal` carries the deadline).
+- The handler sees only what the key covers:
+  - **Request headers** are stripped unless listed in `varies`. The request origin (scheme, host, port) is already in the key; add `x-forwarded-host` only if the handler reads it.
+  - **Query params** are stripped unless listed in `allowQuery` (`true` = full query string).
+  - **Cookies** are stripped unless listed in `allowCookies`; `set-cookie` is dropped from cached responses.
+  - **`authorization`** is stripped unless `allowAuthorization: true`. For per-user responses use `shouldBypassCache`.
+- Auto headers: weak `ETag`, `Cache-Control` (from `maxAge` / `swr` / `staleMaxAge`; disable with `sendCacheControl: false`), `Vary`, and `x-cache: HIT | STALE | REVALIDATED | MISS` (`cacheStatusHeader`). `Last-Modified` is **not** generated; set it in the handler.
 - Conditional `If-None-Match` / `If-Modified-Since` → **304**.
-- **Request headers are stripped** unless listed in `varies` (include `host` / `x-forwarded-host` for multi-tenant).
-- Default **`swr: true`**. Set `swr: false` to wait for fresh data when expired.
-- Default `maxAge` is **1 second** if omitted — set it explicitly.
+- Only `200`, `203`, `301`, `308` are stored; `no-store` / `private` / `no-cache` / `Vary: *` responses are not.
+- Default **`swr: false`** (wait for fresh data when expired). Set `swr: true` to serve stale while revalidating; add `staleMaxAge` to bound stale entries (without it, entries get no storage TTL).
+- Default `maxAge` is **1 second** if omitted — set it explicitly. `maxAge: 0` disables caching.
 
 ### Cached functions
 
@@ -65,11 +70,11 @@ On **edge workers**, pass `event` as the **first** argument so Nitro can `waitUn
 
 ### Shared options
 
-`base` (mount, default `cache`), `name`, `group` (`nitro/handlers` vs `nitro/functions`), `getKey`, `integrity`, `maxAge`, `staleMaxAge` (`-1` = always serve stale while updating), `swr`, `shouldInvalidateCache`, `shouldBypassCache`, `onError`.
+`base` (mount, default `cache`; an array = multi-tier), `name` (always set for factory/loop-created functions), `group` (`nitro/handlers` vs `nitro/functions`), `getKey`, `integrity`, `maxAge`, `staleMaxAge`, `swr`, `getMaxAge` (per-entry lifetime), `maxResolveTime`, `storage`, `waitUntil`, `shouldInvalidateCache`, `shouldBypassCache`, `onError`.
 
-Handler-only: `headersOnly` (304 helpers without storing body), `varies`.
+Handler-only: `headersOnly` (304 helpers without storing body), `varies`, `allowQuery`, `allowCookies`, `allowAuthorization`, `sendCacheControl`, `cacheStatusHeader`, `stream`, `maxBodySize` (no default limit; set it for proxied upstreams), `shouldCache`.
 
-Function-only: `transform`, `validate`.
+Function-only: `transform`, `serialize`, `validate`.
 
 ### Route rules
 
@@ -80,7 +85,7 @@ storage: {
 },
 routeRules: {
   "/blog/**": { cache: { maxAge: 3600, base: "redis" } },
-  "/api/**": { swr: 3600 },
+  "/api/**": { swr: 3600 }, // = cache: { swr: true, maxAge: 3600 }
   "/api/realtime/**": { cache: false },
 }
 ```
@@ -123,7 +128,7 @@ Driver catalog: [unstorage.unjs.io](https://unstorage.unjs.io/).
 
 ## Database (experimental)
 
-Enable `experimental.database`. Layer is [db0](https://db0.unjs.io/). Default SQLite → `.data/db.sqlite` (dev / Node-compatible prod).
+Enable `experimental.database`. Layer is [db0](https://db0.unjs.io/) 0.4: Nitro passes the client library to configured connectors and prompts to install a missing one. Default SQLite → `.data/db.sqlite` (dev / Node-compatible prod).
 
 ```ts
 import { useDatabase } from "nitro/database";
@@ -153,6 +158,6 @@ devDatabase: {
 
 Connector names live under `connector`; host/url live under **`options`**, not the top-level connection object.
 
-Connectors include: `sqlite` / `node-sqlite`, `better-sqlite3`, `sqlite3`, `bun` / `bun-sqlite`, `libsql` variants, `postgresql`, `mysql2`, `pglite`, `planetscale`, `cloudflare-d1`, Hyperdrive MySQL/Postgres.
+Connectors include: `sqlite` / `node-sqlite`, `better-sqlite3`, `sqlite3`, `bun` / `bun-sqlite`, `libsql` variants (including `libsql-core`), `postgresql`, `neon`, `mysql2`, `pglite`, `planetscale`, `prisma`, `cloudflare-d1`, Hyperdrive MySQL/Postgres. db0 0.4 also adds Kysely integration and connector `capabilities` metadata.
 
 Do not assume SQLite on Cloudflare/Vercel without the matching connector and bindings.

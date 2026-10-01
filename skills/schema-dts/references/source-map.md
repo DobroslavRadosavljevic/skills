@@ -4,12 +4,13 @@ This reference captures the schema-dts docs snapshot used to create the skill.
 
 ## Snapshot
 
-- Captured: 2026-08-05
+- Captured: 2026-10-01
 - Stable npm packages:
   - `schema-dts@2.0.0` (Schema.org v30 core typings)
-  - `schema-dts-gen@2.0.0` (generator CLI)
+  - `schema-dts-gen@2.0.1` (generator CLI; 2026-09-25 security fix, see below)
   - `schema-dts-lib@1.0.0` (shared helpers: `JsonLdObject`, `IdReference`, `MergeLeafTypes`)
-- npm `latest` dist-tag (schema-dts): `2.0.0`
+- npm `latest` dist-tags: `schema-dts` `2.0.0`, `schema-dts-gen` `2.0.1`, `schema-dts-lib` `1.0.0`, `react-schemaorg` `2.0.1` (peers: `react >=16.3.0`, `schema-dts >=0.7.4`)
+- No GitHub release entry exists for `schema-dts-gen@2.0.1`; it shipped as an npm-only patch with advisory [GHSA-c4f4-pq98-f2p2](https://github.com/google/schema-dts/security/advisories/GHSA-c4f4-pq98-f2p2)
 - Official repository: https://github.com/google/schema-dts
 - Package homepage: https://opensource.google/projects/schema-dts
 - License: Apache-2.0
@@ -45,6 +46,11 @@ This reference captures the schema-dts docs snapshot used to create the skill.
 - Schema.org vocabulary: https://schema.org/
 - Schema.org Actions (input/output): https://schema.org/docs/actions.html
 - Related React helper: https://github.com/google/react-schemaorg
+
+## Changes Since v2.0.0
+
+- **`schema-dts-gen@2.0.1` (2026-09-25), security:** GHSA-c4f4-pq98-f2p2 (High). In `2.0.0`, an ontology `rdfs:comment` containing `*/` could close the generated JSDoc and inject top-level TypeScript into the output. The fix keeps generated JSDoc fully enclosed. Only custom `--ontology` / `--file` inputs are exposed; the default schema.org HTTPS ontology and the prebuilt `schema-dts` package are **not** affected.
+- **README (2026-09-01):** documents implementing Schema.org shapes from a class with `implements PersonLeaf` (leaf interfaces), since union aliases cannot be implemented.
 
 ## Package Roles
 

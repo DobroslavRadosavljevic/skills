@@ -1,6 +1,6 @@
 ---
 name: legend-state
-description: "Build, review, debug, migrate, or plan Legend-State v3 applications with current docs. Use for @legendapp/state v3 beta, observable, useValue, observer, Memo, $React, useObservable, computed or linked observables, observe, when, batch, fine-grained React rendering, React Native, local persistence, syncObservable, synced, syncedCrud, syncedFetch, syncedQuery, Supabase, Firebase, Keel, offline-first sync, transforms, syncState, testing, performance, and v2-to-v3 migrations."
+description: "Build, review, debug, migrate, or plan Legend-State v3 applications with current docs. Use for @legendapp/state v3 beta (3.0.0-beta.48), observable, useValue, observer, Memo, $React, useObservable, computed or linked observables, observe, when, batch, fine-grained React rendering, React Native, local persistence, syncObservable, synced, syncedCrud, syncedFetch, syncedQuery, Supabase, Firebase, Keel, offline-first sync, transforms, syncState, testing, performance, and v2-to-v3 migrations."
 ---
 
 # Legend-State
@@ -15,7 +15,7 @@ Use this skill for Legend-State v3 work across core observables, React or React 
    - Identify the runtime: vanilla TypeScript, React web, React Native, Expo, SSR, or a mixed app.
    - Map observable ownership and lifetime: module singleton, request scoped, provider scoped, component local, or synced resource.
    - Inventory React consumption (`useValue`, `observer`, `Memo`, `$React`, control-flow components), persistence plugins, sync plugins, and deprecated APIs.
-2. Confirm the release channel before using v3 APIs. Version 3 is prerelease in the current snapshot while npm `latest` is v2. Start with [references/source-map.md](references/source-map.md), then refresh current docs and package metadata when versions matter.
+2. Confirm the release channel before using v3 APIs. Version 3 is prerelease (`beta` tag `3.0.0-beta.48`) while npm `latest` is still v2 (`2.1.15`); install with `@beta` or an exact pin. Start with [references/source-map.md](references/source-map.md), then refresh current docs and package metadata when versions matter.
 3. For observable creation, reads and writes, computed or linked state, reactivity, arrays, events, batching, and helpers, use [references/core-observables.md](references/core-observables.md).
 4. For React, React Compiler compatibility, fine-grained rendering, React Native, hooks, control flow, context, and tracing, use [references/react-integration.md](references/react-integration.md).
 5. For local persistence, remote sync, CRUD, retries, transforms, plugins, sync status, and local-first reliability, use [references/persistence-sync.md](references/persistence-sync.md).
