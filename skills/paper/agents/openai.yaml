@@ -1,0 +1,4 @@
+interface:
+  display_name: "Paper"
+  short_description: "Design, generate images, and export from the Paper canvas via Paper MCP"
+  default_prompt: "Use $paper to work on the Paper canvas through Paper MCP: load the guide, read the file, then design, edit, generate images with paper-gen://, sync tokens, export assets, or turn a Paper design into code."

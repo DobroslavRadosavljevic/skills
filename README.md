@@ -50,6 +50,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `nitro` | Nitro v3 servers: file routes, Vite plugin, cache/storage, and deploy-anywhere presets. |
 | `oxfmt` | Full Oxfmt 0.68 usage guide plus setup, Prettier migration, and CI formatting. |
 | `oxlint` | Full Oxlint 1.83 usage guide plus setup, rules/plugins, type-aware lint, and ESLint migration. |
+| `paper` | Paper design canvas via Paper MCP: design, AI images, tokens, exports, and design-to-code. |
 | `permix` | Type-safe Permix 4.3 permissions: setup/check, SSR, React/Next/Nest, and server middleware. |
 | `plain-language` | Always-on ASD-STE100 hard prose (short, active, one word per idea) plus readable naming. |
 | `playwright` | Build, review, debug, configure, or plan Playwright 1.63 E2E tests and browser automation. |
