@@ -1,0 +1,4 @@
+interface:
+  display_name: "Mediabunny"
+  short_description: "Mediabunny 1.61 media read, write, convert, HLS"
+  default_prompt: "Use $mediabunny for this Mediabunny media reading, writing, conversion, recording, HLS, or @mediabunny extension work with the current API and recipes."

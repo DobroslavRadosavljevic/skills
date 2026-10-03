@@ -1,0 +1,4 @@
+interface:
+  display_name: "Remotion"
+  short_description: "Programmatic videos with React and Remotion"
+  default_prompt: "Use $remotion to build, animate, review, debug, or render this Remotion video against remotion 4.0.532 current documentation."

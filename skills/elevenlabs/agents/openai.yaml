@@ -1,0 +1,4 @@
+interface:
+  display_name: "ElevenLabs"
+  short_description: "Build with every ElevenLabs API, SDK, and agent product"
+  default_prompt: "Use $elevenlabs to build, integrate, debug, or plan this ElevenLabs feature (speech, transcription, voices, music, dubbing, or voice agents) with current docs."

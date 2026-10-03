@@ -28,6 +28,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `design-engineer` | Diagnose UI/UX, propose multiple solutions, pick the best, and ship craft. |
 | `drizzle-orm` | Drizzle ORM 1.0 RC (not 0.x): schema, RQBv2, kit, seed, validators, and Effect drivers. |
 | `effect` | Enforce consistent Effect 4.x (stable LTS) application code, thin framework adapters, RC→4.0 migration, and a complete module and package index. |
+| `elevenlabs` | Every ElevenLabs product: TTS (Eleven v4), dialogue, Scribe STT, voices, music, SFX, dubbing, Speech Engine, ElevenAgents, SDKs, CLI, MCP. |
 | `elysia` | Build, review, debug, test, and deploy Elysia 1.4 apps (≥1.4.30) and plan Elysia 2 beta migrations with current docs. |
 | `elysia-architecture` | Portable Elysia house style: feature modules, routes, schemas, and ownership. |
 | `evlog` | Build, review, debug, configure, or migrate evlog 2.29 wide-event TypeScript logging (CLI map, drains, AI/eve, telemetry). |
@@ -45,6 +46,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `legend-state` | Build, review, migrate, and debug Legend-State v3 observable, React, persistence, and sync systems. |
 | `loop` | Implement, review, fix, and repeat until no actionable review issues remain. |
 | `mantine-hooks` | Build, review, debug, migrate, or plan React code with `@mantine/hooks` only. |
+| `mediabunny` | Mediabunny 1.61 media toolkit: read, write, convert, record, and HLS in browser and server, plus all `@mediabunny/*` extensions. |
 | `mobbin` | Enforce Mobbin MCP for real shipped-app UI/UX inspiration before designing. |
 | `motion` | Motion for React (motion@13.5): components, AnimatePresence, layout, gestures, scroll, free AnimateView, plus product UI motion a11y and performance. |
 | `nitro` | Nitro v3 servers (3.0.260903-beta): file routes, route rules, Vite plugin, ocache/storage, and deploy-anywhere presets. |
@@ -57,6 +59,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `react` | Build, review, debug, migrate, or plan React 19.3 apps with current React docs. |
 | `react-boundaries` | Enforce leaf-owned state/queries, no prop-drill hubs; TanStack-aware composition. |
 | `react-email` | React Email 6.11 templates: components, Tailwind styling, CLI preview/export, render, sending, and the editor 1.7. |
+| `remotion` | Remotion 4.0.532 programmatic React video: compositions, animation, media, captions, effects, Studio, Player, SSR/Lambda/web rendering, and v5 readiness. |
 | `reorganize` | Split oversized files and group related code into a coherent folder tree. |
 | `research` | Investigate external sources and codebase evidence before recommending next steps. |
 | `schema-dts` | Type-safe Schema.org JSON-LD with Google schema-dts v2 (WithContext, Graph, Leaf types, gen 2.0.1). |
