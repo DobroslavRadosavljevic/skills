@@ -1,0 +1,4 @@
+interface:
+  display_name: "Self-Improve"
+  short_description: "Turn repeated agent work into scripts and runbooks"
+  default_prompt: "Use $self-improve to set up runbooks, permanent scripts, and self-improvement rules in this repo."

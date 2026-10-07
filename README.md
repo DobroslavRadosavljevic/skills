@@ -63,6 +63,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `reorganize` | Split oversized files and group related code into a coherent folder tree. |
 | `research` | Investigate external sources and codebase evidence before recommending next steps. |
 | `schema-dts` | Type-safe Schema.org JSON-LD with Google schema-dts v2 (WithContext, Graph, Leaf types, gen 2.0.1). |
+| `self-improve` | One-time setup: AGENTS.md rules, permanent Bun scripts, `runbooks/`, and a bounded quality pass. |
 | `sentry` | Sentry JS SDK 11 for TS/JS: errors, span streaming, replay, logs, metrics, source maps, framework packages, and v10→v11 migration. |
 | `seo` | Complete SEO playbook: crawl/index, on-page, copywriting, linking, research, schema, GEO, i18n, local, ecommerce, audits. |
 | `setup-competitors-md` | One-time COMPETITORS.md landscape: rivals, substitutes, and differentiation. |
