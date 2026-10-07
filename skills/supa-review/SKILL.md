@@ -1,9 +1,9 @@
 ---
-name: ultra-review
-description: Runs an exhaustive, evidence-backed code review of current git changes by default, or of a user-named path, module, feature, or package. Forces loading every relevant available agent skill for the review surface, and requires external docs or research when libraries, APIs, security, or established practice matter. Use when the user says "ultra-review", "ultra review", "deep review", "exhaustive review", "review this diff", "review my changes", or asks for a thorough review of git changes or a pointed codebase area.
+name: supa-review
+description: Runs an exhaustive, evidence-backed code review of current git changes by default, or of a user-named path, module, feature, or package. Forces loading every relevant available agent skill for the review surface, and requires external docs or research when libraries, APIs, security, or established practice matter. Use when the user says "supa-review", "supa review", "deep review", "exhaustive review", "review this diff", "review my changes", or asks for a thorough review of git changes or a pointed codebase area. Separate from harness-native cloud reviews such as Claude Code /ultrareview or /code-review ultra; do not trigger on "ultra review" or "ultrareview".
 ---
 
-# Ultra Review
+# Supa Review
 
 Produce a **super-detailed, evidence-backed code review**. Default scope is **current git changes**. If the user names a path, module, feature, package, or concern, review that target instead.
 

@@ -73,6 +73,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `simplify-layout` | Shorten file and folder names and group related modules so paths stay scannable. |
 | `storybook` | Build, review, debug, configure, migrate, or plan Storybook 10.6 UI workshops, including addon-mcp agent tooling. |
 | `subagents` | Split harder work into safe disjoint lanes and coordinate subagent results. |
+| `supa-review` | Exhaustive code review of git changes (default) or a pointed target, with skill loading and research. |
 | `t3-env` | Type-safe env vars with T3 Env: createEnv, server/client split, Standard Schema, presets. |
 | `tailwind` | Build, review, debug, configure, or migrate Tailwind CSS v4.3 projects (Vite/PostCSS/CLI/webpack/Turbopack). |
 | `tailwind-variants` | Build, review, debug, migrate, or plan Tailwind Variants class recipes. |
@@ -92,7 +93,6 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `turborepo-architecture` | Portable monorepo house style: apps/packages layout, turbo rules, and boundaries. |
 | `ua-parser` | UAParser.js v2 User-Agent detection: OSS AGPL, PRO packages, Client Hints, bots, and extensions. |
 | `ultraplan` | Ask detailed planning questions, recommend answers, and produce a precise implementation plan before work starts. |
-| `ultra-review` | Exhaustive code review of git changes (default) or a pointed target, with skill loading and research. |
 | `unsmell` | Find and fix maintainability problems across a codebase or scoped area. |
 | `visx` | Airbnb visx React+D3 visualization primitives, XYChart, and v3→v4 migration. |
 | `vite` | Vite 8.3 tooling: config, Rolldown/Oxc builds, plugins, SSR, and v7→v8 migration. |
