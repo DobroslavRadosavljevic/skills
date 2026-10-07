@@ -6,13 +6,13 @@
 # AGENTS.md
 
 ## Stack
-- TypeScript strict, Bun, Vitest 4, Oxlint
+- TypeScript strict, Bun, Playwright 1.x (E2E), Testcontainers (integration), Oxlint
 
 ## Commands
 - Install: `bun install`
 - Dev: `bun run dev`
-- Test all: `bun test`
-- Test file: `bun test path/to/file.test.ts`
+- E2E all: `bunx playwright test`
+- Integration all: `bun run test:integration`
 - Lint: `bun run lint`
 - Types: `bun run typecheck`
 
@@ -41,12 +41,28 @@ Hard rule for all agent text to humans. Also covers names in the codebase. Do no
 
 **Goal:** The goal is easy reading. Many readers are not native English speakers. Clear text helps them do the work in a safe and correct way.
 
+## Testing (E2E and integration first)
+
+Hard rule for all test work. A unit test that cannot catch a real bug costs upkeep and gives false trust.
+
+- **Use only the test setups listed below.** Do not add a new E2E or integration setup (for example Playwright or Testcontainers). Ask first.
+- **Never write unit tests after you write code.** A test written after the code only copies what the code does. It does not find bugs.
+- **Prefer E2E and integration tests.** Use them to prove that complex features work through real entry points and real services.
+- **End each E2E test with an artifact.** The artifact must be verifiable and repeatable: for example a trace, screenshot, video, HAR file, or JSON report.
+- **Test a unit in isolation only when you must.** First, write down all the ways it can fail. Then write the code. Each isolated test checks one failure from that list. Keep the list next to the test.
+- **Delete or do not add a unit test that cannot catch a real bug the E2E and integration tests miss.**
+
+Setups in this repo:
+
+- E2E (Playwright): all `bunx playwright test`, one `bunx playwright test e2e/checkout.spec.ts`, artifacts in `test-results/`
+- Integration (Testcontainers + Vitest): all `bun run test:integration`, one `bun run test:integration src/orders`, needs Docker
+
 ## Project rules
 - Prefer existing UI primitives under `src/components/ui/`; do not add a second button system.
 - Server-only modules stay in `src/server/`; never import them from client components.
 
 ## Boundaries
-- Always: run `bun test` on touched packages before finishing.
+- Always: run the focused E2E spec for touched features before finishing.
 - Ask first: new production dependencies, Drizzle schema changes.
 - Never: commit `.env`; edit `src/generated/`.
 
@@ -57,7 +73,7 @@ Hard rule for all agent text to humans. Also covers names in the codebase. Do no
 | Architecture | `docs/architecture.md` |
 ```
 
-Why it works: exact commands, versions/tools, STE communication, silent architecture rules, three-tier boundaries, deep docs indexed not pasted.
+Why it works: exact commands, versions/tools, STE communication, E2E-and-integration-first testing limited to existing setups, silent architecture rules, three-tier boundaries, deep docs indexed not pasted.
 
 ## Good — monorepo root excerpt
 

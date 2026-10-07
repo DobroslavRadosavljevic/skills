@@ -1,0 +1,29 @@
+# Copy to .github/workflows/knip.yml. Swap the Bun steps for the repo's package manager.
+name: Knip
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  knip:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: oven-sh/setup-bun@v2
+      # Knip runs on Node (^20.19.0 || >=22.12.0); keep Node available for tool configs.
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - run: bun install --frozen-lockfile
+      # Run codegen/build steps here if Knip needs generated files (route trees, API clients, dist for source mapping).
+      - name: Knip (default mode)
+        run: bun run knip --reporter github-actions --reporter symbols
+      - name: Knip (production mode)
+        if: ${{ !cancelled() }}
+        run: bun run knip:production --reporter github-actions --reporter symbols

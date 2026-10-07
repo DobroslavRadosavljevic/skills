@@ -1,0 +1,13 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  "project": [
+    "src/**/*.{ts,tsx}!",
+    "scripts/**/*.ts"
+  ],
+  "includeEntryExports": true,
+  "tags": [
+    "-lintignore"
+  ],
+  "treatConfigHintsAsErrors": true,
+  "treatTagHintsAsErrors": true
+}

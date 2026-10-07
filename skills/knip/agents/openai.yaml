@@ -1,0 +1,4 @@
+interface:
+  display_name: "Knip"
+  short_description: "Enforce a proper Knip dead-code setup"
+  default_prompt: "Use $knip to audit, set up, and enforce Knip 6 in this repository: correct config, zero hints, both default and production runs clean, and a CI gate."

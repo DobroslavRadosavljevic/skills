@@ -1,0 +1,4 @@
+interface:
+  display_name: "High-Signal Tests"
+  short_description: "Prune low-signal unit tests; prefer existing E2E and integration setups"
+  default_prompt: "Use $high-signal-tests to delete unit tests that would not catch a real bug the existing E2E and integration tests miss, fan the work out across parallel subagents, and add the testing rules to AGENTS.md. Do not add new E2E or integration setups."

@@ -10,6 +10,7 @@ Use this checklist when creating or reviewing. Mark N/A only when truly irreleva
 - [ ] Commands are copy-pasteable and match real scripts/CI/Makefiles.
 - [ ] Linked paths exist (or the review explicitly flags dead links).
 - [ ] Root file includes the Communication (ASD-STE100) block from [communication.md](communication.md), unmodified.
+- [ ] Root file includes the Testing (E2E and integration first) block from [testing.md](testing.md), rules unsoftened, placeholders filled, only existing setups listed (unless the user opted out).
 - [ ] Root file roughly ≤150 lines (or nested split justified); no essay dumps. Communication still counts and stays.
 - [ ] Each retained line passes the litmus test: removing it would cause a real agent mistake.
 
@@ -22,7 +23,7 @@ Use this checklist when creating or reviewing. Mark N/A only when truly irreleva
 | Communication | Root file has the ASD-STE100 block from communication.md, not a paraphrase |
 | Layout | Non-obvious paths called out; obvious `src/` trees not narrated |
 | Conventions | Only project-specific rules; style enforced by tooling is linked or omitted |
-| Testing | How to run focused tests; expectation to fix green / add tests when changing code |
+| Testing | Block from testing.md: real commands for existing E2E/integration setups only, E2E artifact path, no post-hoc unit tests |
 | Git / PR | Only non-default norms (title format, required checks, “ask before push”) |
 | Boundaries | Always / Ask first / Never for destructive or policy-sensitive actions |
 | Security | Gotchas unique to this repo (auth boundaries, PII, sandbox limits) if any |

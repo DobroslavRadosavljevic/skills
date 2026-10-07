@@ -2,6 +2,8 @@
 
 Load when Vitest runs Storybook stories via browser mode (`@vitest/browser-playwright` or equivalent) as an opt-in project.
 
+Applies only when the package already has this setup, or the user asks to add it. Never introduce browser mode on your own.
+
 ## Stance
 
 Storybook/browser tests are **not** the default unit gate. Keep them as `test:storybook` (or similar) on the UI package.

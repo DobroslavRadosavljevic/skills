@@ -31,7 +31,7 @@ Adjust the Treaty path to the plugin's actual prefix.
 ## MUST
 
 1. Use `treaty(instance)` for success, validation, auth failure, and status-specific bodies.
-2. Keep mocked HTTP tests under `tests/unit/`; real DB/providers under `tests/integration/`.
+2. Keep mocked HTTP tests under `tests/unit/`; real DB/providers under `tests/integration/`. When the integration project exists, put route behavior there; keep mocked unit routes only for listed failure modes integration cannot reach cheaply.
 3. Mock cross-cutting plugins at the module boundary — do not boot full production `main` for every unit case.
 4. `await app.modules` when lazy/loadable plugins are under test.
 

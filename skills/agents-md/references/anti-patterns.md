@@ -7,6 +7,9 @@ Do not ship these.
 | Anti-pattern | Why it hurts | Do instead |
 | --- | --- | --- |
 | Missing Communication (ASD-STE100) | Agents write long passive jargon to humans | Paste the block from communication.md into the root file |
+| Missing or softened Testing block | Agents add low-signal unit tests after the code | Paste the block from testing.md; fill real commands |
+| “Add unit tests for every change” | Grows tests that copy the code and catch no real bug | E2E and integration first; isolated tests only from a written failure list |
+| Testing block lists a setup the repo lacks | Agents start building Playwright or Testcontainers unasked | List only existing setups; delete the other lines |
 | README clone | Dilutes agent signal; duplicates human docs | Keep human onboarding in `README.md`; link it |
 | Generic advice (“write clean code”) | Models already know this | Encode only project-specific constraints, plus required Communication |
 | Full style guide paste | Burns context; drifts from prettier/eslint | Rely on formatters/linters; note only exceptions |

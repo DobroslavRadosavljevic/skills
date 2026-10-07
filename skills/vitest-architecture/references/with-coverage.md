@@ -16,6 +16,7 @@ Coverage is **package-local**. Do not force 100% thresholds on every workspace.
 
 1. Adding monorepo-wide coverage gates without an explicit decision.
 2. Chasing coverage on generated code (`src/gen/**`) without excluding it.
+3. Writing tests only to reach a threshold. Coverage is not a bug count; a low-signal test does not earn its upkeep.
 
 ## Checklist
 

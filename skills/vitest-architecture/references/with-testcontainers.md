@@ -2,6 +2,8 @@
 
 Load when integration tests start Docker containers via Testcontainers (Redis, Postgres, MinIO, Kafka, ClickHouse, …).
 
+Applies only when the package already uses Testcontainers, or the user asks to add it. Never introduce it on your own.
+
 ## Stance
 
 Containers belong to **integration**, not unit. Prefer helpers under `tests/setup/` started in `beforeAll` / stopped in `afterAll` — not Vitest `globalSetup` unless the repo already standardizes on it.

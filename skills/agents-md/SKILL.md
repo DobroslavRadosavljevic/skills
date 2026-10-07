@@ -6,7 +6,9 @@ description: >-
   says AGENTS.md, agents.md, agent instructions, project agent context,
   nest AGENTS.md, or asks to scaffold, audit, improve, or standardize
   repository guidance for AI coding agents. Always include the ASD-STE100
-  Communication block in new or existing root AGENTS.md files.
+  Communication block and the Testing block (no post-hoc unit tests, prefer
+  E2E and integration tests only when the repo already has those setups, E2E
+  artifacts, failure modes before isolated tests) in root AGENTS.md files.
 ---
 
 # AGENTS.md
@@ -32,6 +34,8 @@ If ambiguous, ask once: create, review, improve, or nest?
 
 - Prefer one root `AGENTS.md`. Nest only when a subtree has different commands, boundaries, or conventions.
 - **Required:** every root `AGENTS.md` must include the Communication (ASD-STE100) block from [references/communication.md](references/communication.md). Paste it as-is. Nested files skip it unless they override writing rules.
+- **Required by default:** every root `AGENTS.md` includes the Testing (E2E and integration first) block from [references/testing.md](references/testing.md). List only E2E and integration setups the repo already has; never add one. Omit the block only when the user says the repo follows a different test policy.
+- Never delete tests as part of an `AGENTS.md` edit. Offer a separate prune pass for low-signal unit tests and wait for approval.
 - Every other line must earn its keep. Litmus: *Would removing this cause the agent to make a mistake it would not otherwise make?* If no, delete it.
 - Target **≤150 lines** for a root file; **30–50** is enough for small repos. Split or index when larger.
 - Put **exact executable commands early** (with flags/filters the project actually uses). Agents will re-run these.
@@ -54,7 +58,7 @@ A great `AGENTS.md` covers these when they apply (omit empty sections; do not pa
 3. **Communication** — the ASD-STE100 block from [references/communication.md](references/communication.md) (required on root files).
 4. **Layout** — where source, tests, configs, and generated output live (only if non-standard).
 5. **Conventions** — project-specific style/architecture rules agents get wrong; link to lint/format otherwise.
-6. **Testing** — how to run focused tests, what “done” means, whether to add tests unprompted.
+6. **Testing** — the block from [references/testing.md](references/testing.md), listing only existing E2E and integration setups with real commands.
 7. **Git / PR** — commit/PR norms that differ from defaults (title format, required checks).
 8. **Boundaries** — always / ask first / never (secrets, vendor dirs, prod config, schema, deps).
 9. **Index** — links or a table to deeper docs (architecture, ADRs, security model) instead of inlining them.
@@ -75,8 +79,9 @@ Before writing:
 
 - Use [references/template.md](references/template.md) as a starting shape; delete unused sections.
 - Always paste the Communication block from [references/communication.md](references/communication.md) into the root file.
-- Put high-frequency commands near the top. Put Communication next.
-- Encode only project-specific constraints; strip generic advice agents already know. Do not strip Communication.
+- Paste the Testing block from [references/testing.md](references/testing.md) after Communication. Fill setup lines from real scripts; delete lines for setups the repo lacks.
+- Put high-frequency commands near the top. Put Communication next, then Testing.
+- Encode only project-specific constraints; strip generic advice agents already know. Do not strip Communication or Testing.
 - For monorepos, follow [references/nesting.md](references/nesting.md).
 
 ### 3. Validate
@@ -85,6 +90,7 @@ Check against:
 
 - Quality bar above and [references/quality-bar.md](references/quality-bar.md).
 - Communication block present and unmodified: [references/communication.md](references/communication.md).
+- Testing block present, rules not softened, placeholders filled, only existing setups listed: [references/testing.md](references/testing.md).
 - Anti-patterns in [references/anti-patterns.md](references/anti-patterns.md).
 - Good/bad patterns in [references/examples.md](references/examples.md).
 

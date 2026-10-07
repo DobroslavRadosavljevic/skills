@@ -1,0 +1,24 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema-jsonc.json",
+  // Monorepo: top-level entry/project are ignored. Root files go under ".".
+  "workspaces": {
+    ".": {
+      "entry": ["scripts/*.ts"],
+      "project": ["scripts/**/*.ts"]
+    },
+    // Internal packages: consumers are in this repo, so unused entry exports are real.
+    "packages/*": {
+      "includeEntryExports": true
+    },
+    // Apps: only add entries that no plugin or package.json field covers.
+    // Add css/vue/svelte/... to project only when that compiler is active (else a hint fires).
+    "apps/web": {
+      "entry": ["src/main.tsx!"],
+      "project": ["src/**/*.{ts,tsx}!"],
+      "includeEntryExports": true
+    }
+  },
+  "tags": ["-lintignore"],
+  "treatConfigHintsAsErrors": true,
+  "treatTagHintsAsErrors": true
+}

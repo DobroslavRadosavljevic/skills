@@ -20,7 +20,8 @@ Soft exception: UI design-system packages may also include colocated `src/**/*.t
 
 1. Set `environment: "happy-dom"` (or jsdom) on the React unit project.
 2. Clean up RTL between tests in setupFiles.
-3. Do not use full Browser Mode for ordinary unit component tests (see Storybook overlay for visual/browser).
+3. Assert user-visible behavior through Testing Library queries (role, text, label). Do not assert markup snapshots, internal state, or hook call counts.
+4. Do not use full Browser Mode for ordinary unit component tests (see Storybook overlay for visual/browser).
 
 ## MUST NOT
 

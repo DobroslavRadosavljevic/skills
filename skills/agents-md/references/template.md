@@ -10,7 +10,7 @@ Starter shape. Replace placeholders. Delete sections that do not apply. Prefer f
 - Language / runtime: <e.g. TypeScript 5.x on Bun 1.x>
 - App framework: <e.g. TanStack Start>
 - Data / validation: <e.g. Drizzle, Zod 4>
-- Tests: <e.g. Vitest 4>
+- Tests: <e.g. Playwright 1.x E2E, Testcontainers integration — only what exists>
 - Package manager: <bun | pnpm | npm | …> — use this, not others
 
 ## Commands
@@ -18,7 +18,7 @@ Starter shape. Replace placeholders. Delete sections that do not apply. Prefer f
 - Install: `<cmd>`
 - Dev: `<cmd>`
 - Test (all): `<cmd>`
-- Test (focused): `<cmd with pattern/filter>`
+- Test (focused): `<cmd with file or grep filter>`
 - Lint / typecheck: `<cmd>`
 - Build: `<cmd>`
 - Format (if required before finish): `<cmd>`
@@ -48,6 +48,22 @@ Hard rule for all agent text to humans. Also covers names in the codebase. Do no
 
 **Goal:** The goal is easy reading. Many readers are not native English speakers. Clear text helps them do the work in a safe and correct way.
 
+## Testing (E2E and integration first)
+
+Hard rule for all test work. A unit test that cannot catch a real bug costs upkeep and gives false trust.
+
+- **Use only the test setups listed below.** Do not add a new E2E or integration setup (for example Playwright or Testcontainers). Ask first.
+- **Never write unit tests after you write code.** A test written after the code only copies what the code does. It does not find bugs.
+- **Prefer E2E and integration tests.** Use them to prove that complex features work through real entry points and real services.
+- **End each E2E test with an artifact.** The artifact must be verifiable and repeatable: for example a trace, screenshot, video, HAR file, or JSON report.
+- **Test a unit in isolation only when you must.** First, write down all the ways it can fail. Then write the code. Each isolated test checks one failure from that list. Keep the list next to the test.
+- **Delete or do not add a unit test that cannot catch a real bug the E2E and integration tests miss.**
+
+Setups in this repo:
+
+- E2E (`<tool>`): all `<command>`, one `<command>`, artifacts in `<path>`
+- Integration (`<tool>`): all `<command>`, one `<command>`, needs `<Docker, env vars>`
+
 ## Layout
 
 - App / source: `<path>`
@@ -61,11 +77,6 @@ Hard rule for all agent text to humans. Also covers names in the codebase. Do no
 - <Architecture rule — e.g. “Feature modules own routes; no cross-feature imports”>
 - Prefer pointing at a canonical file: see `<path>` for the pattern to copy
 
-## Testing
-
-- Fix failing tests and type errors before finishing.
-- Add or update tests for behavior you change when the area already has coverage.
-- Prefer `<focused command>` over the full suite while iterating; run `<broader command>` before PR when shared packages change.
 
 ## Git and PRs
 
@@ -130,6 +141,20 @@ Hard rule for all agent text to humans. Also covers names in the codebase. Do no
 - Do not send a reply until the prose passes these checks.
 
 **Goal:** The goal is easy reading. Many readers are not native English speakers. Clear text helps them do the work in a safe and correct way.
+
+## Testing (E2E and integration first)
+
+Hard rule for all test work. A unit test that cannot catch a real bug costs upkeep and gives false trust.
+
+- **Use only the test setups listed below.** Do not add a new E2E or integration setup (for example Playwright or Testcontainers). Ask first.
+- **Never write unit tests after you write code.** A test written after the code only copies what the code does. It does not find bugs.
+- **Prefer E2E and integration tests.** Use them to prove that complex features work through real entry points and real services.
+- **Test a unit in isolation only when you must.** First, write down all the ways it can fail. Then write the code. Each isolated test checks one failure from that list. Keep the list next to the test.
+- **Delete or do not add a unit test that cannot catch a real bug the E2E and integration tests miss.**
+
+Setups in this repo:
+
+- No E2E or integration setup. Do not add one without approval.
 
 ## Boundaries
 - Ask first before adding dependencies.

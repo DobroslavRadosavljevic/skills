@@ -8,7 +8,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 
 | Skill | Purpose |
 | --- | --- |
-| `agents-md` | Create, review, or enforce AGENTS.md with commands, boundaries, and required ASD-STE100 communication. |
+| `agents-md` | Create, review, or enforce AGENTS.md with commands, boundaries, required ASD-STE100 communication, and E2E/integration-first testing rules. |
 | `ai-sdk` | Vercel AI SDK 7 TypeScript: Core, UI, agents, harnesses, tool search, batches, evaluation, Gateway, multimodal, and v5–v7 migrations. |
 | `base-ui` | Build, review, migrate, or debug React UIs with Base UI 1.8 primitives. |
 | `better-auth` | TypeScript auth with better-auth 1.7 (≥1.7.7 security baseline), official plugins, adapters, and security. |
@@ -35,6 +35,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `feedsmith` | Feedsmith 3.0.x RSS/Atom/RDF/JSON Feed/OPML parse and generate for TypeScript. |
 | `grok` | Cursor IDE only: always-on lock to Grok 4.7 (`cursor-grok-4.7-*`, any reasoning effort). Skip in Codex. |
 | `handoff` | Produce or consume agent-to-agent handoff context so another session can resume work. |
+| `high-signal-tests` | Prune low-signal unit tests; prefer existing E2E and integration setups (never add new ones), E2E artifacts, failure modes first. |
 | `heyapi` | Hey API (`@hey-api/openapi-ts`): OpenAPI → TypeScript SDKs, validators, Query plugins. |
 | `improve-prompt` | Rewrite rough requests into clear, proportional, actionable prompts without doing the work. |
 | `impit` | Apify Impit: browser-impersonating HTTP (TLS/HTTP fingerprints) for Node, Python, Rust. |
@@ -43,6 +44,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `jsdoc` | Purposeful JSDoc for complex or non-obvious TypeScript; no type-echo or narration. |
 | `kafka` | Apache Kafka from TypeScript: prefer @platformatic/kafka 2.13 (cooperative-sticky, KIP-848), topics, and delivery semantics. |
 | `kill-legacy` | Remove legacy, deprecated, compatibility-shim, and fallback code paths. |
+| `knip` | Enforce a proper Knip 6.40 setup: minimal config, zero hints, production/strict runs, CI gate, triage, safe auto-fix, and v5 migration. |
 | `legend-state` | Build, review, migrate, and debug Legend-State v3 observable, React, persistence, and sync systems. |
 | `loop` | Implement, review, fix, and repeat until no actionable review issues remain. |
 | `mantine-hooks` | Build, review, debug, migrate, or plan React code with `@mantine/hooks` only. |
@@ -97,7 +99,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `visx` | Airbnb visx React+D3 visualization primitives, XYChart, and v3→v4 migration. |
 | `vite` | Vite 8.3 tooling: config, Rolldown/Oxc builds, plugins, SSR, and v7→v8 migration. |
 | `vitest` | Vitest 5 testing: config, mocks, coverage, browser mode, projects, and Jest/v4/v5 migration. |
-| `vitest-architecture` | Portable Vitest 5 house style: unit/integration projects, tests/ layout, and scripts. |
+| `vitest-architecture` | Portable Vitest 5 house style: unit/integration projects, tests/ layout, scripts, and high-signal test rules (no new setups unasked). |
 | `zod` | Build, review, debug, migrate, or plan Zod 4.6 validation and schema code. |
 
 ## Install With skills.sh
