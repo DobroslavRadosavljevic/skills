@@ -1,0 +1,4 @@
+interface:
+  display_name: "Blume"
+  short_description: "Blume 2.2 Markdown-first docs sites: config, MDX, nav, search, agents layer, API refs, CLI, deploy"
+  default_prompt: "Use $blume for this Blume docs site work: blume.config.ts, MDX content, navigation, search, llms.txt/MCP, API references, i18n, CLI checks, deploy, Blume 1→2 upgrade, or migration to Blume."

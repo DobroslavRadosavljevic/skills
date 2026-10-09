@@ -12,6 +12,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `ai-sdk` | Vercel AI SDK 7 TypeScript: Core, UI, agents, harnesses, tool search, batches, evaluation, Gateway, multimodal, and v5–v7 migrations. |
 | `base-ui` | Build, review, migrate, or debug React UIs with Base UI 1.8 primitives. |
 | `better-auth` | TypeScript auth with better-auth 1.7 (≥1.7.7 security baseline), official plugins, adapters, and security. |
+| `blume` | Blume 2.2 Markdown-first docs sites on Astro: config, MDX, navigation, search, llms.txt/MCP, API references, i18n, CLI, deploy, v1→v2 upgrade, and migration. |
 | `brainstorm` | Explore ideas, plans, research, and codebase questions in a read-only session. |
 | `bullmq` | Build, review, debug, operate, or migrate BullMQ 6 Redis/Postgres job queues. |
 | `bun` | Bun 1.4 runtime, package manager, test runner, bundler, bunfig, and Node compat. |
