@@ -17,7 +17,7 @@ Check every source you can reach. Skip a source if you cannot reach it, and say 
    - Untracked or ignored helper files.
    - Commented-out command blocks.
 4. **Git history.** Scan `git log --oneline` for commits that recur: regenerate, reseed, bump, resync, fix lockfile, update snapshots, rotate. Also look for commits that add and then remove helper scripts.
-5. **Docs.** Read the setup, release, deploy, and troubleshooting sections in `README.md`, `CONTRIBUTING.md`, `docs/`, and wiki exports. Manual steps there are runbook candidates.
+5. **Docs.** Read the setup, release, deploy, and troubleshooting sections in `README.md`, `CONTRIBUTING.md`, `docs/`, docs sites in the repo, and wiki exports. Manual steps there are runbook candidates.
 6. **Automation config:**
    - Long inline package.json scripts.
    - Makefile or justfile targets.
@@ -69,4 +69,4 @@ Risky operations (destructive, production, money, data loss) become runbooks wit
 - **Monorepo, flow touches more than one workspace or the whole repo:** root `scripts/`.
 - **Monorepo, flow belongs to one workspace:** `<workspace>/scripts/`, for example `apps/web/scripts/`.
 - **Many scripts in one area (about 10 or more):** group them in subfolders by domain, such as `scripts/db/`.
-- **Runbooks:** always root `runbooks/`, with one flow per file. Use a slug prefix for workspace-specific flows, for example `web-deploy.md`.
+- **Runbooks:** the runbooks location from SKILL.md: the agent docs site's runbooks section when the repo has one, else root `runbooks/`. Never both. One flow per file. Use a slug prefix for workspace-specific flows, for example `web-deploy.md`.

@@ -6,7 +6,7 @@ Do not redo work that a script or runbook already covers. Do not rebuild the sam
 
 ### Before a task
 
-- Read `runbooks/README.md`. If a runbook matches the task, follow it.
+- Read `<RUNBOOKS_INDEX>`. If a runbook matches the task, follow it.
 - Look in `scripts/` (and `<workspace>/scripts/` for app or package work). If a script does the job, run it.
 
 ### Scripts
@@ -35,11 +35,11 @@ Do not redo work that a script or runbook already covers. Do not rebuild the sam
 ### Runbooks
 
 - Write a runbook when a multi-step flow will come back and needs judgment: release, deploy, migration, incident, onboarding, or debugging a known failure.
-- One flow per file: `runbooks/<slug>.md`, using the frontmatter and sections in `runbooks/README.md`. Add the runbook to the index.
+- One flow per file: `<RUNBOOKS_DIR>/<slug>.md`, using the frontmatter and sections in `<RUNBOOKS_INDEX>`. Add the runbook to the index.
 - Write script paths relative to the repo root.
 - If a runbook or script is wrong or out of date, fix it in the same change.
 - After you follow a runbook to the end and it works, set its `last-verified` date to today.
-- After you change runbooks, run `bun scripts/check-runbooks.ts`.
+- After you change runbooks, run `<RUNBOOKS_CHECK>`.
 
 ### Code quality
 

@@ -4,18 +4,34 @@ A runbook lets a new agent finish a recurring flow without finding it out again.
 
 ## File Rules
 
-- Path: `runbooks/<slug>.md`, kebab-case, one flow per file.
+The location comes from "Runbooks location" in SKILL.md. Both locations use kebab-case slugs, one flow per file, and the same sections (When to use, Prerequisites, Steps, Verify, Rollback, Troubleshooting).
+
+### Root folder (`runbooks/`)
+
+- Path: `runbooks/<slug>.md`.
 - Frontmatter has exactly these fields:
   - `name`: matches the filename.
   - `description`: one line on what the flow does and when to use it.
   - `last-verified`: `YYYY-MM-DD`.
-- Use the sections in `runbooks/README.md` (copied from [../assets/runbooks-readme.md](../assets/runbooks-readme.md)).
-- Add every runbook to the index in `runbooks/README.md`: `- [Title](slug.md) — purpose`, sorted by name.
+- Index: `runbooks/README.md` (from [../assets/runbooks-readme.md](../assets/runbooks-readme.md)). Add every runbook as `- [Title](slug.md) — purpose`, sorted by name.
+
+### Agent docs site
+
+- Path: `<runbooks dir>/<slug>.md`, inside the site's content folder. The slug is also the page URL.
+- Frontmatter has exactly these fields:
+  - `title`: the page title.
+  - `description`: one line on what the flow does and when to use it. Quote it if it contains `: `.
+  - `type: runbook`.
+  - `last-verified`: `YYYY-MM-DD`.
+- Index: `<runbooks dir>/index.md` (from [../assets/runbooks-index.md](../assets/runbooks-index.md)). Add every runbook as a table row, `| [Title](slug.md) | when to use it |`, sorted by title.
+- Link other site pages with relative paths. Write repo files as inline code from the repo root, because most docs sites fail links that leave the content folder.
+- Follow the site's own page rules (format, frontmatter strictness, numbered folders). Run the site's link check after each change.
+- Do not keep a second copy in a root `runbooks/` folder.
 
 ## Writing
 
 - Write for an agent that has never seen the repo. Use exact commands, exact paths, and expected output.
-- Write script paths relative to the repo root. `scripts/check-runbooks.ts` checks that they exist.
+- Write script paths relative to the repo root. The runbook checker checks that they exist.
 - Put mechanical steps in scripts and call them. Keep in the runbook the judgment, decision points, and checks between steps.
 - Give each step that can fail its expected result and what to do if the result differs.
 - Name env vars and where to get secrets. Never write secret values.

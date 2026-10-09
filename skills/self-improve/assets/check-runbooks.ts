@@ -1,17 +1,23 @@
 #!/usr/bin/env bun
 /**
- * Validates `runbooks/`: frontmatter, the README index, and script references.
+ * Validates the runbooks folder: frontmatter, the index, and script references.
+ *
+ * Two layouts, chosen by the index file in the folder:
+ *   - Root folder (`runbooks/` with `README.md`): frontmatter `name` equal to the
+ *     filename, `description`, `last-verified`.
+ *   - Agent docs site section (a folder with `index.md`): frontmatter `title`,
+ *     `description`, `type: runbook`, `last-verified`.
  *
  * Checks:
- *   - Every `runbooks/*.md` (except README.md) has frontmatter with `name`
- *     equal to its filename, a non-empty `description`, and a valid
- *     `last-verified: YYYY-MM-DD` that is not in the future.
- *   - `runbooks/README.md` links every runbook, and every index link resolves.
+ *   - Every runbook (each `.md` except the index) has the frontmatter of its
+ *     layout, a non-empty `description`, and a valid `last-verified: YYYY-MM-DD`
+ *     that is not in the future.
+ *   - The index links every runbook, and every index link resolves.
  *   - Every `scripts/...` path that a runbook mentions exists. Paths are
  *     resolved from the repo root.
  *
  * Usage:
- *   bun scripts/check-runbooks.ts [--root <dir>] [--json]
+ *   bun scripts/check-runbooks.ts [--root <dir>] [--dir <runbooks folder>] [--json]
  *
  * Side effects: none (read-only).
  *
@@ -22,16 +28,25 @@ import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { parseArgs } from "node:util";
 
-const HELP = `Usage: bun scripts/check-runbooks.ts [--root <dir>] [--json]
+/**
+ * The runbooks folder, relative to the repo root. Set it to the runbooks section of the agent
+ * docs site (for example `apps/internal-agent-docs/docs/15-runbooks`) when the repo has one.
+ */
+const DEFAULT_DIR = "runbooks";
 
-Validate runbook frontmatter, the runbooks/README.md index, and script references.
+const HELP = `Usage: bun scripts/check-runbooks.ts [--root <dir>] [--dir <folder>] [--json]
 
-  --root <dir>  Repo root (default: parent of this script's folder)
-  --json        Machine-readable output
-  -h, --help    Show this help`;
+Validate runbook frontmatter, the runbooks index, and script references.
+
+  --root <dir>    Repo root (default: parent of this script's folder)
+  --dir <folder>  Runbooks folder, relative to the root (default: ${DEFAULT_DIR})
+  --json          Machine-readable output
+  -h, --help      Show this help`;
 
 const EXIT = { ok: 0, failure: 1, usage: 2 } as const;
-const INDEX_FILE = "README.md";
+/** `index.md` marks an agent docs site section; `README.md` marks a root runbooks folder. */
+const SITE_INDEX = "index.md";
+const FOLDER_INDEX = "README.md";
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 /** Matches `scripts/...` paths, optionally under a workspace (`apps/web/scripts/x.ts`). */
 const SCRIPT_REF_PATTERN = /(?<![\w./-])((?:[\w.-]+\/)*scripts\/[\w./-]+\.(?:ts|tsx|js|mjs|cjs|sh|py))/g;
@@ -48,6 +63,7 @@ const parseCli = () => {
       args: Bun.argv.slice(2),
       options: {
         root: { type: "string" },
+        dir: { type: "string" },
         json: { type: "boolean", default: false },
         help: { type: "boolean", short: "h", default: false },
       },
@@ -66,7 +82,7 @@ const stripNonContent = (markdown: string): string =>
 
 /**
  * Parses flat `key: value` YAML frontmatter. Nested YAML is not supported on
- * purpose: runbook frontmatter has exactly three scalar fields.
+ * purpose: runbook frontmatter has only scalar fields.
  */
 const parseFrontmatter = (markdown: string): Record<string, string> | undefined => {
   const match = /^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/.exec(markdown);
@@ -89,16 +105,21 @@ const isValidPastDate = (value: string): boolean => {
   return !Number.isNaN(date.getTime()) && date.toISOString().startsWith(value) && date.getTime() <= Date.now();
 };
 
-const checkRunbook = (root: string, file: string, markdown: string): Problem[] => {
+const checkRunbook = (root: string, label: string, markdown: string, siteLayout: boolean): Problem[] => {
   const problems: Problem[] = [];
-  const at = (message: string) => problems.push({ file: `runbooks/${file}`, message });
-  const slug = file.replace(/\.md$/, "");
+  const at = (message: string) => problems.push({ file: label, message });
+  const slug = label.slice(label.lastIndexOf("/") + 1).replace(/\.md$/, "");
 
   const frontmatter = parseFrontmatter(markdown);
   if (!frontmatter) {
-    at("missing frontmatter (name, description, last-verified)");
+    at(`missing frontmatter (${siteLayout ? "title, description, type, last-verified" : "name, description, last-verified"})`);
   } else {
-    if (frontmatter.name !== slug) at(`frontmatter name "${frontmatter.name ?? ""}" must equal "${slug}"`);
+    if (siteLayout) {
+      if (!frontmatter.title) at("frontmatter title is empty");
+      if (frontmatter.type !== "runbook") at(`frontmatter type "${frontmatter.type ?? ""}" must be "runbook"`);
+    } else if (frontmatter.name !== slug) {
+      at(`frontmatter name "${frontmatter.name ?? ""}" must equal "${slug}"`);
+    }
     if (!frontmatter.description) at("frontmatter description is empty");
     const verified = frontmatter["last-verified"] ?? "";
     if (!isValidPastDate(verified)) at(`last-verified "${verified}" must be a real YYYY-MM-DD date, not in the future`);
@@ -112,9 +133,8 @@ const checkRunbook = (root: string, file: string, markdown: string): Problem[] =
   return problems;
 };
 
-const checkIndex = (runbooksDir: string, runbookFiles: string[]): Problem[] => {
-  const indexPath = join(runbooksDir, INDEX_FILE);
-  if (!existsSync(indexPath)) return [{ file: `runbooks/${INDEX_FILE}`, message: "index file is missing" }];
+const checkIndex = (runbooksDir: string, indexLabel: string, indexFile: string, runbookFiles: string[]): Problem[] => {
+  const indexPath = join(runbooksDir, indexFile);
 
   const problems: Problem[] = [];
   const linked = new Set<string>();
@@ -122,11 +142,11 @@ const checkIndex = (runbooksDir: string, runbookFiles: string[]): Problem[] => {
     if (!target) continue;
     linked.add(target);
     if (!existsSync(join(runbooksDir, target))) {
-      problems.push({ file: `runbooks/${INDEX_FILE}`, message: `index links missing file ${target}` });
+      problems.push({ file: indexLabel, message: `index links missing file ${target}` });
     }
   }
   for (const file of runbookFiles) {
-    if (!linked.has(file)) problems.push({ file: `runbooks/${INDEX_FILE}`, message: `index does not link ${file}` });
+    if (!linked.has(file)) problems.push({ file: indexLabel, message: `index does not link ${file}` });
   }
   return problems;
 };
@@ -139,19 +159,28 @@ const main = () => {
   }
 
   const root = resolve(args.root ?? join(import.meta.dir, ".."));
-  const runbooksDir = join(root, "runbooks");
+  const relativeDir = (args.dir ?? DEFAULT_DIR).replace(/\/+$/, "");
+  const runbooksDir = join(root, relativeDir);
   if (!existsSync(runbooksDir)) {
     console.error(`No runbooks folder at ${runbooksDir}`);
     process.exit(EXIT.usage);
   }
+  const siteLayout = existsSync(join(runbooksDir, SITE_INDEX));
+  if (!siteLayout && !existsSync(join(runbooksDir, FOLDER_INDEX))) {
+    console.error(`No index in ${runbooksDir}: add ${SITE_INDEX} (docs site) or ${FOLDER_INDEX} (root folder)`);
+    process.exit(EXIT.failure);
+  }
+  const indexFile = siteLayout ? SITE_INDEX : FOLDER_INDEX;
 
   const runbookFiles = readdirSync(runbooksDir)
-    .filter((file) => file.endsWith(".md") && file !== INDEX_FILE)
+    .filter((file) => file.endsWith(".md") && file !== SITE_INDEX && file !== FOLDER_INDEX)
     .sort();
 
   const problems = [
-    ...runbookFiles.flatMap((file) => checkRunbook(root, file, readFileSync(join(runbooksDir, file), "utf8"))),
-    ...checkIndex(runbooksDir, runbookFiles),
+    ...runbookFiles.flatMap((file) =>
+      checkRunbook(root, `${relativeDir}/${file}`, readFileSync(join(runbooksDir, file), "utf8"), siteLayout),
+    ),
+    ...checkIndex(runbooksDir, `${relativeDir}/${indexFile}`, indexFile, runbookFiles),
   ];
 
   if (args.json) {
