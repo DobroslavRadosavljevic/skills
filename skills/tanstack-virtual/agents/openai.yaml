@@ -1,0 +1,4 @@
+interface:
+  display_name: "TanStack Virtual"
+  short_description: "Build TanStack Virtual lists and grids"
+  default_prompt: "Use $tanstack-virtual to build, review, debug, or migrate this TanStack Virtual list, grid, table, or chat virtualization with current documentation."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "WXT"
+  short_description: "Build and publish browser extensions with WXT"
+  default_prompt: "Use $wxt to build, review, debug, test, migrate, or publish this WXT browser extension with current documentation."

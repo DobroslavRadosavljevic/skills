@@ -1,0 +1,80 @@
+# Copy to .github/workflows/e2e.yml. Needs .github/actions/setup (assets/setup-action.yml).
+# Integration and Playwright tests against Postgres and Redis service containers.
+# Match the image tags to production. Pin by digest (image@sha256:...) when you want immutable images.
+name: E2E
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions: {}
+
+concurrency:
+  group: e2e-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: read
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_USER: app
+          POSTGRES_PASSWORD: app-test-only
+          POSTGRES_DB: app_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U app -d app_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+      redis:
+        image: redis:8
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      # Jobs run on the runner host, so services are reachable on localhost via the published ports.
+      DATABASE_URL: postgres://app:app-test-only@localhost:5432/app_test
+      REDIS_URL: redis://localhost:6379
+      CI: "true"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/setup
+
+      - name: Migrate database
+        run: bun run db:migrate
+
+      - name: Integration tests
+        run: bun run test:integration
+
+      # Playwright docs advise against caching browser binaries; downloads are about as fast as a restore.
+      # If you still cache, key on the Playwright version and run `playwright install-deps` on a hit.
+      - name: Install Playwright browsers
+        run: bunx playwright install --with-deps chromium
+
+      - name: Playwright tests
+        run: bunx playwright test
+
+      - name: Upload Playwright report and traces
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: playwright-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            playwright-report/
+            test-results/
+          if-no-files-found: ignore
+          retention-days: 14

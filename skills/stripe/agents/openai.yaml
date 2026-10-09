@@ -1,0 +1,4 @@
+interface:
+  display_name: "Stripe"
+  short_description: "Build and review Stripe payments and billing in TypeScript"
+  default_prompt: "Use $stripe to build, review, debug, test, or migrate this Stripe payments or billing integration (stripe-node 23, API 2026-09-30.endive) with current documentation."

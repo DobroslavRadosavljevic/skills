@@ -1,0 +1,4 @@
+interface:
+  display_name: "MCP Server"
+  short_description: "Build, secure, test, and deploy TypeScript MCP servers"
+  default_prompt: "Use $mcp-server to build, review, debug, test, secure, migrate, package, or deploy this TypeScript MCP server with the current official SDK and spec."

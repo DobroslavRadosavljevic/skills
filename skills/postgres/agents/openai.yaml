@@ -1,0 +1,4 @@
+interface:
+  display_name: "PostgreSQL"
+  short_description: "Design, query, tune, migrate, and operate PostgreSQL"
+  default_prompt: "Use $postgres to design, query, tune, migrate, review, or operate this PostgreSQL schema or TypeScript data layer with current documentation."

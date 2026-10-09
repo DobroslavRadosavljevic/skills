@@ -1,0 +1,8 @@
+# Copy to .github/zizmor.yml. Start from defaults; add narrow, commented exceptions only.
+# Pin policy: first-party actions/* may stay on version tags; everything else needs a full commit SHA.
+rules:
+  unpinned-uses:
+    config:
+      policies:
+        actions/*: ref-pin
+        "*": hash-pin

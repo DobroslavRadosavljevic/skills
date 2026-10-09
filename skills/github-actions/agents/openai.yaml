@@ -1,0 +1,4 @@
+interface:
+  display_name: "GitHub Actions"
+  short_description: "Build, harden, and speed up GitHub Actions CI/CD"
+  default_prompt: "Use $github-actions to build, review, debug, harden, or speed up GitHub Actions CI/CD for this Bun and TypeScript repository with current documentation."

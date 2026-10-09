@@ -1,0 +1,32 @@
+# Copy to .github/actions/setup/action.yml. Call it after actions/checkout:
+#   - uses: ./.github/actions/setup
+# Bun version comes from package.json ("packageManager": "bun@1.4.2") so CI and local installs match.
+name: Setup Bun workspace
+description: Install Bun, restore the Bun install cache, and install dependencies from bun.lock.
+
+inputs:
+  cache:
+    description: 'Restore and save the Bun install cache. Use "false" in release and publish jobs.'
+    required: false
+    default: "true"
+
+runs:
+  using: composite
+  steps:
+    - name: Install Bun
+      uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+      with:
+        bun-version-file: package.json
+
+    - name: Restore Bun install cache
+      if: ${{ inputs.cache == 'true' }}
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      with:
+        path: ~/.bun/install/cache
+        key: bun-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('**/bun.lock') }}
+        restore-keys: |
+          bun-${{ runner.os }}-${{ runner.arch }}-
+
+    - name: Install dependencies
+      shell: bash
+      run: bun install --frozen-lockfile

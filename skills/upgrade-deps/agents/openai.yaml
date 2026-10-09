@@ -1,0 +1,4 @@
+interface:
+  display_name: "Upgrade Deps"
+  short_description: "Safely upgrade dependencies in verified groups"
+  default_prompt: "Use $upgrade-deps to baseline the gates, upgrade this repo's dependencies in safe verified groups (security first, one major per group), commit each group, and report skipped packages and rollback."

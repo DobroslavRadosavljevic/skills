@@ -1,0 +1,33 @@
+# Copy to .github/dependabot.yml. Keeps action SHAs and Bun dependencies current with a release-age delay.
+# Dependabot updates SHA-pinned actions and the trailing "# vX.Y.Z" comment together.
+# cooldown applies to version updates only; security updates ignore it.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directories:
+      - "/"
+      - "/.github/actions/*"
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7
+    groups:
+      github-actions:
+        patterns: ["*"]
+        update-types: [minor, patch]
+    commit-message:
+      prefix: "ci"
+    open-pull-requests-limit: 10
+
+  - package-ecosystem: bun
+    directory: "/"
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7
+    groups:
+      bun-minor-patch:
+        patterns: ["*"]
+        update-types: [minor, patch]
+    commit-message:
+      prefix: "deps"

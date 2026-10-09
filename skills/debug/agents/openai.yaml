@@ -1,0 +1,4 @@
+interface:
+  display_name: "Debug"
+  short_description: "Find, prove, and fix root causes"
+  default_prompt: "Use $debug to reproduce this bug, find and prove the root cause, fix it, and add a regression check."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Crawlee"
+  short_description: "Build and scale Crawlee web scrapers"
+  default_prompt: "Use $crawlee to build, review, debug, scale, or deploy this Crawlee web scraper or crawler with current documentation."

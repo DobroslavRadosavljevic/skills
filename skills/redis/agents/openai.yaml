@@ -1,0 +1,4 @@
+interface:
+  display_name: "Redis and Valkey"
+  short_description: "Build and operate Redis/Valkey from TypeScript"
+  default_prompt: "Use $redis to build, review, debug, tune, or operate Redis or Valkey from TypeScript (clients, caching, rate limits, locks, streams, ops) with current documentation."

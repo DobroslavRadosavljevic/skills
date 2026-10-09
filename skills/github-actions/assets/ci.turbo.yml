@@ -1,0 +1,42 @@
+# Turborepo variant of ci.yml. Copy to .github/workflows/ci.yml. Needs .github/actions/setup.
+# Remote cache uses Vercel OIDC: create a "Turborepo CLI" OIDC policy on the Vercel team for this repo
+# (restrict by branch or workflow) and set the repository variable TURBO_TEAM. No long-lived TURBO_TOKEN.
+# turbo.json needs tasks: format:check, lint, typecheck, knip, test, build.
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  merge_group:
+
+permissions: {}
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  turbo:
+    name: turbo run
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      id-token: write # Vercel OIDC token exchange for the Turborepo remote cache
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          # --affected compares against the PR base, so it needs history. A shallow clone makes turbo run everything.
+          fetch-depth: 0
+          filter: blob:none
+      - uses: ./.github/actions/setup
+      - name: Connect Turborepo remote cache
+        # Fork PRs get no id-token, so skip the exchange there and fall back to the local cache.
+        if: ${{ github.event.pull_request.head.repo.fork != true }}
+        uses: vercel/setup-turborepo-remote-cache-action@49d7b1b46ba4c9251e1977986bfe18336feabc8f # v1.1.0
+        with:
+          team: ${{ vars.TURBO_TEAM }}
+      - name: Quality gate (affected packages only)
+        run: bunx turbo run format:check lint typecheck knip test build --affected

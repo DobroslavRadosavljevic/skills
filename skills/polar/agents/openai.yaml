@@ -1,0 +1,4 @@
+interface:
+  display_name: "Polar"
+  short_description: "Polar.sh payments, billing, webhooks with SDK 1.0"
+  default_prompt: "Use $polar to build, review, debug, or migrate this Polar.sh merchant-of-record payments and billing integration (checkout, customers, subscriptions, benefits, usage billing, webhooks) with current documentation."

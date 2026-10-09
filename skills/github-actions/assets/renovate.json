@@ -1,0 +1,20 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended", "helpers:pinGitHubActionDigestsToSemver"],
+  "minimumReleaseAge": "7 days",
+  "packageRules": [
+    {
+      "description": "Digest bumps skip minimumReleaseAge on Renovate before 44.3.1; keep Renovate current and delay them explicitly.",
+      "matchManagers": ["github-actions"],
+      "matchUpdateTypes": ["digest", "pinDigest"],
+      "minimumReleaseAge": "7 days"
+    },
+    {
+      "description": "Group non-major action updates into one weekly PR.",
+      "matchManagers": ["github-actions"],
+      "matchUpdateTypes": ["minor", "patch", "digest"],
+      "groupName": "github-actions",
+      "schedule": ["before 6am on monday"]
+    }
+  ]
+}

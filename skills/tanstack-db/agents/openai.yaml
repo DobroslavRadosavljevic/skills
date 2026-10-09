@@ -1,0 +1,4 @@
+interface:
+  display_name: "TanStack DB"
+  short_description: "Build TanStack DB reactive client data"
+  default_prompt: "Use $tanstack-db to build, review, migrate, or debug this TanStack DB implementation with current documentation."
