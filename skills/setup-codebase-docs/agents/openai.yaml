@@ -1,0 +1,4 @@
+interface:
+  display_name: "Setup Codebase Docs"
+  short_description: "Private human and agent docs sites, hand-written from code"
+  default_prompt: "Use $setup-codebase-docs to build internal-human-docs and internal-agent-docs with Blume, hand-write every page from the code, move all existing docs and runbooks into them, and make AGENTS.md keep both sites current."

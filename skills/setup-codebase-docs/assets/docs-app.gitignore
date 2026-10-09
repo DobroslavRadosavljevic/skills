@@ -1,0 +1,5 @@
+# Blume generates .blume/ on every run and .blume-verify/ for isolated builds; dist/ is the build output.
+.blume/
+.blume-verify/
+dist/
+.vercel/

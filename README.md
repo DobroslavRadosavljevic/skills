@@ -76,6 +76,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `self-improve` | One-time setup: AGENTS.md rules, permanent Bun scripts, `runbooks/`, and a bounded quality pass. |
 | `sentry` | Sentry JS SDK 11 for TS/JS: errors, span streaming, replay, logs, metrics, source maps, framework packages, and v10→v11 migration. |
 | `seo` | Complete SEO playbook: crawl/index, on-page, copywriting, linking, research, schema, GEO, i18n, local, ecommerce, audits. |
+| `setup-codebase-docs` | One-time setup of private Blume human and agent docs apps, hand-written from code, with all docs and runbooks moved in and AGENTS.md rules that keep them current. |
 | `setup-competitors-md` | One-time COMPETITORS.md landscape: rivals, substitutes, and differentiation. |
 | `setup-copywriting-md` | One-time COPYWRITING.md from project copy and competitor messaging patterns. |
 | `setup-icp-md` | One-time ICP.md ideal customer profile for the current project. |
