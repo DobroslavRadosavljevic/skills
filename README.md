@@ -18,6 +18,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `bun` | Bun 1.4 runtime, package manager, test runner, bundler, bunfig, and Node compat. |
 | `clickhouse` | ClickHouse OLAP from TypeScript: @clickhouse/client, MergeTree, ingest, and Cloud. |
 | `clone-to-temp` | Manual-only: fetch repos and datasets into ignored `.temp/` for read-only inspection (never run or install). |
+| `codex-image-gen` | Generate or edit images through the Codex CLI built-in image tool always on gpt-6-luna (no API key). |
 | `compound-ui` | Build or refactor React UI into shadcn-style compound components. |
 | `copywriting` | Simple visitor copy for sites, apps, and docs. STE for technical text. Bans jargon and model words. |
 | `crawlee` | Build, scale, and deploy Crawlee 3.18 scrapers: crawler choice, routers, storage, sessions, proxies, anti-blocking, Docker, Apify, and v4 migration. |
@@ -61,6 +62,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `oxlint` | Full Oxlint 1.86 usage guide plus setup, rules/plugins, type-aware lint, Vite+ lint, and ESLint migration. |
 | `paper` | Paper design canvas via Paper MCP: design, AI images, tokens, exports, and design-to-code. |
 | `permix` | Type-safe Permix 4.3 permissions: setup/check, SSR, React/Next/Nest, and server middleware. |
+| `phaser` | Phaser 4.2 HTML5 games: scenes, loader, Arcade/Matter, Tiled tilemaps, filters, lighting, framework embedding, performance, and v3-to-v4 migration. |
 | `plain-language` | Always-on ASD-STE100 hard prose (short, active, one word per idea) plus readable naming. |
 | `playwright` | Build, review, debug, configure, or plan Playwright 1.63 E2E tests and browser automation. |
 | `polar` | Polar.sh merchant-of-record billing with SDK 1.0: checkout, customers, subscriptions, benefits, usage billing, webhooks, and the Better Auth plugin. |
@@ -102,6 +104,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `tanstack-table` | Build, review, debug, migrate, or plan TanStack Table React tables. |
 | `tanstack-virtual` | TanStack Virtual 3 lists, grids, tables, and chat feeds in React: dynamic heights, window scroll, sticky items, infinite load, and testing. |
 | `testcontainers` | Build, review, debug, configure, or plan Testcontainers integration tests with real Docker dependencies. |
+| `threejs` | Three.js r186 3D graphics: scene/render loop, PBR materials, glTF loaders, WebGPURenderer and TSL, post-processing, performance, and r17x to r186 migration. |
 | `tsdown` | tsdown 0.23 Rolldown library bundler: config, dts generators, exports, deps, watch/unbundle, 0.22→0.23 upgrade, and tsup migration. |
 | `turborepo` | Turborepo 2.11 usage guide: tasks, deferred hashing, caching/eviction, filters and tags, prune/Docker CI, devEngines, and experimental Rust/Python/Go. |
 | `turborepo-architecture` | Portable monorepo house style: apps/packages layout, turbo rules, and boundaries. |

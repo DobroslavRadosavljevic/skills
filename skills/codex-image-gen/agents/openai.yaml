@@ -1,0 +1,4 @@
+interface:
+  display_name: "Codex Image Gen"
+  short_description: "Cheap image generation and edits through the Codex CLI image tool"
+  default_prompt: "Use $codex-image-gen to generate the image I describe with gpt-6-luna and save the PNG into this project."

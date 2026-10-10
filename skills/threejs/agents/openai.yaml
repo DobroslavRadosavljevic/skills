@@ -1,0 +1,4 @@
+interface:
+  display_name: "Three.js"
+  short_description: "Three.js r186 3D graphics, WebGPU/TSL, loaders, and performance"
+  default_prompt: "Use $threejs for this Three.js scene, material, loader, WebGPU/TSL, post-processing, or performance work with current Three.js documentation and the full usage guide."

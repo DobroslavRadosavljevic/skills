@@ -1,0 +1,4 @@
+interface:
+  display_name: "Phaser"
+  short_description: "Phaser 4 HTML5 games: scenes, physics, tilemaps, filters"
+  default_prompt: "Use $phaser for this Phaser game, scene, physics, tilemap, filter, framework-embedding, or v3-to-v4 migration work with current Phaser 4 documentation."
