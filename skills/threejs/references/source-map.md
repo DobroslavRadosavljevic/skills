@@ -9,7 +9,7 @@ Docs and package snapshot used to create this skill.
 - Types: **`@types/three@0.186.0`** (2026-10-04). Keep minor aligned with `three`.
 - Exports: `three`, `three/webgpu`, `three/tsl`, `three/addons`, `three/addons/*`, `three/src/*`, `three/examples/jsm/*`. License MIT.
 - Prior releases: r185 (2026-07-01, `0.185.0`), r184 (2026-04-16), r183 (2026-02-20).
-- React integration: `@react-three/fiber@9.8.1` (peers: react `>=19 <19.4`, three `>=0.156`), `@react-three/drei@10.7.9` (react ^19, three `>=0.159`, fiber ^9).
+- React integration (see ecosystem-packages.md): `@react-three/fiber@9.8.1` (peers: react `>=19 <19.4`, three `>=0.156`), `@react-three/drei@10.7.9` (react ^19, three `>=0.159`, fiber ^9).
 - Repo: https://github.com/mrdoob/three.js
 - Context7 IDs: `/mrdoob/three.js`, `/websites/threejs`, `/llmstxt/threejs_llms-full_txt`
 - Raw manual sources (the `threejs.org/manual/en/*.html` paths 404; manual pages live under `manual/pages/` in the repo): https://github.com/mrdoob/three.js/tree/dev/manual/pages
@@ -27,6 +27,16 @@ Docs and package snapshot used to create this skill.
 - TSL wiki: https://github.com/mrdoob/three.js/wiki/Three.js-Shading-Language
 - npm: https://www.npmjs.com/package/three ; types https://www.npmjs.com/package/@types/three
 - R3F: https://r3f.docs.pmnd.rs/ ; drei: https://drei.docs.pmnd.rs/
+
+## Ecosystem URLs (versions in ecosystem-packages.md)
+
+- R3F docs https://r3f.docs.pmnd.rs/ (v9 migration: /tutorials/v9-migration-guide) · repo https://github.com/pmndrs/react-three-fiber
+- drei https://github.com/pmndrs/drei · react-postprocessing https://github.com/pmndrs/react-postprocessing · postprocessing https://github.com/pmndrs/postprocessing
+- react-three-rapier https://github.com/pmndrs/react-three-rapier · xr https://github.com/pmndrs/xr · uikit https://github.com/pmndrs/uikit · leva https://github.com/pmndrs/leva · three-stdlib https://github.com/pmndrs/three-stdlib
+- three-mesh-bvh https://github.com/gkjohnson/three-mesh-bvh · three-gpu-pathtracer https://github.com/gkjohnson/three-gpu-pathtracer
+- glTF-Transform https://gltf-transform.dev/ · gltfjsx https://github.com/pmndrs/gltfjsx · meshoptimizer https://github.com/zeux/meshoptimizer
+- troika-three-text https://github.com/protectwise/troika · camera-controls https://github.com/yomotsu/camera-controls · Rapier https://rapier.rs/ · three editor https://threejs.org/editor/
+- Context7: `/pmndrs/react-three-fiber`, `/pmndrs/react-postprocessing`, `/pmndrs/xr`
 
 ## Refresh procedure
 
@@ -47,4 +57,4 @@ bun pm ls three
 - r183 to r186 feature lists come from GitHub release notes; r186 notes do not mention `Timer` (introduced r183).
 - WebGPURenderer fallback, `forceWebGL`, limitations, import-map, and RenderPipeline details come from `manual/pages/webgpurenderer.html` and `webgpu-postprocessing.html`.
 - Color management details come from `manual/pages/color-management.html`.
-- Items to re-verify on upgrade: backend detection property name, R3F + WebGPU wiring, bundler alias of `three` to `three/webgpu`, TSL update-hook helper names.
+- Ecosystem versions and peer ranges come from `npm view` (2026-10-10); R3F WebGPU `gl` factory from the R3F v9 migration guide; addon folder map from the `three@0.186.1` tarball. Items to re-verify on upgrade: backend detection property name, bundler alias of `three` to `three/webgpu`, TSL update-hook helper names.

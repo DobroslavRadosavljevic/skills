@@ -1,6 +1,6 @@
 ---
 name: phaser
-description: "Build, review, debug, migrate, or plan Phaser 4 HTML5 2D games (phaser 4.2.x, WebGL render nodes and Filters). Use for Phaser.Game and GameConfig, scale manager (FIT, RESIZE, pixelArt), Scene lifecycle (init, preload, create, update), loader and asset packs, sprites, images, text, BitmapText, containers, groups, TileSprite, Graphics, animations, tweens, timelines, input (pointer, keyboard, gamepad), cameras, Arcade and Matter physics, Tiled tilemaps, TilemapGPULayer, SpriteGPULayer, particles, sound, DataManager and events, filters (internal and external, masks, glow, blur), lighting, Mesh2D, Stencil, RenderTexture, EventBus bridges for React, Vue, Svelte, or Next.js, Vite and TypeScript setup, pooling, memory and mobile performance, and Phaser 3 to Phaser 4 migration (pipelines, preFX, postFX, BitmapMask, setTintFill, Point, Math.TAU, DynamicTexture render)."
+description: "Build, review, debug, migrate, or plan Phaser 4 HTML5 2D games (phaser 4.2.x, WebGL render nodes and Filters). Use for Phaser.Game and GameConfig, scale manager (FIT, RESIZE, pixelArt), Scene lifecycle (init, preload, create, update), loader and asset packs, sprites, images, text, BitmapText, containers, groups, TileSprite, Graphics, animations, tweens, timelines, input (pointer, keyboard, gamepad), cameras, Arcade and Matter physics, Tiled tilemaps, TilemapGPULayer, SpriteGPULayer, particles, sound, DataManager and events, filters (internal and external, masks, glow, blur), lighting, Mesh2D, Stencil, RenderTexture, EventBus bridges for React, Vue, Svelte, or Next.js, Vite and TypeScript setup, pooling, memory and mobile performance, companion packages (@phaserjs/create-game, @esotericsoftware/spine-phaser-v4, phaser4-rex-plugins, rexUI, phaser-raycaster, phaser-box2d, Rapier, @phaserjs/game-agent, Phaser Editor, editor-mcp-server), and Phaser 3 to Phaser 4 migration (pipelines, preFX, postFX, BitmapMask, setTintFill, Point, Math.TAU, DynamicTexture render)."
 ---
 
 # Phaser
@@ -21,6 +21,7 @@ Snapshot: `phaser@4.2.1` (npm `latest`, 2026-07-09). `4.3.0` is in the repo chan
    - Filters, lighting, masks, shaders, render nodes, RenderTexture, performance, memory, mobile: [rendering-fx-performance.md](references/rendering-fx-performance.md).
    - Vite, TypeScript, React, Vue, Svelte, Next.js, EventBus, cleanup: [frameworks-typescript.md](references/frameworks-typescript.md).
    - Phaser 3 to 4 breaking changes and checklist: [migration-v4.md](references/migration-v4.md).
+   - Companion packages (Spine, rex plugins, Box2D, Rapier, raycaster, create-game, Editor, Game Agent MCP), v4 support status, stale packages: [ecosystem-packages.md](references/ecosystem-packages.md).
    - Official URLs, refresh procedure, uncertainties: [source-map.md](references/source-map.md).
 4. Verify with the project build (`bun run build`) and a real browser run. Phaser games cannot be proven correct by types alone.
 
@@ -33,6 +34,7 @@ Snapshot: `phaser@4.2.1` (npm `latest`, 2026-07-09). `4.3.0` is in the repo chan
 - Pick **Filters** (`enableFilters()`, `filters.internal` / `filters.external`) for glow, blur, masks, color grading. Prefer internal filters; external ones run at full screen size.
 - Use **TilemapGPULayer** or **SpriteGPULayer** for very large static maps or sprite fields; accept their limits (one texture or tileset, orthographic, manual data refresh).
 - Keep game state in a scene `init()`, the registry (`this.registry`), or a plain module. Do not rely on the scene constructor for state that must reset on restart.
+- Add a plugin or companion package only after checking its Phaser 4 status in [ecosystem-packages.md](references/ecosystem-packages.md); use `-v4` / `phaser4-*` variants and avoid v3-only add-ons.
 - Bridge to React, Vue, Svelte, or Next.js with a small `EventEmitter` and destroy the game on unmount. Keep UI in the framework and play-field code in scenes.
 
 ## Pitfalls

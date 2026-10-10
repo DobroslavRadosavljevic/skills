@@ -20,7 +20,7 @@ renderer.setAnimationLoop(() => composer.render());
 - Every full-screen pass costs fill rate; prefer few passes, lower resolution for blur/SSAO, and render-target `samples` for MSAA (`new WebGLRenderTarget(w, h, { samples: 4 })`).
 - Selective bloom: render bloom layer separately with `layers`, or use emissive + threshold.
 - Dispose composer targets: `composer.dispose()`.
-- Third-party `postprocessing` (pmndrs) is a popular alternative on WebGL.
+- Third-party `postprocessing` (pmndrs, 6.39.x, peer `three >=0.168 <0.187`) is a popular WebGL alternative; see [ecosystem-packages.md](ecosystem-packages.md).
 - WebGPU: use `RenderPipeline` + TSL display nodes instead (see [webgpu-tsl.md](webgpu-tsl.md)).
 
 ## Performance checklist

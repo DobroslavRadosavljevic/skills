@@ -1,6 +1,6 @@
 ---
 name: threejs
-description: "Build, review, debug, optimize, migrate, teach, or plan Three.js r186 (npm three@0.186.x) 3D web graphics with current docs and a full usage guide. Use for three, THREE.Scene/PerspectiveCamera/WebGLRenderer, WebGPURenderer, three/webgpu, three/tsl, three/addons, TSL (Three Shading Language), NodeMaterial, Fn, uniform, compute shaders, instancedArray, RenderPipeline (ex PostProcessing), EffectComposer, UnrealBloomPass, BufferGeometry, InstancedMesh, BatchedMesh, LOD, MeshStandardMaterial/MeshPhysicalMaterial, ShaderMaterial, textures, colorSpace, tone mapping, PMREMGenerator, HDRLoader, lights and shadows, GLTFLoader with DRACO/Meshopt/KTX2, AnimationMixer, Timer (replaces Clock), Raycaster, OrbitControls, WebXR, dispose(), renderer.info, @types/three, Vite bundling, React Three Fiber/drei interop, and r17x to r186 migration (Clock, RGBELoader, PCFSoftShadowMap, renderAsync)."
+description: "Build, review, debug, optimize, migrate, teach, or plan Three.js r186 (npm three@0.186.x) 3D web graphics with current docs and a full usage guide. Use for three, THREE.Scene/PerspectiveCamera/WebGLRenderer, WebGPURenderer, three/webgpu, three/tsl, three/addons, TSL (Three Shading Language), NodeMaterial, Fn, uniform, compute shaders, instancedArray, RenderPipeline (ex PostProcessing), EffectComposer, UnrealBloomPass, BufferGeometry, InstancedMesh, BatchedMesh, LOD, MeshStandardMaterial/MeshPhysicalMaterial, ShaderMaterial, textures, colorSpace, tone mapping, PMREMGenerator, HDRLoader, lights and shadows, GLTFLoader with DRACO/Meshopt/KTX2, AnimationMixer, Timer (replaces Clock), Raycaster, OrbitControls, WebXR, dispose(), renderer.info, @types/three, Vite bundling, React Three Fiber/drei interop, r17x to r186 migration (Clock, RGBELoader, PCFSoftShadowMap, renderAsync), and the ecosystem: @react-three/fiber, drei, @react-three/postprocessing, postprocessing, @react-three/rapier, @react-three/xr, uikit, three-stdlib, three-mesh-bvh, gltf-transform, gltfjsx, troika-three-text, three-gpu-pathtracer, camera-controls, Rapier."
 ---
 
 # Three.js
@@ -17,8 +17,10 @@ Snapshot: `three@0.186.1` = **r186** (2026-09-24), `@types/three@0.186.0`. Next 
 4. glTF/Draco/Meshopt/KTX2 loading and the animation system: [loaders-animation.md](references/loaders-animation.md).
 5. `WebGPURenderer`, node materials, TSL, compute, `RenderPipeline`: [webgpu-tsl.md](references/webgpu-tsl.md).
 6. Draw calls, instancing, memory/dispose, `EffectComposer`, profiling: [postprocessing-performance.md](references/postprocessing-performance.md).
-7. Upgrades and deprecations (r170 to r186): [migration.md](references/migration.md). Official URLs to refresh: [source-map.md](references/source-map.md).
-8. Verify: `bunx tsc --noEmit`, a production build, console clean of `THREE.` warnings, `renderer.info` stable across a mount/unmount cycle.
+7. Addon locations (`three/addons/*` groups, package entry points): [addons-index.md](references/addons-index.md).
+8. React (R3F v9, drei, Canvas, hooks, WebGPU `gl` factory): [react-three-fiber.md](references/react-three-fiber.md). Companion packages (postprocessing, three-mesh-bvh, gltf-transform, Rapier, troika, pathtracer) with versions and compatibility: [ecosystem-packages.md](references/ecosystem-packages.md).
+9. Upgrades and deprecations (r170 to r186): [migration.md](references/migration.md). Official URLs to refresh: [source-map.md](references/source-map.md).
+10. Verify: `bunx tsc --noEmit`, a production build, console clean of `THREE.` warnings, `renderer.info` stable across a mount/unmount cycle.
 
 ## Decision Rules
 
@@ -28,6 +30,8 @@ Snapshot: `three@0.186.1` = **r186** (2026-09-24), `@types/three@0.186.0`. Next 
 - With `three/webgpu`, import **everything** (core and renderer) from `three/webgpu` and TSL from `three/tsl`. Do not mix `three` and `three/webgpu` class identities; alias `three` to the webgpu build as the manual's import map does.
 - Addons come from `three/addons/...` (maps to `examples/jsm`). Pin addons and core to the same version.
 - Prefer `renderer.setAnimationLoop(fn)` over hand-rolled rAF: it handles WebGPU init and XR.
+- React app: use R3F v9 + drei (React 19); keep per-frame work in `useFrame` refs. No React: plain three.
+- Package choice: addons first (`three/addons`), then pmndrs/ecosystem packages per the decision table in ecosystem-packages.md. `postprocessing` (pmndrs) caps `three <0.187` and is WebGL only.
 - Use `THREE.Timer` for delta time; `Clock` is deprecated (r183).
 
 ## Pitfalls

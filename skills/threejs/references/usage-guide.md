@@ -163,4 +163,4 @@ controls.dispose();
 
 ## React Three Fiber (integration point)
 
-`@react-three/fiber` (9.8.x, needs React 19, `three >= 0.156`) is a React renderer for three; `@react-three/drei` (10.7.x) adds helpers (controls, loaders, environments). Use it for React apps; hooks like `useFrame` replace the render loop. Keep per-frame work out of React state (mutate refs). Use plain three for non-React apps. Check R3F docs for WebGPU renderer wiring before assuming it works with `three/webgpu`.
+`@react-three/fiber` 9.8.x (React 19) with `@react-three/drei` 10.7.x. Details, WebGPU `gl` factory, and performance: [react-three-fiber.md](react-three-fiber.md). Addon folder map: [addons-index.md](addons-index.md). Companion packages: [ecosystem-packages.md](ecosystem-packages.md).

@@ -120,7 +120,7 @@ Create the game in `onMounted`, destroy in `onUnmounted`, keep the instance in a
 
 ### Svelte / SvelteKit
 
-Create in `onMount`, return a cleanup that calls `game.destroy(true)`; import Phaser dynamically inside `onMount` to avoid SSR. `@phaserjs/create-game` lists Svelte as a supported option; there is no standalone `template-svelte` repo at the snapshot, so follow the same pattern.
+Create in `onMount`, return a cleanup that calls `game.destroy(true)`; import Phaser dynamically inside `onMount` to avoid SSR. The official `phaserjs/template-svelte` (SvelteKit 2, Svelte 5, `phaser@4.0.0`) mounts the game in `onMount` and bridges with the same EventBus.
 
 ### Next.js
 
@@ -128,7 +128,7 @@ Render the Phaser component client-only: `dynamic(() => import('./PhaserGame'), 
 
 ### Angular, Solid, Remix
 
-Same rules: client-only, one game per mount, destroy on teardown, a shared emitter.
+Official templates also exist for `template-solid`, `template-remix`, `template-angular`, `template-bun`, `template-tauri` (pins Phaser 3). Same rules: client-only, one game per mount, destroy on teardown, a shared emitter.
 
 ### Other targets
 

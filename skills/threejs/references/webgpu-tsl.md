@@ -28,7 +28,7 @@ document.body.appendChild(renderer.domElement);
 </script>
 ```
 
-With a bundler, alias `three` to `three/webgpu` (so addons and your code share one class set) and check for duplicate-instance warnings.
+With R3F use an async `gl` factory that awaits `renderer.init()` ([react-three-fiber.md](react-three-fiber.md)). With a bundler, alias `three` to `three/webgpu` (so addons and your code share one class set) and check for duplicate-instance warnings.
 - Not supported on WebGPURenderer: `ShaderMaterial`, `RawShaderMaterial`, `onBeforeCompile`, `EffectComposer`. `WebGLCubeRenderTarget` must be `CubeRenderTarget` (r183). Premultiplied alpha handling changed in r185 (use an opaque clear color if blending breaks).
 - `renderAsync()` / `computeAsync()` are deprecated (r181); `waitForGPU()` removed. `compileAsync()` is non-blocking (r184); `compileComputeAsync()` exists (r186). `renderer.dispose()` is async (r186): `await renderer.dispose()`.
 - `outputBufferType` (was `colorBufferType`, r182).
