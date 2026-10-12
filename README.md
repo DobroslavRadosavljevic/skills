@@ -42,6 +42,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `handoff` | Produce or consume agent-to-agent handoff context so another session can resume work. |
 | `heyapi` | Hey API (`@hey-api/openapi-ts`): OpenAPI → TypeScript SDKs, validators, Query plugins. |
 | `high-signal-tests` | Prune low-signal unit tests; prefer existing E2E and integration setups (never add new ones), E2E artifacts, failure modes first. |
+| `hugeicons` | Hugeicons with `@hugeicons/react` and free/Pro icon packs: finding names, house-style rendering, a11y, Pro registry auth, other frameworks, and Lucide migration. |
 | `impit` | Apify Impit: browser-impersonating HTTP (TLS/HTTP fingerprints) for Node, Python, Rust. |
 | `improve-prompt` | Rewrite rough requests into clear, proportional, actionable prompts without doing the work. |
 | `intlayer` | Build, review, configure, or debug Intlayer 9.6 i18n in TanStack Start React apps. |

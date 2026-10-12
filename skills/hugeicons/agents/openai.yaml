@@ -1,0 +1,4 @@
+interface:
+  display_name: "Hugeicons"
+  short_description: "Find, render, and migrate Hugeicons icons"
+  default_prompt: "Use $hugeicons to pick the right Hugeicons icon, render it with the repo's conventions, or migrate icon usage to Hugeicons."
