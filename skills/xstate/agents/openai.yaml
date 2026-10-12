@@ -1,0 +1,4 @@
+interface:
+  display_name: "XState"
+  short_description: "Model and build XState v5 statecharts and actors"
+  default_prompt: "Use $xstate to design, build, review, test, migrate, or debug this XState state machine, actor system, or @xstate/store code with current documentation."

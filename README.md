@@ -117,6 +117,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `vitest` | Vitest 5 testing: config, mocks, coverage, browser mode, projects, and Jest/v4/v5 migration. |
 | `vitest-architecture` | Portable Vitest 5 house style: unit/integration projects, tests/ layout, scripts, and high-signal test rules (no new setups unasked). |
 | `wxt` | Build, test, migrate, and publish browser extensions with WXT 0.21: entrypoints, content-script UIs, storage, SPA scraping, MV3 rules, Playwright, wxt submit. |
+| `xstate` | XState 5.33 statecharts and actors: modeling method, setup/types, actions, invoke/spawn, persistence, inspection, React 6 and other adapters, @xstate/store 4, graph testing, Stately tooling, and v4→v5/v6-alpha migration. |
 | `zod` | Build, review, debug, migrate, or plan Zod 4.6 validation and schema code. |
 
 ## Install With skills.sh
