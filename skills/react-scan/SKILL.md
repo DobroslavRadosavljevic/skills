@@ -1,6 +1,6 @@
 ---
 name: react-scan
-description: "Find, explain, and fix React re-render and interaction performance problems with React Scan (react-scan 0.5.7). Use for installing react-scan (CLI init, auto.global.js script tag, scan() module import, Next.js App/Pages Router, Vite, React Router/Remix, TanStack Start, Astro, Rsbuild, Storybook, browser extension), keeping it dev-only, reading render outlines and ×N labels, the toolbar inspector \"what changed\" panel, the notifications/slowdowns panel (INP-style timing split, Ranked view, Memoizable badge, Copy Prompt), the FPS meter, the onRender/onCommitFinish options, react-scan/lite, react-component-name plugins, @react-scan/vite-plugin-react-scan, and headless render counting with Playwright. Also use whenever a React app feels slow or janky, typing or clicking lags, components re-render too often, someone asks why a component rendered, or a memo/useMemo/useCallback/context/React Compiler fix needs to be measured before and after, even if React Scan is not named."
+description: "Find, explain, and fix React re-render and interaction performance problems with React Scan (react-scan 0.5.7). Use for installing react-scan (CLI init, auto.global.js script tag, scan() module import, Next.js App/Pages Router, Vite, React Router/Remix, TanStack Start, Astro, Rsbuild, Storybook, browser extension), keeping it dev-only, reading render outlines and ×N labels, the toolbar inspector \"what changed\" panel, the notifications/slowdowns panel (INP-style timing split, Ranked view, Memoizable badge, Copy Prompt), the FPS meter, the onRender/onCommitFinish options, react-scan/lite, react-component-name plugins, @react-scan/vite-plugin-react-scan, headless render counting with Playwright, and paste-in page probes for remounts, layout or scroll jumps, and long frames. Also use whenever a React app feels slow or janky, typing or clicking lags, a UI jumps, flickers, remounts, or loses state, components re-render too often, someone asks why a component rendered, or a memo/useMemo/useCallback/context/React Compiler fix needs to be measured before and after, even if React Scan is not named."
 ---
 
 # React Scan
@@ -27,6 +27,7 @@ Many blog posts, the npm README, and older docs describe features that 0.5.7 doe
 1. **Pick the mode.**
    - *Visual*: a person or a browser tool looks at outlines, the inspector, and the notifications panel.
    - *Headless*: run [`scripts/render-probe.mjs`](scripts/render-probe.mjs) for JSON with render counts, causes, and interaction latency. Use it when you can't watch the screen, and to prove a fix.
+   - *In-page*: paste a probe from [In-Page Probes](#in-page-probes) into a page you already drive with a browser tool. Use it for remounts, lost state, layout or scroll jumps, and long frames, and when the project has no Playwright.
    Use both when you can: visual mode to explore, the probe to measure.
 2. **Install dev-only, before React, pinned.** Follow [setup.md](references/setup.md) for the framework. Check the project first: an existing `react-scan` import, the React version, the bundler (a module import on webpack/Rspack needs the 0.5.6+ workaround), a CSP that blocks unpkg, and whether the React Compiler is on (`babel-plugin-react-compiler`, `reactCompiler: true`, or `✨` badges).
 3. **Name one slow interaction.** Example: "type `shoe` in the product search", "open the filters drawer", "scroll the table". If the user only says "the app is slow", click through the app with the notifications panel open and start with the worst red or orange entry.
@@ -89,6 +90,32 @@ If the app already loads React Scan, add `--no-inject`. Field reference and a wo
 
 Write precise locators. Playwright role locators pierce React Scan's open shadow root, so `getByRole("button")` also matches toolbar buttons.
 
+## In-Page Probes
+
+Three scripts that you paste into a page: the devtools console, or the "evaluate JavaScript" call of a browser tool. They need no install and no Playwright. Each one starts at once, puts one object on `window`, and returns plain data from `report()`.
+
+| Script | Question it answers | Needs |
+| --- | --- | --- |
+| [`scripts/commit-probe.js`](scripts/commit-probe.js) | Did a component remount, or did a parent render nothing for one commit? | A React DevTools hook on the page (React Scan gives one), React 17+ |
+| [`scripts/layout-probe.js`](scripts/layout-probe.js) | Did the content collapse, the scroll position jump, or an element shrink? | Nothing. Any page, any framework |
+| [`scripts/frame-probe.js`](scripts/frame-probe.js) | How slow was the interaction, and which script blocked the frame? | Chromium. Any page, any framework |
+
+```js
+// after you paste the file:
+__commitProbe.start({ watch: ["MessageRow", "Markdown"] }); // empty watch = every named component
+__layoutProbe.start({ scroller: "#messages" });             // default: the page scroller
+__frameProbe.reset();                                       // after warm-up
+// ...do the interaction, then read:
+__commitProbe.report(); __layoutProbe.report(); __frameProbe.report();
+```
+
+Use them in this order for "the UI jumps or flickers":
+1. `__layoutProbe.report()`: a `dHeight` far below zero that comes back in the next frames is a collapse. A `dTop` jump with no height change is scroll code.
+2. `__commitProbe.report()` at the same time `t`: `remounted` names the instance that React threw away. A deletion with `parentChildrenAfter: "(none)"` means the data was empty for one commit.
+3. Fix the cause (a key that changes, a component defined in a component, a wrapper that comes and goes, stale data applied over good data). Then run the same steps again and compare the reports.
+
+Each file header lists its options and how to read each field. Loading under a strict CSP, use from Playwright, and limits: [automation.md](references/automation.md#in-page-probes).
+
 ## Reading the UI, Fast
 
 - **Outlines and labels**: what rendered on screen, about how often. Not how slow, not why.
@@ -119,7 +146,7 @@ Write precise locators. Playwright role locators pierce React Scan's open shadow
 - [api.md](references/api.md): every export path, all `Options` with real behavior, functions, `window.reactScan`, globals, localStorage keys, `react-scan/lite`, `react-component-name`, CLI flags.
 - [reading-output.md](references/reading-output.md): outlines, labels, the toolbar, inspector, notifications timing math, Ranked/Memoizable, Prompts, FPS, and a triage table.
 - [fix-catalog.md](references/fix-catalog.md): cause → signal → fix, with before/after code for 13 causes, React Compiler interplay, and when not to memo.
-- [automation.md](references/automation.md): the probe script in depth, in-app probes, a Playwright budget test, `react-scan/lite`, `<Profiler>`, CPU throttling, the before/after protocol.
+- [automation.md](references/automation.md): the probe script in depth, the three in-page probes (commit, layout, frame), in-app probes, a Playwright budget test, `react-scan/lite`, `<Profiler>`, CPU throttling, the before/after protocol.
 - [troubleshooting.md](references/troubleshooting.md): symptoms → causes → fixes with issue numbers (nothing shows, build errors, DevTools conflicts, CSP, iframes, Preact `__H`, names).
 
 ## Verification

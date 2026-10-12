@@ -71,7 +71,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `react` | Build, review, debug, migrate, or plan React 19.3 apps with current React docs. |
 | `react-boundaries` | Enforce leaf-owned state/queries, no prop-drill hubs; TanStack-aware composition. |
 | `react-email` | React Email 6.11 templates: components, Tailwind styling, CLI preview/export, render, sending, and the editor 1.7. |
-| `react-scan` | React Scan 0.5.7 render debugging: dev-only setup per framework, reading outlines/inspector/slowdowns, a verified headless Playwright render probe, cause-to-fix catalog, and before/after proof. |
+| `react-scan` | React Scan 0.5.7 render debugging: dev-only setup per framework, reading outlines/inspector/slowdowns, a verified headless Playwright render probe, paste-in page probes for remounts, layout jumps, and long frames, cause-to-fix catalog, and before/after proof. |
 | `redis` | Redis 8 and Valkey 9 from TypeScript: client choice, caching, rate limits, locks, streams, Lua/Functions, memory, HA, and security. |
 | `remotion` | Remotion 4.0.532 programmatic React video: compositions, animation, media, captions, effects, Studio, Player, SSR/Lambda/web rendering, and v5 readiness. |
 | `reorganize` | Split oversized files and group related code into a coherent folder tree. |

@@ -2,6 +2,7 @@
 
 Contents:
 - [Bundled Probe Script](#bundled-probe-script)
+- [In-Page Probes](#in-page-probes)
 - [Browser-Tool Agents (No Playwright)](#browser-tool-agents-no-playwright)
 - [In-App Dev Probe](#in-app-dev-probe)
 - [Playwright Render Budget Test](#playwright-render-budget-test)
@@ -116,6 +117,92 @@ Result:
 - Typing: 224 → 72 ms. SalesSummary renders 4 → 0. ProductRow renders 1200 → 320, and those 320 are mounts of rows entering the list, which is correct.
 - Add: 112 → 16 ms. ProductRow renders 900 → 0.
 - Visible rows, text, and cart count unchanged.
+
+## In-Page Probes
+
+`scripts/commit-probe.js`, `scripts/layout-probe.js`, and `scripts/frame-probe.js` are plain browser scripts with no imports. Each one is one function call that puts an object on `window` (`__commitProbe`, `__layoutProbe`, `__frameProbe`) with `start(options)` (not on the frame probe), `reset()`, `stop()`, and `report()`. `report()` returns plain data, so an "evaluate JavaScript" tool can return it directly. A second paste stops the first copy. Verified with React 19.3 and react-scan 0.5.7 (commit probe) and headless Chromium (layout and frame probes).
+
+### Load a probe
+
+| Situation | How |
+| --- | --- |
+| Devtools console, or a browser tool that evaluates text | Paste the whole file. The last value is the start message |
+| Playwright | `await page.evaluate(readFileSync("<skill-dir>/scripts/layout-probe.js", "utf8"))` after the page loads. `page.addInitScript({ path })` also works for the layout and frame probes |
+| The file is too long to paste, and the dev server can serve it | Copy it into a folder the dev server serves, then `await import("/path/to/commit-probe.js?t=" + Date.now())`. An import from the same origin passes a CSP with `script-src 'self'` |
+
+Do not load a probe with `eval(await (await fetch(url)).text())` on a page with a script CSP: the page blocks `eval` unless the policy has `'unsafe-eval'`.
+
+A full page load removes the probes. Client-side navigation keeps them.
+
+### Commit probe
+
+It wraps `__REACT_DEVTOOLS_GLOBAL_HOOK__.onCommitFiberRoot`, so it needs a hook that was on the page before React started: React Scan, bippy, or the React DevTools extension. Without a hook it returns a message and does nothing.
+
+| Option | Default | Effect |
+| --- | --- | --- |
+| `watch` | `[]` | Display names to track. Empty tracks every named component |
+| `ignore` | `[]` | Display names to skip in watch-all mode (head tags, icons, library wrappers) |
+| `pathDepth` | `10` | Named or keyed ancestors shown in each path. The probe compares whole paths, so this changes only the report text |
+| `fullWalk` | `false` | Visit every fiber on each commit. The default follows `subtreeFlags` and visits only subtrees with a mount or a removal |
+
+| Report field | Meaning |
+| --- | --- |
+| `commits`, `mounts`, `deletions` | Totals since `start()` or `reset()` |
+| `remounted[]` | Paths that mounted more than once, with the count. `alsoRemoved: true` means the same path was also removed: a real remove-and-mount cycle. Only the first tracked component of a removed subtree gets it; the components inside it show `false` |
+| `lastMounts[]` | The newest mounts: time `t`, component, path |
+| `lastDeletions[]` | The newest removed subtrees: the first tracked component inside, the removed top node, the path, and `parentChildrenAfter` |
+| `error` | An error inside the probe. The app is not affected |
+
+Notes:
+- A path is built from display names, keys, and sibling indexes, innermost first: `Row[42] < List < Page`. Long keys keep both ends.
+- Components mounted before `start()` are the baseline and do not count.
+- Start with a short `watch` list on a large page. Watch-all mode records at most 500 mounts in `lastMounts`, but counts all of them.
+- A list that adds 20 rows shows 20 mounts and no `remounted` entry. That is correct. A row path in `remounted` while the row stayed on screen is the bug.
+- Two siblings with the same name and the same key text share a path and can show as `remounted`. Put that name in `ignore`.
+- StrictMode's second effect pass makes no new fiber, so it adds nothing. A hot reload does remount the edited module: reload the page after an edit, then measure.
+- The React Compiler memoizes values. It does not change keys or element types, so it does not cause or hide remounts.
+
+### Layout probe
+
+It samples the scroll container once per frame, in a task after the frame (after the paint), and watches elements with a `ResizeObserver` and the browser's Layout Shift entries.
+
+| Option | Default | Effect |
+| --- | --- | --- |
+| `scroller` | page scroller | CSS selector of the scroll container |
+| `observe` | children and grandchildren of the scroller | CSS selector of the elements to watch for shrinking. Elements added later are watched too |
+| `shrinkPx` | `20` | Height loss in one step that counts as a shrink |
+| `dropPx` | `30` | Scroll height loss in one frame that counts as a jump |
+| `jumpPx` | `150` | Scroll position change in one frame that counts as a jump |
+
+| Report field | Meaning |
+| --- | --- |
+| `frames` | Samples taken. `0` means the tab is hidden or in the background: bring it to the front |
+| `jumps[]` | Frames with a height drop or a position jump: `dHeight`, `dTop`, and `msSinceInput` (under about 100 means the person scrolled; `null` means no input yet) |
+| `shrinks[]` | Elements that lost height: `from`, `to`, and a short description (tag, id, test id, role, first classes) |
+| `shifts[]`, `shiftTotal` | Layout Shift entries with no recent input and the elements that moved (Chromium) |
+
+Notes:
+- A list that hides and shows again reports one large negative `dHeight` and then the same value positive. That pair is the visible flicker.
+- A virtual list changes its scroll height as rows are measured. Raise `dropPx`, or judge by `shrinks` and `shifts`.
+- Give `observe` a selector for the real content blocks (message rows, cards) when the default two levels are not deep enough.
+
+### Frame probe
+
+It records Event Timing entries (16 ms or more) grouped by interaction, and Long Animation Frames (50 ms or more) with their scripts. Browsers without Long Animation Frames get Long Tasks, which carry no script names.
+
+| Report field | Meaning |
+| --- | --- |
+| `supported` | Which of the three sources this browser has |
+| `worstInteractionMs` | The slowest interaction since `reset()` |
+| `interactions[]` | `types`, `durationMs`, `inputDelayMs`, `processingMs`, and the target element, slowest first |
+| `longFrames[]` | `durationMs`, `blockingMs`, `renderMs` (style, layout, and paint part), and up to five `scripts` with `ms`, `layoutMs` (forced layout), `invoker`, function, and file |
+| `blockingMs` | The sum of blocking time of all long frames |
+
+Notes:
+- Call `__frameProbe.reset()` after warm-up, the same as `reset()` in a steps module.
+- The frame probe says where the time went by script. It does not say which component rendered: use the render probe or the `onRender` snippet below for that.
+- In a dev build, the function names are readable. In a production build they are minified, but the file name still points at the chunk.
+- The numbers come from one run in a normal tab. For medians, CPU throttle, and a before/after table, use `scripts/render-probe.mjs`.
 
 ## Browser-Tool Agents (No Playwright)
 
