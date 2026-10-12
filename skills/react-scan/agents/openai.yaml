@@ -1,0 +1,4 @@
+interface:
+  display_name: "React Scan"
+  short_description: "Find and fix React re-render and interaction slowdowns with React Scan"
+  default_prompt: "Use $react-scan to set up React Scan dev-only, measure the slow interaction, explain why components re-render, fix the root cause, and prove the improvement with before/after numbers."
