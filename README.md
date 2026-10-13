@@ -18,7 +18,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `bun` | Bun 1.4 runtime, package manager, test runner, bundler, bunfig, and Node compat. |
 | `clickhouse` | ClickHouse OLAP from TypeScript: @clickhouse/client, MergeTree, ingest, and Cloud. |
 | `clone-to-temp` | Manual-only: fetch repos and datasets into ignored `.temp/` for read-only inspection (never run or install). |
-| `codex-image-gen` | Generate or edit images through the Codex CLI built-in image tool always on gpt-6-luna (no API key). |
+| `codex-image-gen` | Generate or edit images, including transparent-background PNGs and background removal, through the Codex CLI built-in image tool always on gpt-6-luna (no API key). |
 | `compound-ui` | Build or refactor React UI into shadcn-style compound components. |
 | `copywriting` | Simple visitor copy for sites, apps, and docs. STE for technical text. Bans jargon and model words. |
 | `crawlee` | Build, scale, and deploy Crawlee 3.18 scrapers: crawler choice, routers, storage, sessions, proxies, anti-blocking, Docker, Apify, and v4 migration. |

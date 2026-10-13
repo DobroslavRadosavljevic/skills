@@ -21,7 +21,9 @@ Avoid: logos, watermark, extra objects
 - **Shape:** say "square", "wide 16:9", "tall 9:16 portrait", or "3:1 banner". There is no size option.
 - **Exact text:** quote it and name the font style and place: `the word "BREW" in bold rounded black letters, centered`. Spell hard words letter by letter.
 - **Photos:** use camera words: lens, angle, depth of field, time of day.
-- **Icons and stickers:** say "flat", "single object", "plain white background" or use `--transparent`.
+- **Icons and stickers:** say "flat" and "single object". Use `--transparent` for no background, or say "plain white background".
+- **No background:** pass `--transparent` and describe the subject only. Add "no ground shadow". Do not name a backdrop, a surface, or a scene.
+- **Remove a background:** pass the source with `--image` and `--transparent`. Write `Remove the background from image 1. Keep only <subject>, with the same shape, colors, and edges.` Name soft parts to keep, such as steam or hair.
 - **Game sprites:** say "pixel art", the bit depth, and "plain background" or `--transparent`.
 - **Edits:** name what changes and what stays. `Change only the background to a sunset gradient; keep the product and its edges unchanged.` Repeat the "keep" list every time you iterate.
 - **Several input images:** refer to them by order: `the fox from image 1`, `the style of image 2`.
