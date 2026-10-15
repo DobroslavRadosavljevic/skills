@@ -1,0 +1,4 @@
+interface:
+  display_name: "tldts"
+  short_description: "Domain and public suffix parsing"
+  default_prompt: "Use $tldts to build, review, or debug hostname, registrable domain, subdomain, and public suffix parsing with tldts."

@@ -46,6 +46,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `impit` | Apify Impit: browser-impersonating HTTP (TLS/HTTP fingerprints) for Node, Python, Rust. |
 | `improve-prompt` | Rewrite rough requests into clear, proportional, actionable prompts without doing the work. |
 | `intlayer` | Build, review, configure, or debug Intlayer 9.6 i18n in TanStack Start React apps. |
+| `ipaddr-js` | ipaddr.js v2 IPv4/IPv6 parsing, CIDR matching, range classification, SSRF guards, and proxy allowlists. |
 | `is-bot` | Detect self-identifying crawlers/spiders from User-Agent with isbot v5 (`isBot`, custom lists). |
 | `jsdoc` | Purposeful JSDoc for complex or non-obvious TypeScript; no type-echo or narration. |
 | `kafka` | Apache Kafka from TypeScript: prefer @platformatic/kafka 2.13 (cooperative-sticky, KIP-848), topics, and delivery semantics. |
@@ -107,6 +108,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `tanstack-virtual` | TanStack Virtual 3 lists, grids, tables, and chat feeds in React: dynamic heights, window scroll, sticky items, infinite load, and testing. |
 | `testcontainers` | Build, review, debug, configure, or plan Testcontainers integration tests with real Docker dependencies. |
 | `threejs` | Three.js r186 3D graphics: scene/render loop, PBR materials, glTF loaders, WebGPURenderer and TSL, post-processing, performance, R3F/drei ecosystem, and r17x to r186 migration. |
+| `tldts` | tldts v7 hostname, registrable domain, subdomain, and public suffix parsing with the bundled Public Suffix List. |
 | `tsdown` | tsdown 0.23 Rolldown library bundler: config, dts generators, exports, deps, watch/unbundle, 0.22→0.23 upgrade, and tsup migration. |
 | `turborepo` | Turborepo 2.11 usage guide: tasks, deferred hashing, caching/eviction, filters and tags, prune/Docker CI, devEngines, and experimental Rust/Python/Go. |
 | `turborepo-architecture` | Portable monorepo house style: apps/packages layout, turbo rules, and boundaries. |

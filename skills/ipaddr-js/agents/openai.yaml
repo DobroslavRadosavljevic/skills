@@ -1,0 +1,4 @@
+interface:
+  display_name: "ipaddr.js"
+  short_description: "IPv4/IPv6 parsing and CIDR matching"
+  default_prompt: "Use $ipaddr-js to build, review, or debug IPv4/IPv6 parsing, CIDR matching, and range checks with ipaddr.js."
