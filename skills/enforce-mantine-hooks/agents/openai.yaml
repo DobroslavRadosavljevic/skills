@@ -1,0 +1,4 @@
+interface:
+  display_name: "Enforce Mantine Hooks"
+  short_description: "Replace custom hooks with @mantine/hooks"
+  default_prompt: "Use $enforce-mantine-hooks to find custom code that @mantine/hooks covers and replace it with parallel subagents where behavior stays the same or improves."

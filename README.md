@@ -35,6 +35,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `elevenlabs` | Every ElevenLabs product: TTS (Eleven v4), dialogue, Scribe STT, voices, music, SFX, dubbing, Speech Engine, ElevenAgents, SDKs, CLI, MCP. |
 | `elysia` | Build, review, debug, test, and deploy Elysia 1.4 apps (≥1.4.30) and plan Elysia 2 beta migrations with current docs. |
 | `elysia-architecture` | Portable Elysia house style: feature modules, routes, schemas, and ownership. |
+| `enforce-mantine-hooks` | Dispatch subagents to replace custom code with `@mantine/hooks` when behavior stays the same or improves. |
 | `evlog` | Build, review, debug, configure, or migrate evlog 2.29 wide-event TypeScript logging (CLI map, drains, AI/eve, telemetry). |
 | `feedsmith` | Feedsmith 3.0.x RSS/Atom/RDF/JSON Feed/OPML parse and generate for TypeScript. |
 | `github-actions` | GitHub Actions CI/CD for Bun, TypeScript, and Turborepo: workflow templates, caching, quality gates, OIDC, SHA pinning, and releases. |
