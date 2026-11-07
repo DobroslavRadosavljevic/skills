@@ -1,0 +1,4 @@
+interface:
+  display_name: "React Aria"
+  short_description: "Build accessible UI with React Aria Components and hooks"
+  default_prompt: "Use $react-aria to build an accessible, styled React component with React Aria Components."

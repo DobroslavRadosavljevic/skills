@@ -71,6 +71,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `polar` | Polar.sh merchant-of-record billing with SDK 1.0: checkout, customers, subscriptions, benefits, usage billing, webhooks, and the Better Auth plugin. |
 | `postgres` | PostgreSQL 18 schema design, indexing, EXPLAIN, locking, zero-downtime migrations, pooling, RLS, and ops from TypeScript (postgres.js, pg, Bun.SQL). |
 | `react` | Build, review, debug, migrate, or plan React 19.3 apps with current React docs. |
+| `react-aria` | React Aria Components 1.22, `react-aria` hooks, `react-stately`, and `@internationalized/*`: all components, styling, forms, collections, drag and drop, i18n, SSR, and testing. |
 | `react-boundaries` | Enforce leaf-owned state/queries, no prop-drill hubs; TanStack-aware composition. |
 | `react-email` | React Email 6.11 templates: components, Tailwind styling, CLI preview/export, render, sending, and the editor 1.7. |
 | `react-scan` | React Scan 0.5.7 render debugging: dev-only setup per framework, reading outlines/inspector/slowdowns, a verified headless Playwright render probe, paste-in page probes for remounts, layout jumps, and long frames, cause-to-fix catalog, and before/after proof. |
