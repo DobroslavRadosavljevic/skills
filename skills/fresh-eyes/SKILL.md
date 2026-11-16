@@ -1,11 +1,11 @@
 ---
 name: fresh-eyes
-description: Gets a true fresh-eyes review of your own change by dispatching one subagent that did not write it. The orchestrator only writes the brief and dispatches; the subagent reads the real diff as a strict reviewer, fixes dead code, debug leftovers, unclear names, scope creep, duplication, and missing states, and reports what it fixed. Use when the user invokes $fresh-eyes, says "review your own work", "fresh eyes", or before handing off any change.
+description: Gets a true fresh-eyes review of your own change by dispatching one or more subagents that did not write it. The orchestrator only sizes the work, writes the briefs, and dispatches; each subagent reads the real diff as a strict reviewer, fixes dead code, debug leftovers, unclear names, scope creep, duplication, and missing states, and reports what it fixed. Use when the user invokes $fresh-eyes, says "review your own work", "fresh eyes", or before handing off any change.
 ---
 
 # Fresh Eyes
 
-The author cannot review with fresh eyes. So the orchestrator does not review. It dispatches one subagent with a clean context and lets it do the whole review and fix.
+The author cannot review with fresh eyes. So the orchestrator does not review. It dispatches reviewer subagents with a clean context and lets them do the whole review and fix.
 
 ## Orchestrator: dispatch only
 
@@ -15,8 +15,12 @@ The author cannot review with fresh eyes. So the orchestrator does not review. I
    - Where the change is: the branch, `git diff` range, or the list of changed and new files.
    - The commands to check the touched area (typecheck, lint, tests), scoped narrow, with short timeouts.
    - Project rules files to read (for example `CLAUDE.md`, `AGENTS.md`, contributing docs).
-3. Dispatch one subagent with the brief below. Use a fresh context, not a fork of your conversation.
-4. When it reports, relay its result to the user. Check its fixes with the diff before you call them done.
+3. Decide how many reviewers, from the size of the change (file count and diff lines only, not its content):
+   - Small or tightly linked change (about 15 files or 800 changed lines or less): one subagent.
+   - Bigger change: split it into slices of disjoint files that belong together (one package, feature, or layer per slice), one subagent per slice. Keep each slice near that size. Respect the machine load and the harness limits on parallel agents.
+   - Never put the same file in two slices.
+4. Dispatch the subagents in parallel with the brief below, each with a fresh context, not a fork of your conversation.
+5. When they report, relay the combined result to the user. Check their fixes with the diff before you call them done. If two reports conflict, or a fix crosses slices, resolve it or ask the user.
 
 If the harness has no subagents, say so, then do the review yourself and follow the reviewer steps strictly, starting from a re-read of the full diff.
 
@@ -28,12 +32,14 @@ Copy this, filling in the brackets:
 You are a strict reviewer. You did not write this change. Your job is to approve it only after it is clean.
 
 Task the change was made for: [task]
-Change location: [diff range / branch / file list]
+Change location: [diff range / branch]
+Your slice (edit only these files): [file list, or "all" when you are the only reviewer]
+Other reviewers own the other files; you may read them, but report cross-slice problems instead of editing them.
 Project rules: read [rules files] first.
 Checks to run after fixes: [commands, each with a short timeout]
 
 Steps:
-1. Read the full real diff, including new untracked files. Do not skim.
+1. Read the full real diff of your slice, including new untracked files. Do not skim.
 2. For every hunk check:
    - Leftovers: debug logs, commented-out code, TODOs, unused imports or variables.
    - Names: each name says what it is and matches the codebase style.
@@ -50,6 +56,7 @@ Do not approve on a first skim. Do not commit or push.
 
 ## Rules
 
-- One subagent, one review. Do not run your own parallel review of the same diff.
+- Size first: one reviewer by default, more only when the change is too big for one careful read.
+- Each file has exactly one reviewer. Do not run your own review of the same diff.
 - Give facts, never conclusions. The brief must not say what is good or bad about the change.
 - The subagent fixes; the orchestrator verifies and reports.
