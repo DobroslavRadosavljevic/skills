@@ -10,6 +10,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | --- | --- |
 | `agents-md` | Create, review, or enforce AGENTS.md with commands, boundaries, required ASD-STE100 communication, and E2E/integration-first testing rules. |
 | `ai-sdk` | Vercel AI SDK 7 TypeScript: Core, UI, agents, harnesses, tool search, batches, evaluation, Gateway, multimodal, and v5–v7 migrations. |
+| `are-you-sure` | Ask "are you sure?" before writing code: challenge the planned API and approach, revise, then implement. |
 | `base-ui` | Build, review, migrate, or debug React UIs with Base UI 1.8 primitives. |
 | `better-auth` | TypeScript auth with better-auth 1.7 (≥1.7.7 security baseline), official plugins, adapters, and security. |
 | `blume` | Blume 2.2 Markdown-first docs sites on Astro: config, MDX, navigation, search, llms.txt/MCP, API references, i18n, CLI, deploy, v1→v2 upgrade, and migration. |
