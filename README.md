@@ -38,7 +38,9 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `elysia-architecture` | Portable Elysia house style: feature modules, routes, schemas, and ownership. |
 | `enforce-mantine-hooks` | Dispatch subagents to replace custom code with `@mantine/hooks` when behavior stays the same or improves. |
 | `evlog` | Build, review, debug, configure, or migrate evlog 2.29 wide-event TypeScript logging (CLI map, drains, AI/eve, telemetry). |
+| `explain-like-pr` | Write the PR description (what, why, how, risks, testing) before coding, then build to match it. |
 | `feedsmith` | Feedsmith 3.0.x RSS/Atom/RDF/JSON Feed/OPML parse and generate for TypeScript. |
+| `fresh-eyes` | Review your own diff as a strict stranger: leftovers, names, scope creep, missing states. Fix, then report. |
 | `github-actions` | GitHub Actions CI/CD for Bun, TypeScript, and Turborepo: workflow templates, caching, quality gates, OIDC, SHA pinning, and releases. |
 | `grok` | Cursor IDE only: always-on lock to Grok 4.7 (`cursor-grok-4.7-*`, any reasoning effort). Skip in Codex. |
 | `handoff` | Produce or consume agent-to-agent handoff context so another session can resume work. |
@@ -71,6 +73,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `playwright` | Build, review, debug, configure, or plan Playwright 1.63 E2E tests and browser automation. |
 | `polar` | Polar.sh merchant-of-record billing with SDK 1.0: checkout, customers, subscriptions, benefits, usage billing, webhooks, and the Better Auth plugin. |
 | `postgres` | PostgreSQL 18 schema design, indexing, EXPLAIN, locking, zero-downtime migrations, pooling, RLS, and ops from TypeScript (postgres.js, pg, Bun.SQL). |
+| `prove-it` | Evidence gate: no "done" or "fixed" claim without real proof (output, failing-then-passing test, screenshot). |
 | `react` | Build, review, debug, migrate, or plan React 19.3 apps with current React docs. |
 | `react-aria` | React Aria Components 1.22, `react-aria` hooks, `react-stately`, and `@internationalized/*`: all components, styling, forms, collections, drag and drop, i18n, SSR, and testing. |
 | `react-boundaries` | Enforce leaf-owned state/queries, no prop-drill hubs; TanStack-aware composition. |
@@ -123,6 +126,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `vite` | Vite 8.3 tooling: config, Rolldown/Oxc builds, plugins, SSR, and v7→v8 migration. |
 | `vitest` | Vitest 5 testing: config, mocks, coverage, browser mode, projects, and Jest/v4/v5 migration. |
 | `vitest-architecture` | Portable Vitest 5 house style: unit/integration projects, tests/ layout, scripts, and high-signal test rules (no new setups unasked). |
+| `what-would-break` | After a change, list the likely ways it breaks and check each one before calling it done. |
 | `wxt` | Build, test, migrate, and publish browser extensions with WXT 0.21: entrypoints, content-script UIs, storage, SPA scraping, MV3 rules, Playwright, wxt submit. |
 | `xstate` | XState 5.33 statecharts and actors: modeling method, setup/types, actions, invoke/spawn, persistence, inspection, React 6 and other adapters, @xstate/store 4, graph testing, Stately tooling, and v4→v5/v6-alpha migration. |
 | `zod` | Build, review, debug, migrate, or plan Zod 4.6 validation and schema code. |
