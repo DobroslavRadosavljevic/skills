@@ -121,6 +121,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `ua-parser` | UAParser.js v2 User-Agent detection: OSS AGPL, PRO packages, Client Hints, bots, and extensions. |
 | `ultraplan` | Ask detailed planning questions, recommend answers, and produce a precise implementation plan before work starts. |
 | `unsmell` | Find and fix maintainability problems across a codebase or scoped area. |
+| `untangle` | Cut needless imports: barrels, side-effect imports, hub modules, cycles, boundary leaks. Measured before and after. |
 | `upgrade-deps` | Safely upgrade JS/TS dependencies in verified groups: baseline gates, security first, one major per commit, release-age and supply-chain checks, rollback. |
 | `visx` | Airbnb visx React+D3 visualization primitives, XYChart, and v3→v4 migration. |
 | `vite` | Vite 8.3 tooling: config, Rolldown/Oxc builds, plugins, SSR, and v7→v8 migration. |
