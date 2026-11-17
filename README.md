@@ -52,6 +52,7 @@ These are plain skill folders. Each skill has a `SKILL.md` entrypoint and may in
 | `intlayer` | Build, review, configure, or debug Intlayer 9.6 i18n in TanStack Start React apps. |
 | `ipaddr-js` | ipaddr.js v2 IPv4/IPv6 parsing, CIDR matching, range classification, SSRF guards, and proxy allowlists. |
 | `is-bot` | Detect self-identifying crawlers/spiders from User-Agent with isbot v5 (`isBot`, custom lists). |
+| `iterate` | Re-work one target in rounds against a concrete quality bar until it is better in depth; proof each round, clear stop rules. |
 | `jsdoc` | Purposeful JSDoc for complex or non-obvious TypeScript; no type-echo or narration. |
 | `kafka` | Apache Kafka from TypeScript: prefer @platformatic/kafka 2.13 (cooperative-sticky, KIP-848), topics, and delivery semantics. |
 | `kill-legacy` | Remove legacy, deprecated, compatibility-shim, and fallback code paths. |
